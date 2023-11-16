@@ -1,10 +1,7 @@
 ﻿using Il2Cpp;
-using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.KFC;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.MovementAndLookTypes;
 using UnityEngine;
-using UnityEngine.InputSystem.Utilities;
 
 namespace SR2E.Commands
 {

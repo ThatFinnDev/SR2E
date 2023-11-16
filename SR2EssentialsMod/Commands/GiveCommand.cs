@@ -1,6 +1,4 @@
 ﻿using Il2Cpp;
-using MelonLoader;
-using UnityEngine.InputSystem.Utilities;
 
 namespace SR2E.Commands
 {

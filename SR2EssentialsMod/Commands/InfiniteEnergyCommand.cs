@@ -1,10 +1,6 @@
 ﻿using System.Linq;
 using Il2Cpp;
-using MelonLoader;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
-using UnityEngine.InputSystem.Utilities;
 
 namespace SR2E.Commands
 {
@@ -52,8 +48,8 @@ namespace SR2E.Commands
             return true;
         }
 
-        public static float normalEnergy = 100;
-        public static T Get<T>(string name) where T : UnityEngine.Object
+        static float normalEnergy = 100;
+        static T Get<T>(string name) where T : UnityEngine.Object
         {
             return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
         }
