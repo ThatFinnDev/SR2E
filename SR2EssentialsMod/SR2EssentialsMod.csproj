@@ -53,6 +53,9 @@
     <Reference Include="Unity.InputSystem">
       <HintPath>Libs\Unity.InputSystem.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Localization">
+      <HintPath>Libs\Unity.Localization.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>Libs\Unity.TextMeshPro.dll</HintPath>
     </Reference>
@@ -68,6 +71,9 @@
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>Libs\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.LocalizationModule">
+      <HintPath>Libs\UnityEngine.LocalizationModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
@@ -79,6 +85,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ClearCommand.cs" />
     <Compile Include="Commands\ClearInventoryCommand.cs" />
     <Compile Include="Commands\GiveCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />

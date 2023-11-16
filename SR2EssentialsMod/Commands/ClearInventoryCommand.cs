@@ -1,6 +1,4 @@
 ﻿using Il2Cpp;
-using MelonLoader;
-using UnityEngine.InputSystem.Utilities;
 
 namespace SR2E.Commands
 {
@@ -27,9 +25,8 @@ namespace SR2E.Commands
 
 
             foreach (Ammo.Slot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
-            {
                 slot.Clear();
-            }
+            
             
             SR2Console.SendMessage("Successfully cleared your inventory");
 

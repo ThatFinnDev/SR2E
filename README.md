@@ -19,11 +19,11 @@
  Sometimes the opening/closing of the console can freeze the game. This also fixable by closing and reoping the console.
 
 # TODO:
- Fix console breaking game while ModMenu/Map is open
- -> Temporary fix: Stop console from opening while these menus are open
+ Fix that opening the console, while modmenu/map/plotui are open, breaks the game 
+ -> Temporary fix: Stop console from opening while the modmenu is shown, close the map/plotui when opening console
 
  AutoComplete for Commands
- -> Not Implemented, Still thinking about a good way to implement this
+ -> Not implemented, I'm still thinking about a good way to implement this
 
 
 # Special thanks
@@ -38,3 +38,6 @@
 ![Screenshot 1](https://github.com/ThatFinn/SR2Essentials/blob/main/Screenshot1.png?raw=true)
 ![Screenshot 2](https://github.com/ThatFinn/SR2Essentials/blob/main/Screenshot2.png?raw=true)
 ![Screenshot 3](https://github.com/ThatFinn/SR2Essentials/blob/main/Screenshot3.png?raw=true)
+
+
+

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
+using Il2CppMonomiPark.SlimeRancher.UI.Plot;
 using Il2CppTMPro;
 using MelonLoader;
 using SR2E.Commands;
@@ -15,7 +17,6 @@ namespace SR2E
 {
     public static class SR2Console
     {
-        private const int maxMessages = 100;
         /// <summary>
         /// Display a message in the console
         /// </summary>
@@ -25,21 +26,18 @@ namespace SR2E
                 return;
             Transform consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
             if (consoleContent.childCount >= maxMessages)
-            {
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
-            }
             if (message.Contains("\n"))
             {
                 foreach (string singularLine in message.Split('\n'))
-                {
                     SendMessage(singularLine);
-                }
-
                 return;
             }
             var instance = GameObject.Instantiate(getObjRec<TextMeshProUGUI>(transform, "messagePrefab"), consoleContent);
             instance.gameObject.SetActive(true);
             instance.text = message;
+            _scrollbar.value = 0f;
+            scrollCompletlyDown = true;
         }
         /// <summary>
         /// Display an error in the console
@@ -50,22 +48,19 @@ namespace SR2E
                 return;
             Transform consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
             if (consoleContent.childCount >= maxMessages)
-            {
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
-            }
             if (message.Contains("\n"))
             {
                 foreach (string singularLine in message.Split('\n'))
-                {
                     SendError(singularLine);
-                }
-
                 return;
             }
             var instance = GameObject.Instantiate(getObjRec<TextMeshProUGUI>(transform, "messagePrefab"), consoleContent);
             instance.gameObject.SetActive(true);
             instance.text = message;
             instance.color = new Color(0.6f, 0, 0, 1);
+            _scrollbar.value = 0f;
+            scrollCompletlyDown = true;
         }
         /// <summary>
         /// Check if console is open
@@ -79,8 +74,6 @@ namespace SR2E
         public static void Close()
         {
             
-            if (SR2ModMenu.isOpen)
-                return;
             if (Object.FindObjectsOfType<MapUI>().Length != 0)
                 return;
             transform.GetChild(0).gameObject.SetActive(false);
@@ -97,8 +90,17 @@ namespace SR2E
         /// </summary>
         public static void Open()
         { 
-            if (Object.FindObjectsOfType<MapUI>().Length != 0)
+            if (SR2ModMenu.isOpen)
                 return;
+            
+            Il2CppArrayBase<MapUI> allMapUIs = Object.FindObjectsOfType<MapUI>();
+            for (int i = 0; i < allMapUIs.Count; i++)
+                Object.Destroy(allMapUIs[i].gameObject);
+            
+            Il2CppArrayBase<LandPlotUIRoot> allPlotUIRoots = Object.FindObjectsOfType<LandPlotUIRoot>();
+            for (int i = 0; i < allPlotUIRoots.Count; i++)
+                allPlotUIRoots[i].Close();
+            
             transform.GetChild(0).gameObject.SetActive(true);
             transform.GetChild(1).gameObject.SetActive(true);
             normalTimeScale = Time.timeScale;
@@ -129,12 +131,7 @@ namespace SR2E
             commands.Add(cmd.ID.ToLowerInvariant(), cmd);
             List<KeyValuePair<string, SR2CCommand>> myList = commands.ToList();
 
-            myList.Sort(
-                delegate(KeyValuePair<string, SR2CCommand> pair1, KeyValuePair<string, SR2CCommand> pair2)
-                {
-                    return pair1.Key.CompareTo(pair2.Key);
-                }
-            );
+            myList.Sort(delegate(KeyValuePair<string, SR2CCommand> pair1, KeyValuePair<string, SR2CCommand> pair2) { return pair1.Key.CompareTo(pair2.Key); });
             commands = myList.ToDictionary(x => x.Key, x => x.Value);
             return true;
         }
@@ -145,9 +142,7 @@ namespace SR2E
 
         internal static Transform transform;
         internal static GameObject gameObject;
-        
         internal static Dictionary<string, SR2CCommand> commands = new Dictionary<string, SR2CCommand>();
-        
         internal static T getObjRec<T> (Transform transform, string name)
         {
             
@@ -167,15 +162,17 @@ namespace SR2E
             }
             return default;
         }
+        static Scrollbar _scrollbar;
+        static float normalTimeScale = 1f;
+        const int maxMessages = 100;
+        private static bool scrollCompletlyDown = false;
         
-
-
         internal static void Start()
         {
             transform.GetChild(0).gameObject.SetActive(false);
             transform.GetChild(1).gameObject.SetActive(false);
-            SendMessage("Hello World!");
             RegisterCommand(new GiveCommand());
+            RegisterCommand(new ClearCommand());
             RegisterCommand(new ClearInventoryCommand());
             RegisterCommand(new ModsCommand());
             RegisterCommand(new HelpCommand());
@@ -206,29 +203,33 @@ namespace SR2E
             SR2ModMenu.transform = transform.GetChild(4);
             SR2ModMenu.Start();
         }
-
-        private static Scrollbar _scrollbar;
         internal static void Update()
         {
             if (SR2EMain.consoleFinishedCreating != true)
                 return;
-            
+
             getObjRec<TMP_InputField>(transform, "commandInput").ActivateInputField();
+            if (isOpen)
+            {
+                if (scrollCompletlyDown)
+                    if (_scrollbar.value != 0)
+                    {
+                        _scrollbar.value = 0f;
+                        scrollCompletlyDown = false;
+                    }
+                if (Keyboard.current.enterKey.wasPressedThisFrame)
+                    if(getObjRec<TMP_InputField>(transform,"commandInput").text!="")
+                        Execute();
+                if (Time.timeScale!=0f)
+                    Time.timeScale=0;
+            }
             if (Keyboard.current.ctrlKey.wasPressedThisFrame)
                 if(Keyboard.current.tabKey.isPressed)
                     Toggle();
             if (Keyboard.current.tabKey.wasPressedThisFrame)
                 if(Keyboard.current.ctrlKey.isPressed)
                     Toggle();
-                
-            if (Keyboard.current.enterKey.wasPressedThisFrame)
-            {
-                if (isOpen)
-                {
-                    if(getObjRec<TMP_InputField>(transform,"commandInput").text!="")
-                        Execute();
-                }
-            }
+            
 
             if (_scrollbar == null)
                 _scrollbar =transform.GetChild(1).GetChild(1).GetChild(1).GetComponent<Scrollbar>();
@@ -236,9 +237,7 @@ namespace SR2E
             {
                 float value = Mouse.current.scroll.ReadValue().y;
                 if (Mouse.current.scroll.ReadValue().y!=0)
-                { 
-                    _scrollbar.value += (value>0.01?1:value<-0.01?-1:0) * _scrollbar.size;
-                }
+                    _scrollbar.value = Mathf.Clamp(_scrollbar.value+((value > 0.01 ? 1.25f : value < -0.01 ? -1.25f : 0) * _scrollbar.size),0,1f);
             }
             
             //Modmenu
@@ -246,13 +245,11 @@ namespace SR2E
         }
         
 
-        static float normalTimeScale = 1f;
         static void Execute()
         {
             string[] cmds = getObjRec<TMP_InputField>(transform,"commandInput").text.Split(';');
             getObjRec<TMP_InputField>(transform, "commandInput").text = "";
             foreach (string c in cmds)
-            {
                 if (!String.IsNullOrEmpty(c))
                 {
                     bool spaces = c.Contains(" ");
@@ -264,11 +261,8 @@ namespace SR2E
                         bool successful = commands[cmd].Execute(args);
                     }
                     else
-                    {
                         SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
-                    }
                 }
-            }
         }
         
         
