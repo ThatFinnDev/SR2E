@@ -28,14 +28,25 @@ namespace SR2E.Commands
                 
             if (SceneContext.Instance.PlayerState == null) 
             { SR2Console.SendError("Load a save first!"); return false; }
-            
 
+
+            string itemName = "";
             string identifierTypeName = args[0];
             IdentifiableType type = SR2EMain.getVaccableByName(identifierTypeName);
-                
-            if (type == null)
-            { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
 
+            if (type == null)
+            {
+                type = SR2EMain.getVaccableByLocalizedName(identifierTypeName.Replace("_", ""));
+                string name = type.LocalizedName.GetLocalizedString();
+                if (name.Contains(" "))
+                    itemName = "'" + name + "'";
+                else
+                    itemName = name;
+                if (type == null)
+                { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
+            }
+            else
+                itemName=type.name;
             int amount = 0;
             try
             { amount = int.Parse(args[1]); }
@@ -50,7 +61,8 @@ namespace SR2E.Commands
                 SceneContext.Instance.PlayerState.Ammo.MaybeAddToSlot(type,null); 
             }
             
-            SR2Console.SendMessage($"Successfully added {amount} {type.name}");
+            
+            SR2Console.SendMessage($"Successfully added {amount} {itemName}");
             
             return true;
         }

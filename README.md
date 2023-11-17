@@ -11,7 +11,7 @@
  Open the console wih Ctrl+Tab
 
 # API
- See wiki
+ https://github.com/ThatFinnDev/SR2Essentials/wiki
 
 # Known bugs:
  Sometimes the consoles doesn't recognize keyboard or mouse scroll input, this is due to the input I had to disable for the game. This is done very crudely at moment and I had to write my own workaround which causes this behaviour sometimes. It's easily fixable by closing and reopening the console

@@ -1,5 +1,4 @@
-﻿using Il2Cpp;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SR2E.Commands
 {
