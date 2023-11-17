@@ -5,11 +5,8 @@ using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
 using MelonLoader;
-using SR2E;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 using Action = System.Action;
 using Object = UnityEngine.Object;
@@ -24,7 +21,6 @@ namespace SR2E
         internal static GameObject gameObject;
         static TextMeshProUGUI modInfoText;
         static UIPrefabLoader _uiActivator;
-        //static EventSystem eventSystem;
 
         static T getObjRec<T>(Transform transform, string name)
         {
@@ -145,7 +141,6 @@ namespace SR2E
 
         internal static void Start()
         {
-            //eventSystem = parent.GetChild(5).GetComponent<EventSystem>();
             modInfoText = getObjRec<TextMeshProUGUI>(transform, "ModInfoText");
             gameObject.SetActive(false);
 

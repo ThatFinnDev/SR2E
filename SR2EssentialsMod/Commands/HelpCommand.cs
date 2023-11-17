@@ -5,8 +5,8 @@ namespace SR2E.Commands
     public class HelpCommand : SR2CCommand
     {
         public override string ID { get; } = "help";
-        public override string Usage { get; } = "help";
-        public override string Description { get; } = "Displays all commands available, or an extended description of a command";
+        public override string Usage { get; } = "help [cmdName]";
+        public override string Description { get; } = "Displays all commands available and their usage";
         
         public override bool Execute(string[] args)
         {
@@ -20,6 +20,16 @@ namespace SR2E.Commands
                 }
                 return true;
             }
+            if (args.Length == 1)
+            {
+                if (SR2Console.commands.ContainsKey(args[0]))
+                {
+                    SR2Console.SendMessage($"Usage: {SR2Console.commands[args[0]].Usage}");
+                }
+                SR2Console.SendMessage($"The key '<color=white>{args[0]}</color>' is not a valid command");
+                return false;
+            }
+            
             SR2Console.SendMessage($"Usage: {Usage}");
             return false;
         }
