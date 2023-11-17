@@ -20,19 +20,19 @@ namespace SR2E.Commands
                 
             if (SceneContext.Instance.PlayerState == null) 
             { SR2Console.SendError("Load a save first!"); return false; }
-            
-            foreach (Ammo.Slot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
+
+            for (int i = 0; i < SceneContext.Instance.PlayerState.Ammo.Slots.Count; i++)
             {
+                Ammo.Slot slot = SceneContext.Instance.PlayerState.Ammo.Slots[i];
                 if (slot.IsUnlocked)
-                {
                     if (slot.Id != null)
-                    {
-                        slot.Count = slot.MaxCount;
-                    }
-                }
+                        slot.Count = SceneContext.Instance.PlayerState.Ammo._ammoModel.GetSlotMaxCount(slot.Id, i);
             }
+            
             SR2Console.SendMessage("Successfully refilled your slots");
 
             return true;
         }
-    }}
+    }
+    
+}
