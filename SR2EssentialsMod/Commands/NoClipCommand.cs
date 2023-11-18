@@ -8,9 +8,9 @@ namespace SR2E.Commands
     //NOT WORKING YET
     public class NoClipCommand : SR2CCommand
     {
-        public override string ID { get; } = "noclip";
-        public override string Usage { get; } = "noclip";
-        public override string Description { get; } = "Toggles noclip";
+        public override string ID => "noclip";
+        public override string Usage => "noclip";
+        public override string Description => "Toggles noclip";
         
         public override bool Execute(string[] args)
         {
@@ -21,11 +21,8 @@ namespace SR2E.Commands
             }
 
             
-            if (SceneContext.Instance == null)
-            { SR2Console.SendError("Load a save first!"); return false; }
-                
-            if (SceneContext.Instance.PlayerState == null) 
-            { SR2Console.SendError("Load a save first!"); return false; }
+            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
+            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
             
             KFCCharacterController con = Object.FindObjectOfType<KFCCharacterController>();

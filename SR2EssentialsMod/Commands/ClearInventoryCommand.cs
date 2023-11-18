@@ -4,9 +4,9 @@ namespace SR2E.Commands
 {
     public class ClearInventoryCommand : SR2CCommand
     {
-        public override string ID { get; } = "clearinv";
-        public override string Usage { get; } = "clearinv";
-        public override string Description { get; } = "Clears your inventory";
+        public override string ID => "clearinv";
+        public override string Usage => "clearinv";
+        public override string Description => "Clears your inventory";
         
         public override bool Execute(string[] args)
         {
@@ -17,11 +17,8 @@ namespace SR2E.Commands
             }
 
             
-            if (SceneContext.Instance == null)
-            { SR2Console.SendError("Load a save first!"); return false; }
-                
-            if (SceneContext.Instance.PlayerState == null) 
-            { SR2Console.SendError("Load a save first!"); return false; }
+            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
+            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
 
             foreach (Ammo.Slot slot in SceneContext.Instance.PlayerState.Ammo.Slots)

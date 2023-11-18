@@ -4,9 +4,9 @@ namespace SR2E.Commands
 {
     public class ModsCommand : SR2CCommand
     {
-        public override string ID { get; } = "mods";
-        public override string Usage { get; } = "mods";
-        public override string Description { get; } = "Displays all mods loaded";
+        public override string ID => "mods";
+        public override string Usage => "mods";
+        public override string Description => "Displays all mods loaded";
         
         public override bool Execute(string[] args)
         {

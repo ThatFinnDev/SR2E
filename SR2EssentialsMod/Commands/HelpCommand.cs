@@ -4,9 +4,9 @@ namespace SR2E.Commands
 {
     public class HelpCommand : SR2CCommand
     {
-        public override string ID { get; } = "help";
-        public override string Usage { get; } = "help [cmdName]";
-        public override string Description { get; } = "Displays all commands available and their usage";
+        public override string ID => "help";
+        public override string Usage => "help [cmdName]";
+        public override string Description => "Displays all commands available and their usage";
         
         public override bool Execute(string[] args)
         {

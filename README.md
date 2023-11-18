@@ -19,8 +19,8 @@
  Sometimes the opening/closing of the console can freeze the game. This also fixable by closing and reoping the console.
 
 # TODO:
- Fix that opening the console, while modmenu/map/plotui are open, breaks the game 
- -> Temporary fix: Stop console from opening while the modmenu is shown, close the map/plotui when opening console
+ Fix that opening the console, while the map is open, breaks the game 
+ -> Temporary fix: Close the map, when opening the console
 
  AutoComplete for Commands
  -> Not implemented, I'm still thinking about a good way to implement this
@@ -28,7 +28,7 @@
 
 # Special thanks
  Special thanks to SlimeRancherModding for SRML
- because it gave me good starting point for some stuff.
+ because it gave me good starting point for a lot of stuff.
  Link: https://github.com/SlimeRancherModding/SRML
 
  Special thanks to LavaGang for MelonLoader
