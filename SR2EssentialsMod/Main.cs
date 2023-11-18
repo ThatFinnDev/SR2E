@@ -4,10 +4,13 @@ using System.Linq;
 using System.Reflection;
 using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.Abilities;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppSystem.Collections.Generic;
 using Il2CppTMPro;
 using MelonLoader;
+using SR2E.Commands;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -21,7 +24,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "1.2.1"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "1.3.0"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -34,10 +37,8 @@ namespace SR2E
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
         static List<IdentifiableType> vaccables = new List<IdentifiableType>();
-        static T Get<T>(string name) where T : UnityEngine.Object
-        {
-            return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-        }
+        static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); 
+       
         internal static IdentifiableType getVaccableByName(string name)
         {
             foreach (IdentifiableType type in vaccables)
@@ -48,25 +49,17 @@ namespace SR2E
         internal static IdentifiableType getVaccableByLocalizedName(string name)
         {
             foreach (IdentifiableType type in vaccables)
-            {
                 try
                 {
                     if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == name.ToUpper())
-                    {
                         return type;
-                    }
                 }
                 catch (Exception ignored)
                 {}
-            }
+            
             return null;
         }
-        static bool CheckIfLargo(string value)
-        {
-            return (value.Remove(0, 1)).Any(char.IsUpper);
-        }
-        
-        
+        static bool CheckIfLargo(string value) => (value.Remove(0, 1)).Any(char.IsUpper);
         public override void OnInitializeMelon()
         {
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
@@ -76,7 +69,6 @@ namespace SR2E
                     break;
                 }
         }
-        
         
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
@@ -98,6 +90,12 @@ namespace SR2E
                     break;
                 case "MainMenuUI":
                     infEnergy = false;
+                    break;
+                case "UICore":
+                    InfiniteEnergyCommand.energyMeter = Get<EnergyMeter>("Energy Meter");
+                    break;
+                case "PlayerCore":
+                     InfiniteEnergyCommand.jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
                     break;
             }
         }
@@ -150,7 +148,7 @@ namespace SR2E
             if (mainMenuLoaded)
                 if (!_iconChanged)
                 {
-                    Sprite sprite = SR2Console.transform.GetChild(4).GetChild(3).GetComponent<Image>().sprite;
+                    Sprite sprite = SR2Console.transform.GetChild(4).GetChild(5).GetComponent<Image>().sprite;
                     if (sprite != null)
                         if (_modsButtonIconImage != null)
                         {

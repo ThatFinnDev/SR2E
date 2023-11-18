@@ -4,9 +4,9 @@ namespace SR2E.Commands
 {
     public class ClearCommand : SR2CCommand
     {
-        public override string ID { get; } = "clear";
-        public override string Usage { get; } = "clear";
-        public override string Description { get; } = "Clears the console";
+        public override string ID => "clear";
+        public override string Usage => "clear";
+        public override string Description => "Clears the console";
         
         public override bool Execute(string[] args)
         {

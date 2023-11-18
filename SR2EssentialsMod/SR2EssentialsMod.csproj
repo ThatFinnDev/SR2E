@@ -41,7 +41,7 @@
       <HintPath>Libs\Il2CppInterop.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>..\..\ModMenuMod\Libs\Il2Cppmscorlib.dll</HintPath>
     </Reference>
     <Reference Include="MelonLoader">
       <HintPath>Libs\MelonLoader.dll</HintPath>
@@ -74,6 +74,9 @@
     <Reference Include="UnityEngine.LocalizationModule">
       <HintPath>Libs\UnityEngine.LocalizationModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
@@ -85,17 +88,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\BindCommand.cs" />
     <Compile Include="Commands\ClearCommand.cs" />
     <Compile Include="Commands\ClearInventoryCommand.cs" />
+    <Compile Include="Commands\FastForwardCommand.cs" />
+    <Compile Include="Commands\GiveBlueprintCommand.cs" />
     <Compile Include="Commands\GiveCommand.cs" />
+    <Compile Include="Commands\GiveGadgetCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\InfiniteEnergyCommand.cs" />
+    <Compile Include="Commands\KillCommand.cs" />
     <Compile Include="Commands\ModsCommand.cs" />
+    <Compile Include="Commands\NewBucksCommand.cs" />
     <Compile Include="Commands\NoClipCommand.cs" />
     <Compile Include="Commands\RefillSlotsCommand.cs" />
+    <Compile Include="Commands\SpawnCommand.cs" />
+    <Compile Include="Commands\UnbindCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="SR2CCommand.cs" />
+    <Compile Include="SR2CommandBindingManager.cs" />
     <Compile Include="SR2Console.cs" />
     <Compile Include="SR2ModMenu.cs" />
   </ItemGroup>

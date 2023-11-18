@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
-using Il2CppMonomiPark.SlimeRancher.UI.Plot;
 using Il2CppTMPro;
 using MelonLoader;
 using SR2E.Commands;
@@ -17,6 +16,7 @@ namespace SR2E
 {
     public static class SR2Console
     {
+
         /// <summary>
         /// Display a message in the console
         /// </summary>
@@ -24,7 +24,6 @@ namespace SR2E
         {
             if(!SR2EMain.consoleFinishedCreating)
                 return;
-            Transform consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
             if (message.Contains("\n"))
@@ -33,7 +32,7 @@ namespace SR2E
                     SendMessage(singularLine);
                 return;
             }
-            var instance = GameObject.Instantiate(getObjRec<TextMeshProUGUI>(transform, "messagePrefab"), consoleContent);
+            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
             instance.text = message;
             _scrollbar.value = 0f;
@@ -46,7 +45,6 @@ namespace SR2E
         {
             if(!SR2EMain.consoleFinishedCreating)
                 return;
-            Transform consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
             if (message.Contains("\n"))
@@ -55,7 +53,7 @@ namespace SR2E
                     SendError(singularLine);
                 return;
             }
-            var instance = GameObject.Instantiate(getObjRec<TextMeshProUGUI>(transform, "messagePrefab"), consoleContent);
+            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
             instance.text = message;
             instance.color = new Color(0.6f, 0, 0, 1);
@@ -78,7 +76,7 @@ namespace SR2E
                 return;
             transform.GetChild(0).gameObject.SetActive(false);
             transform.GetChild(1).gameObject.SetActive(false);
-            if (normalTimeScale == 0)
+            if (shouldResetTime)
                 normalTimeScale = 1;
             Time.timeScale = normalTimeScale;
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
@@ -96,10 +94,7 @@ namespace SR2E
             Il2CppArrayBase<MapUI> allMapUIs = Object.FindObjectsOfType<MapUI>();
             for (int i = 0; i < allMapUIs.Count; i++)
                 Object.Destroy(allMapUIs[i].gameObject);
-            
-            Il2CppArrayBase<LandPlotUIRoot> allPlotUIRoots = Object.FindObjectsOfType<LandPlotUIRoot>();
-            for (int i = 0; i < allPlotUIRoots.Count; i++)
-                allPlotUIRoots[i].Close();
+            shouldResetTime = allMapUIs.Count != 0;
             
             transform.GetChild(0).gameObject.SetActive(true);
             transform.GetChild(1).gameObject.SetActive(true);
@@ -136,34 +131,73 @@ namespace SR2E
             return true;
         }
 
-        
+        /// <summary>
+        /// Execute a string as if it was a commandId with args
+        /// </summary>
+        public static void ExecuteByString(string input)
+        {
+            string[] cmds = input.Split(';');
+            foreach (string c in cmds)
+                if (!String.IsNullOrEmpty(c))
+                {
+                    bool spaces = c.Contains(" ");
+                    string cmd = spaces ? c.Substring(0, c.IndexOf(' ')) : c;
+                
+                    if (commands.ContainsKey(cmd))
+                    {
+                        bool successful;
+                        if (spaces)
+                        {
+                            var argString = c.TrimEnd()+" ";
+                            List<string> split = argString.Split(' ').ToList();
+                            split.RemoveAt(0);
+                            split.RemoveAt(split.Count-1);
+                            successful = commands[cmd].Execute(split.ToArray());
+                        }
+                        else
+                            successful = commands[cmd].Execute(null);
+                    }
+                    else
+                        SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
+                }
+        }
         
         
 
         internal static Transform transform;
         internal static GameObject gameObject;
         internal static Dictionary<string, SR2CCommand> commands = new Dictionary<string, SR2CCommand>();
-        internal static T getObjRec<T> (Transform transform, string name)
+        internal static T getObjRec<T>(Transform transform, string name) where T : class
         {
-            
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                var child = transform.GetChild(i);
-                if (child.name == name)
+            List<GameObject> totalChildren = getAllChildren(transform);
+            for (int i = 0; i < totalChildren.Count; i++)
+                if(totalChildren[i].name==name)
                 {
-                    return child.gameObject.GetComponent<T>();
+                    if (typeof(T) == typeof(GameObject))
+                        return totalChildren[i] as T;
+                    if (typeof(T) == typeof(Transform))
+                        return totalChildren[i].transform as T;
+                    if (totalChildren[i].GetComponent<T>() != null)
+                        return totalChildren[i].GetComponent<T>();
                 }
-                else if (child.childCount > 0)
-                {
-                    T potentionalAnswer = getObjRec<T>(child.transform, name);
-                    if (potentionalAnswer != null)
-                        return potentionalAnswer;
-                }
-            }
-            return default;
+            return null;
         }
+
+        static List<GameObject> getAllChildren(Transform container)
+        {
+            List<GameObject> allChildren = new List<GameObject>();
+            for (int i = 0; i < container.childCount; i++)
+            {
+                var child = container.GetChild(i);
+                allChildren.Add(child.gameObject);
+                allChildren.AddRange(getAllChildren(child));
+            }
+            return allChildren;
+        }
+        
         static Scrollbar _scrollbar;
         static float normalTimeScale = 1f;
+        static bool shouldResetTime = false;
         const int maxMessages = 100;
         private static bool scrollCompletlyDown = false;
         
@@ -172,11 +206,26 @@ namespace SR2E
             transform.GetChild(0).gameObject.SetActive(false);
             transform.GetChild(1).gameObject.SetActive(false);
             RegisterCommand(new GiveCommand());
+            RegisterCommand(new BindCommand());
+            RegisterCommand(new UnbindCommand());
+            RegisterCommand(new SpawnCommand());
+            RegisterCommand(new FastForwardCommand());
             RegisterCommand(new ClearCommand());
             RegisterCommand(new ClearInventoryCommand());
             RegisterCommand(new ModsCommand());
             RegisterCommand(new HelpCommand());
             RegisterCommand(new RefillSlotsCommand());
+            RegisterCommand(new NewBucksCommand());
+            
+            
+            //Disabled do to not working yet
+            //RegisterCommand(new GiveGadgetCommand());
+            
+            //Disabled do to not working yet
+            //RegisterCommand(new GiveBlueprintCommand());
+            
+            //Disabled do to not working yet
+            //RegisterCommand(new KillCommand());
             
             //Disabled do to not working yet
             //RegisterCommand(new NoClipCommand());
@@ -192,10 +241,13 @@ namespace SR2E
             {
                 RegisterCommand(new InfiniteEnergyCommand());
             }
-
+            consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
+            messagePrefab = getObjRec<TextMeshProUGUI>(transform, "messagePrefab");
+            commandInput = getObjRec<TMP_InputField>(transform, "commandInput");
             _scrollbar = getObjRec<Scrollbar>(transform,"ConsoleScroll");
             
             
+            SR2CommandBindingManager.Start();
             //Setup Modmenu
             
             SR2ModMenu.parent = transform;
@@ -203,12 +255,15 @@ namespace SR2E
             SR2ModMenu.transform = transform.GetChild(4);
             SR2ModMenu.Start();
         }
+
+        private static TMP_InputField commandInput;
+        private static Transform consoleContent;
+        private static TextMeshProUGUI messagePrefab;
         internal static void Update()
         {
             if (SR2EMain.consoleFinishedCreating != true)
                 return;
-
-            getObjRec<TMP_InputField>(transform, "commandInput").ActivateInputField();
+            commandInput.ActivateInputField();
             if (isOpen)
             {
                 if (scrollCompletlyDown)
@@ -218,7 +273,7 @@ namespace SR2E
                         scrollCompletlyDown = false;
                     }
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
-                    if(getObjRec<TMP_InputField>(transform,"commandInput").text!="")
+                    if(commandInput.text!="")
                         Execute();
                 if (Time.timeScale!=0f)
                     Time.timeScale=0;
@@ -239,7 +294,7 @@ namespace SR2E
                 if (Mouse.current.scroll.ReadValue().y!=0)
                     _scrollbar.value = Mathf.Clamp(_scrollbar.value+((value > 0.01 ? 1.25f : value < -0.01 ? -1.25f : 0) * _scrollbar.size),0,1f);
             }
-            
+            SR2CommandBindingManager.Update();
             //Modmenu
             SR2ModMenu.Update();
         }
@@ -247,24 +302,12 @@ namespace SR2E
 
         static void Execute()
         {
-            string[] cmds = getObjRec<TMP_InputField>(transform,"commandInput").text.Split(';');
-            getObjRec<TMP_InputField>(transform, "commandInput").text = "";
-            foreach (string c in cmds)
-                if (!String.IsNullOrEmpty(c))
-                {
-                    bool spaces = c.Contains(" ");
-                    string cmd = spaces ? c.Substring(0, c.IndexOf(' ')) : c;
-                
-                    if (commands.ContainsKey(cmd))
-                    {
-                        string[] args = spaces ? c.Remove(0,(cmd + " ").ToCharArray().Length).Split(' ') : null;
-                        bool successful = commands[cmd].Execute(args);
-                    }
-                    else
-                        SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
-                }
+            string cmds = commandInput.text;
+            commandInput.text = "";
+            ExecuteByString(cmds);
         }
-        
+
+
         
     }
 }
