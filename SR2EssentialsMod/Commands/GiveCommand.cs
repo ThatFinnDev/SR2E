@@ -1,4 +1,6 @@
-﻿using Il2Cpp;
+﻿using System;
+using System.Collections.Generic;
+using Il2Cpp;
 
 namespace SR2E.Commands
 {
@@ -7,7 +9,52 @@ namespace SR2E.Commands
         public override string ID => "give";
         public override string Usage => "give <item> <amount>";
         public override string Description => "Gives you items";
-        
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            if (argIndex == 0)
+            {
+                string firstArg = "";
+                if (args != null)
+                    firstArg = args[0];
+                List<string> list = new List<string>();
+                int i = -1;
+                foreach (IdentifiableType type in SR2EMain.identifiableTypes)
+                {
+                    if (i > 20)
+                        break;
+                    try
+                    {
+                        if (type.LocalizedName != null)
+                        {
+                            string localizedString = type.LocalizedName.GetLocalizedString();
+                            if (localizedString.ToLower().Replace(" ", "").StartsWith(firstArg.ToLower()))
+                            {
+                                i++;
+                                list.Add(localizedString.Replace(" ", ""));
+                            }
+                        }
+                    }
+                    catch (Exception ignored) { }
+
+                }
+
+                return list;
+            }
+            if (argIndex == 1)
+            {
+                
+                List<string> list = new List<string>();
+                list.Add("1");
+                list.Add("5");
+                list.Add("10");
+                list.Add("20");
+                list.Add("30");
+                list.Add("50");
+                return list;
+            }
+
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (args == null)
@@ -52,6 +99,7 @@ namespace SR2E.Commands
             
             
             SR2Console.SendMessage($"Successfully added {amount} {itemName}");
+            SR2Console.SendMessage(type.name);
             
             return true;
         }

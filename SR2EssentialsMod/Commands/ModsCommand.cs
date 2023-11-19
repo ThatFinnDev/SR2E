@@ -1,4 +1,5 @@
-﻿using MelonLoader;
+﻿using System.Collections.Generic;
+using MelonLoader;
 
 namespace SR2E.Commands
 {
@@ -7,7 +8,10 @@ namespace SR2E.Commands
         public override string ID => "mods";
         public override string Usage => "mods";
         public override string Description => "Displays all mods loaded";
-        
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (args != null)

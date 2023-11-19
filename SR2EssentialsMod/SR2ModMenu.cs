@@ -20,10 +20,11 @@ namespace SR2E
         internal static Transform parent;
         internal static Transform transform;
         internal static GameObject gameObject;
+        static GameObject modMenuBlock;
         static TextMeshProUGUI modInfoText;
         static UIPrefabLoader _uiActivator;
 
-        static T getObjRec<T>(Transform transform, string name) where T : class
+        internal static T getObjRec<T>(Transform transform, string name) where T : class
         {
             List<GameObject> totalChildren = getAllChildren(transform);
             for (int i = 0; i < totalChildren.Count; i++)
@@ -54,7 +55,7 @@ namespace SR2E
         {
             if (Object.FindObjectsOfType<MapUI>().Length != 0)
                 return;
-            parent.GetChild(3).gameObject.SetActive(false);
+            modMenuBlock.SetActive(false);
             gameObject.SetActive(false);
 
             foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
@@ -86,7 +87,7 @@ namespace SR2E
                 return;
             if (Object.FindObjectsOfType<MapUI>().Length != 0)
                 return;
-            parent.GetChild(3).gameObject.SetActive(true);
+            modMenuBlock.SetActive(true);
             gameObject.SetActive(true);
 
             _mainMenuLandingRootUI = Object.FindObjectOfType<MainMenuLandingRootUI>();
@@ -151,6 +152,7 @@ namespace SR2E
         static GameObject warningText;
         internal static void Start()
         {
+            modMenuBlock = getObjRec<GameObject>(parent, "modMenuBlock");
             entryTemplate = getObjRec<GameObject>(transform, "ModConfigurationEntryTemplate");
             headerTemplate = getObjRec<GameObject>(transform, "ModConfigurationHeaderTemplate");
             warningText = getObjRec<GameObject>(transform, "ModConfigRestartWarning");

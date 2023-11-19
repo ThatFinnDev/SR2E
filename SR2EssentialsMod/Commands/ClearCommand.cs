@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SR2E.Commands
 {
@@ -8,6 +9,10 @@ namespace SR2E.Commands
         public override string Usage => "clear";
         public override string Description => "Clears the console";
         
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (args != null)

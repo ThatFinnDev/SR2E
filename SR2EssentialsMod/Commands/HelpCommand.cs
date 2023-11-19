@@ -7,7 +7,19 @@ namespace SR2E.Commands
         public override string ID => "help";
         public override string Usage => "help [cmdName]";
         public override string Description => "Displays all commands available and their usage";
-        
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            if (argIndex==0)
+            {
+                List<string> list = new List<string>();
+                foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
+                {
+                    list.Add(entry.Key);
+                }
+                return list;
+            }
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (args == null)

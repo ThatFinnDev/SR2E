@@ -1,4 +1,5 @@
-﻿using Il2Cpp;
+﻿using System.Collections.Generic;
+using Il2Cpp;
 
 namespace SR2E.Commands
 {
@@ -7,7 +8,10 @@ namespace SR2E.Commands
         public override string ID => "clearinv";
         public override string Usage => "clearinv";
         public override string Description => "Clears your inventory";
-        
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (args != null)

@@ -22,7 +22,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "1.3.1"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "1.3.2"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -35,10 +35,10 @@ namespace SR2E
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
 
-        static IdentifiableType[] identifiableTypes
+        internal static IdentifiableType[] identifiableTypes
         { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
-        static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); 
-       
+        static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
+
         internal static IdentifiableType getIdentifiableByName(string name)
         {
             foreach (IdentifiableType type in identifiableTypes)
@@ -93,6 +93,7 @@ namespace SR2E
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
+                    Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
                     prompt.EngagementPromptTextUI.SetActive(false);
                     prompt.OnInteract(new InputAction.CallbackContext());
                     break;
@@ -133,7 +134,7 @@ namespace SR2E
             if (mainMenuLoaded)
                 if (!_iconChanged)
                 {
-                    Sprite sprite = SR2Console.transform.GetChild(4).GetChild(5).GetComponent<Image>().sprite;
+                    Sprite sprite = SR2Console.transform.GetChild(4).GetChild(1).GetComponent<Image>().sprite;
                     if (sprite != null)
                         if (_modsButtonIconImage != null)
                         {

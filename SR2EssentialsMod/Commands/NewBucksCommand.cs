@@ -1,4 +1,5 @@
-﻿using Il2Cpp;
+﻿using System.Collections.Generic;
+using Il2Cpp;
 using UnityEngine;
 
 namespace SR2E.Commands
@@ -8,6 +9,22 @@ namespace SR2E.Commands
         public override string ID => "newbucks";
         public override string Usage => "newbucks <amount>";
         public override string Description => "Adds or removes newbucks";
+
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            if (argIndex==0)
+            {
+                List<string> someNewBuckCounts = new List<string>();
+                someNewBuckCounts.Add("100");
+                someNewBuckCounts.Add("1000");
+                someNewBuckCounts.Add("10000");
+                someNewBuckCounts.Add("100000");
+                someNewBuckCounts.Add("1000000");
+                someNewBuckCounts.Add("10000000");
+                return someNewBuckCounts;
+            }
+            return null;
+        }
 
         public override bool Execute(string[] args)
         {       
