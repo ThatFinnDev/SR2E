@@ -1,4 +1,5 @@
 ﻿using Il2Cpp;
+using UnityEngine;
 
 namespace SR2E.Commands
 {
@@ -22,36 +23,44 @@ namespace SR2E.Commands
 
 
             string bluePrintName = "";
-            string identifierTypeName = args[0];
-            IdentifiableType type =  SR2EMain.getVaccableByName(identifierTypeName);
+            GadgetDefinition[] ids = Resources.FindObjectsOfTypeAll<GadgetDefinition>();
 
-            if (type == null)
-            {
-                type =  SR2EMain.getVaccableByLocalizedName(identifierTypeName.Replace("_", ""));
-                if (type == null)
+            GadgetDefinition foundType = null;
+            
+            foreach (GadgetDefinition id in ids)
+                if (id.name.ToUpper() == args[0].ToUpper())
                 {
-                    SR2Console.SendError(args[0] + " is not a valid IdentifiableType!");
-                    return false;
+                    foundType = id;
+                    break;
                 }
 
-                string name = type.LocalizedName.GetLocalizedString();
-                if (name.Contains(" "))
-                    bluePrintName = "'" + name + "'";
-                else
-                    bluePrintName = name;
+            if (foundType == null)
+            {
+                foreach (GadgetDefinition id in ids)
+                    try
+                    {
+                        if (id.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == args[0].Replace("_", "").ToUpper())
+                        {
+                            foundType = id;
+                            break;
+                        }
+                    }
+                    catch (System.Exception ignored)
+                    {}
             }
-            else
-                bluePrintName = type.name;
+            if (foundType == null)
+            { SR2Console.SendError(args[0] + " is not a valid IdentifiableType/Gadget!"); return false; }
+            
+            try
+            { bluePrintName = foundType.LocalizedName.GetLocalizedString().Replace(" ", ""); }
+            catch (System.Exception ignored)
+            { bluePrintName = foundType.name; }
 
-            if (!(type is GadgetDefinition))
-            { SR2Console.SendError(bluePrintName + " is not a valid Gadget!"); return false; }
 
-
-
-            if (SceneContext.Instance.GadgetDirector.HasBlueprint(type as GadgetDefinition))
+            if (SceneContext.Instance.GadgetDirector.HasBlueprint(foundType ))
             { SR2Console.SendError("You already have this blueprint!"); return false; }
 
-            SceneContext.Instance.GadgetDirector.AddBlueprint(type as GadgetDefinition);;
+            SceneContext.Instance.GadgetDirector.AddBlueprint(foundType);;
             SR2Console.SendMessage($"Successfully added {bluePrintName}");
 
             return true;
