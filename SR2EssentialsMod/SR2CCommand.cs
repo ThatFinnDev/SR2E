@@ -1,4 +1,6 @@
-﻿namespace SR2E
+﻿using System.Collections.Generic;
+
+namespace SR2E
 {
     public abstract class SR2CCommand
     {
@@ -24,5 +26,13 @@
         /// <param name="args">The arguments passed in the console (null if no arguments are provided)</param>
         /// <returns>True if it executed, false otherwise</returns>
         public abstract bool Execute(string[] args);
+        
+        /// <summary>
+        /// Gets the auto complete list (word filter is done by the system)
+        /// </summary>
+        /// <param name="argIndex">The index of the argument in the command string</param>
+        /// <param name="args">A list of inputted arguments</param>
+        /// <returns>The list of auto complete options</returns>
+        public virtual List<string> GetAutoComplete(int argIndex, string[] args) { return null; }
     }
 }

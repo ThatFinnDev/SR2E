@@ -71,11 +71,14 @@ namespace SR2E
         /// </summary>
         public static void Close()
         {
-            
+            for (int i = 0; i < autoCompleteContent.childCount; i++)
+            {
+                Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
+            }
             if (Object.FindObjectsOfType<MapUI>().Length != 0)
                 return;
-            transform.GetChild(0).gameObject.SetActive(false);
-            transform.GetChild(1).gameObject.SetActive(false);
+            consoleBlock.SetActive(false);
+            consoleMenu.SetActive(false);
             if (shouldResetTime)
                 normalTimeScale = 1;
             Time.timeScale = normalTimeScale;
@@ -96,12 +99,12 @@ namespace SR2E
                 Object.Destroy(allMapUIs[i].gameObject);
             shouldResetTime = allMapUIs.Count != 0;
             
-            transform.GetChild(0).gameObject.SetActive(true);
-            transform.GetChild(1).gameObject.SetActive(true);
+            consoleBlock.SetActive(true);
+            consoleMenu.SetActive(true);
             normalTimeScale = Time.timeScale;
             Time.timeScale = 0f;
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
-
+            RefreshAutoComplete(commandInput.text);
         }
         /// <summary>
         /// Toggles the console
@@ -200,11 +203,93 @@ namespace SR2E
         static bool shouldResetTime = false;
         const int maxMessages = 100;
         private static bool scrollCompletlyDown = false;
-        
+
+        static void RefreshAutoComplete(string text)
+        {
+            for (int i = 0; i < autoCompleteContent.childCount; i++)
+                Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
+            if (String.IsNullOrEmpty(text))
+            { autoCompleteScrollView.SetActive(false); return; }
+            if (text.Contains(" "))
+            {
+                string cmd = text.Substring(0, text.IndexOf(' '));
+                if (commands.ContainsKey(cmd))
+                {
+                    var argString = text;
+                    List<string> split = argString.Split(' ').ToList();
+                    split.RemoveAt(0);
+                    int argIndex = split.Count-1;
+                    string[] args = null;
+                    if (split.Count!=0)
+                        args = split.ToArray();
+                    List<string> possibleAutoCompletes = (commands[cmd].GetAutoComplete(argIndex, args));
+                    if (possibleAutoCompletes != null)
+                    {
+                        int maxPredictions = 20; //This is to reduce lag
+                        int predicted = 0;
+                        foreach (string argument in possibleAutoCompletes)
+                        {
+                            if (predicted > maxPredictions)
+                                return;
+                            if (args != null)
+                                if (!argument.StartsWith(split[split.Count - 1]))
+                                    continue;
+                            predicted++;
+                            GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
+                            instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = argument;
+                            instance.SetActive(true);
+                            instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
+                            {
+                                commandInput.text = cmd;
+
+                                if (args != null)
+                                {
+                                    for (int i = 0; i < args.Length - 1; i++)
+                                    {
+                                        commandInput.text += " " + args[i];
+                                    }
+
+                                    commandInput.text += " " + argument;
+                                }
+
+                                commandInput.MoveToEndOfLine(false, false);
+                            }));
+                        }
+                    }
+                }
+            }
+            else
+                foreach (KeyValuePair<string, SR2CCommand> valuePair in commands)
+                    if (valuePair.Key.StartsWith(text))
+                    {
+                        GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
+                        instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = valuePair.Key;
+                        instance.SetActive(true); 
+                        instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
+                        {
+                            commandInput.text = valuePair.Key;
+                            commandInput.MoveToEndOfLine(false, false);
+                        }));
+                    }
+            autoCompleteScrollView.SetActive(autoCompleteContent.childCount!=0);
+        }
+
         internal static void Start()
         {
-            transform.GetChild(0).gameObject.SetActive(false);
-            transform.GetChild(1).gameObject.SetActive(false);
+            consoleBlock = getObjRec<GameObject>(transform,"consoleBlock");
+            consoleMenu = getObjRec<GameObject>(transform,"consoleMenu");
+            consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
+            messagePrefab = getObjRec<TextMeshProUGUI>(transform, "messagePrefab");
+            commandInput = getObjRec<TMP_InputField>(transform, "commandInput");
+            _scrollbar = getObjRec<Scrollbar>(transform,"ConsoleScroll");
+            autoCompleteContent = getObjRec<Transform>(transform, "AutoCompleteContent");
+            autoCompleteEntryPrefab = getObjRec<GameObject>(transform, "AutoCompleteEntry");
+            autoCompleteScrollView = getObjRec<GameObject>(transform, "AutoCompleteScroll");
+            
+            autoCompleteScrollView.SetActive(false);
+            consoleBlock.SetActive(false);
+            consoleMenu.SetActive(false);
+            commandInput.onValueChanged.AddListener((Action<string>)((text) => {RefreshAutoComplete(text); }));
             RegisterCommand(new GiveCommand());
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
@@ -239,24 +324,25 @@ namespace SR2E
             {
                 RegisterCommand(new InfiniteEnergyCommand());
             }
-            consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
-            messagePrefab = getObjRec<TextMeshProUGUI>(transform, "messagePrefab");
-            commandInput = getObjRec<TMP_InputField>(transform, "commandInput");
-            _scrollbar = getObjRec<Scrollbar>(transform,"ConsoleScroll");
             
             
             SR2CommandBindingManager.Start();
             //Setup Modmenu
             
             SR2ModMenu.parent = transform;
-            SR2ModMenu.gameObject = transform.GetChild(4).gameObject;
-            SR2ModMenu.transform = transform.GetChild(4);
+            SR2ModMenu.gameObject = getObjRec<GameObject>(transform,"modMenu");
+            SR2ModMenu.transform = getObjRec<Transform>(transform,"modMenu");
             SR2ModMenu.Start();
         }
 
-        private static TMP_InputField commandInput;
-        private static Transform consoleContent;
-        private static TextMeshProUGUI messagePrefab;
+        static TMP_InputField commandInput;
+        private static GameObject autoCompleteEntryPrefab;
+        static GameObject consoleBlock;
+        static GameObject consoleMenu;
+        static Transform consoleContent;
+        static Transform autoCompleteContent;
+        static GameObject autoCompleteScrollView;
+        static TextMeshProUGUI messagePrefab;
         internal static void Update()
         {
             if (SR2EMain.consoleFinishedCreating != true)
@@ -270,6 +356,16 @@ namespace SR2E
                         _scrollbar.value = 0f;
                         scrollCompletlyDown = false;
                     }
+
+                if (Keyboard.current.tabKey.wasPressedThisFrame)
+                {
+                    if (autoCompleteContent.childCount != 0)
+                    {
+                        autoCompleteContent.GetChild(0).GetComponent<Button>().onClick.Invoke();
+                        //Select first to autocompletelölllpppp
+                    }
+                }
+                
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
                     if(commandInput.text!="")
                         Execute();
@@ -283,14 +379,12 @@ namespace SR2E
                 if(Keyboard.current.ctrlKey.isPressed)
                     Toggle();
             
-
-            if (_scrollbar == null)
-                _scrollbar =transform.GetChild(1).GetChild(1).GetChild(1).GetComponent<Scrollbar>();
-            else
+            if (_scrollbar != null)
             {
                 float value = Mouse.current.scroll.ReadValue().y;
                 if (Mouse.current.scroll.ReadValue().y!=0)
                     _scrollbar.value = Mathf.Clamp(_scrollbar.value+((value > 0.01 ? 1.25f : value < -0.01 ? -1.25f : 0) * _scrollbar.size),0,1f);
+
             }
             SR2CommandBindingManager.Update();
             //Modmenu
@@ -302,7 +396,12 @@ namespace SR2E
         {
             string cmds = commandInput.text;
             commandInput.text = "";
+            for (int i = 0; i < autoCompleteContent.childCount; i++)
+            {
+                Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
+            }
             ExecuteByString(cmds);
+            
         }
 
 

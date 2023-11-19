@@ -1,4 +1,5 @@
-﻿using Il2Cpp;
+﻿using System.Collections.Generic;
+using Il2Cpp;
 
 namespace SR2E.Commands
 {
@@ -8,6 +9,10 @@ namespace SR2E.Commands
         public override string Usage => "refillslots";
         public override string Description => "Refills all of your slots";
         
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (args != null)

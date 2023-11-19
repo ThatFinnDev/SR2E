@@ -1,4 +1,6 @@
-﻿using Il2Cpp;
+﻿using System;
+using System.Collections.Generic;
+using Il2Cpp;
 using UnityEngine;
 
 namespace SR2E.Commands
@@ -8,7 +10,41 @@ namespace SR2E.Commands
         public override string ID => "giveblueprint";
         public override string Usage => "giveblueprint <blueprint>";
         public override string Description => "Gives you a blueprint";
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            if (argIndex == 0)
+            {
+                string firstArg = "";
+                if (args != null)
+                    firstArg = args[0];
+                List<string> list = new List<string>();
+                int i = -1;
+                GadgetDefinition[] ids = Resources.FindObjectsOfTypeAll<GadgetDefinition>();
+                foreach (GadgetDefinition id in ids)
+                {
+                    if (i > 20)
+                        break;
+                    try
+                    {
+                        if (id.LocalizedName != null)
+                        {
+                            string localizedString = id.LocalizedName.GetLocalizedString();
+                            if (localizedString.ToLower().Replace(" ", "").StartsWith(firstArg.ToLower()))
+                            {
+                                i++;
+                                list.Add(localizedString.Replace(" ", ""));
+                            }
+                        }
+                    }
+                    catch (Exception ignored) { }
 
+                }
+
+                return list;
+            }
+
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (args == null)

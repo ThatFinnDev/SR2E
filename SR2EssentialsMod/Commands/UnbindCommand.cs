@@ -1,4 +1,6 @@
-﻿using UnityEngine.InputSystem;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
@@ -7,7 +9,24 @@ namespace SR2E.Commands
         public override string ID => "unbind";
         public override string Usage => "unbind <key>";
         public override string Description => "Unbinds a key that was previously bound to a command";
-
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            if (argIndex == 0)
+            {
+                string firstArg = "";
+                if (args != null)
+                    firstArg = args[0];
+                List<string> list = new List<string>();
+                foreach (string key in System.Enum.GetNames(typeof(Key)))
+                    if (!String.IsNullOrEmpty(key))
+                        if(key!="None")
+                            if (key.ToLower().Replace(" ", "").StartsWith(firstArg.ToLower())) 
+                                list.Add(key.Replace(" ", ""));
+                
+                return list;
+            }
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (args == null)

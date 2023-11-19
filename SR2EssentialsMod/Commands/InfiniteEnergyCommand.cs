@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Il2Cpp;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.Abilities;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -13,6 +14,17 @@ namespace SR2E.Commands
         public override string Usage => "infenergy [should disable height limit(true/false)]";
         public override string Description => "Removes energy from the game";
         
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            if (argIndex==0)
+            {
+                List<string> list = new List<string>();
+                list.Add("true");
+                list.Add("false");
+                return list;
+            }
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             

@@ -1,4 +1,5 @@
-﻿using Il2Cpp;
+﻿using System.Collections.Generic;
+using Il2Cpp;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using UnityEngine;
 
@@ -9,6 +10,10 @@ namespace SR2E.Commands
         public override string ID => "kill";
         public override string Usage => "kill";
         public override string Description => "Kills what you're looking at";
+        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        {
+            return null;
+        }
         public override bool Execute(string[] args)
         {
             if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
