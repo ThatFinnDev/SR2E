@@ -23,11 +23,11 @@ namespace SR2E.Commands
 
             string itemName = "";
             string identifierTypeName = args[0];
-            IdentifiableType type = SR2EMain.getVaccableByName(identifierTypeName);
+            IdentifiableType type = SR2EMain.getIdentifiableByName(identifierTypeName);
 
             if (type == null)
             {
-                type = SR2EMain.getVaccableByLocalizedName(identifierTypeName.Replace("_", ""));
+                type = SR2EMain.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
                 if (type == null)
                 { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
                 string name = type.LocalizedName.GetLocalizedString();

@@ -1,17 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
+using Il2CppSystem.IO;
 using Il2Cpp;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.Abilities;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
-using Il2CppSystem.Collections.Generic;
 using Il2CppTMPro;
 using MelonLoader;
 using SR2E.Commands;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -24,7 +22,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "1.3.0"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "1.3.1"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -36,25 +34,27 @@ namespace SR2E
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
-        static List<IdentifiableType> vaccables = new List<IdentifiableType>();
+
+        static IdentifiableType[] identifiableTypes
+        { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); 
        
-        internal static IdentifiableType getVaccableByName(string name)
+        internal static IdentifiableType getIdentifiableByName(string name)
         {
-            foreach (IdentifiableType type in vaccables)
+            foreach (IdentifiableType type in identifiableTypes)
                 if (type.name.ToUpper() == name.ToUpper())
                     return type;
             return null;
         }
-        internal static IdentifiableType getVaccableByLocalizedName(string name)
+        internal static IdentifiableType getIdentifiableByLocalizedName(string name)
         {
-            foreach (IdentifiableType type in vaccables)
+            foreach (IdentifiableType type in identifiableTypes)
                 try
                 {
                     if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == name.ToUpper())
                         return type;
                 }
-                catch (Exception ignored)
+                catch (System.Exception ignored)
                 {}
             
             return null;
@@ -75,9 +75,9 @@ namespace SR2E
             switch (sceneName)
             {
                 case "SystemCore":
-                    Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TestMod.srtwoessentials.assetbundle");
+                    System.IO.Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TestMod.srtwoessentials.assetbundle");
                     byte[] buffer = new byte[16 * 1024];
-                    MemoryStream ms = new MemoryStream();
+                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
                     int read;
                     while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
                         ms.Write(buffer, 0, read);
@@ -91,6 +91,11 @@ namespace SR2E
                 case "MainMenuUI":
                     infEnergy = false;
                     break;
+                case "StandaloneEngagementPrompt":
+                    PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
+                    prompt.EngagementPromptTextUI.SetActive(false);
+                    prompt.OnInteract(new InputAction.CallbackContext());
+                    break;
                 case "UICore":
                     InfiniteEnergyCommand.energyMeter = Get<EnergyMeter>("Energy Meter");
                     break;
@@ -103,23 +108,6 @@ namespace SR2E
         {
             switch (sceneName)
             {
-                case "GameCore":
-                    Il2CppArrayBase<IdentifiableType> allTypes = Resources.FindObjectsOfTypeAll<IdentifiableType>();
-
-                    foreach (IdentifiableType type in allTypes)
-                    {
-                        string r = type.ReferenceId;
-                        if ((r.StartsWith("SlimeDefinition.") || r.StartsWith("IdentifiableType.")) && !r.EndsWith("Gordo"))
-                            if (r != "IdentifiableType.None" && r != "IdentifiableType.Player")
-                                if (r.StartsWith("SlimeDefinition."))
-                                {
-                                    if (moreVaccabalesInstalled || !(CheckIfLargo(r.Remove(0, 16))))
-                                        vaccables.Add(type);
-                                }
-                                else
-                                    vaccables.Add(type);
-                    }
-                    break;
                 case "MainMenuUI":
                     mainMenuLoaded = true;
                     CreateModMenuButton();
@@ -132,9 +120,6 @@ namespace SR2E
         {
             switch (sceneName)
             {
-                case "GameCore":
-                    vaccables = null;
-                    break;
                 case "MainMenuUI":
                     mainMenuLoaded = false;
                     break;
@@ -209,7 +194,7 @@ namespace SR2E
 
             Button button = newButton.GetComponent<Button>();
             button.onClick = new Button.ButtonClickedEvent();
-            button.onClick.AddListener((Action)(() => { SR2ModMenu.Open(); }));
+            button.onClick.AddListener((System.Action)(() => { SR2ModMenu.Open(); }));
         }
     }
 }

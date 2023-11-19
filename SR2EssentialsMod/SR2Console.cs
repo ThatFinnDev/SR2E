@@ -216,6 +216,7 @@ namespace SR2E
             RegisterCommand(new HelpCommand());
             RegisterCommand(new RefillSlotsCommand());
             RegisterCommand(new NewBucksCommand());
+            RegisterCommand(new KillCommand());
             
             
             //Disabled do to not working yet
@@ -223,9 +224,6 @@ namespace SR2E
             
             //Disabled do to not working yet
             //RegisterCommand(new GiveBlueprintCommand());
-            
-            //Disabled do to not working yet
-            //RegisterCommand(new KillCommand());
             
             //Disabled do to not working yet
             //RegisterCommand(new NoClipCommand());

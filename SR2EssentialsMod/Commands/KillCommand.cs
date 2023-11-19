@@ -19,7 +19,8 @@ namespace SR2E.Commands
                 var gameobject = hit.collider.gameObject;
                 if (gameobject.GetComponent<Identifiable>())
                 {
-                    Damage damage = new Damage();
+                    Damage damage = new Damage { DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };;
+                    damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     damage.Amount = 99999999;
                     DeathHandler.Kill(gameobject, damage);
                     
@@ -32,6 +33,8 @@ namespace SR2E.Commands
                 {
                     gameobject.GetComponentInParent<LandPlotLocation>().Replace(gameobject.GetComponentInParent<LandPlot>(), GameContext.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.EMPTY));
                 }
+                SR2Console.SendMessage("Successfully killed the thing!");
+                return true;
             }
             SR2Console.SendError("Not looking at a valid object!");
             return false;
