@@ -102,7 +102,8 @@ namespace SR2E.Commands
             if (amount<=0)
             { SR2Console.SendError(args[1] + " is not an integer above 0!"); return false; }
                 
-            
+            //if(type.ReferenceId.StartsWith("GadgetDefinition"))
+            //{ SR2Console.SendError(args[0] + " is a gadget, not an item!"); return false; }
 
             for (int i = 0; i < amount; i++)
             {

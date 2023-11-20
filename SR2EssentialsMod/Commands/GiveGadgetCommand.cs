@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Il2Cpp;
+using MelonLoader;
 using UnityEngine;
 
 namespace SR2E.Commands
@@ -116,7 +117,6 @@ namespace SR2E.Commands
 
             if (amount <= 0)
             { SR2Console.SendError(args[1] + " is not an integer above 0!"); return false; }
-
 
             SceneContext.Instance.GadgetDirector.AddItem(foundType, amount);
             SR2Console.SendMessage($"Successfully added {amount} {itemName}");
