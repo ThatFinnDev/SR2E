@@ -104,15 +104,20 @@ namespace SR2E.Commands
                 
             //if(type.ReferenceId.StartsWith("GadgetDefinition"))
             //{ SR2Console.SendError(args[0] + " is a gadget, not an item!"); return false; }
-
+            
             for (int i = 0; i < amount; i++)
             {
                 if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
                 {
-                    var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE,SlimeAppearance.AppearanceSaveSet.NONE);
-                    spawned.transform.position = hit.point+hit.normal*PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
-                    var delta = -(hit.point - Camera.main.transform.position).normalized;
-                    spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
+                    try
+                    {
+                        var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE,SlimeAppearance.AppearanceSaveSet.NONE);
+                        spawned.transform.position = hit.point+hit.normal*PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
+                        var delta = -(hit.point - Camera.main.transform.position).normalized;
+                        spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
+                    }
+                    catch (Exception ignored)
+                    { }
                 }
             }
             
