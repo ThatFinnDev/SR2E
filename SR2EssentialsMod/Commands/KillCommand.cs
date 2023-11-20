@@ -21,6 +21,7 @@ namespace SR2E.Commands
 
             if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
             {
+                bool didAThing = false;
                 var gameobject = hit.collider.gameObject;
                 if (gameobject.GetComponent<Identifiable>())
                 {
@@ -28,18 +29,20 @@ namespace SR2E.Commands
                     damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     damage.Amount = 99999999;
                     DeathHandler.Kill(gameobject, damage);
-                    
+                    didAThing = true;
                 }
                 else if (gameobject.GetComponentInParent<Gadget>())
                 {
                     gameobject.GetComponentInParent<Gadget>().RequestDestroy("KillCommand.Execute");
+                    didAThing = true;
                 }
                 else if (gameobject.GetComponentInParent<LandPlot>())
                 {
                     gameobject.GetComponentInParent<LandPlotLocation>().Replace(gameobject.GetComponentInParent<LandPlot>(), GameContext.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.EMPTY));
+                    didAThing = true;
                 }
-                SR2Console.SendMessage("Successfully killed the thing!");
-                return true;
+                if(didAThing)
+                { SR2Console.SendMessage("Successfully killed the thing!"); return true; }
             }
             SR2Console.SendError("Not looking at a valid object!");
             return false;

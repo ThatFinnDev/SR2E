@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Il2Cpp;
+using MelonLoader;
 
 namespace SR2E.Commands
 {
@@ -20,6 +21,8 @@ namespace SR2E.Commands
                 int i = -1;
                 foreach (IdentifiableType type in SR2EMain.identifiableTypes)
                 {
+                    if(type.ReferenceId.StartsWith("GadgetDefinition"))
+                        continue;
                     if (i > 20)
                         break;
                     try
@@ -85,6 +88,10 @@ namespace SR2E.Commands
             }
             else
                 itemName=type.name;
+            
+            if(type.ReferenceId.StartsWith("GadgetDefinition"))
+            { SR2Console.SendError(args[0] + " is a gadget, not an item!"); return false; }
+            
             int amount = 0;
             try
             { amount = int.Parse(args[1]); }
@@ -99,7 +106,6 @@ namespace SR2E.Commands
             
             
             SR2Console.SendMessage($"Successfully added {amount} {itemName}");
-            SR2Console.SendMessage(type.name);
             
             return true;
         }

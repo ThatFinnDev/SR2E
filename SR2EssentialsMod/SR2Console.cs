@@ -232,7 +232,7 @@ namespace SR2E
                             if (predicted > maxPredictions)
                                 return;
                             if (args != null)
-                                if (!argument.StartsWith(split[split.Count - 1]))
+                                if (!argument.ToLower().StartsWith(split[split.Count - 1].ToLower()))
                                     continue;
                             predicted++;
                             GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
@@ -302,13 +302,8 @@ namespace SR2E
             RegisterCommand(new RefillSlotsCommand());
             RegisterCommand(new NewBucksCommand());
             RegisterCommand(new KillCommand());
-            
-            
-            //Disabled do to not working yet
-            //RegisterCommand(new GiveGadgetCommand());
-            
-            //Disabled do to not working yet
-            //RegisterCommand(new GiveBlueprintCommand());
+            RegisterCommand(new GiveGadgetCommand());
+            RegisterCommand(new GiveBlueprintCommand());
             
             //Disabled do to not working yet
             //RegisterCommand(new NoClipCommand());
@@ -361,8 +356,8 @@ namespace SR2E
                 {
                     if (autoCompleteContent.childCount != 0)
                     {
+                        //Select first to autocomplete
                         autoCompleteContent.GetChild(0).GetComponent<Button>().onClick.Invoke();
-                        //Select first to autocompletelölllpppp
                     }
                 }
                 
