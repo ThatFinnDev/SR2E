@@ -22,13 +22,14 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "1.3.3"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "1.3.4"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
     public class SR2EMain : MelonMod
     {
         internal static bool infEnergy = false;
+        internal static bool infHealth = false;
         bool moreVaccabalesInstalled = false;
         internal static bool consoleFinishedCreating = false;
         bool mainMenuLoaded = false;
@@ -90,6 +91,7 @@ namespace SR2E
                     break;
                 case "MainMenuUI":
                     infEnergy = false;
+                    infHealth = false;
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
@@ -147,7 +149,10 @@ namespace SR2E
                 if (SceneContext.Instance != null)
                     if (SceneContext.Instance.PlayerState != null)
                         SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
-
+            if(infHealth)
+                if (SceneContext.Instance != null)
+                    if (SceneContext.Instance.PlayerState != null)
+                        SceneContext.Instance.PlayerState.SetHealth(int.MaxValue);
             if (!consoleFinishedCreating)
             {
                 GameObject obj = GameObject.FindGameObjectWithTag("Respawn");

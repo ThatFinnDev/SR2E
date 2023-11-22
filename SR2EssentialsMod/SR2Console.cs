@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
@@ -72,16 +73,11 @@ namespace SR2E
         public static void Close()
         {
             for (int i = 0; i < autoCompleteContent.childCount; i++)
-            {
-                Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
-            }
-            if (Object.FindObjectsOfType<MapUI>().Length != 0)
-                return;
+            { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
+            
             consoleBlock.SetActive(false);
             consoleMenu.SetActive(false);
-            if (shouldResetTime)
-                normalTimeScale = 1;
-            Time.timeScale = normalTimeScale;
+            SystemContext.Instance.SceneLoader.UnpauseGame();
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
 
         }
@@ -94,15 +90,9 @@ namespace SR2E
             if (SR2ModMenu.isOpen)
                 return;
             
-            Il2CppArrayBase<MapUI> allMapUIs = Object.FindObjectsOfType<MapUI>();
-            for (int i = 0; i < allMapUIs.Count; i++)
-                Object.Destroy(allMapUIs[i].gameObject);
-            shouldResetTime = allMapUIs.Count != 0;
-            
             consoleBlock.SetActive(true);
             consoleMenu.SetActive(true);
-            normalTimeScale = Time.timeScale;
-            Time.timeScale = 0f;
+            SystemContext.Instance.SceneLoader.TryPauseGame();
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
             RefreshAutoComplete(commandInput.text);
         }
@@ -199,7 +189,6 @@ namespace SR2E
         }
         
         static Scrollbar _scrollbar;
-        static float normalTimeScale = 1f;
         static bool shouldResetTime = false;
         const int maxMessages = 100;
         private static bool scrollCompletlyDown = false;
@@ -304,21 +293,20 @@ namespace SR2E
             RegisterCommand(new KillCommand());
             RegisterCommand(new GiveGadgetCommand());
             RegisterCommand(new GiveBlueprintCommand());
+            RegisterCommand(new InfiniteEnergyCommand());
+            RegisterCommand(new ReplaceCommand());
+            RegisterCommand(new InvincibleCommand());
+            
+            //Disabled do to not working yet
+            //RegisterCommand(new WarpCommand());
+            //RegisterCommand(new SaveWarpCommand());
             
             //Disabled do to not working yet
             //RegisterCommand(new NoClipCommand());
             
-            bool hasInfiniteEnergyMod = false;
-            foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
-            {
-                if (melonBase.ID == "InfiniteEnergy")
-                    hasInfiniteEnergyMod = true;
-            }
-
-            if (!hasInfiniteEnergyMod)
-            {
-                RegisterCommand(new InfiniteEnergyCommand());
-            }
+            //Disabled do to not working yet
+            
+            
             
             
             SR2CommandBindingManager.Start();
@@ -364,8 +352,6 @@ namespace SR2E
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
                     if(commandInput.text!="")
                         Execute();
-                if (Time.timeScale!=0f)
-                    Time.timeScale=0;
             }
             if (Keyboard.current.ctrlKey.wasPressedThisFrame)
                 if(Keyboard.current.tabKey.isPressed)

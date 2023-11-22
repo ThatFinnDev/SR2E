@@ -97,12 +97,16 @@
     <Compile Include="Commands\GiveGadgetCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\InfiniteEnergyCommand.cs" />
+    <Compile Include="Commands\InvincibleCommand.cs" />
     <Compile Include="Commands\KillCommand.cs" />
     <Compile Include="Commands\ModsCommand.cs" />
     <Compile Include="Commands\NewBucksCommand.cs" />
     <Compile Include="Commands\NoClipCommand.cs" />
     <Compile Include="Commands\RefillSlotsCommand.cs" />
+    <Compile Include="Commands\SaveWarpCommand.cs" />
     <Compile Include="Commands\SpawnCommand.cs" />
+    <Compile Include="Commands\ReplaceCommand.cs" />
+    <Compile Include="Commands\WarpCommand.cs" />
     <Compile Include="Commands\UnbindCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main.cs" />
@@ -110,6 +114,7 @@
     <Compile Include="SR2CommandBindingManager.cs" />
     <Compile Include="SR2Console.cs" />
     <Compile Include="SR2ModMenu.cs" />
+    <Compile Include="SR2Warps.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
