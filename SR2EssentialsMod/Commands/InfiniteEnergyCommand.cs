@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace SR2E.Commands
 {
-    public class InfiniteEnergyCommand: SR2CCommand
+    public class InfiniteEnergyCommand : SR2CCommand
     {
         public override string ID => "infenergy";
         public override string Usage => "infenergy [should disable height limit(true/false)]";
@@ -50,7 +50,6 @@ namespace SR2E.Commands
                 jetpackAbilityData._hoverHeight = normalHoverHeight;
                 jetpackAbilityData._maxUpwardThrustForce = normalMaxUpwardThrustForce;
                 jetpackAbilityData._upwardThrustForceIncrement = normalUpwardThrustForceIncrement;
-                SR2Console.SendMessage(normalEnergy.ToString());
 
                 energyMeter.maxEnergy = new NullableFloatProperty(normalEnergy);
                 SceneContext.Instance.PlayerState.SetEnergy(0);

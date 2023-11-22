@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using Il2Cpp;
 using Il2CppMonomiPark.KFC;
+using Il2CppMonomiPark.KFC.FirstPerson;
+using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.MovementAndLookTypes;
+using MelonLoader;
 using UnityEngine;
 
 namespace SR2E.Commands
@@ -28,10 +31,11 @@ namespace SR2E.Commands
             if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
             if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
-            
-            KFCCharacterController con = Object.FindObjectOfType<KFCCharacterController>();
-            con._parameters._defaultMovementAndLookType = new FreeflyMovementAndLookType();
-            
+            SRCharacterController con = Object.FindObjectOfType<SRCharacterController>();
+            foreach (FreeflyMovementAndLookType variable in Resources.FindObjectsOfTypeAll<FreeflyMovementAndLookType>())
+            {
+                con._parameters._defaultMovementAndLookType = variable;
+            }
             /*
             bool noclipState = SceneContext.Instance.Player.GetComponentInChildren<vp_FPController>().MotorFreeFly;
             SceneContext.Instance.Player.GetComponentInChildren<vp_FPController>().MotorFreeFly = !noclipState;
@@ -45,8 +49,8 @@ namespace SR2E.Commands
             else
             {
                 SR2Console.SendMessage("Successfully enabled noclip");
-            }*/
-            
+            }
+            */
 
             return true;
         }

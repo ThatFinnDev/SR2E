@@ -18,14 +18,6 @@
 
  Sometimes the opening/closing of the console can freeze the game. This also fixable by closing and reoping the console.
 
-# TODO:
- Fix that opening the console, while the map is open, breaks the game 
- -> Temporary fix: Close the map, when opening the console
-
- AutoComplete for Commands
- -> Not implemented, I'm still thinking about a good way to implement this
-
-
 # Special thanks
  Special thanks to SlimeRancherModding for SRML
  because it gave me good starting point for a lot of stuff.
