@@ -1,7 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Il2Cpp;
+using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Persist;
+using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SR2E.Commands
 {
@@ -25,7 +31,7 @@ namespace SR2E.Commands
                 var gameobject = hit.collider.gameObject;
                 if (gameobject.GetComponent<Identifiable>())
                 {
-                    Damage damage = new Damage { DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };;
+                    Damage damage = new Damage { Amount = 99999999,DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };;
                     damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     damage.Amount = 99999999;
                     DeathHandler.Kill(gameobject, damage);
@@ -33,7 +39,13 @@ namespace SR2E.Commands
                 }
                 else if (gameobject.GetComponentInParent<Gadget>())
                 {
-                    gameobject.GetComponentInParent<Gadget>().RequestDestroy("KillCommand.Execute");
+                    gameobject.transform.position=new Vector3(-100000,-100000,-100000);
+                    gameobject.GetComponentInParent<Gadget>().gameObject.hideFlags |= HideFlags.HideAndDontSave;
+                    //GameContext.Instance.AutoSaveDirector.SavedGame.Pull(gameobject.GetComponentInParent<Gadget>().Model);
+                    //gameobject.GetComponentInParent<Identifiable>().
+                    //SRBehaviour.RequestDestroy(gameobject.transform.parent.gameObject,"KillCommand.Execute");
+                    //gameobject.GetComponentInParent<Gadget>().GetDestroyRequestHandler().OnDestroyRequest(gameobject.GetComponentInParent<Gadget>().gameObject);
+                    gameobject.GetComponentInParent<Gadget>().RequestDestroy("ok");
                     didAThing = true;
                 }
                 else if (gameobject.GetComponentInParent<LandPlot>())

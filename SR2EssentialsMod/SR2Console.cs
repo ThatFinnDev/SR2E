@@ -77,7 +77,7 @@ namespace SR2E
             
             consoleBlock.SetActive(false);
             consoleMenu.SetActive(false);
-            SystemContext.Instance.SceneLoader.UnpauseGame();
+            try{SystemContext.Instance.SceneLoader.UnpauseGame();}catch(Exception e){}
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
 
         }
@@ -89,10 +89,12 @@ namespace SR2E
         { 
             if (SR2ModMenu.isOpen)
                 return;
+            if(SR2Warps.warpTo!=null)
+                return;
             
             consoleBlock.SetActive(true);
             consoleMenu.SetActive(true);
-            SystemContext.Instance.SceneLoader.TryPauseGame();
+            try{SystemContext.Instance.SceneLoader.TryPauseGame();}catch(Exception e){}
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
             RefreshAutoComplete(commandInput.text);
         }
@@ -141,11 +143,14 @@ namespace SR2E
                         bool successful;
                         if (spaces)
                         {
-                            var argString = c.TrimEnd()+" ";
+                            var argString = c.TrimEnd(' ')+" ";
                             List<string> split = argString.Split(' ').ToList();
                             split.RemoveAt(0);
                             split.RemoveAt(split.Count-1);
-                            successful = commands[cmd].Execute(split.ToArray());
+                            if(split.Count!=0)
+                                successful = commands[cmd].Execute(split.ToArray());
+                            else
+                                successful = commands[cmd].Execute(null);
                         }
                         else
                             successful = commands[cmd].Execute(null);
@@ -293,16 +298,18 @@ namespace SR2E
             RegisterCommand(new KillCommand());
             RegisterCommand(new GiveGadgetCommand());
             RegisterCommand(new GiveBlueprintCommand());
-            RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new ReplaceCommand());
-            RegisterCommand(new InvincibleCommand());
+            RegisterCommand(new WarpCommand());
+            RegisterCommand(new SaveWarpCommand());
+            RegisterCommand(new DeleteWarpCommand());
+            RegisterCommand(new WarpListCommand());
             
-            //Disabled do to not working yet
-            //RegisterCommand(new WarpCommand());
-            //RegisterCommand(new SaveWarpCommand());
             
-            //Disabled do to not working yet
-            //RegisterCommand(new NoClipCommand());
+            if(!SR2EMain.infHealthInstalled)
+                RegisterCommand(new InvincibleCommand());
+            if(!SR2EMain.infEnergyInstalled)
+                RegisterCommand(new InfiniteEnergyCommand());
+            RegisterCommand(new NoClipCommand());
             
             //Disabled do to not working yet
             
@@ -310,6 +317,7 @@ namespace SR2E
             
             
             SR2CommandBindingManager.Start();
+            SR2Warps.Start();
             //Setup Modmenu
             
             SR2ModMenu.parent = transform;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Il2Cpp;
+using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.KFC;
 using Il2CppMonomiPark.KFC.FirstPerson;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
@@ -19,6 +20,9 @@ namespace SR2E.Commands
         {
             return null;
         }
+
+        internal static bool inNoClip = false;
+        static LayerMask layerMask;
         public override bool Execute(string[] args)
         {
             if (args != null)
@@ -31,29 +35,39 @@ namespace SR2E.Commands
             if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
             if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
-            SRCharacterController con = Object.FindObjectOfType<SRCharacterController>();
-            foreach (FreeflyMovementAndLookType variable in Resources.FindObjectsOfTypeAll<FreeflyMovementAndLookType>())
+            if (SR2EMain.Get<SRCharacterController>("PlayerControllerKCC") != null)
             {
-                con._parameters._defaultMovementAndLookType = variable;
-            }
-            /*
-            bool noclipState = SceneContext.Instance.Player.GetComponentInChildren<vp_FPController>().MotorFreeFly;
-            SceneContext.Instance.Player.GetComponentInChildren<vp_FPController>().MotorFreeFly = !noclipState;
-            if (!noclipState) originalLayer = SceneContext.Instance.Player.layer;
-            SceneContext.Instance.Player.layer = noclipState ? (originalLayer) : LayerMask.NameToLayer("RaycastOnly");
-            
-            if (noclipState)
-            {
-                SR2Console.SendMessage("Successfully disabled noclip");
-            }
-            else
-            {
-                SR2Console.SendMessage("Successfully enabled noclip");
-            }
-            */
+                SRCharacterController Player = SR2EMain.Get<SRCharacterController>("PlayerControllerKCC");
+                SR2EMain.RefreshPrefs();
+                if (inNoClip)
+                {
+                    inNoClip = false;
+                    Player.BypassGravity = false;
+                    Player._motor.CollidableLayers = layerMask;
+                    Player.GetComponent<KinematicCharacterMotor>().enabled = true;
+                    Player._motor.SetCapsuleCollisionsActivation(true);
+                    Player._motor.Capsule.enabled = true;
+                    SR2Console.SendMessage("NoClip is now off!");
+                    return true;
+                }
+                else
+                {
+                    inNoClip = true;
+                    layerMask = Player._motor.CollidableLayers;
+                    Player._motor.CollidableLayers = 0;
+                    Player.BypassGravity = true;
+                    Player.GetComponent<KinematicCharacterMotor>().enabled = false;
+                    Player._motor.Capsule.enabled = false;
+                    Player.Velocity = Vector3.zero;
+                    Player._motor.SetCapsuleCollisionsActivation(false);
+                    SR2Console.SendMessage("NoClip is now on!");
+                    return true;
+                }
 
-            return true;
+
+            }
+            SR2Console.SendError("An unknown error occured!");
+            return false;
         }
-        public int originalLayer;
     }
 }
