@@ -227,6 +227,7 @@ namespace SR2E
                                     float value;
                                     if (float.TryParse(text, out value))
                                     {
+                                        warningText.SetActive(true);
                                         entry.BoxedEditedValue = value;
                                         category.SaveToFile(false);
                                         obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;

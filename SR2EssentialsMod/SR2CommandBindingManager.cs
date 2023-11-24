@@ -7,15 +7,6 @@ using String = Il2CppSystem.String;
 
 namespace SR2E
 {
-    [System.Serializable]
-    internal class SR2EKeyBindCMD
-    {
-        public Key key;
-        public string cmd;
-
-        internal SR2EKeyBindCMD(Key key, string cmd)
-        { this.key = key; this.cmd = cmd; }
-    }
     internal static class SR2CommandBindingManager
     {
         internal static Dictionary<Key, string> keyCodeCommands = new Dictionary<Key, string>();
@@ -67,10 +58,8 @@ namespace SR2E
                     if (!SR2Console.isOpen)
                         if (!SR2ModMenu.isOpen)
                             if (Time.timeScale != 0)
-                            {
-                                MelonLogger.Msg("execute "+keyValuePair.Value);
-                                SR2Console.ExecuteByString(keyValuePair.Value);
-                            }
+                                if(SR2Warps.warpTo==null)
+                                    SR2Console.ExecuteByString(keyValuePair.Value);
         }
     }
 }

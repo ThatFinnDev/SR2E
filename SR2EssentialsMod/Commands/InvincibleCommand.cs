@@ -56,7 +56,7 @@ namespace SR2E.Commands
             }
             return true;
         }
-        static int normalHealth = 100;
+        internal static int normalHealth = 100;
         
         internal static HealthMeter healthMeter;
         static T Get<T>(string name) where T : UnityEngine.Object

@@ -2,6 +2,7 @@
 using System.Reflection;
 using Il2CppSystem.IO;
 using Il2Cpp;
+using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.Abilities;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
@@ -11,6 +12,7 @@ using SR2E.Commands;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 using Object = UnityEngine.Object;
 
 
@@ -22,7 +24,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "1.3.4"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "1.3.5"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -30,7 +32,8 @@ namespace SR2E
     {
         internal static bool infEnergy = false;
         internal static bool infHealth = false;
-        bool moreVaccabalesInstalled = false;
+        internal static bool infEnergyInstalled = false;
+        internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
@@ -38,7 +41,7 @@ namespace SR2E
 
         internal static IdentifiableType[] identifiableTypes
         { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
-        static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
+        internal static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
 
         internal static IdentifiableType getIdentifiableByName(string name)
         {
@@ -61,13 +64,33 @@ namespace SR2E
             return null;
         }
         static bool CheckIfLargo(string value) => (value.Remove(0, 1)).Any(char.IsUpper);
+        internal static MelonPreferences_Category prefs;
+        private static float noclipFlySpeed=20;
+        private static float noclipFlySprintSpeed=40;
+
+        internal static void RefreshPrefs()
+        {
+            if (!prefs.HasEntry("noclipFlySpeed"))
+                prefs.CreateEntry("noclipFlySpeed", (float)20f, "NoClip Flying Speed", false);
+            if (!prefs.HasEntry("noclipFlySprintSpeed"))
+                prefs.CreateEntry("noclipFlySprintSpeed", (float)40f, "NoClip Flying SprintSpeed", false);
+            noclipFlySpeed = prefs.GetEntry<float>("noclipFlySpeed").Value;
+            noclipFlySprintSpeed = prefs.GetEntry<float>("noclipFlySprintSpeed").Value;
+
+        }
         public override void OnInitializeMelon()
         {
+            prefs = MelonPreferences.CreateCategory("SR2Essentials");
+            RefreshPrefs();
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
-                if (melonBase.Info.Name == "MoreVaccablesMod")
+                switch (melonBase.Info.Name)
                 {
-                    moreVaccabalesInstalled = true;
-                    break;
+                    case "InfiniteEnergy":
+                        infEnergyInstalled = true;
+                        break;
+                    case "InfiniteHealth":
+                        infHealthInstalled = true;
+                        break;
                 }
         }
         
@@ -91,6 +114,7 @@ namespace SR2E
                     break;
                 case "MainMenuUI":
                     infEnergy = false;
+                    //SceneContext.Instance.PlayerState._model.maxHealth = InvincibleCommand.normalHealth;
                     infHealth = false;
                     break;
                 case "StandaloneEngagementPrompt":
@@ -103,9 +127,10 @@ namespace SR2E
                     InfiniteEnergyCommand.energyMeter = Get<EnergyMeter>("Energy Meter");
                     break;
                 case "PlayerCore":
-                     InfiniteEnergyCommand.jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
+                    InfiniteEnergyCommand.jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
                     break;
             }
+
         }
         public override void OnSceneWasInitialized(int buildindex, string sceneName)
         {
@@ -126,10 +151,15 @@ namespace SR2E
                 case "MainMenuUI":
                     mainMenuLoaded = false;
                     break;
+                case "LoadScene":
+                    SR2Warps.OnSceneLoaded(sceneName);
+                    break;
             }
         }
 
 
+        static SRCharacterController Player;
+        static SRCameraController camera;
 
         public override void OnUpdate()
         {
@@ -153,6 +183,35 @@ namespace SR2E
                 if (SceneContext.Instance != null)
                     if (SceneContext.Instance.PlayerState != null)
                         SceneContext.Instance.PlayerState.SetHealth(int.MaxValue);
+            if (SceneContext.Instance != null)
+                if (SceneContext.Instance.Player != null)
+                    if (!SR2Console.isOpen)
+                        if (!SR2ModMenu.isOpen)
+                            if (Time.timeScale != 0)
+                            {
+                                if (Player == null)
+                                    Player = Get<SRCharacterController>("PlayerControllerKCC");
+
+                                if (camera == null)
+                                    camera = Get<SRCameraController>("PlayerCameraKCC");
+                                
+                                if (Player != null && camera!=null)
+                                    if (NoClipCommand.inNoClip)
+                                    {
+                                        float speed = Keyboard.current.shiftKey.isPressed ? noclipFlySprintSpeed : noclipFlySpeed;
+                                        if(Keyboard.current.wKey.isPressed) 
+                                            Player.Position += camera.transform.forward * speed*Time.deltaTime;
+                                        if(Keyboard.current.sKey.isPressed) 
+                                            Player.Position -= camera.transform.forward * speed*Time.deltaTime;
+                                        if(Keyboard.current.dKey.isPressed) 
+                                            Player.Position += camera.transform.right * speed*Time.deltaTime;
+                                        if(Keyboard.current.aKey.isPressed) 
+                                            Player.Position -= camera.transform.right * speed*Time.deltaTime;
+                                    }
+                                
+                            } 
+                    
+
             if (!consoleFinishedCreating)
             {
                 GameObject obj = GameObject.FindGameObjectWithTag("Respawn");
@@ -181,7 +240,7 @@ namespace SR2E
 
             //Create Button
             GameObject newButton = Object.Instantiate(buttonHolder.GetChild(0).gameObject, buttonHolder);
-            newButton.transform.SetSiblingIndex(3);
+            newButton.transform.SetSiblingIndex(buttonHolder.childCount==4?2:3);
             newButton.name = "ModsButton";
             newButton.transform.GetChild(0).GetComponent<CanvasGroup>().enabled = false;
             newButton.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "Mods";
