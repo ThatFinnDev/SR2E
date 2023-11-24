@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using MelonLoader;
 
-[assembly: AssemblyTitle(SR2E.BuildInfo.Description)]
+[assembly: AssemblyTitle(SR2E.BuildInfo.Name)]
 [assembly: AssemblyDescription(SR2E.BuildInfo.Description)]
 [assembly: AssemblyCompany(SR2E.BuildInfo.Company)]
 [assembly: AssemblyProduct(SR2E.BuildInfo.Name)]
