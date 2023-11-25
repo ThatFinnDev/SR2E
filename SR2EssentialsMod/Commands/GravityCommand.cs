@@ -23,6 +23,7 @@ namespace SR2E.Commands
             {
                 gravBase = new Vector3(-float.Parse(args[0]), -float.Parse(args[1]), -float.Parse(args[2]));
                 Physics.gravity = gravBase * 9.81f;
+                SR2Console.SendMessage($"Successfully changed the gravity to {args[0]} {args[1]} {args[2]}!");
                 return true;
             }
             catch
