@@ -23,7 +23,7 @@
  because it gave me good starting point for a lot of stuff.
  Link: https://github.com/SlimeRancherModding/SRML
 
- Special thanks to MadMincraftr for helping me fix and implement some stuff
+ Special thanks to MadMincraftr for helping me fix and implement some stuff.
  Link: https://github.com/MadMincraftr
  
  Special thanks to LavaGang for MelonLoader
