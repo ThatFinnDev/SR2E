@@ -1,4 +1,5 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 
 namespace SR2E.Commands
 {
@@ -22,7 +23,7 @@ namespace SR2E.Commands
                 var gameobject = hit.collider.gameObject;
                 if (gameobject.GetComponent<Identifiable>())
                 {
-                    Damage damage = new Damage { Amount = 99999999,DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };;
+                    Damage damage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() }; ;
                     damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     damage.Amount = 99999999;
                     DeathHandler.Kill(gameobject, damage);
@@ -30,12 +31,19 @@ namespace SR2E.Commands
                 }
                 else if (gameobject.GetComponentInParent<Gadget>())
                 {
-                    gameobject.transform.position=new Vector3(-100000,-100000,-100000);
+                    GameObject gadgetObj = gameobject.GetComponentInParent<Gadget>().gameObject;
+                    GameModel model = Object.FindObjectOfType<GameModel>();
+                    foreach (var pair in model.identifiables)
+                    {
+                        if (pair.Value.GetGameObject() == gadgetObj)
+                        {
+                            model.identifiables.Remove(pair.Key);
+                            break;
+                        }
+                    }
                     gameobject.GetComponentInParent<Gadget>().gameObject.hideFlags |= HideFlags.HideAndDontSave;
-                    //GameContext.Instance.AutoSaveDirector.SavedGame.Pull(gameobject.GetComponentInParent<Gadget>().Model);
-                    //gameobject.GetComponentInParent<Identifiable>().
-                    //SRBehaviour.RequestDestroy(gameobject.transform.parent.gameObject,"KillCommand.Execute");
-                    //gameobject.GetComponentInParent<Gadget>().GetDestroyRequestHandler().OnDestroyRequest(gameobject.GetComponentInParent<Gadget>().gameObject);
+                    gameobject.GetComponentInParent<Gadget>().hideFlags |= HideFlags.HideAndDontSave;
+                    gameobject.GetComponentInParent<Gadget>().hasStarted = false;
                     gameobject.GetComponentInParent<Gadget>().RequestDestroy("ok");
                     didAThing = true;
                 }
@@ -44,7 +52,7 @@ namespace SR2E.Commands
                     gameobject.GetComponentInParent<LandPlotLocation>().Replace(gameobject.GetComponentInParent<LandPlot>(), GameContext.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.EMPTY));
                     didAThing = true;
                 }
-                if(didAThing)
+                if (didAThing)
                 { SR2Console.SendMessage("Successfully killed the thing!"); return true; }
             }
             SR2Console.SendError("Not looking at a valid object!");
