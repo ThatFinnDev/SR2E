@@ -10,9 +10,6 @@ using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using Il2CppSystem;
 using MelonLoader;
 using UnityEngine;
-using Console = System.Console;
-using Exception = System.Exception;
-using Object = UnityEngine.Object;
 
 namespace SR2E.Commands
 {
@@ -132,9 +129,7 @@ namespace SR2E.Commands
                                             
                                         }
                                     
-                                }catch (Exception e) {Console.Write(e);
-                                    throw;
-                                }
+                                }catch (Exception e) {}
                             }
                         }
                         if(SR2Console.isOpen)
@@ -148,5 +143,8 @@ namespace SR2E.Commands
             return false;
 
         }
+        
+        static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
+
     }
 }

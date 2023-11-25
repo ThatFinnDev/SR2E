@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Il2Cpp;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
-using MelonLoader;
 using SR2E.Commands;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace SR2E
 {
@@ -298,6 +291,7 @@ namespace SR2E
             RegisterCommand(new KillCommand());
             RegisterCommand(new GiveGadgetCommand());
             RegisterCommand(new GiveBlueprintCommand());
+            RegisterCommand(new GiveUpgradeCommand());
             RegisterCommand(new ReplaceCommand());
             RegisterCommand(new WarpCommand());
             RegisterCommand(new SaveWarpCommand());
