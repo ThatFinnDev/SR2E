@@ -23,8 +23,11 @@
  because it gave me good starting point for a lot of stuff.
  Link: https://github.com/SlimeRancherModding/SRML
 
+ Special thanks to MadMincraftr for helping me fix and implement some stuff.
+ Link: https://github.com/MadMincraftr
+ 
  Special thanks to LavaGang for MelonLoader
- because otherwise SR2 Mods would'nt exist.
+ because otherwise SR2 Mods wouldn't exist.
  Link: https://melonwiki.xyz/#/
 # Screenshots
 ![Screenshot 1](https://github.com/ThatFinn/SR2Essentials/blob/main/Screenshot1.png?raw=true)
