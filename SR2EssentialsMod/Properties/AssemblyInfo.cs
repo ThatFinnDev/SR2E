@@ -9,7 +9,7 @@ using MelonLoader;
 [assembly: AssemblyTrademark(SR2E.BuildInfo.Company)]
 [assembly: AssemblyVersion(SR2E.BuildInfo.Version)]
 [assembly: AssemblyFileVersion(SR2E.BuildInfo.Version)]
-[assembly: MelonInfo(typeof(SR2E.SR2EMain), SR2E.BuildInfo.Name, SR2E.BuildInfo.Version, SR2E.BuildInfo.Author, SR2E.BuildInfo.DownloadLink)]
+[assembly: MelonInfo(typeof(SR2E.SR2EEntryPoint), SR2E.BuildInfo.Name, SR2E.BuildInfo.Version, SR2E.BuildInfo.Author, SR2E.BuildInfo.DownloadLink)]
 [assembly: MelonColor()]
 
 // Create and Setup a MelonGame Attribute to mark a Melon as Universal or Compatible with specific Games.
