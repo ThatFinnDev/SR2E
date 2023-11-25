@@ -299,20 +299,16 @@ namespace SR2E
             RegisterCommand(new WarpListCommand());
             RegisterCommand(new SpeedCommand());
             
-            
             if(!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
             if(!SR2EEntryPoint.infEnergyInstalled)
                 RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new NoClipCommand());
             
-            //Disabled do to not working yet
-            
-            
-            
-            
+            //Warps & Keybinding loading
             SR2CommandBindingManager.Start();
             SR2Warps.Start();
+            
             //Setup Modmenu
             
             SR2ModMenu.parent = transform;
@@ -322,7 +318,7 @@ namespace SR2E
         }
 
         static TMP_InputField commandInput;
-        private static GameObject autoCompleteEntryPrefab;
+        static GameObject autoCompleteEntryPrefab;
         static GameObject consoleBlock;
         static GameObject consoleMenu;
         static Transform consoleContent;

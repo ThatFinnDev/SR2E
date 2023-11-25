@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Il2Cpp;
+﻿using System.Linq;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.Abilities;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.UnitPropertySystem;
-using UnityEngine;
 
 namespace SR2E.Commands
 {

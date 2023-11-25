@@ -1,12 +1,5 @@
-﻿using System.Collections.Generic;
-using Il2Cpp;
-using Il2CppKinematicCharacterController;
-using Il2CppMonomiPark.KFC;
-using Il2CppMonomiPark.KFC.FirstPerson;
+﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.MovementAndLookTypes;
-using MelonLoader;
-using UnityEngine;
 
 namespace SR2E.Commands
 {

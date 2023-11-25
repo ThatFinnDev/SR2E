@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SR2E.Commands
+﻿namespace SR2E.Commands
 {
     public class HelpCommand : SR2CCommand
     {
