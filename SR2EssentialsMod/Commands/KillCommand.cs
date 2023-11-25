@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Il2Cpp;
-using Il2CppMonomiPark.SlimeRancher.Damage;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
-using UnityEngine;
+﻿using Il2CppMonomiPark.SlimeRancher.Damage;
 
 namespace SR2E.Commands
 {
@@ -34,19 +30,12 @@ namespace SR2E.Commands
                 }
                 else if (gameobject.GetComponentInParent<Gadget>())
                 {
-                    GameObject gadgetObj = gameobject.GetComponentInParent<Gadget>().gameObject;
-                    GameModel model = Object.FindObjectOfType<GameModel>();
-                    foreach (var pair in model.identifiables)
-                    {
-                        if (pair.Value.GetGameObject() == gadgetObj)
-                        {
-                            model.identifiables.Remove(pair.Key);
-                            break;
-                        }
-                    }
+                    gameobject.transform.position=new Vector3(-100000,-100000,-100000);
                     gameobject.GetComponentInParent<Gadget>().gameObject.hideFlags |= HideFlags.HideAndDontSave;
-                    gameobject.GetComponentInParent<Gadget>().hideFlags |= HideFlags.HideAndDontSave;
-                    gameobject.GetComponentInParent<Gadget>().hasStarted = false;
+                    //GameContext.Instance.AutoSaveDirector.SavedGame.Pull(gameobject.GetComponentInParent<Gadget>().Model);
+                    //gameobject.GetComponentInParent<Identifiable>().
+                    //SRBehaviour.RequestDestroy(gameobject.transform.parent.gameObject,"KillCommand.Execute");
+                    //gameobject.GetComponentInParent<Gadget>().GetDestroyRequestHandler().OnDestroyRequest(gameobject.GetComponentInParent<Gadget>().gameObject);
                     gameobject.GetComponentInParent<Gadget>().RequestDestroy("ok");
                     didAThing = true;
                 }
