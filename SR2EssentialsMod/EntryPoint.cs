@@ -161,7 +161,7 @@ namespace SR2E
             if (mainMenuLoaded)
                 if (!_iconChanged)
                 {
-                    Sprite sprite = SR2Console.transform.GetChild(4).GetChild(1).GetComponent<Image>().sprite;
+                    Sprite sprite = SR2Console.getObjRec<Image>(SR2Console.transform, "modsButtonIconImage").sprite;
                     if (sprite != null)
                         if (_modsButtonIconImage != null)
                         {

@@ -93,7 +93,7 @@ namespace SR2E
 
 
 
-            GameObject buttonPrefab = transform.GetChild(0).gameObject;
+            GameObject buttonPrefab = getObjRec<GameObject>(transform, "TemplateModButton");
             Transform modContent = getObjRec<Transform>(transform, "ModContent");
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
