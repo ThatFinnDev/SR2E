@@ -13,18 +13,17 @@ namespace SR2E.Commands
 
         public override bool Execute(string[] args)
         {
-            if (args == null || args.Length > 1)
-            {
-                MelonLogger.Error("Incorrect number of arguments!");
-                return false;
-            }
+            if (args == null) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (args.Length != 1) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
+            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
             UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>().FirstOrDefault(x => x.ValidatableName.Equals(args[0]));
             if (id == null)
-                throw new ArgumentException("This ID is incorrect");
+            { SR2Console.SendError(args[0] + " is not a valid Upgrade!"); return false; }
 
             SceneContext.Instance.PlayerState._model.upgradeModel.IncrementUpgradeLevel(id);
-
+            SR2Console.SendMessage($"{id.ValidatableName} is now on level {SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)}");
             return true;
         }
 

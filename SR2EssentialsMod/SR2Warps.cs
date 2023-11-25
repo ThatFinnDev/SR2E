@@ -9,6 +9,7 @@ namespace SR2E
     {
         internal static Dictionary<string, Warp> warps = new Dictionary<string, Warp>();
         internal static Warp warpTo = null;
+        private static string path = SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath + "SR2EssentialsWarps.warps";
 
         internal static void OnSceneLoaded(string sceneName)
         {
@@ -48,7 +49,7 @@ namespace SR2E
 
         internal static void Start()
         {
-            if (File.Exists(SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath +"SR2EssentialsWarps.warps"))
+            if (File.Exists(path))
             {
                 LoadWarps();
             }
@@ -67,15 +68,12 @@ namespace SR2E
                         + "\n";
             }
 
-            File.WriteAllText(
-                SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath +
-                "SR2EssentialsWarps.warps", safe);
+            File.WriteAllText(path, safe);
         }
         internal static void LoadWarps()
         {
             string name = "";
-            foreach (string line in File.ReadAllLines(SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath 
-                                                      +"SR2EssentialsWarps.warps"))
+            foreach (string line in File.ReadAllLines(path))
             {
                 if(String.IsNullOrEmpty(line))
                     continue;

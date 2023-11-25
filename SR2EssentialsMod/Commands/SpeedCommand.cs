@@ -21,24 +21,28 @@ namespace SR2E.Commands
 
         public override bool Execute(string[] args)
         {
-            if (args == null || args.Length == 0)
-            {
-                return false;
-            }
+            if (args == null) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (args.Length != 1) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
+            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
             CharacterControllerParameters parameters;
 
             parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+            float speedValue = 0;
+            if (!float.TryParse(args[0], out speedValue))
+            { SR2Console.SendError(args[1] + " is not a valid float!"); return false; }
             try
             {
+                
+                parameters._maxGroundedMoveSpeed = speedValue * baseMaxGroundSpeed;
+                parameters._maxAirMoveSpeed = speedValue * baseMaxAirSpeed;
+                parameters._airAccelerationSpeed = speedValue * baseAccAirSpeed;
 
-                parameters._maxGroundedMoveSpeed = float.Parse(args[0]) * baseMaxGroundSpeed;
-                parameters._maxAirMoveSpeed = float.Parse(args[0]) * baseMaxAirSpeed;
-                parameters._airAccelerationSpeed = float.Parse(args[0]) * baseAccAirSpeed;
-
+                SR2Console.SendMessage($"Speed set to {args[0]}");
                 return true;
             }
-            catch { return false; }
+            catch { SR2Console.SendError("An unknown error occured!"); return false; }
         }
     }
 }

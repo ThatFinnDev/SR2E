@@ -29,9 +29,6 @@ SR2AssetBundleUnityProj/ExportedObj/
 *.opendb
 *.VC.db
 
-# Unity3D generated meta files
-*.pidb.meta
-*.pdb.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
@@ -134,7 +131,6 @@ SR2EssentialsMod/StyleCopReport.xml
 *_p.c
 *_h.h
 *.ilk
-*.meta
 *.obj
 *.iobj
 *.pch
