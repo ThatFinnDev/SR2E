@@ -81,7 +81,7 @@ namespace SR2E.Commands
                                                 if(true)
                                                 {
                                                     SR2Warps.warpTo = warp;
-                                                    GameObject prefab = SR2EMain.getIdentifiableByName("TeleporterHomeBlue").prefab;
+                                                    GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterHomeBlue").prefab;
                                                     GameObject obj = GameObject.Instantiate(prefab, cc.Position, Quaternion.identity);
                                                     obj.SetActive(true);
                                                     GadgetTeleporterNode telNode = SR2Console.getObjRec<GadgetTeleporterNode>(obj.transform, "Teleport Collider");
@@ -94,7 +94,7 @@ namespace SR2E.Commands
                                                 if(true)
                                                 {
                                                     SR2Warps.warpTo = warp;
-                                                    GameObject prefab = SR2EMain.getIdentifiableByName("TeleporterZoneGorge").prefab;
+                                                    GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneGorge").prefab;
                                                     GameObject obj = GameObject.Instantiate(prefab, cc.Position, Quaternion.identity);
                                                     obj.SetActive(true);
                                                     GadgetTeleporterNode telNode = SR2Console.getObjRec<GadgetTeleporterNode>(obj.transform, "Teleport Collider");
@@ -107,7 +107,7 @@ namespace SR2E.Commands
                                                 if(true)
                                                 {
                                                     SR2Warps.warpTo = warp;
-                                                    GameObject prefab = SR2EMain.getIdentifiableByName("TeleporterZoneStrand").prefab;
+                                                    GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneStrand").prefab;
                                                     GameObject obj = GameObject.Instantiate(prefab, cc.Position, Quaternion.identity);
                                                     obj.SetActive(true);
                                                     GadgetTeleporterNode telNode = SR2Console.getObjRec<GadgetTeleporterNode>(obj.transform, "Teleport Collider");
@@ -120,7 +120,7 @@ namespace SR2E.Commands
                                                 if(true)
                                                 {
                                                     SR2Warps.warpTo = warp;
-                                                    GameObject prefab = SR2EMain.getIdentifiableByName("TeleporterZoneBluffs").prefab;
+                                                    GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab;
                                                     GameObject obj = GameObject.Instantiate(prefab, cc.Position, Quaternion.identity);
                                                     obj.SetActive(true);
                                                     GadgetTeleporterNode telNode = SR2Console.getObjRec<GadgetTeleporterNode>(obj.transform, "Teleport Collider");
@@ -132,7 +132,9 @@ namespace SR2E.Commands
                                             
                                         }
                                     
-                                }catch (Exception e) {}
+                                }catch (Exception e) {Console.Write(e);
+                                    throw;
+                                }
                             }
                         }
                         if(SR2Console.isOpen)
@@ -146,8 +148,5 @@ namespace SR2E.Commands
             return false;
 
         }
-        
-        static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-
     }
 }

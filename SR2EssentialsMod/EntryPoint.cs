@@ -12,7 +12,6 @@ using SR2E.Commands;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.Windows;
 using Object = UnityEngine.Object;
 
 
@@ -24,11 +23,11 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "1.3.6"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "1.3.7"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
-    public class SR2EMain : MelonMod
+    public class SR2EEntryPoint : MelonMod
     {
         internal static bool infEnergy = false;
         internal static bool infHealth = false;

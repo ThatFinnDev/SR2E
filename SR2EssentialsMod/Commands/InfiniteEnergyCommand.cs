@@ -38,9 +38,9 @@ namespace SR2E.Commands
             if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
             if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
-            if (SR2EMain.infEnergy)
+            if (SR2EEntryPoint.infEnergy)
             {
-                SR2EMain.infEnergy = false;
+                SR2EEntryPoint.infEnergy = false;
                 if (energyMeter == null)
                     energyMeter = Get<EnergyMeter>("Energy Meter");
                 energyMeter.gameObject.active = true;
@@ -57,7 +57,7 @@ namespace SR2E.Commands
             }
             else
             {
-                SR2EMain.infEnergy = true;
+                SR2EEntryPoint.infEnergy = true;
                 if (energyMeter == null)
                     energyMeter = Get<EnergyMeter>("Energy Meter");
                 energyMeter.gameObject.active = false;

@@ -23,7 +23,7 @@ namespace SR2E.Commands
                     firstArg = args[0];
                 List<string> list = new List<string>();
                 int i = -1;
-                foreach (IdentifiableType type in SR2EMain.identifiableTypes)
+                foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                 {
                     if (i > 20)
                         break;
@@ -81,11 +81,11 @@ namespace SR2E.Commands
 
             string itemName = "";
             string identifierTypeName = args[0];
-            IdentifiableType type = SR2EMain.getIdentifiableByName(identifierTypeName);
+            IdentifiableType type = SR2EEntryPoint.getIdentifiableByName(identifierTypeName);
 
             if (type == null)
             {
-                type = SR2EMain.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
+                type = SR2EEntryPoint.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
                 if (type == null)
                 { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
                 string name = type.LocalizedName.GetLocalizedString();
@@ -112,8 +112,8 @@ namespace SR2E.Commands
                 {
                     try
                     {
-                        var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE,SlimeAppearance.AppearanceSaveSet.NONE);
-                        //var spawned = SRBehaviour.Instantiate(type.prefab, hit.point,Quaternion.identity);
+                        var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
+                        //var spawned = SRBehaviour.InstantiateDynamic(type.prefab, hit.point,Quaternion.identity,false);
                         spawned.transform.position = hit.point+hit.normal*PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
                         var delta = -(hit.point - Camera.main.transform.position).normalized;
                         spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);

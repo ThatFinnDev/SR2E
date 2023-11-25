@@ -29,9 +29,9 @@ namespace SR2E.Commands
             if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
             if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
-            if (SR2EMain.infHealth)
+            if (SR2EEntryPoint.infHealth)
             {
-                SR2EMain.infHealth = false;
+                SR2EEntryPoint.infHealth = false;
                 if (healthMeter == null)
                     healthMeter = Get<HealthMeter>("Health Meter");
                 healthMeter.gameObject.active = true;
@@ -42,7 +42,7 @@ namespace SR2E.Commands
             }
             else
             {
-                SR2EMain.infHealth = true;
+                SR2EEntryPoint.infHealth = true;
                 if (healthMeter == null)
                     healthMeter = Get<HealthMeter>("Health Meter");
                 healthMeter.gameObject.active = false;

@@ -22,7 +22,7 @@ namespace SR2E.Commands
                     firstArg = args[0];
                 List<string> list = new List<string>();
                 int i = -1;
-                foreach (IdentifiableType type in SR2EMain.identifiableTypes)
+                foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                 {
                     if(type.ReferenceId.StartsWith("GadgetDefinition"))
                         continue;
@@ -56,11 +56,11 @@ namespace SR2E.Commands
 
             string objectName = "";
             string identifierTypeName = args[0];
-            IdentifiableType type = SR2EMain.getIdentifiableByName(identifierTypeName);
+            IdentifiableType type = SR2EEntryPoint.getIdentifiableByName(identifierTypeName);
 
             if (type == null)
             {
-                type = SR2EMain.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
+                type = SR2EEntryPoint.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
                 if (type == null)
                 { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
                 string name = type.LocalizedName.GetLocalizedString();

@@ -69,7 +69,7 @@ namespace SR2E
             }
 
 
-            SR2EMain.CreateModMenuButton();
+            SR2EEntryPoint.CreateModMenuButton();
 
             Transform modContent = getObjRec<Transform>(transform, "ModContent");
             for (int i = 0; i < modContent.childCount; i++)
