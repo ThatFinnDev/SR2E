@@ -167,6 +167,8 @@ namespace SR2E
                         GameObject obj = Object.Instantiate(entryTemplate, content);
                         obj.SetActive(true);
                         obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
+                        if (!String.IsNullOrEmpty(entry.Description))
+                            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text += $"\n{entry.Description}";
                         obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = entry.GetEditedValueAsString();
                         
                         if (entry.BoxedEditedValue is bool)
