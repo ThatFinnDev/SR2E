@@ -71,7 +71,7 @@ namespace SR2E
             if (!prefs.HasEntry("noclipFlySprintSpeed"))
                 prefs.CreateEntry("noclipFlySprintSpeed", (float)40f, "NoClip Flying SprintSpeed", false);
             if (!prefs.HasEntry("doesConsoleSync"))
-                prefs.CreateEntry("doesConsoleSync", (bool)true, "NoClip Flying SprintSpeed", false);
+                prefs.CreateEntry("doesConsoleSync", (bool)true, "Console sync with ML log", false);
             noclipFlySpeed = prefs.GetEntry<float>("noclipFlySpeed").Value;
             noclipFlySprintSpeed = prefs.GetEntry<float>("noclipFlySprintSpeed").Value;
             syncConsole = prefs.GetEntry<bool>("doesConsoleSync").Value;

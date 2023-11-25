@@ -30,7 +30,7 @@ namespace SR2E
             if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
             var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
-            instance.text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
         }
@@ -56,7 +56,7 @@ namespace SR2E
             if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
             var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
-            instance.text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
             instance.color = new Color(0.6f, 0, 0, 1);
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
@@ -83,7 +83,7 @@ namespace SR2E
             if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
             var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
-            instance.text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
             instance.color = new UnityEngine.Color(1f, 1f, 0, 1);
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
