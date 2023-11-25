@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
-using MelonLoader;
 
 [assembly: AssemblyTitle(SR2E.BuildInfo.Name)]
 [assembly: AssemblyDescription(SR2E.BuildInfo.Description)]
 [assembly: AssemblyCompany(SR2E.BuildInfo.Company)]
 [assembly: AssemblyProduct(SR2E.BuildInfo.Name)]
-[assembly: AssemblyCopyright("Created by " + SR2E.BuildInfo.Author)]
+[assembly: AssemblyCopyright($"Created by {SR2E.BuildInfo.Author}")]
 [assembly: AssemblyTrademark(SR2E.BuildInfo.Company)]
 [assembly: AssemblyVersion(SR2E.BuildInfo.Version)]
 [assembly: AssemblyFileVersion(SR2E.BuildInfo.Version)]
