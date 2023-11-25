@@ -1,7 +1,6 @@
 ﻿using Il2CppMonomiPark.KFC;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using System.Linq;
-using UnityEngine;
 
 namespace SR2E.Commands
 {

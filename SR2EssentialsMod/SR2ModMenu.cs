@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
-using MelonLoader;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Action = System.Action;
-using Object = UnityEngine.Object;
 
 namespace SR2E
 {

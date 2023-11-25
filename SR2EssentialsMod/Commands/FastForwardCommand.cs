@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Il2Cpp;
-
-namespace SR2E.Commands
+﻿namespace SR2E.Commands
 {
     public class FastForwardCommand : SR2CCommand
     {

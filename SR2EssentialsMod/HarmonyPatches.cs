@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using HarmonyLib;
-using Il2Cpp;
-using Il2CppMonomiPark.KFC;
-using Il2CppMonomiPark.SlimeRancher.Event.Query;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.MovementAndLookTypes;
-using Il2CppMonomiPark.SlimeRancher.Regions;
-using Il2CppMonomiPark.SlimeRancher.SceneManagement;
-using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
-using MelonLoader;
-using UnityEngine;
+﻿using Il2CppMonomiPark.SlimeRancher.Event.Query;
 
 namespace SR2E
 {

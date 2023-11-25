@@ -1,16 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Il2Cpp;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppKinematicCharacterController;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
-using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using Il2CppSystem;
-using MelonLoader;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace SR2E
 {

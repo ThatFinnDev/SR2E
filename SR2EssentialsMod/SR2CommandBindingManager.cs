@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using MelonLoader;
-using UnityEngine;
-using UnityEngine.InputSystem;
-using File = System.IO.File;
+﻿using UnityEngine.InputSystem;
 using String = Il2CppSystem.String;
 
 namespace SR2E

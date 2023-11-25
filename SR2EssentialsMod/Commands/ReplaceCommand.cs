@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Il2Cpp;
-using Il2CppMonomiPark.SlimeRancher.Damage;
+﻿using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Regions;
-using Il2CppMonomiPark.SlimeRancher.Weather;
-using UnityEngine;
 
 namespace SR2E.Commands
 {

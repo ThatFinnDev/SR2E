@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Il2Cpp;
-using MelonLoader;
-using UnityEngine;
-
-namespace SR2E.Commands
+﻿namespace SR2E.Commands
 {
     public class GiveGadgetCommand : SR2CCommand
     {

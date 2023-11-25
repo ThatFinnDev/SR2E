@@ -1,15 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Il2Cpp;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
+﻿using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
-using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
-using Il2CppSystem;
-using MelonLoader;
-using UnityEngine;
 
 namespace SR2E.Commands
 {
@@ -144,7 +136,5 @@ namespace SR2E.Commands
 
         }
         
-        static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-
     }
 }

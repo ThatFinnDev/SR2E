@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
-namespace SR2E.Commands
+﻿namespace SR2E.Commands
 {
     public class ClearCommand : SR2CCommand
     {
