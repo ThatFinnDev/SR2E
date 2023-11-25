@@ -303,6 +303,7 @@ namespace SR2E
             RegisterCommand(new SaveWarpCommand());
             RegisterCommand(new DeleteWarpCommand());
             RegisterCommand(new WarpListCommand());
+            RegisterCommand(new SpeedCommand());
             
             
             if(!SR2EEntryPoint.infHealthInstalled)
