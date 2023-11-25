@@ -118,10 +118,14 @@ namespace SR2E
         /// </summary>
         public static void Toggle()
         {
-            if(isOpen)
-                Close();
-            else
-                Open();
+            if (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "StandaloneStart" &&
+                SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo")
+            {
+                if (isOpen)
+                    Close();
+                else
+                    Open();
+            }
         }
         /// <summary>
         /// Registers a command to be used in the console
@@ -388,7 +392,7 @@ namespace SR2E
                 else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
                 {
                     selectedAutoComplete--;
-                    if (selectedAutoComplete> autoCompleteContent.childCount)
+                    if (selectedAutoComplete<=-1)
                         selectedAutoComplete = autoCompleteContent.childCount;
                     for (int i = 0; i < autoCompleteContent.childCount; i++)
                     {
