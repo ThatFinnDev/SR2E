@@ -26,9 +26,9 @@ namespace SR2E
                     SendMessage(singularLine);
                 return;
             }
-            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
+            GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
-            instance.text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
         }
@@ -47,10 +47,11 @@ namespace SR2E
                     SendError(singularLine);
                 return;
             }
-            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
+            GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
-            instance.text = message;
-            instance.color = new Color(0.6f, 0, 0, 1);
+            instance.transform.GetChild(0).gameObject.SetActive(true);
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0, 0, 1);
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
         }
@@ -69,10 +70,11 @@ namespace SR2E
                     SendWarning(singularLine);
                 return;
             }
-            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
+            GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
-            instance.text = message;
-            instance.color = new UnityEngine.Color(1f, 1f, 0, 1);
+            instance.transform.GetChild(0).gameObject.SetActive(true);
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new UnityEngine.Color(1f, 1f, 0, 1);
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
         }
@@ -119,7 +121,8 @@ namespace SR2E
         public static void Toggle()
         {
             if (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "StandaloneStart" &&
-                SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo")
+                SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo" &&
+                SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "LoadScene")
             {
                 if (isOpen)
                     Close();
@@ -293,7 +296,8 @@ namespace SR2E
             consoleBlock = getObjRec<GameObject>(transform,"consoleBlock");
             consoleMenu = getObjRec<GameObject>(transform,"consoleMenu");
             consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
-            messagePrefab = getObjRec<TextMeshProUGUI>(transform, "messagePrefab");
+            messagePrefab = getObjRec<GameObject>(transform, "messagePrefab");
+            specialMessagePrefab = getObjRec<GameObject>(transform, "specialMessagePrefab");
             commandInput = getObjRec<TMP_InputField>(transform, "commandInput");
             _scrollbar = getObjRec<Scrollbar>(transform,"ConsoleScroll");
             autoCompleteContent = getObjRec<Transform>(transform, "AutoCompleteContent");
@@ -352,7 +356,8 @@ namespace SR2E
         static Transform consoleContent;
         static Transform autoCompleteContent;
         static GameObject autoCompleteScrollView;
-        static TextMeshProUGUI messagePrefab;
+        static GameObject messagePrefab;
+        static GameObject specialMessagePrefab;
         private static int selectedAutoComplete = 0;
         internal static void Update()
         {
