@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using Il2CppTMPro;
-using MelonLoader.Utils;
 using SR2E.Commands;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
@@ -12,12 +10,8 @@ namespace SR2E
 {
     public static class SR2Console
     {
-        internal static string melonLoaderLogFile = Path.Combine(MelonEnvironment.MelonLoaderDirectory, "Latest.log");
 
-        /// <summary>
-        /// Display a message in the console
-        /// </summary>
-        public static void SendMessage(string message, bool doMLLog = true)
+        public static void SendMessage(string message, bool doMLLog = SR2EEntryPoint.syncConsole)
         {
             if (message.Contains("[SR2E]:"))
             {
@@ -43,13 +37,13 @@ namespace SR2E
         /// <summary>
         /// Display an error in the console
         /// </summary>
-        public static void SendError(string message, bool doMLLog = true)
+        public static void SendError(string message, bool doMLLog = SR2EEntryPoint.syncConsole)
         {
             if (message.Contains("[SR2E]:"))
             {
                 return;
             }
-            if(!SR2EEntryPoint.consoleFinishedCreating)
+            if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
@@ -70,7 +64,7 @@ namespace SR2E
         /// <summary>
         /// Display an error in the console
         /// </summary>
-        public static void SendWarning(string message, bool doMLLog = true)
+        public static void SendWarning(string message, bool doMLLog = SR2EEntryPoint.syncConsole)
         {
             if (message.Contains("[SR2E]:"))
             {
@@ -137,7 +131,8 @@ namespace SR2E
         public static void Toggle()
         {
             if (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "StandaloneStart" &&
-                SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo")
+                SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo" &&
+                SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "LoadScene")
             {
                 if (isOpen)
                     Close();
@@ -308,6 +303,7 @@ namespace SR2E
 
         internal static void Start()
         {
+
             if (SR2EEntryPoint.syncConsole)
             {
                 MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage(s2, false);
@@ -318,7 +314,8 @@ namespace SR2E
             consoleBlock = getObjRec<GameObject>(transform,"consoleBlock");
             consoleMenu = getObjRec<GameObject>(transform,"consoleMenu");
             consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
-            messagePrefab = getObjRec<TextMeshProUGUI>(transform, "messagePrefab");
+            messagePrefab = getObjRec<GameObject>(transform, "messagePrefab");
+            specialMessagePrefab = getObjRec<GameObject>(transform, "specialMessagePrefab");
             commandInput = getObjRec<TMP_InputField>(transform, "commandInput");
             _scrollbar = getObjRec<Scrollbar>(transform,"ConsoleScroll");
             autoCompleteContent = getObjRec<Transform>(transform, "AutoCompleteContent");
@@ -377,7 +374,8 @@ namespace SR2E
         static Transform consoleContent;
         static Transform autoCompleteContent;
         static GameObject autoCompleteScrollView;
-        static TextMeshProUGUI messagePrefab;
+        static GameObject messagePrefab;
+        static GameObject specialMessagePrefab;
         private static int selectedAutoComplete = 0;
         internal static void Update()
         {
