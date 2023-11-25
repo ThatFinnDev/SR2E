@@ -30,6 +30,7 @@ namespace SR2E
         internal static bool infEnergyInstalled = false;
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
+        internal static bool syncConsole = true;
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
@@ -69,8 +70,11 @@ namespace SR2E
                 prefs.CreateEntry("noclipFlySpeed", (float)20f, "NoClip Flying Speed", false);
             if (!prefs.HasEntry("noclipFlySprintSpeed"))
                 prefs.CreateEntry("noclipFlySprintSpeed", (float)40f, "NoClip Flying SprintSpeed", false);
+            if (!prefs.HasEntry("doesConsoleSync"))
+                prefs.CreateEntry("doesConsoleSync", (bool)true, "NoClip Flying SprintSpeed", false);
             noclipFlySpeed = prefs.GetEntry<float>("noclipFlySpeed").Value;
             noclipFlySprintSpeed = prefs.GetEntry<float>("noclipFlySprintSpeed").Value;
+            syncConsole = prefs.GetEntry<bool>("doesConsoleSync").Value;
 
         }
         public override void OnInitializeMelon()
