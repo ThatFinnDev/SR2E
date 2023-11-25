@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using Il2Cpp;
-using Il2CppMonomiPark.SlimeRancher.Damage;
+﻿using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
-using UnityEngine;
 
 namespace SR2E.Commands
 {
@@ -26,7 +23,7 @@ namespace SR2E.Commands
                 var gameobject = hit.collider.gameObject;
                 if (gameobject.GetComponent<Identifiable>())
                 {
-                    Damage damage = new Damage { Amount = 99999999,DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };;
+                    Damage damage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() }; ;
                     damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     damage.Amount = 99999999;
                     DeathHandler.Kill(gameobject, damage);
@@ -55,7 +52,7 @@ namespace SR2E.Commands
                     gameobject.GetComponentInParent<LandPlotLocation>().Replace(gameobject.GetComponentInParent<LandPlot>(), GameContext.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.EMPTY));
                     didAThing = true;
                 }
-                if(didAThing)
+                if (didAThing)
                 { SR2Console.SendMessage("Successfully killed the thing!"); return true; }
             }
             SR2Console.SendError("Not looking at a valid object!");

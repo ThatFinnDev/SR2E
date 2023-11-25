@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Il2Cpp;
-using UnityEngine;
-
-namespace SR2E.Commands
+﻿namespace SR2E.Commands
 {
     public class NewBucksCommand : SR2CCommand
     {

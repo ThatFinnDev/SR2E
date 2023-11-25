@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using MelonLoader;
-
-namespace SR2E.Commands
+﻿namespace SR2E.Commands
 {
     public class ModsCommand : SR2CCommand
     {
