@@ -308,9 +308,12 @@ namespace SR2E
 
         internal static void Start()
         {
-            MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage(s2, false);
-            MelonLogger.ErrorCallbackHandler += (s, s1) => SendError(s1, false);
-            MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning(s1, false);
+            if (SR2EEntryPoint.syncConsole)
+            {
+                MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage(s2, false);
+                MelonLogger.ErrorCallbackHandler += (s, s1) => SendError(s1, false);
+                MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning(s1, false);
+            }
 
             consoleBlock = getObjRec<GameObject>(transform,"consoleBlock");
             consoleMenu = getObjRec<GameObject>(transform,"consoleMenu");
