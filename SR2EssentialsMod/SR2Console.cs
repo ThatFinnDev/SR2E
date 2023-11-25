@@ -325,6 +325,7 @@ namespace SR2E
             RegisterCommand(new DeleteWarpCommand());
             RegisterCommand(new WarpListCommand());
             RegisterCommand(new SpeedCommand());
+            RegisterCommand(new GravityCommand());
             
             if(!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
