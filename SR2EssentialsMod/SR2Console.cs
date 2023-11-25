@@ -11,12 +11,13 @@ namespace SR2E
     public static class SR2Console
     {
 
-        /// <summary>
-        /// Display a message in the console
-        /// </summary>
-        public static void SendMessage(string message)
+        public static void SendMessage(string message, bool doMLLog = SR2EEntryPoint.syncConsole)
         {
-            if(!SR2EEntryPoint.consoleFinishedCreating)
+            if (message.Contains("[SR2E]:"))
+            {
+                return;
+            }
+            if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
@@ -26,7 +27,8 @@ namespace SR2E
                     SendMessage(singularLine);
                 return;
             }
-            GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
+            if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
+            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
             instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
             _scrollbar.value = 0f;
@@ -35,9 +37,13 @@ namespace SR2E
         /// <summary>
         /// Display an error in the console
         /// </summary>
-        public static void SendError(string message)
+        public static void SendError(string message, bool doMLLog = SR2EEntryPoint.syncConsole)
         {
-            if(!SR2EEntryPoint.consoleFinishedCreating)
+            if (message.Contains("[SR2E]:"))
+            {
+                return;
+            }
+            if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
@@ -47,20 +53,24 @@ namespace SR2E
                     SendError(singularLine);
                 return;
             }
-            GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+            if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
+            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).gameObject.SetActive(true);
             instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0, 0, 1);
+            instance.color = new Color(0.6f, 0, 0, 1);
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
         }
         /// <summary>
         /// Display an error in the console
         /// </summary>
-        public static void SendWarning(string message)
+        public static void SendWarning(string message, bool doMLLog = SR2EEntryPoint.syncConsole)
         {
-            if(!SR2EEntryPoint.consoleFinishedCreating)
+            if (message.Contains("[SR2E]:"))
+            {
+                return;
+            }
+            if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
@@ -70,11 +80,11 @@ namespace SR2E
                     SendWarning(singularLine);
                 return;
             }
-            GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+            if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
+            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).gameObject.SetActive(true);
             instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new UnityEngine.Color(1f, 1f, 0, 1);
+            instance.color = new UnityEngine.Color(1f, 1f, 0, 1);
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
         }
@@ -293,6 +303,14 @@ namespace SR2E
 
         internal static void Start()
         {
+
+            if (SR2EEntryPoint.syncConsole)
+            {
+                MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage(s2, false);
+                MelonLogger.ErrorCallbackHandler += (s, s1) => SendError(s1, false);
+                MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning(s1, false);
+            }
+
             consoleBlock = getObjRec<GameObject>(transform,"consoleBlock");
             consoleMenu = getObjRec<GameObject>(transform,"consoleMenu");
             consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
