@@ -23,7 +23,7 @@ namespace SR2E
         /// </summary>
         public static void SendMessage(string message)
         {
-            if(!SR2EEntryPoint.consoleFinishedCreating)
+            if(!SR2EMain.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
@@ -44,7 +44,7 @@ namespace SR2E
         /// </summary>
         public static void SendError(string message)
         {
-            if(!SR2EEntryPoint.consoleFinishedCreating)
+            if(!SR2EMain.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
@@ -303,11 +303,12 @@ namespace SR2E
             RegisterCommand(new SaveWarpCommand());
             RegisterCommand(new DeleteWarpCommand());
             RegisterCommand(new WarpListCommand());
+            RegisterCommand(new SpeedCommand());
             
             
-            if(!SR2EEntryPoint.infHealthInstalled)
+            if(!SR2EMain.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
-            if(!SR2EEntryPoint.infEnergyInstalled)
+            if(!SR2EMain.infEnergyInstalled)
                 RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new NoClipCommand());
             
@@ -336,7 +337,7 @@ namespace SR2E
         static TextMeshProUGUI messagePrefab;
         internal static void Update()
         {
-            if (SR2EEntryPoint.consoleFinishedCreating != true)
+            if (SR2EMain.consoleFinishedCreating != true)
                 return;
             commandInput.ActivateInputField();
             if (isOpen)
