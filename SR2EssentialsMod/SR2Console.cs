@@ -55,6 +55,28 @@ namespace SR2E
             scrollCompletlyDown = true;
         }
         /// <summary>
+        /// Display an error in the console
+        /// </summary>
+        public static void SendWarning(string message)
+        {
+            if(!SR2EEntryPoint.consoleFinishedCreating)
+                return;
+            if (consoleContent.childCount >= maxMessages)
+                GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+            if (message.Contains("\n"))
+            {
+                foreach (string singularLine in message.Split('\n'))
+                    SendWarning(singularLine);
+                return;
+            }
+            var instance = GameObject.Instantiate(messagePrefab, consoleContent);
+            instance.gameObject.SetActive(true);
+            instance.text = message;
+            instance.color = new UnityEngine.Color(1f, 1f, 0, 1);
+            _scrollbar.value = 0f;
+            scrollCompletlyDown = true;
+        }
+        /// <summary>
         /// Check if console is open
         /// </summary>
         public static bool isOpen
@@ -193,6 +215,7 @@ namespace SR2E
 
         static void RefreshAutoComplete(string text)
         {
+            selectedAutoComplete = 0;
             for (int i = 0; i < autoCompleteContent.childCount; i++)
                 Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
             if (String.IsNullOrEmpty(text))
@@ -212,7 +235,7 @@ namespace SR2E
                     List<string> possibleAutoCompletes = (commands[cmd].GetAutoComplete(argIndex, args));
                     if (possibleAutoCompletes != null)
                     {
-                        int maxPredictions = 20; //This is to reduce lag
+                        int maxPredictions = 50; //This is to reduce lag
                         int predicted = 0;
                         foreach (string argument in possibleAutoCompletes)
                         {
@@ -325,6 +348,7 @@ namespace SR2E
         static Transform autoCompleteContent;
         static GameObject autoCompleteScrollView;
         static TextMeshProUGUI messagePrefab;
+        private static int selectedAutoComplete = 0;
         internal static void Update()
         {
             if (SR2EEntryPoint.consoleFinishedCreating != true)
@@ -347,11 +371,37 @@ namespace SR2E
                         autoCompleteContent.GetChild(0).GetComponent<Button>().onClick.Invoke();
                     }
                 }
-                
-                if (Keyboard.current.enterKey.wasPressedThisFrame)
-                    if(commandInput.text!="")
-                        Execute();
+                /*
+                if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+                {
+                    selectedAutoComplete++;
+                    if (selectedAutoComplete> autoCompleteContent.childCount)
+                        selectedAutoComplete = 0;
+                    for (int i = 0; i < autoCompleteContent.childCount; i++)
+                    {
+                        if(i==selectedAutoComplete)
+                            autoCompleteContent.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.black;
+                        else
+                         autoCompleteContent.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.white;
+                    }
+                }
+                else if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                {
+                    selectedAutoComplete--;
+                    if (selectedAutoComplete> autoCompleteContent.childCount)
+                        selectedAutoComplete = autoCompleteContent.childCount;
+                    for (int i = 0; i < autoCompleteContent.childCount; i++)
+                    {
+                        if(i==selectedAutoComplete)
+                            autoCompleteContent.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.black;
+                        else
+                            autoCompleteContent.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.white;
+                    }
+                }*/
             }
+            if (Keyboard.current.enterKey.wasPressedThisFrame)
+                if(commandInput.text!="") Execute();
+            
             if (Keyboard.current.ctrlKey.wasPressedThisFrame)
                 if(Keyboard.current.tabKey.isPressed)
                     Toggle();

@@ -5,14 +5,20 @@ namespace SR2E
 {
     internal static class SR2CommandBindingManager
     {
+        private static string path = SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath + "SR2EssentialsBinds.binds";
+        private static string oldPath = "SR2EssentialsBinds.binds";
+
         internal static Dictionary<Key, string> keyCodeCommands = new Dictionary<Key, string>();
 
         internal static void Start()
         {
-            if (File.Exists("SR2EssentialsBinds.binds"))
+            if (File.Exists(oldPath))
             {
-                LoadKeyBinds();
+                File.WriteAllText(path, File.ReadAllText(oldPath));
+                File.Delete(oldPath);
             }
+            if(File.Exists(path))
+                LoadKeyBinds();
         }
 
         internal static void SaveKeyBinds()
@@ -23,14 +29,14 @@ namespace SR2E
                 safe += keyValuePair.Key.ToString()+"\n";
                 safe += keyValuePair.Value+"\n";
             }
-            File.WriteAllText("SR2EssentialsBinds.binds",safe);
+            File.WriteAllText(path,safe);
         }
 
         static void LoadKeyBinds()
         {
             bool isKey = true;
             Key key = Key.None;
-            foreach (string line in File.ReadAllLines("SR2EssentialsBinds.binds"))
+            foreach (string line in File.ReadAllLines(path))
             {
                 if(String.IsNullOrEmpty(line))
                     continue;
