@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Il2CppTMPro;
+using MelonLoader.Utils;
 using SR2E.Commands;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
@@ -10,13 +12,18 @@ namespace SR2E
 {
     public static class SR2Console
     {
+        internal static string melonLoaderLogFile = Path.Combine(MelonEnvironment.MelonLoaderDirectory, "Latest.log");
 
         /// <summary>
         /// Display a message in the console
         /// </summary>
-        public static void SendMessage(string message)
+        public static void SendMessage(string message, bool doMLLog = true)
         {
-            if(!SR2EEntryPoint.consoleFinishedCreating)
+            if (message.Contains("[SR2E]:"))
+            {
+                return;
+            }
+            if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
@@ -26,6 +33,7 @@ namespace SR2E
                     SendMessage(singularLine);
                 return;
             }
+            if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
             var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
             instance.text = message;
@@ -35,8 +43,12 @@ namespace SR2E
         /// <summary>
         /// Display an error in the console
         /// </summary>
-        public static void SendError(string message)
+        public static void SendError(string message, bool doMLLog = true)
         {
+            if (message.Contains("[SR2E]:"))
+            {
+                return;
+            }
             if(!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
@@ -47,6 +59,7 @@ namespace SR2E
                     SendError(singularLine);
                 return;
             }
+            if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
             var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
             instance.text = message;
@@ -57,9 +70,13 @@ namespace SR2E
         /// <summary>
         /// Display an error in the console
         /// </summary>
-        public static void SendWarning(string message)
+        public static void SendWarning(string message, bool doMLLog = true)
         {
-            if(!SR2EEntryPoint.consoleFinishedCreating)
+            if (message.Contains("[SR2E]:"))
+            {
+                return;
+            }
+            if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
                 GameObject.Destroy(consoleContent.GetChild(0).gameObject);
@@ -69,6 +86,7 @@ namespace SR2E
                     SendWarning(singularLine);
                 return;
             }
+            if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
             var instance = GameObject.Instantiate(messagePrefab, consoleContent);
             instance.gameObject.SetActive(true);
             instance.text = message;
@@ -290,6 +308,10 @@ namespace SR2E
 
         internal static void Start()
         {
+            MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage(s2, false);
+            MelonLogger.ErrorCallbackHandler += (s, s1) => SendError(s1, false);
+            MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning(s1, false);
+
             consoleBlock = getObjRec<GameObject>(transform,"consoleBlock");
             consoleMenu = getObjRec<GameObject>(transform,"consoleMenu");
             consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
