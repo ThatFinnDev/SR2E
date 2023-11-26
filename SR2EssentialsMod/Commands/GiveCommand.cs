@@ -32,7 +32,7 @@
                             }
                         }
                     }
-                    catch (Exception ignored) { }
+                    catch  { }
 
                 }
 
