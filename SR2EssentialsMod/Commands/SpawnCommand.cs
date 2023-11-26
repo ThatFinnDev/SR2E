@@ -33,7 +33,7 @@ namespace SR2E.Commands
                             }
                         }
                     }
-                    catch (Exception ignored) { }
+                    catch  { }
 
                 }
 
@@ -114,7 +114,7 @@ namespace SR2E.Commands
                         if(type is GadgetDefinition)
                          SceneContext.Instance.ActorRegistry.Register(spawned.GetComponent<Gadget>());
                     }
-                    catch (Exception ignored)
+                    catch 
                     { }
                 }
             }
