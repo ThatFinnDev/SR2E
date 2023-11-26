@@ -471,13 +471,14 @@ namespace SR2E
             if (Keyboard.current.tabKey.wasPressedThisFrame)
                 if (Keyboard.current.ctrlKey.isPressed)
                     Toggle();
+            if (autoCompleteContent.childCount != 0)
+            {
+                if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
+                    NextAutoComplete();
 
-            if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
-                NextAutoComplete();
-            
-            if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
-                PrevAutoComplete();
-
+                if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
+                    PrevAutoComplete();
+            }
 
             if (selectedAutoComplete == autoCompleteContent.childCount)
             {
