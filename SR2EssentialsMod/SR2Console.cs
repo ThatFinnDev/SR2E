@@ -531,12 +531,6 @@ namespace SR2E
                 autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color = new Color32(255, 211, 0, 120);
             }
         }
-
-        public static void MoveAutoCompleteScroll(float amount)
-        {
-            autoCompleteContent.Translate(0, amount, 0);
-        }
-        private static int currScrolled = -1;
         public static void PrevAutoComplete()
         {
             selectedAutoComplete -= 1;
