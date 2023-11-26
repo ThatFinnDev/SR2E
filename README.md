@@ -30,9 +30,10 @@
  because otherwise SR2 Mods wouldn't exist.
  Link: https://melonwiki.xyz/#/
 # Screenshots
-![Screenshot 1](https://github.com/ThatFinn/SR2Essentials/blob/main/Screenshot1.png?raw=true)
-![Screenshot 2](https://github.com/ThatFinn/SR2Essentials/blob/main/Screenshot2.png?raw=true)
-![Screenshot 3](https://github.com/ThatFinn/SR2Essentials/blob/main/Screenshot3.png?raw=true)
+![Screenshot 1](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot1.png?raw=true)
+![Screenshot 2](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot2.png?raw=true)
+![Screenshot 3](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot3.png?raw=true)
+![Screenshot 3](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot4.png?raw=true)
 
 
 
