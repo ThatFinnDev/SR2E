@@ -10,6 +10,8 @@ namespace SR2E
 {
     public static class SR2Console
     {
+        public static List<string> commandHistory;
+        public static int commandHistoryIdx = -1;
         /// <summary>
         /// Display a message in the console
         /// </summary>
@@ -24,8 +26,7 @@ namespace SR2E
         {
             if (message.Contains("[SR2E]:"))
             { return; }
-            if (message.StartsWith("[UnityExplorer]"))
-            { return; }
+            if (message.StartsWith("[UnityExplorer]") || message.StartsWith("Exception in IL2CPP-to-Managed trampoline, not passing it to il2cpp"))
             
             if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
@@ -388,7 +389,7 @@ namespace SR2E
 
         internal static void Start()
         {
-
+            commandHistory = new List<string>();
             if (SR2EEntryPoint.syncConsole)
             {
                 SetupConsoleSync();
@@ -481,6 +482,15 @@ namespace SR2E
             }
             if (Keyboard.current.enterKey.wasPressedThisFrame)
                 if (commandInput.text != "") Execute();
+            
+            if (commandHistoryIdx != -1)
+            {
+                if (Keyboard.current.altKey.wasPressedThisFrame)
+                {
+                    commandInput.text = commandHistory[commandHistoryIdx];
+                    commandHistoryIdx -= 1;
+                }
+            }
 
             if (Keyboard.current.ctrlKey.wasPressedThisFrame)
                 if (Keyboard.current.tabKey.isPressed)
@@ -569,6 +579,8 @@ namespace SR2E
         static void Execute()
         {
             string cmds = commandInput.text;
+            commandHistory.Add(cmds);
+            commandHistoryIdx = commandHistory.Count - 1;
             commandInput.text = "";
             for (int i = 0; i < autoCompleteContent.childCount; i++)
             {
