@@ -373,12 +373,13 @@ namespace SR2E
             RegisterCommand(new WarpListCommand());
             RegisterCommand(new SpeedCommand());
             RegisterCommand(new GravityCommand());
+            RegisterCommand(new RotateCommand());
+            RegisterCommand(new NoClipCommand());
             
             if(!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
             if(!SR2EEntryPoint.infEnergyInstalled)
                 RegisterCommand(new InfiniteEnergyCommand());
-            RegisterCommand(new NoClipCommand());
             
             //Warps & Keybinding loading
             SR2CommandBindingManager.Start();
