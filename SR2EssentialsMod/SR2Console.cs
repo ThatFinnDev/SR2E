@@ -23,9 +23,10 @@ namespace SR2E
         public static void SendMessage(string message, bool doMLLog)
         {
             if (message.Contains("[SR2E]:"))
-            {
-                return;
-            }
+            { return; }
+            if (message.StartsWith("[UnityExplorer]"))
+            { return; }
+            
             if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
@@ -56,9 +57,9 @@ namespace SR2E
         public static void SendError(string message, bool doMLLog)
         {
             if (message.Contains("[SR2E]:"))
-            {
-                return;
-            }
+            { return; }
+            if (message.StartsWith("[UnityExplorer]"))
+            { return; }
             if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
@@ -91,9 +92,9 @@ namespace SR2E
         public static void SendWarning(string message, bool doMLLog)
         {
             if (message.Contains("[SR2E]:"))
-            {
-                return;
-            }
+            { return; }
+            if (message.StartsWith("[UnityExplorer]"))
+            { return; }
             if (!SR2EEntryPoint.consoleFinishedCreating)
                 return;
             if (consoleContent.childCount >= maxMessages)
@@ -338,9 +339,9 @@ namespace SR2E
 
             if (SR2EEntryPoint.syncConsole)
             {
-                MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage(s2, false);
-                MelonLogger.ErrorCallbackHandler += (s, s1) => SendError(s1, false);
-                MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning(s1, false);
+                MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
+                MelonLogger.ErrorCallbackHandler += (s, s1) => SendError($"[{s}]: {s1}", false);
+                MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning($"[{s}]: {s}", false);
             }
 
             consoleBlock = getObjRec<GameObject>(transform, "consoleBlock");
