@@ -332,34 +332,25 @@ namespace SR2E
             
         }
 
-
-
-        internal static void Start()
+        //Warps & Keybinding loading
+        private static void SetupData()
         {
+            SR2CommandBindingManager.Start();
+            SR2Warps.Start();
+        }
 
-            if (SR2EEntryPoint.syncConsole)
-            {
-                MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
-                MelonLogger.ErrorCallbackHandler += (s, s1) => SendError($"[{s}]: {s1}", false);
-                MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning($"[{s}]: {s}", false);
-            }
-
-            consoleBlock = getObjRec<GameObject>(transform, "consoleBlock");
-            consoleMenu = getObjRec<GameObject>(transform, "consoleMenu");
-            consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
-            messagePrefab = getObjRec<GameObject>(transform, "messagePrefab");
-            specialMessagePrefab = getObjRec<GameObject>(transform, "specialMessagePrefab");
-            commandInput = getObjRec<TMP_InputField>(transform, "commandInput");
-            _scrollbar = getObjRec<Scrollbar>(transform, "ConsoleScroll");
-            autoCompleteContent = getObjRec<Transform>(transform, "AutoCompleteContent");
-            autoCompleteEntryPrefab = getObjRec<GameObject>(transform, "AutoCompleteEntry");
-            autoCompleteScrollView = getObjRec<GameObject>(transform, "AutoCompleteScroll");
-            autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
-            autoCompleteScrollView.SetActive(false);
-            consoleBlock.SetActive(false);
-            consoleMenu.SetActive(false);
-            commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
+        //Setup ModMenu
+        private static void SetupModMenu()
+        {
+            SR2ModMenu.parent = transform;
+            SR2ModMenu.gameObject = getObjRec<GameObject>(transform, "modMenu");
+            SR2ModMenu.transform = getObjRec<Transform>(transform, "modMenu");
+            SR2ModMenu.Start();
+        }
+        private static void SetupCommands()
+        {
             RegisterCommand(new GiveCommand());
+            RegisterCommand(new UtilCommand());
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
             RegisterCommand(new SpawnCommand());
@@ -387,17 +378,42 @@ namespace SR2E
             if (!SR2EEntryPoint.infEnergyInstalled)
                 RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new NoClipCommand());
+        }
+        private static void SetupConsoleSync()
+        {
+            MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
+            MelonLogger.ErrorCallbackHandler += (s, s1) => SendError($"[{s}]: {s1}", false);
+            MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning($"[{s}]: {s}", false);
+        }
 
-            //Warps & Keybinding loading
-            SR2CommandBindingManager.Start();
-            SR2Warps.Start();
+        internal static void Start()
+        {
 
-            //Setup Modmenu
+            if (SR2EEntryPoint.syncConsole)
+            {
+                SetupConsoleSync();
+            }
 
-            SR2ModMenu.parent = transform;
-            SR2ModMenu.gameObject = getObjRec<GameObject>(transform, "modMenu");
-            SR2ModMenu.transform = getObjRec<Transform>(transform, "modMenu");
-            SR2ModMenu.Start();
+            consoleBlock = getObjRec<GameObject>(transform, "consoleBlock");
+            consoleMenu = getObjRec<GameObject>(transform, "consoleMenu");
+            consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
+            messagePrefab = getObjRec<GameObject>(transform, "messagePrefab");
+            specialMessagePrefab = getObjRec<GameObject>(transform, "specialMessagePrefab");
+            commandInput = getObjRec<TMP_InputField>(transform, "commandInput");
+            _scrollbar = getObjRec<Scrollbar>(transform, "ConsoleScroll");
+            autoCompleteContent = getObjRec<Transform>(transform, "AutoCompleteContent");
+            autoCompleteEntryPrefab = getObjRec<GameObject>(transform, "AutoCompleteEntry");
+            autoCompleteScrollView = getObjRec<GameObject>(transform, "AutoCompleteScroll");
+            autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
+            autoCompleteScrollView.SetActive(false);
+            consoleBlock.SetActive(false);
+            consoleMenu.SetActive(false);
+            commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
+
+            SetupCommands();
+            SetupData();
+            SetupModMenu();
+
         }
 
         static TMP_InputField commandInput;
