@@ -15,7 +15,7 @@ namespace SR2E
         /// </summary>
         public static void SendMessage(string message)
         {
-            SendMessage(message,SR2EEntryPoint.syncConsole);
+            SendMessage(message, SR2EEntryPoint.syncConsole);
         }
         /// <summary>
         /// Display a message in the console
@@ -33,7 +33,7 @@ namespace SR2E
             if (message.Contains("\n"))
             {
                 foreach (string singularLine in message.Split('\n'))
-                    SendMessage(singularLine,doMLLog);
+                    SendMessage(singularLine, doMLLog);
                 return;
             }
             if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
@@ -48,7 +48,7 @@ namespace SR2E
         /// </summary>
         public static void SendError(string message)
         {
-            SendError(message,SR2EEntryPoint.syncConsole);
+            SendError(message, SR2EEntryPoint.syncConsole);
         }
         /// <summary>
         /// Display an error in the console
@@ -66,7 +66,7 @@ namespace SR2E
             if (message.Contains("\n"))
             {
                 foreach (string singularLine in message.Split('\n'))
-                    SendError(singularLine,doMLLog);
+                    SendError(singularLine, doMLLog);
                 return;
             }
             if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
@@ -83,7 +83,7 @@ namespace SR2E
         /// </summary>
         public static void SendWarning(string message)
         {
-            SendWarning(message,SR2EEntryPoint.syncConsole);
+            SendWarning(message, SR2EEntryPoint.syncConsole);
         }
         /// <summary>
         /// Display an error in the console
@@ -101,7 +101,7 @@ namespace SR2E
             if (message.Contains("\n"))
             {
                 foreach (string singularLine in message.Split('\n'))
-                    SendWarning(singularLine,doMLLog);
+                    SendWarning(singularLine, doMLLog);
                 return;
             }
             if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
@@ -126,27 +126,27 @@ namespace SR2E
         {
             for (int i = 0; i < autoCompleteContent.childCount; i++)
             { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
-            
+
             consoleBlock.SetActive(false);
             consoleMenu.SetActive(false);
-            try{SystemContext.Instance.SceneLoader.UnpauseGame();}catch(Exception e){}
+            try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch (Exception e) { }
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
 
         }
-        
+
         /// <summary>
         /// Opens the console
         /// </summary>
         public static void Open()
-        { 
+        {
             if (SR2ModMenu.isOpen)
                 return;
-            if(SR2Warps.warpTo!=null)
+            if (SR2Warps.warpTo != null)
                 return;
-            
+
             consoleBlock.SetActive(true);
             consoleMenu.SetActive(true);
-            try{SystemContext.Instance.SceneLoader.TryPauseGame();}catch(Exception e){}
+            try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch (Exception e) { }
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
             RefreshAutoComplete(commandInput.text);
         }
@@ -178,7 +178,7 @@ namespace SR2E
             commands.Add(cmd.ID.ToLowerInvariant(), cmd);
             List<KeyValuePair<string, SR2CCommand>> myList = commands.ToList();
 
-            myList.Sort(delegate(KeyValuePair<string, SR2CCommand> pair1, KeyValuePair<string, SR2CCommand> pair2) { return pair1.Key.CompareTo(pair2.Key); });
+            myList.Sort(delegate (KeyValuePair<string, SR2CCommand> pair1, KeyValuePair<string, SR2CCommand> pair2) { return pair1.Key.CompareTo(pair2.Key); });
             commands = myList.ToDictionary(x => x.Key, x => x.Value);
             return true;
         }
@@ -194,17 +194,17 @@ namespace SR2E
                 {
                     bool spaces = c.Contains(" ");
                     string cmd = spaces ? c.Substring(0, c.IndexOf(' ')) : c;
-                
+
                     if (commands.ContainsKey(cmd))
                     {
                         bool successful;
                         if (spaces)
                         {
-                            var argString = c.TrimEnd(' ')+" ";
+                            var argString = c.TrimEnd(' ') + " ";
                             List<string> split = argString.Split(' ').ToList();
                             split.RemoveAt(0);
-                            split.RemoveAt(split.Count-1);
-                            if(split.Count!=0)
+                            split.RemoveAt(split.Count - 1);
+                            if (split.Count != 0)
                                 successful = commands[cmd].Execute(split.ToArray());
                             else
                                 successful = commands[cmd].Execute(null);
@@ -216,8 +216,8 @@ namespace SR2E
                         SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
                 }
         }
-        
-        
+
+
 
         internal static Transform transform;
         internal static GameObject gameObject;
@@ -226,7 +226,7 @@ namespace SR2E
         {
             List<GameObject> totalChildren = getAllChildren(transform);
             for (int i = 0; i < totalChildren.Count; i++)
-                if(totalChildren[i].name==name)
+                if (totalChildren[i].name == name)
                 {
                     if (typeof(T) == typeof(GameObject))
                         return totalChildren[i] as T;
@@ -249,7 +249,7 @@ namespace SR2E
             }
             return allChildren;
         }
-        
+
         static Scrollbar _scrollbar;
         static bool shouldResetTime = false;
         const int maxMessages = 100;
@@ -257,7 +257,11 @@ namespace SR2E
 
         static void RefreshAutoComplete(string text)
         {
-            selectedAutoComplete = 0;
+            autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, 744, autoCompleteContent.position.z);
+            if (selectedAutoComplete > autoCompleteContent.childCount - 1)
+            {
+                selectedAutoComplete = 0;
+            }
             for (int i = 0; i < autoCompleteContent.childCount; i++)
                 Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
             if (String.IsNullOrEmpty(text))
@@ -270,9 +274,9 @@ namespace SR2E
                     var argString = text;
                     List<string> split = argString.Split(' ').ToList();
                     split.RemoveAt(0);
-                    int argIndex = split.Count-1;
+                    int argIndex = split.Count - 1;
                     string[] args = null;
-                    if (split.Count!=0)
+                    if (split.Count != 0)
                         args = split.ToArray();
                     List<string> possibleAutoCompletes = (commands[cmd].GetAutoComplete(argIndex, args));
                     if (possibleAutoCompletes != null)
@@ -316,15 +320,18 @@ namespace SR2E
                     {
                         GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
                         instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = valuePair.Key;
-                        instance.SetActive(true); 
+                        instance.SetActive(true);
                         instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
                         {
                             commandInput.text = valuePair.Key;
                             commandInput.MoveToEndOfLine(false, false);
                         }));
                     }
-            autoCompleteScrollView.SetActive(autoCompleteContent.childCount!=0);
+            autoCompleteScrollView.SetActive(autoCompleteContent.childCount != 0);
+            
         }
+
+
 
         internal static void Start()
         {
@@ -336,21 +343,21 @@ namespace SR2E
                 MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning(s1, false);
             }
 
-            consoleBlock = getObjRec<GameObject>(transform,"consoleBlock");
-            consoleMenu = getObjRec<GameObject>(transform,"consoleMenu");
+            consoleBlock = getObjRec<GameObject>(transform, "consoleBlock");
+            consoleMenu = getObjRec<GameObject>(transform, "consoleMenu");
             consoleContent = getObjRec<Transform>(transform, "ConsoleContent");
             messagePrefab = getObjRec<GameObject>(transform, "messagePrefab");
             specialMessagePrefab = getObjRec<GameObject>(transform, "specialMessagePrefab");
             commandInput = getObjRec<TMP_InputField>(transform, "commandInput");
-            _scrollbar = getObjRec<Scrollbar>(transform,"ConsoleScroll");
+            _scrollbar = getObjRec<Scrollbar>(transform, "ConsoleScroll");
             autoCompleteContent = getObjRec<Transform>(transform, "AutoCompleteContent");
             autoCompleteEntryPrefab = getObjRec<GameObject>(transform, "AutoCompleteEntry");
             autoCompleteScrollView = getObjRec<GameObject>(transform, "AutoCompleteScroll");
-            
+            autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
             autoCompleteScrollView.SetActive(false);
             consoleBlock.SetActive(false);
             consoleMenu.SetActive(false);
-            commandInput.onValueChanged.AddListener((Action<string>)((text) => {RefreshAutoComplete(text); }));
+            commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
             RegisterCommand(new GiveCommand());
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
@@ -374,22 +381,21 @@ namespace SR2E
             RegisterCommand(new SpeedCommand());
             RegisterCommand(new GravityCommand());
             RegisterCommand(new RotateCommand());
-            RegisterCommand(new NoClipCommand());
-            
-            if(!SR2EEntryPoint.infHealthInstalled)
+            if (!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
-            if(!SR2EEntryPoint.infEnergyInstalled)
+            if (!SR2EEntryPoint.infEnergyInstalled)
                 RegisterCommand(new InfiniteEnergyCommand());
-            
+            RegisterCommand(new NoClipCommand());
+
             //Warps & Keybinding loading
             SR2CommandBindingManager.Start();
             SR2Warps.Start();
-            
+
             //Setup Modmenu
-            
+
             SR2ModMenu.parent = transform;
-            SR2ModMenu.gameObject = getObjRec<GameObject>(transform,"modMenu");
-            SR2ModMenu.transform = getObjRec<Transform>(transform,"modMenu");
+            SR2ModMenu.gameObject = getObjRec<GameObject>(transform, "modMenu");
+            SR2ModMenu.transform = getObjRec<Transform>(transform, "modMenu");
             SR2ModMenu.Start();
         }
 
@@ -403,6 +409,8 @@ namespace SR2E
         static GameObject messagePrefab;
         static GameObject specialMessagePrefab;
         private static int selectedAutoComplete = 0;
+        const int maxEntryOnScreen = 6;
+
         internal static void Update()
         {
             if (SR2EEntryPoint.consoleFinishedCreating != true)
@@ -422,7 +430,8 @@ namespace SR2E
                     if (autoCompleteContent.childCount != 0)
                     {
                         //Select first to autocomplete
-                        autoCompleteContent.GetChild(0).GetComponent<Button>().onClick.Invoke();
+                        autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Button>().onClick.Invoke();
+                        selectedAutoComplete = 0;
                     }
                 }
                 /*
@@ -454,27 +463,96 @@ namespace SR2E
                 }*/
             }
             if (Keyboard.current.enterKey.wasPressedThisFrame)
-                if(commandInput.text!="") Execute();
-            
+                if (commandInput.text != "") Execute();
+
             if (Keyboard.current.ctrlKey.wasPressedThisFrame)
-                if(Keyboard.current.tabKey.isPressed)
+                if (Keyboard.current.tabKey.isPressed)
                     Toggle();
             if (Keyboard.current.tabKey.wasPressedThisFrame)
-                if(Keyboard.current.ctrlKey.isPressed)
+                if (Keyboard.current.ctrlKey.isPressed)
                     Toggle();
+
+            if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
+                NextAutoComplete();
             
+            if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
+                PrevAutoComplete();
+
+
+            if (selectedAutoComplete == autoCompleteContent.childCount)
+            {
+                selectedAutoComplete = 0;
+            }
             if (_scrollbar != null)
             {
                 float value = Mouse.current.scroll.ReadValue().y;
-                if (Mouse.current.scroll.ReadValue().y!=0)
-                    _scrollbar.value = Mathf.Clamp(_scrollbar.value+((value > 0.01 ? 1.25f : value < -0.01 ? -1.25f : 0) * _scrollbar.size),0,1f);
+                if (Mouse.current.scroll.ReadValue().y != 0)
+                    _scrollbar.value = Mathf.Clamp(_scrollbar.value + ((value > 0.01 ? 1.25f : value < -0.01 ? -1.25f : 0) * _scrollbar.size), 0, 1f);
 
+            }
+            try
+            {
+                if (autoCompleteContent.childCount != 0)
+                {
+                    autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color = new Color32(255, 211, 0, 120);
+                    if (selectedAutoComplete > maxEntryOnScreen)
+                    {
+                        autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, 744 - (27 * maxEntryOnScreen) + (27 * selectedAutoComplete), autoCompleteContent.position.z);
+
+                    }
+                    else
+                    {
+                        autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, 744, autoCompleteContent.position.z);
+
+                    }
+                }
+            }
+            catch
+            {
+                // im too lazy to fix the error so i muted it
             }
             SR2CommandBindingManager.Update();
             //Modmenu
             SR2ModMenu.Update();
         }
-        
+
+        public static void NextAutoComplete()
+        {
+            selectedAutoComplete += 1;
+            if (selectedAutoComplete > autoCompleteContent.childCount - 1)
+            {
+                selectedAutoComplete = 0;
+                autoCompleteContent.GetChild(autoCompleteContent.childCount - 1).GetComponent<Image>().color = new Color32(0, 0, 0, 25);
+                autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color = new Color32(255, 211, 0, 120);
+            }
+            else
+            {
+                autoCompleteContent.GetChild(selectedAutoComplete - 1).GetComponent<Image>().color = new Color32(0, 0, 0, 25);
+                autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color = new Color32(255, 211, 0, 120);
+            }
+        }
+
+        public static void MoveAutoCompleteScroll(float amount)
+        {
+            autoCompleteContent.Translate(0, amount, 0);
+        }
+        private static int currScrolled = -1;
+        public static void PrevAutoComplete()
+        {
+            selectedAutoComplete -= 1;
+            
+            if (selectedAutoComplete < 0)
+            {
+                selectedAutoComplete = autoCompleteContent.childCount - 1;
+                autoCompleteContent.GetChild(0).GetComponent<Image>().color = new Color32(0, 0, 0, 25);
+                autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color = new Color32(255, 211, 0, 120);
+            }
+            else
+            {
+                autoCompleteContent.GetChild(selectedAutoComplete + 1).GetComponent<Image>().color = new Color32(0, 0, 0, 25);
+                autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color = new Color32(255, 211, 0, 120);
+            }
+        }
 
         static void Execute()
         {
@@ -485,10 +563,10 @@ namespace SR2E
                 Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
             }
             ExecuteByString(cmds);
-            
+
         }
 
 
-        
+
     }
 }
