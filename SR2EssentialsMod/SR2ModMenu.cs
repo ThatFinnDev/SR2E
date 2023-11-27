@@ -146,6 +146,7 @@ namespace SR2E
         static GameObject entryTemplate;
         static GameObject headerTemplate;
         static GameObject warningText;
+        static List<Key> allPossibleKeys=new List<Key>();
         internal static void Start()
         {
             modMenuBlock = getObjRec<GameObject>(parent, "modMenuBlock");
@@ -155,6 +156,24 @@ namespace SR2E
             Transform content = getObjRec<Transform>(transform, "ModConfigurationContent");
             modInfoText = getObjRec<TextMeshProUGUI>(transform, "ModInfoText");
             gameObject.SetActive(false);
+            foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
+                if (!String.IsNullOrEmpty(stringKey))
+                    if (stringKey != "None")
+                    {
+                        Key key;
+                        if (Key.TryParse(stringKey, out key))
+                            if(key!=null)
+                                allPossibleKeys.Add(key);
+                    }
+            allPossibleKeys.Remove(Key.Escape);
+            allPossibleKeys.Remove(Key.LeftCommand);
+            allPossibleKeys.Remove(Key.RightCommand);
+            allPossibleKeys.Remove(Key.LeftWindows);
+            allPossibleKeys.Remove(Key.RightCommand);
+            
+            MelonLogger.Msg(allPossibleKeys.Count.ToString());
+            
+
             foreach (MelonPreferences_Category category in MelonPreferences.Categories)
             {
                 GameObject header = Object.Instantiate(headerTemplate, content);
@@ -273,17 +292,78 @@ namespace SR2E
                                 entry.BoxedEditedValue = text; category.SaveToFile(false);
                             }));
                         }
+                        else if (entry.BoxedEditedValue is Key)
+                        {
+                            obj.transform.GetChild(1).gameObject.SetActive(false);
+                            obj.transform.GetChild(4).gameObject.SetActive(true);
+                            Button button = obj.transform.GetChild(4).GetComponent<Button>();
+                            TextMeshProUGUI textMesh = obj.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
+                            textMesh.text = entry.GetEditedValueAsString();
+                            button.onClick.AddListener((Action)(() =>
+                            {
+                                textMesh.text = "Listening";
+                                listeninAction = ((Action<Nullable<Key>>)((key) =>
+                                {
+                                    if (key == null)
+                                    {
+                                        textMesh.text = entry.GetEditedValueAsString();
+                                    }
+                                    else
+                                    {
+                                        textMesh.text = key.ToString();
+                                        if (entry.BoxedEditedValue is Key)
+                                        {
+                                            entry.BoxedEditedValue = key;
+                                            warningText.SetActive(true);
+                                        }
+                                    }
+                                    listeninAction = null;
+                                }));
+                            }));
+                        }
                     }
                 }
             }
         }
 
+        private static Action<Nullable<Key>> listeninAction =null;
+        
+        static void keyWasPressed(Key key)
+        {
+            if (listeninAction != null)
+            {
+                listeninAction.Invoke(key);
+            }
+        }
         internal static void Update()
         {
             if (isOpen)
             {
                 if (Keyboard.current.escapeKey.wasPressedThisFrame)
                     Close();
+                
+                foreach (Key key in allPossibleKeys)
+                {
+                    try
+                    {
+                        if (Keyboard.current[key].wasPressedThisFrame)
+                        { keyWasPressed(key); }
+                    }catch (Exception ignored) { }
+                }
+
+                if (Mouse.current.leftButton.wasPressedThisFrame ||
+                    Mouse.current.rightButton.wasPressedThisFrame ||
+                    Mouse.current.middleButton.wasPressedThisFrame ||
+                    Mouse.current.backButton.wasPressedThisFrame ||
+                    Mouse.current.forwardButton.wasPressedThisFrame ||
+                    Mouse.current.leftButton.wasPressedThisFrame ||
+                    Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    if (listeninAction != null)
+                    {
+                        listeninAction.Invoke(null);
+                    }
+                }
 
             }
         }
