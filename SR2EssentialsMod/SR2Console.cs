@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Il2CppInterop.Runtime.Attributes;
+using Il2CppInterop.Runtime.Injection;
 using Il2CppTMPro;
 using SR2E.Commands;
 using UnityEngine.InputSystem;
@@ -352,6 +354,7 @@ namespace SR2E
         {
             RegisterCommand(new GiveCommand());
             RegisterCommand(new UtilCommand());
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(UtilCommand.ObjectBlocker));
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
             RegisterCommand(new SpawnCommand());
