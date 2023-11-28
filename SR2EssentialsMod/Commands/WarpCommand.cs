@@ -55,74 +55,36 @@ namespace SR2E.Commands
                         }
                         else
                         {
-                            Il2CppArrayBase<StaticTeleporterNode> nodes = Object.FindObjectsOfType<StaticTeleporterNode>();
-                            bool noToBreak = false;
-                            foreach (StaticTeleporterNode node in nodes)
+                            try
                             {
-                                if (noToBreak)
-                                    break;
-                                try
+                                GameObject prefab = null;
+                                switch (warp.sceneGroup)
                                 {
-                                    if (node.NodeId != null)
-                                        switch (warp.sceneGroup)
-                                        {
-                                            case "SceneGroup.ConservatoryFields":
-                                                if(true)
-                                                {
-                                                    SR2Warps.warpTo = warp;
-                                                    GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterHomeBlue").prefab;
-                                                    GameObject obj = GameObject.Instantiate(prefab, cc.Position, Quaternion.identity);
-                                                    obj.SetActive(true);
-                                                    GadgetTeleporterNode telNode = SR2Console.getObjRec<GadgetTeleporterNode>(obj.transform, "Teleport Collider");
-                                                    telNode.GetComponent<StaticTeleporterNode>()._hasDestination = true;
-                                                    telNode.GetComponent<StaticTeleporterNode>().UpdateFX();
-                                                    noToBreak = true;
-                                                }
-                                                break;
-                                            case "SceneGroup.RumblingGorge":
-                                                if(true)
-                                                {
-                                                    SR2Warps.warpTo = warp;
-                                                    GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneGorge").prefab;
-                                                    GameObject obj = GameObject.Instantiate(prefab, cc.Position, Quaternion.identity);
-                                                    obj.SetActive(true);
-                                                    GadgetTeleporterNode telNode = SR2Console.getObjRec<GadgetTeleporterNode>(obj.transform, "Teleport Collider");
-                                                    telNode.GetComponent<StaticTeleporterNode>()._hasDestination = true;
-                                                    telNode.GetComponent<StaticTeleporterNode>().UpdateFX();
-                                                    noToBreak = true;
-                                                }
-                                                break;
-                                            case "SceneGroup.LuminousStrand":
-                                                if(true)
-                                                {
-                                                    SR2Warps.warpTo = warp;
-                                                    GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneStrand").prefab;
-                                                    GameObject obj = GameObject.Instantiate(prefab, cc.Position, Quaternion.identity);
-                                                    obj.SetActive(true);
-                                                    GadgetTeleporterNode telNode = SR2Console.getObjRec<GadgetTeleporterNode>(obj.transform, "Teleport Collider");
-                                                    telNode.GetComponent<StaticTeleporterNode>()._hasDestination = true;
-                                                    telNode.GetComponent<StaticTeleporterNode>().UpdateFX();
-                                                    noToBreak = true;
-                                                }
-                                                break;
-                                            case "SceneGroup.PowderfallBluffs":
-                                                if(true)
-                                                {
-                                                    SR2Warps.warpTo = warp;
-                                                    GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab;
-                                                    GameObject obj = GameObject.Instantiate(prefab, cc.Position, Quaternion.identity);
-                                                    obj.SetActive(true);
-                                                    GadgetTeleporterNode telNode = SR2Console.getObjRec<GadgetTeleporterNode>(obj.transform, "Teleport Collider");
-                                                    telNode.GetComponent<StaticTeleporterNode>()._hasDestination = true;
-                                                    telNode.GetComponent<StaticTeleporterNode>().UpdateFX();
-                                                    noToBreak = true;
-                                                }
-                                                break;
-                                            
-                                        }
-                                    
-                                }catch (Exception e) {}
+                                    case "SceneGroup.ConservatoryFields":
+                                        SR2Warps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterHomeBlue").prefab; break;
+                                    case "SceneGroup.RumblingGorge":
+                                        SR2Warps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneGorge").prefab; break;
+                                    case "SceneGroup.LuminousStrand":
+                                        SR2Warps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneStrand").prefab; break;
+                                    case "SceneGroup.PowderfallBluffs":
+                                        SR2Warps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab; break;
+                                    default:
+                                        SR2Console.SendError($"There place {warp.sceneGroup} does not exist!"); return false;
+
+                                }
+
+                                if (prefab != null)
+                                {
+                                    GameObject teleporterCollider = SR2EUtils.getObjRec<GadgetTeleporterNode>(prefab.transform, "Teleport Collider").gameObject;
+                                    GameObject obj = GameObject.Instantiate(teleporterCollider, SceneContext.Instance.Player.transform.position, Quaternion.identity);
+                                    obj.SetActive(true);
+                                    obj.GetComponent<StaticTeleporterNode>()._hasDestination = true;
+                                    obj.GetComponent<StaticTeleporterNode>().UpdateFX();
+                                }
+                                else
+                                { SR2Console.SendError("An unknown error occured!"); return false; }
                             }
+                            catch { }
                         }
                         if(SR2Console.isOpen)
                             SR2Console.Close();

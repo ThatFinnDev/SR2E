@@ -93,8 +93,7 @@
                             break;
                         }
                     }
-                    catch (System.Exception ignored)
-                    {}
+                    catch {}
             }
             if (foundType == null)
             { SR2Console.SendError(args[0] + " is not a valid IdentifiableType/Gadget!"); return false; }

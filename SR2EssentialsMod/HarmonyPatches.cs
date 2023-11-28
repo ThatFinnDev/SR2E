@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-
-namespace SR2E;
+﻿namespace SR2E;
 
 [HarmonyPatch(typeof(WeaponVacuum), nameof(WeaponVacuum.Expel), typeof(GameObject), typeof(bool), typeof(float), typeof(SlimeAppearance.AppearanceSaveSet))]
 internal class WeaponVacuumExpelPatch
