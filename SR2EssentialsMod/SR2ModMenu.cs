@@ -165,13 +165,10 @@ namespace SR2E
                             if(key!=null)
                                 allPossibleKeys.Add(key);
                     }
-            allPossibleKeys.Remove(Key.Escape);
             allPossibleKeys.Remove(Key.LeftCommand);
             allPossibleKeys.Remove(Key.RightCommand);
             allPossibleKeys.Remove(Key.LeftWindows);
             allPossibleKeys.Remove(Key.RightCommand);
-            
-            MelonLogger.Msg(allPossibleKeys.Count.ToString());
             
 
             foreach (MelonPreferences_Category category in MelonPreferences.Categories)
@@ -292,7 +289,8 @@ namespace SR2E
                                 entry.BoxedEditedValue = text; category.SaveToFile(false);
                             }));
                         }
-                        else if (entry.BoxedEditedValue is Key)
+                        //KeyCode Conversion still has some issue, this is why it is disabled
+                        else if (entry.BoxedEditedValue is Key/*||entry.BoxedEditedValue is KeyCode*/)
                         {
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(4).gameObject.SetActive(true);
@@ -302,18 +300,25 @@ namespace SR2E
                             button.onClick.AddListener((Action)(() =>
                             {
                                 textMesh.text = "Listening";
-                                listeninAction = ((Action<Nullable<Key>>)((key) =>
+                                listeninAction = ((Action<Nullable<Key>>)((inputKey) =>
                                 {
+                                    Nullable<Key> key = inputKey == Key.Escape ? Key.None : inputKey;
                                     if (key == null)
                                     {
                                         textMesh.text = entry.GetEditedValueAsString();
                                     }
                                     else
                                     {
-                                        textMesh.text = key.ToString();
                                         if (entry.BoxedEditedValue is Key)
                                         {
-                                            entry.BoxedEditedValue = key;
+                                            textMesh.text = key.ToString();
+                                            entry.BoxedEditedValue = key.Value;
+                                            warningText.SetActive(true);
+                                        }
+                                        else if (entry.BoxedEditedValue is KeyCode)
+                                        {
+                                            textMesh.text = SR2EUtils.KeyToKeyCode(key.Value).ToString();
+                                            entry.BoxedEditedValue = SR2EUtils.KeyToKeyCode(key.Value);
                                             warningText.SetActive(true);
                                         }
                                     }
@@ -339,8 +344,10 @@ namespace SR2E
         {
             if (isOpen)
             {
-                if (Keyboard.current.escapeKey.wasPressedThisFrame)
-                    Close();
+                if (listeninAction == null) 
+                    if (Keyboard.current.escapeKey.wasPressedThisFrame)
+                        Close();
+                    
                 
                 foreach (Key key in allPossibleKeys)
                 {
@@ -364,6 +371,7 @@ namespace SR2E
                         listeninAction.Invoke(null);
                     }
                 }
+
 
             }
         }
