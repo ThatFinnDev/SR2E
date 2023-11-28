@@ -28,9 +28,9 @@ namespace SR2E.Commands
             if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
             if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
 
-            if (SR2EEntryPoint.Get<SRCharacterController>("PlayerControllerKCC") != null)
+            if (SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC") != null)
             {
-                SRCharacterController Player = SR2EEntryPoint.Get<SRCharacterController>("PlayerControllerKCC");
+                SRCharacterController Player = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC");
                 SR2EEntryPoint.RefreshPrefs();
                 if (inNoClip)
                 {

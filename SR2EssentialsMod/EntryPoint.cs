@@ -37,8 +37,7 @@ namespace SR2E
 
         internal static IdentifiableType[] identifiableTypes
         { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
-        internal static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-
+        
         internal static IdentifiableType getIdentifiableByName(string name)
         {
             foreach (IdentifiableType type in identifiableTypes)
@@ -123,10 +122,10 @@ namespace SR2E
                     prompt.OnInteract(new InputAction.CallbackContext());
                     break;
                 case "UICore":
-                    InfiniteEnergyCommand.energyMeter = Get<EnergyMeter>("Energy Meter");
+                    InfiniteEnergyCommand.energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
                     break;
                 case "PlayerCore":
-                    InfiniteEnergyCommand.jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
+                    InfiniteEnergyCommand.jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
                     break;
             }
 
@@ -165,7 +164,7 @@ namespace SR2E
             if (mainMenuLoaded)
                 if (!_iconChanged)
                 {
-                    Sprite sprite = SR2Console.getObjRec<Image>(SR2Console.transform, "modsButtonIconImage").sprite;
+                    Sprite sprite = SR2EUtils.getObjRec<Image>(SR2Console.transform, "modsButtonIconImage").sprite;
                     if (sprite != null)
                         if (_modsButtonIconImage != null)
                         {
@@ -189,10 +188,10 @@ namespace SR2E
                             if (Time.timeScale != 0)
                             {
                                 if (Player == null)
-                                    Player = Get<SRCharacterController>("PlayerControllerKCC");
+                                    Player = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC");
 
                                 if (camera == null)
-                                    camera = Get<SRCameraController>("PlayerCameraKCC");
+                                    camera = SR2EUtils.Get<SRCameraController>("PlayerCameraKCC");
                                 
                                 if (Player != null && camera!=null)
                                     if (NoClipCommand.inNoClip)

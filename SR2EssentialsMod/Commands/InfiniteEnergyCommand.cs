@@ -39,11 +39,11 @@ namespace SR2E.Commands
             {
                 SR2EEntryPoint.infEnergy = false;
                 if (energyMeter == null)
-                    energyMeter = Get<EnergyMeter>("Energy Meter");
+                    energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
                 energyMeter.gameObject.active = true;
                 
                 if(jetpackAbilityData==null)
-                    jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
+                    jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
                 jetpackAbilityData._hoverHeight = normalHoverHeight;
                 jetpackAbilityData._maxUpwardThrustForce = normalMaxUpwardThrustForce;
                 jetpackAbilityData._upwardThrustForceIncrement = normalUpwardThrustForceIncrement;
@@ -56,11 +56,11 @@ namespace SR2E.Commands
             {
                 SR2EEntryPoint.infEnergy = true;
                 if (energyMeter == null)
-                    energyMeter = Get<EnergyMeter>("Energy Meter");
+                    energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
                 energyMeter.gameObject.active = false;
                 
                 if(jetpackAbilityData==null)
-                    jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
+                    jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
                 normalHoverHeight = jetpackAbilityData._hoverHeight;
                 normalMaxUpwardThrustForce = jetpackAbilityData._maxUpwardThrustForce;
                 normalUpwardThrustForceIncrement = jetpackAbilityData._upwardThrustForceIncrement;
@@ -85,9 +85,5 @@ namespace SR2E.Commands
         static float normalUpwardThrustForceIncrement = 0;
         internal static EnergyMeter energyMeter;
         internal static JetpackAbilityData jetpackAbilityData;
-        static T Get<T>(string name) where T : UnityEngine.Object
-        {
-            return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-        }
     }
 }

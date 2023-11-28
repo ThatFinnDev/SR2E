@@ -19,34 +19,7 @@ namespace SR2E
         static GameObject modMenuBlock;
         static TextMeshProUGUI modInfoText;
         static UIPrefabLoader _uiActivator;
-
-        internal static T getObjRec<T>(Transform transform, string name) where T : class
-        {
-            List<GameObject> totalChildren = getAllChildren(transform);
-            for (int i = 0; i < totalChildren.Count; i++)
-                if(totalChildren[i].name==name)
-                {
-                    if (typeof(T) == typeof(GameObject))
-                        return totalChildren[i] as T;
-                    if (typeof(T) == typeof(Transform))
-                        return totalChildren[i].transform as T;
-                    if (totalChildren[i].GetComponent<T>() != null)
-                        return totalChildren[i].GetComponent<T>();
-                }
-            return null;
-        }
-
-        static List<GameObject> getAllChildren(Transform container)
-        {
-            List<GameObject> allChildren = new List<GameObject>();
-            for (int i = 0; i < container.childCount; i++)
-            {
-                var child = container.GetChild(i);
-                allChildren.Add(child.gameObject);
-                allChildren.AddRange(getAllChildren(child));
-            }
-            return allChildren;
-        }
+        
         static void Close()
         {
             if (Object.FindObjectsOfType<MapUI>().Length != 0)
@@ -67,15 +40,13 @@ namespace SR2E
 
             SR2EEntryPoint.CreateModMenuButton();
 
-            Transform modContent = getObjRec<Transform>(transform, "ModContent");
+            Transform modContent = SR2EUtils.getObjRec<Transform>(transform, "ModContent");
             for (int i = 0; i < modContent.childCount; i++)
-            {
                 GameObject.Destroy(modContent.GetChild(i).gameObject);
-            }
 
         }
 
-        private static MainMenuLandingRootUI _mainMenuLandingRootUI;
+        static MainMenuLandingRootUI _mainMenuLandingRootUI;
 
         internal static void Open()
         {
@@ -93,8 +64,8 @@ namespace SR2E
 
 
 
-            GameObject buttonPrefab = getObjRec<GameObject>(transform, "TemplateModButton");
-            Transform modContent = getObjRec<Transform>(transform, "ModContent");
+            GameObject buttonPrefab = SR2EUtils.getObjRec<GameObject>(transform, "TemplateModButton");
+            Transform modContent = SR2EUtils.getObjRec<Transform>(transform, "ModContent");
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
                 GameObject obj = GameObject.Instantiate(buttonPrefab, modContent);
@@ -149,12 +120,12 @@ namespace SR2E
         static List<Key> allPossibleKeys=new List<Key>();
         internal static void Start()
         {
-            modMenuBlock = getObjRec<GameObject>(parent, "modMenuBlock");
-            entryTemplate = getObjRec<GameObject>(transform, "ModConfigurationEntryTemplate");
-            headerTemplate = getObjRec<GameObject>(transform, "ModConfigurationHeaderTemplate");
-            warningText = getObjRec<GameObject>(transform, "ModConfigRestartWarning");
-            Transform content = getObjRec<Transform>(transform, "ModConfigurationContent");
-            modInfoText = getObjRec<TextMeshProUGUI>(transform, "ModInfoText");
+            modMenuBlock = SR2EUtils.getObjRec<GameObject>(parent, "modMenuBlock");
+            entryTemplate = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigurationEntryTemplate");
+            headerTemplate = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigurationHeaderTemplate");
+            warningText = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigRestartWarning");
+            Transform content = SR2EUtils.getObjRec<Transform>(transform, "ModConfigurationContent");
+            modInfoText = SR2EUtils.getObjRec<TextMeshProUGUI>(transform, "ModInfoText");
             gameObject.SetActive(false);
             foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
                 if (!String.IsNullOrEmpty(stringKey))

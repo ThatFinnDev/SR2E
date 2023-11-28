@@ -1,10 +1,11 @@
-﻿using UnityEngine.InputSystem;
+﻿using System.Linq;
+using UnityEngine.InputSystem;
 
 namespace SR2E;
 
 public static class SR2EUtils
 {
-    public static KeyCode KeyToKeyCode(Key key)
+    internal static KeyCode KeyToKeyCode(Key key)
     {
         switch (key)
         {
@@ -221,4 +222,34 @@ public static class SR2EUtils
                 return KeyCode.None;
         }
     }
+    
+    internal static T getObjRec<T>(Transform transform, string name) where T : class
+    {
+        List<GameObject> totalChildren = getAllChildren(transform);
+        for (int i = 0; i < totalChildren.Count; i++)
+            if (totalChildren[i].name == name)
+            {
+                if (typeof(T) == typeof(GameObject))
+                    return totalChildren[i] as T;
+                if (typeof(T) == typeof(Transform))
+                    return totalChildren[i].transform as T;
+                if (totalChildren[i].GetComponent<T>() != null)
+                    return totalChildren[i].GetComponent<T>();
+            }
+        return null;
+    }
+
+    internal static List<GameObject> getAllChildren(Transform container)
+    {
+        List<GameObject> allChildren = new List<GameObject>();
+        for (int i = 0; i < container.childCount; i++)
+        {
+            var child = container.GetChild(i);
+            allChildren.Add(child.gameObject);
+            allChildren.AddRange(getAllChildren(child));
+        }
+        return allChildren;
+    }
+    internal static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
+
 }
