@@ -3,7 +3,7 @@
     public class GiveGadgetCommand : SR2CCommand
     {
         public override string ID => "givegadget";
-        public override string Usage => "givegadget <gadget> <amount>";
+        public override string Usage => "givegadget <gadget> [amount]";
         public override string Description => "Gives you gadgets";
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
@@ -59,7 +59,7 @@
                 return false;
             }
 
-            if (args.Length != 2)
+            if (args.Length != 2&&args.Length!=1)
             {
                 SR2Console.SendMessage($"Usage: {Usage}");
                 return false;
@@ -103,13 +103,21 @@
             catch (System.Exception ignored)
             { itemName = foundType.name; }
 
+            int amount = 1;
+            if (args.Length == 2)
+            {
+                if (!int.TryParse(args[1], out amount))
+                {
+                    SR2Console.SendError(args[1] + " is not a valid integer!");
+                    return false;
+                }
 
-            int amount = 0;
-            if (!int.TryParse(args[1], out amount))
-            { SR2Console.SendError(args[1] + " is not a valid integer!"); return false; }
-
-            if (amount <= 0)
-            { SR2Console.SendError(args[1] + " is not an integer above 0!"); return false; }
+                if (amount <= 0)
+                {
+                    SR2Console.SendError(args[1] + " is not an integer above 0!");
+                    return false;
+                }
+            }
 
             SceneContext.Instance.GadgetDirector.AddItem(foundType, amount);
             SR2Console.SendMessage($"Successfully added {amount} {itemName}");

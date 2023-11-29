@@ -7,7 +7,7 @@ namespace SR2E.Commands
     public class SpeedCommand : SR2CCommand
     {
         public override string ID { get; } = "speed";
-        public override string Usage { get; } = "speed float";
+        public override string Usage { get; } = "speed <speed>";
         public override string Description { get; } = "Sets the player speed";
 
         private static float baseMaxAirSpeed = 10;
