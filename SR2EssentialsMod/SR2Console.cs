@@ -22,27 +22,37 @@ namespace SR2E
         /// </summary>
         public static void SendMessage(string message, bool doMLLog)
         {
-            if (message.Contains("[SR2E]:"))
-            { return; }
-            if (message.StartsWith("[UnityExplorer]"))
-            { return; }
-            
-            if (!SR2EEntryPoint.consoleFinishedCreating)
-                return;
-            if (consoleContent.childCount >= maxMessages)
-                GameObject.Destroy(consoleContent.GetChild(0).gameObject);
-            if (message.Contains("\n"))
+            try
             {
-                foreach (string singularLine in message.Split('\n'))
-                    SendMessage(singularLine, doMLLog);
-                return;
+                if (message.Contains("[SR2E]:"))
+                {
+                    return;
+                }
+
+                if (message.StartsWith("[UnityExplorer]"))
+                {
+                    return;
+                }
+
+                if (!SR2EEntryPoint.consoleFinishedCreating)
+                    return;
+                if (consoleContent.childCount >= maxMessages)
+                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("\n"))
+                {
+                    foreach (string singularLine in message.Split('\n'))
+                        SendMessage(singularLine, doMLLog);
+                    return;
+                }
+
+                if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
+                GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
+                instance.gameObject.SetActive(true);
+                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                _scrollbar.value = 0f;
+                scrollCompletlyDown = true;
             }
-            if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
-            GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
-            instance.gameObject.SetActive(true);
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            _scrollbar.value = 0f;
-            scrollCompletlyDown = true;
+            catch{}
         }
         /// <summary>
         /// Display an error in the console
@@ -56,28 +66,39 @@ namespace SR2E
         /// </summary>
         public static void SendError(string message, bool doMLLog)
         {
-            if (message.Contains("[SR2E]:"))
-            { return; }
-            if (message.StartsWith("[UnityExplorer]"))
-            { return; }
-            if (!SR2EEntryPoint.consoleFinishedCreating)
-                return;
-            if (consoleContent.childCount >= maxMessages)
-                GameObject.Destroy(consoleContent.GetChild(0).gameObject);
-            if (message.Contains("\n"))
+            try
             {
-                foreach (string singularLine in message.Split('\n'))
-                    SendError(singularLine, doMLLog);
-                return;
+                if (message.Contains("[SR2E]:"))
+                {
+                    return;
+                }
+
+                if (message.StartsWith("[UnityExplorer]"))
+                {
+                    return;
+                }
+
+                if (!SR2EEntryPoint.consoleFinishedCreating)
+                    return;
+                if (consoleContent.childCount >= maxMessages)
+                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("\n"))
+                {
+                    foreach (string singularLine in message.Split('\n'))
+                        SendError(singularLine, doMLLog);
+                    return;
+                }
+
+                if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
+                GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                instance.gameObject.SetActive(true);
+                instance.transform.GetChild(0).gameObject.SetActive(true);
+                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0, 0, 1);
+                _scrollbar.value = 0f;
+                scrollCompletlyDown = true;
             }
-            if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
-            GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
-            instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).gameObject.SetActive(true);
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0, 0, 1);
-            _scrollbar.value = 0f;
-            scrollCompletlyDown = true;
+            catch{}
         }
         /// <summary>
         /// Display an error in the console
@@ -91,28 +112,39 @@ namespace SR2E
         /// </summary>
         public static void SendWarning(string message, bool doMLLog)
         {
-            if (message.Contains("[SR2E]:"))
-            { return; }
-            if (message.StartsWith("[UnityExplorer]"))
-            { return; }
-            if (!SR2EEntryPoint.consoleFinishedCreating)
-                return;
-            if (consoleContent.childCount >= maxMessages)
-                GameObject.Destroy(consoleContent.GetChild(0).gameObject);
-            if (message.Contains("\n"))
+            try
             {
-                foreach (string singularLine in message.Split('\n'))
-                    SendWarning(singularLine, doMLLog);
-                return;
+                if (message.Contains("[SR2E]:"))
+                {
+                    return;
+                }
+
+                if (message.StartsWith("[UnityExplorer]"))
+                {
+                    return;
+                }
+
+                if (!SR2EEntryPoint.consoleFinishedCreating)
+                    return;
+                if (consoleContent.childCount >= maxMessages)
+                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("\n"))
+                {
+                    foreach (string singularLine in message.Split('\n'))
+                        SendWarning(singularLine, doMLLog);
+                    return;
+                }
+
+                if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
+                GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                instance.gameObject.SetActive(true);
+                instance.transform.GetChild(0).gameObject.SetActive(true);
+                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0, 1);
+                _scrollbar.value = 0f;
+                scrollCompletlyDown = true;
             }
-            if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
-            GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
-            instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).gameObject.SetActive(true);
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0, 1);
-            _scrollbar.value = 0f;
-            scrollCompletlyDown = true;
+            catch{}
         }
         /// <summary>
         /// Check if console is open
@@ -355,6 +387,8 @@ namespace SR2E
             RegisterCommand(new SpeedCommand());
             RegisterCommand(new GravityCommand());
             RegisterCommand(new RotateCommand());
+            RegisterCommand(new MoveCommand());
+            
             if (!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
             if (!SR2EEntryPoint.infEnergyInstalled)
