@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Il2CppInterop.Runtime.Attributes;
+using Il2CppInterop.Runtime.Injection;
 using Il2CppTMPro;
 using SR2E.Commands;
 using UnityEngine.InputSystem;
@@ -10,6 +12,8 @@ namespace SR2E
 {
     public static class SR2Console
     {
+        public static List<string> commandHistory;
+        public static int commandHistoryIdx = -1;
         /// <summary>
         /// Display a message in the console
         /// </summary>
@@ -33,10 +37,6 @@ namespace SR2E
                 {
                     return;
                 }
-                if (message.StartsWith("[]"))
-                {
-                    return;
-                }
 
                 if (!SR2EEntryPoint.consoleFinishedCreating)
                     return;
@@ -56,7 +56,7 @@ namespace SR2E
                 _scrollbar.value = 0f;
                 scrollCompletlyDown = true;
             }
-            catch{}
+            catch { }
         }
         /// <summary>
         /// Display an error in the console
@@ -102,7 +102,7 @@ namespace SR2E
                 _scrollbar.value = 0f;
                 scrollCompletlyDown = true;
             }
-            catch{}
+            catch { }
         }
         /// <summary>
         /// Display an error in the console
@@ -148,7 +148,7 @@ namespace SR2E
                 _scrollbar.value = 0f;
                 scrollCompletlyDown = true;
             }
-            catch{}
+            catch { }
         }
         /// <summary>
         /// Check if console is open
@@ -338,22 +338,25 @@ namespace SR2E
                         }));
                     }
             autoCompleteScrollView.SetActive(autoCompleteContent.childCount != 0);
-            
+
         }
 
-        public static List<string> commandHistory;
-        public static int commandHistoryIdx = -1;
-
-        internal static void Start()
+        //Warps & Keybinding loading
+        private static void SetupData()
         {
-
-            if (SR2EEntryPoint.syncConsole)
-            {
-                MelonLogger.MsgDrawingCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
-                MelonLogger.ErrorCallbackHandler += (s, s1) => SendError($"[{s}]: {s1}", false);
-                MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning($"[{s}]: {s}", false);
-            }
-
+            SR2CommandBindingManager.Start();
+            SR2Warps.Start();
+        }
+        //Setup ModMenu
+        private static void SetupModMenu()
+        {
+            SR2ModMenu.parent = transform;
+            SR2ModMenu.gameObject = SR2EUtils.getObjRec<GameObject>(transform, "modMenu");
+            SR2ModMenu.transform = SR2EUtils.getObjRec<Transform>(transform, "modMenu");
+            SR2ModMenu.Start();
+        }
+        private static void SetupCommands()
+        {
             consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
             consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
             consoleContent = SR2EUtils.getObjRec<Transform>(transform, "ConsoleContent");
@@ -370,6 +373,8 @@ namespace SR2E
             consoleMenu.SetActive(false);
             commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
             RegisterCommand(new GiveCommand());
+            RegisterCommand(new UtilCommand());
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(UtilCommand.ObjectBlocker));
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
             RegisterCommand(new SpawnCommand());
@@ -393,19 +398,48 @@ namespace SR2E
             RegisterCommand(new GravityCommand());
             RegisterCommand(new RotateCommand());
             RegisterCommand(new MoveCommand());
-            
+
             if (!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
             if (!SR2EEntryPoint.infEnergyInstalled)
                 RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new NoClipCommand());
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(NoClipCommand.NoclipComponent));
+        }
+        private static void SetupConsoleSync()
+        {
+            MelonLogger.MsgCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
+            MelonLogger.ErrorCallbackHandler += (s, s1) => SendError($"[{s}]: {s1}", false);
+            MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning($"[{s}]: {s}", false);
+        }
 
-            //Warps & Keybinding loading
-            SR2CommandBindingManager.Start();
-            SR2Warps.Start();
+        internal static void Start()
+        {
+            commandHistory = new List<string>();
+            if (SR2EEntryPoint.syncConsole)
+            {
+                SetupConsoleSync();
+            }
 
-            //Setup Modmenu
+            consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
+            consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
+            consoleContent = SR2EUtils.getObjRec<Transform>(transform, "ConsoleContent");
+            messagePrefab = SR2EUtils.getObjRec<GameObject>(transform, "messagePrefab");
+            specialMessagePrefab = SR2EUtils.getObjRec<GameObject>(transform, "specialMessagePrefab");
+            commandInput = SR2EUtils.getObjRec<TMP_InputField>(transform, "commandInput");
+            _scrollbar = SR2EUtils.getObjRec<Scrollbar>(transform, "ConsoleScroll");
+            autoCompleteContent = SR2EUtils.getObjRec<Transform>(transform, "AutoCompleteContent");
+            autoCompleteEntryPrefab = SR2EUtils.getObjRec<GameObject>(transform, "AutoCompleteEntry");
+            autoCompleteScrollView = SR2EUtils.getObjRec<GameObject>(transform, "AutoCompleteScroll");
+            autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
+            autoCompleteScrollView.SetActive(false);
+            consoleBlock.SetActive(false);
+            consoleMenu.SetActive(false);
+            commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
 
+            SetupCommands();
+            SetupData();
+            SetupModMenu();
             SR2ModMenu.parent = transform;
             SR2ModMenu.gameObject = SR2EUtils.getObjRec<GameObject>(transform, "modMenu");
             SR2ModMenu.transform = SR2EUtils.getObjRec<Transform>(transform, "modMenu");
@@ -446,8 +480,8 @@ namespace SR2E
                             autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Button>().onClick.Invoke();
                             selectedAutoComplete = 0;
                         }
-                        catch {}
-                    
+                        catch { }
+
                 }
             }
             if (Keyboard.current.enterKey.wasPressedThisFrame)
@@ -458,7 +492,7 @@ namespace SR2E
                 if (Keyboard.current.altKey.wasPressedThisFrame)
                 {
                     commandInput.text = commandHistory[commandHistoryIdx];
-                    commandHistoryIdx--;
+                    commandHistoryIdx -= 1;
                 }
             }
 
@@ -524,7 +558,7 @@ namespace SR2E
         public static void PrevAutoComplete()
         {
             selectedAutoComplete -= 1;
-            
+
             if (selectedAutoComplete < 0)
             {
                 selectedAutoComplete = autoCompleteContent.childCount - 1;
