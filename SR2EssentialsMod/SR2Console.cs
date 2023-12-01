@@ -33,6 +33,10 @@ namespace SR2E
                 {
                     return;
                 }
+                if (message.StartsWith("[]"))
+                {
+                    return;
+                }
 
                 if (!SR2EEntryPoint.consoleFinishedCreating)
                     return;
