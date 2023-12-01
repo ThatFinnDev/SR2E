@@ -193,20 +193,6 @@ namespace SR2E
                                 if (camera == null)
                                     camera = SR2EUtils.Get<SRCameraController>("PlayerCameraKCC");
                                 
-                                if (Player != null && camera!=null)
-                                    if (NoClipCommand.inNoClip)
-                                    {
-                                        float speed = Keyboard.current.shiftKey.isPressed ? noclipFlySprintSpeed : noclipFlySpeed;
-                                        if(Keyboard.current.wKey.isPressed) 
-                                            Player.Position += camera.transform.forward * speed*Time.deltaTime;
-                                        if(Keyboard.current.sKey.isPressed) 
-                                            Player.Position -= camera.transform.forward * speed*Time.deltaTime;
-                                        if(Keyboard.current.dKey.isPressed) 
-                                            Player.Position += camera.transform.right * speed*Time.deltaTime;
-                                        if(Keyboard.current.aKey.isPressed) 
-                                            Player.Position -= camera.transform.right * speed*Time.deltaTime;
-                                    }
-                                
                             } 
                     
 

@@ -29,6 +29,10 @@ namespace SR2E
             public static void Postfix(SRCharacterController __instance)
             {
                 NoClipCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.noclipState);
+                if (SR2ESavableData.Instance.playerSavedData.noclipState)
+                {
+                    SR2Console.SendMessage("Load noclip state debug");
+                }
             }
         }
 
@@ -86,7 +90,6 @@ namespace SR2E
                     SR2ESavableData.currPath = Path.Combine(loadPath, $"{saveName}.sr2e");
                 }
                 SR2ESavableData.SR2ESlimeDataSaver.LoadData();
-                NoClipCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.noclipState);
 
             }
         }
