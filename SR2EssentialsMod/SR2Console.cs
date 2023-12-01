@@ -341,7 +341,8 @@ namespace SR2E
             
         }
 
-
+        public static List<string> commandHistory;
+        public static int commandHistoryIdx = -1;
 
         internal static void Start()
         {
@@ -452,6 +453,15 @@ namespace SR2E
             if (Keyboard.current.enterKey.wasPressedThisFrame)
                 if (commandInput.text != "") Execute();
 
+            if (commandHistoryIdx != -1)
+            {
+                if (Keyboard.current.altKey.wasPressedThisFrame)
+                {
+                    commandInput.text = commandHistory[commandHistoryIdx];
+                    commandHistoryIdx--;
+                }
+            }
+
             if (Keyboard.current.ctrlKey.wasPressedThisFrame)
                 if (Keyboard.current.tabKey.isPressed)
                     Toggle();
@@ -531,6 +541,8 @@ namespace SR2E
         static void Execute()
         {
             string cmds = commandInput.text;
+            commandHistory.Add(cmds);
+            commandHistoryIdx = commandHistory.Count - 1;
             commandInput.text = "";
             for (int i = 0; i < autoCompleteContent.childCount; i++)
                 Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
