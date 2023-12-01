@@ -16,6 +16,23 @@ namespace SR2E.Commands
 
         internal static bool inNoClip = false;
         static LayerMask layerMask;
+
+        public static void RemoteExc(bool n)
+        {
+            if (n)
+            {
+                SRCharacterController Player = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC");
+
+                inNoClip = false;
+                Player.BypassGravity = false;
+                Player._motor.CollidableLayers = layerMask;
+                Player.GetComponent<KinematicCharacterMotor>().enabled = true;
+                Player._motor.SetCapsuleCollisionsActivation(true);
+                Player._motor.Capsule.enabled = true;
+                SR2Console.SendMessage("NoClip is now off!");
+            }
+        }
+
         public override bool Execute(string[] args)
         {
             if (args != null)

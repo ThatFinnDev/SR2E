@@ -1,3 +1,4 @@
+
 ﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Commands;
 using System;
@@ -21,7 +22,7 @@ namespace SR2E
                 var dataSaver = __instance.gameObject.AddComponent<SR2ESavableData.SR2ESlimeDataSaver>();
             }
         }
-        
+
         [HarmonyPatch(typeof(SRCharacterController), nameof(SRCharacterController.Start))]
         public static class NoclipStateLoadPatch
         {
@@ -46,7 +47,7 @@ namespace SR2E
             }
         }
 
-        [HarmonyPatch(nameof(FileStorageProvider),"savePath", MethodType.Getter)]
+        [HarmonyPatch(nameof(FileStorageProvider), "savePath", MethodType.Getter)]
         public static class StorageProviderPathGrabber
         {
             static void Postfix(ref string __result)
@@ -125,7 +126,7 @@ namespace SR2E
                     SR2ESavableData.Instance.slimeSavedData.Add(model.GetActorId(), data);
                 }
             }
-            
+
             public static void LoadData()
             {
                 var model = SceneContext.Instance.GameModel.identifiables;
@@ -140,7 +141,7 @@ namespace SR2E
                         slimeTransform.localScale = new Vector3(slimeData.scaleX, slimeData.scaleY, slimeData.scaleZ);
                     }
                 }
-                
+
             }
         }
 
