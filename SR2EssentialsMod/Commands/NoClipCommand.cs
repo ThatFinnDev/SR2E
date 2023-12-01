@@ -7,24 +7,15 @@ namespace SR2E.Commands
 {
     public class NoClipCommand : SR2CCommand
     {
-        public static T Get<T>(string name) where T : UnityEngine.Object
-        {
-            return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault(x => x.name == name);
-        }
 
         public class NoclipComponent : MonoBehaviour
         {
-            public static T Get<T>(string name) where T : UnityEngine.Object
-            {
-                return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-            }
 
             public static float baseSpeed = 15f;
             public static float speedAdjust = 235f;
             public float speed = 15f;
             public Transform player;
             public KCCSettings settings;
-            private Vector2 lastMousePos;
 
             public void OnDestroy()
             {
@@ -35,9 +26,9 @@ namespace SR2E.Commands
 
             public void Awake()
             {
-                player = Get<Transform>("PlayerControllerKCC");
+                player = SR2EEntryPoint.Get<Transform>("PlayerControllerKCC");
                 player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = false;
-                settings = Get<KCCSettings>("");
+                settings = SR2EEntryPoint.Get<KCCSettings>("");
                 settings.AutoSimulation = false;
             }
 
@@ -97,7 +88,8 @@ namespace SR2E.Commands
         {
             if (n)
             {
-                var cam = Get<GameObject>("PlayerCameraKCC");
+                SR2ESavableData.Instance.playerSavedData.noclipState = true;
+                var cam = SR2EEntryPoint.Get<GameObject>("PlayerCameraKCC");
                 cam.AddComponent<NoclipComponent>();
             }
         }
@@ -110,14 +102,16 @@ namespace SR2E.Commands
             }
             try
             {
-                var cam = Get<GameObject>("PlayerCameraKCC");
+                var cam = SR2EEntryPoint.Get<GameObject>("PlayerCameraKCC");
                 if (cam.GetComponent<NoclipComponent>() == null)
                 {
                     cam.AddComponent<NoclipComponent>();
+                    SR2ESavableData.Instance.playerSavedData.noclipState = true;
                 }
                 else
                 {
                     UnityEngine.Object.Destroy(cam.GetComponent<NoclipComponent>());
+                    SR2ESavableData.Instance.playerSavedData.noclipState = false;
                 }
                 return true;
             }
