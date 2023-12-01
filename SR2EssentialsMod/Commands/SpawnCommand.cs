@@ -5,7 +5,7 @@ namespace SR2E.Commands
     {
     
         public override string ID => "spawn";
-        public override string Usage => "spawn <object> <amount>";
+        public override string Usage => "spawn <object> [amount]";
         public override string Description => "Spawns something in front of your face";
         
         public override List<string> GetAutoComplete(int argIndex, string[] args)
@@ -62,7 +62,7 @@ namespace SR2E.Commands
                 return false;
             }
 
-            if (args.Length != 2)
+            if (args.Length != 2&&args.Length != 1)
             {
                 SR2Console.SendMessage($"Usage: {Usage}");
                 return false;
@@ -90,13 +90,22 @@ namespace SR2E.Commands
             }
             else
                 itemName=type.name;
-            int amount = 0;
-            if (!int.TryParse(args[1], out amount))
-            { SR2Console.SendError(args[1] + " is not a valid integer!"); return false; }
-            
-            if (amount<=0)
-            { SR2Console.SendError(args[1] + " is not an integer above 0!"); return false; }
-                
+            int amount = 1;
+            if (args.Length == 2)
+            {
+                if (!int.TryParse(args[1], out amount))
+                {
+                    SR2Console.SendError(args[1] + " is not a valid integer!");
+                    return false;
+                }
+
+                if (amount <= 0)
+                {
+                    SR2Console.SendError(args[1] + " is not an integer above 0!");
+                    return false;
+                }
+            }
+
             //if(type.ReferenceId.StartsWith("GadgetDefinition"))
             //{ SR2Console.SendError(args[0] + " is a gadget, not an item!"); return false; }
             
