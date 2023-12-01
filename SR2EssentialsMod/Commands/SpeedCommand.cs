@@ -6,13 +6,8 @@ namespace SR2E.Commands
 {
     public class SpeedCommand : SR2CCommand
     {
-        public static T Get<T>(string name) where T : UnityEngine.Object
-        {
-            return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-        }
-
         public override string ID { get; } = "speed";
-        public override string Usage { get; } = "speed float";
+        public override string Usage { get; } = "speed <speed>";
         public override string Description { get; } = "Sets the player speed";
 
         private static float baseMaxAirSpeed = 10;
@@ -28,7 +23,7 @@ namespace SR2E.Commands
 
             CharacterControllerParameters parameters;
 
-            parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+            parameters = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC")._parameters;
             float speedValue = 0;
             if (!float.TryParse(args[0], out speedValue))
             { SR2Console.SendError(args[1] + " is not a valid float!"); return false; }

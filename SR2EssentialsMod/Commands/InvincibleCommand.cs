@@ -27,7 +27,7 @@ namespace SR2E.Commands
             {
                 SR2EEntryPoint.infHealth = false;
                 if (healthMeter == null)
-                    healthMeter = Get<HealthMeter>("Health Meter");
+                    healthMeter = SR2EUtils.Get<HealthMeter>("Health Meter");
                 healthMeter.gameObject.active = true;
                 
                 SceneContext.Instance.PlayerState._model.maxHealth = normalHealth;
@@ -38,7 +38,7 @@ namespace SR2E.Commands
             {
                 SR2EEntryPoint.infHealth = true;
                 if (healthMeter == null)
-                    healthMeter = Get<HealthMeter>("Health Meter");
+                    healthMeter = SR2EUtils.Get<HealthMeter>("Health Meter");
                 healthMeter.gameObject.active = false;
                 
                 
@@ -51,11 +51,7 @@ namespace SR2E.Commands
             return true;
         }
         internal static int normalHealth = 100;
-        
         internal static HealthMeter healthMeter;
-        static T Get<T>(string name) where T : UnityEngine.Object
-        {
-            return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-        }
+        
     }
 }

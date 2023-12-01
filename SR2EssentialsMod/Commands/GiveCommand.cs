@@ -3,7 +3,7 @@
     public class GiveCommand : SR2CCommand
     {
         public override string ID => "give";
-        public override string Usage => "give <item> <amount>";
+        public override string Usage => "give <item> [amount]";
         public override string Description => "Gives you items";
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
@@ -58,7 +58,7 @@
             if (args == null)
             { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
 
-            if (args.Length != 2)
+            if (args.Length != 2&&args.Length != 1)
             { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
 
             
@@ -87,14 +87,18 @@
             if(type.ReferenceId.StartsWith("GadgetDefinition"))
             { SR2Console.SendError(args[0] + " is a gadget, not an item!"); return false; }
             
-            int amount = 0;
-            try
-            { amount = int.Parse(args[1]); }
-            catch
-            { SR2Console.SendError(args[1] + " is not a valid integer!"); return false; }
+            int amount = 1;
+            if (args.Length == 2)
+            {
+                try
+                { amount = int.Parse(args[1]); }
+                catch
+                { SR2Console.SendError(args[1] + " is not a valid integer!"); return false; }
 
-            if (amount<=0)
-            { SR2Console.SendError(args[1] + " is not an integer above 0!"); return false; }
+                if (amount<=0)
+                { SR2Console.SendError(args[1] + " is not an integer above 0!"); return false; }
+            }
+            
                 
             for (int i = 0; i < amount; i++)
                 SceneContext.Instance.PlayerState.Ammo.MaybeAddToSlot(type,null); 
