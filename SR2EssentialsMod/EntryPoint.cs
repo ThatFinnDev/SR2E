@@ -31,6 +31,7 @@ namespace SR2E
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         internal static bool syncConsole = true;
+        internal static bool skipEngagementPrompt = true;
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
@@ -71,9 +72,12 @@ namespace SR2E
                 prefs.CreateEntry("noclipFlySprintSpeed", (float)40f, "NoClip Flying SprintSpeed", false);
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
+            if (!prefs.HasEntry("skipEngagementPrompt"))
+                prefs.CreateEntry("doesConsoleSync", (bool)false, "Skip the engagement prompt", false);
             noclipFlySpeed = prefs.GetEntry<float>("noclipFlySpeed").Value;
             noclipFlySprintSpeed = prefs.GetEntry<float>("noclipFlySprintSpeed").Value;
             syncConsole = prefs.GetEntry<bool>("doesConsoleSync").Value;
+            skipEngagementPrompt = prefs.GetEntry<bool>("skipEngagementPrompt").Value;
 
         }
         public override void OnInitializeMelon()
