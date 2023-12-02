@@ -21,10 +21,13 @@ public static class SR2StartPatch
 {
     public static void Prefix()
     {
-        MelonLogger.Msg("Skipping engagement prompt!");
+        if (SR2EEntryPoint.skipEngagementPrompt)
+        {
+            MelonLogger.Msg("Skipping engagement prompt!");
 
-        var sl = SystemContext.Instance.SceneLoader;
+            var sl = SystemContext.Instance.SceneLoader;
 
-        sl.LoadMainMenuSceneGroup();
+            sl.LoadMainMenuSceneGroup();
+        }
     }
 }
