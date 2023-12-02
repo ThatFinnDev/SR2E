@@ -3,8 +3,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <OutputType>Library</OutputType>
-    <RootNamespace>TestMod</RootNamespace>
+    <RootNamespace>SR2E</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>SR2E</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>None</DebugType>
