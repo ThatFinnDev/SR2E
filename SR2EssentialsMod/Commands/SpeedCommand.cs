@@ -1,6 +1,6 @@
 ﻿using Il2CppMonomiPark.KFC;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using System.Linq;
+using SR2E.Saving;
 
 namespace SR2E.Commands
 {
@@ -14,6 +14,14 @@ namespace SR2E.Commands
         private static float baseAccAirSpeed = 60;
         private static float baseMaxGroundSpeed = 10;
 
+        public static void RemoteExc(float val)
+        {
+            var parameters = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+
+            parameters._maxGroundedMoveSpeed = val * baseMaxGroundSpeed;
+            parameters._maxAirMoveSpeed = val * baseMaxAirSpeed;
+            parameters._airAccelerationSpeed = val * baseAccAirSpeed;
+        }
         public override bool Execute(string[] args)
         {
             if (args == null) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
@@ -32,6 +40,8 @@ namespace SR2E.Commands
                 parameters._maxGroundedMoveSpeed = speedValue * baseMaxGroundSpeed;
                 parameters._maxAirMoveSpeed = speedValue * baseMaxAirSpeed;
                 parameters._airAccelerationSpeed = speedValue * baseAccAirSpeed;
+
+                SR2ESavableData.Instance.playerSavedData.speed = speedValue;
 
                 SR2Console.SendMessage($"Speed set to {args[0]}");
                 return true;

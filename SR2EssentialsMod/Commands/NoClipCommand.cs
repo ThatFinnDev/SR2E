@@ -1,66 +1,128 @@
 ﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+using SR2E.Saving;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
-    //NOT WORKING YET
     public class NoClipCommand : SR2CCommand
     {
-        public override string ID => "noclip";
-        public override string Usage => "noclip";
-        public override string Description => "Toggles noclip";
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
+
+        public class NoclipComponent : MonoBehaviour
         {
-            return null;
+
+            public static float baseSpeed = 15f;
+            public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
+            public float speed = 15f;
+            public Transform player;
+            public KCCSettings settings;
+
+            public void OnDestroy()
+            {
+                try
+                {
+                    player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = true;
+                    settings.AutoSimulation = true;
+                    player.GetComponent<SRCharacterController>().Position = player.position;
+                }
+                catch
+                {
+                    // ignore error
+                }
+            }
+
+            public void Awake()
+            {
+                player = SceneContext.Instance.player.transform;
+                player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = false;
+                settings = Object.FindFirstObjectByType<KCCSettings>();
+                settings.AutoSimulation = false;
+            }
+
+            public void Update()
+            {
+                if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+                {
+                    player.position += -transform.right * (speed * Time.deltaTime);
+                }
+
+                if (Keyboard.current.shiftKey.isPressed)
+                {
+                    speed = baseSpeed * 2;
+                }
+                else
+                {
+                    speed = baseSpeed;
+                }
+
+                if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+                {
+                    player.position += transform.right * (speed * Time.deltaTime);
+                }
+
+                if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
+                {
+                    player.position += transform.forward * (speed * Time.deltaTime);
+                }
+
+                if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)
+                {
+                    player.position += -transform.forward * (speed * Time.deltaTime);
+                }
+
+                if (Mouse.current.scroll.ReadValue().y > 0)
+                {
+                    baseSpeed += (speedAdjust * Time.deltaTime);
+                }
+                if (Mouse.current.scroll.ReadValue().y < 0)
+                {
+                    baseSpeed -= (speedAdjust * Time.deltaTime);
+                }
+                if (baseSpeed < 1)
+                {
+                    baseSpeed = 1.01f;
+                }
+            }
         }
 
-        internal static bool inNoClip = false;
-        static LayerMask layerMask;
+        public override string ID => "noclip";
+
+        public override string Usage => "noclip";
+
+        public override string Description => "Toggles noclip";
+
+        public static void RemoteExc(bool n)
+        {
+            if (n)
+            {
+                SR2ESavableData.Instance.playerSavedData.noclipState = true;
+                var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
+                cam.AddComponent<NoclipComponent>();
+            }
+        }
+
         public override bool Execute(string[] args)
         {
             if (args != null)
             {
-                SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
                 return false;
             }
-
-            
-            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
-            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
-
-            if (SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC") != null)
+            try
             {
-                SRCharacterController Player = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC");
-                SR2EEntryPoint.RefreshPrefs();
-                if (inNoClip)
+                var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
+                if (cam.GetComponent<NoclipComponent>() == null)
                 {
-                    inNoClip = false;
-                    Player.BypassGravity = false;
-                    Player._motor.CollidableLayers = layerMask;
-                    Player.GetComponent<KinematicCharacterMotor>().enabled = true;
-                    Player._motor.SetCapsuleCollisionsActivation(true);
-                    Player._motor.Capsule.enabled = true;
-                    SR2Console.SendMessage("NoClip is now off!");
-                    return true;
+                    cam.AddComponent<NoclipComponent>();
+                    SR2ESavableData.Instance.playerSavedData.noclipState = true;
                 }
                 else
                 {
-                    inNoClip = true;
-                    layerMask = Player._motor.CollidableLayers;
-                    Player._motor.CollidableLayers = 0;
-                    Player.BypassGravity = true;
-                    Player.GetComponent<KinematicCharacterMotor>().enabled = false;
-                    Player._motor.Capsule.enabled = false;
-                    Player.Velocity = Vector3.zero;
-                    Player._motor.SetCapsuleCollisionsActivation(false);
-                    SR2Console.SendMessage("NoClip is now on!");
-                    return true;
+                    UnityEngine.Object.Destroy(cam.GetComponent<NoclipComponent>());
+                    SR2ESavableData.Instance.playerSavedData.noclipState = false;
                 }
-
-
+                return true;
             }
-            SR2Console.SendError("An unknown error occured!");
-            return false;
+            catch { return false; }
         }
     }
 }
