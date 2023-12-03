@@ -362,7 +362,7 @@ namespace SR2E.Commands
             {
                 if (isGet)
                 {
-                    var gadget = SR2EUtils.RaycastForSpawnedGadget();
+                    var gadget = SR2EUtils.RaycastForGadget();
                     if (gadget != null)
                     {
                         var pos = gadget.transform.position;
@@ -371,7 +371,7 @@ namespace SR2E.Commands
                 }
                 else
                 {
-                    var gadget = SR2EUtils.RaycastForSpawnedGadget();
+                    var gadget = SR2EUtils.RaycastForGadget();
                     if (gadget != null)
                     {
                         var pos = new Vector3(posX, posY, posZ);
@@ -390,7 +390,7 @@ namespace SR2E.Commands
             {
                 if (isGet)
                 {
-                    var gadget = SR2EUtils.RaycastForSpawnedGadget();
+                    var gadget = SR2EUtils.RaycastForGadget();
                     if (gadget != null)
                     {
                         var gadgetRot = gadget.transform.eulerAngles.y;
@@ -399,11 +399,11 @@ namespace SR2E.Commands
                 }
                 else
                 {
-                    var gadget = SR2EUtils.RaycastForSpawnedGadget();
+                    var gadget = SR2EUtils.RaycastForGadget();
                     if (gadget != null)
                     {
                             gadget.Model.yRotation = rot;
-                            gadget.transform.eulerAngles = new Vector3(0, rot, 0);
+                            gadget.transform.rotation = Quaternion.EulerRotation(new Vector3(0, rot, 0));
                             SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
                     }
                 }
