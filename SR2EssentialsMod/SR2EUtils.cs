@@ -5,6 +5,7 @@ namespace SR2E;
 
 public static class SR2EUtils
 {
+
     internal static KeyCode KeyToKeyCode(Key key)
     {
         switch (key)

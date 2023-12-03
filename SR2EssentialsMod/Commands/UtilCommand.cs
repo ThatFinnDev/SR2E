@@ -1,11 +1,6 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Damage;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.ErrorHandling;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppSystem;
 using SR2E.Saving;
-using System.Reflection;
-using UnityEngine.Localization.SmartFormat.GlobalVariables;
 
 namespace SR2E.Commands
 {
