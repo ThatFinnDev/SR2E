@@ -20,10 +20,7 @@
         public override bool Execute(string[] args)
         {
             if (args == null)
-            {
-                SR2Console.SendError($"Usage: {Usage}");
-                return false;
-            }
+            { SR2Console.SendError($"Usage: {Usage}"); return false; }
             if (args.Length != 1)
             { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
             
