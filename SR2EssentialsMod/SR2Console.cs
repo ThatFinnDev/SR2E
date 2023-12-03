@@ -26,6 +26,8 @@ namespace SR2E
         /// </summary>
         public static void SendMessage(string message, bool doMLLog)
         {
+            if(String.IsNullOrEmpty(message))
+                return;
             try
             {
                 if (message.Contains("[SR2E]:"))
@@ -79,6 +81,8 @@ namespace SR2E
         /// </summary>
         public static void SendError(string message, bool doMLLog)
         {
+            if(String.IsNullOrEmpty(message))
+                return;
             try
             {
                 if (message.Contains("[SR2E]:"))
@@ -133,6 +137,8 @@ namespace SR2E
         /// </summary>
         public static void SendWarning(string message, bool doMLLog)
         {
+            if(String.IsNullOrEmpty(message))
+                return;
             try
             {
                 if (message.Contains("[SR2E]:"))
@@ -246,9 +252,29 @@ namespace SR2E
         }
 
         /// <summary>
+        /// Unregisters a command
+        /// </summary>
+        public static bool UnRegisterCommand(SR2CCommand cmd)
+        {
+            return UnRegisterCommand(cmd.ID);
+        }
+        /// <summary>
+        /// Unregisters a command
+        /// </summary>
+        public static bool UnRegisterCommand(string cmd)
+        {
+            if (commands.ContainsKey(cmd.ToLowerInvariant()))
+            {
+                commands.Remove(cmd.ToLowerInvariant());
+                return true;
+            }
+            SendMessage($"Trying to unregister command with id '<color=white>{cmd.ToLowerInvariant()}</color>' but the ID is not registered!");
+            return false;
+        }
+        /// <summary>
         /// Execute a string as if it was a commandId with args
         /// </summary>
-        public static void ExecuteByString(string input)
+        public static void ExecuteByString(string input, bool silent = false)
         {
             string[] cmds = input.Split(';');
             foreach (string c in cmds)
@@ -266,13 +292,31 @@ namespace SR2E
                             List<string> split = argString.Split(' ').ToList();
                             split.RemoveAt(0);
                             split.RemoveAt(split.Count - 1);
+                            bool shouldRunNormalExecute = true;
                             if (split.Count != 0)
-                                successful = commands[cmd].Execute(split.ToArray());
+                            {
+                                string[] stringArray = split.ToArray();
+                                if (silent)
+                                { shouldRunNormalExecute = !commands[cmd].SilentExecute(stringArray); }
+                                if(shouldRunNormalExecute)
+                                    successful = commands[cmd].Execute(stringArray);
+                            }
                             else
-                                successful = commands[cmd].Execute(null);
+                            {
+                                if (silent)
+                                { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
+                                if(shouldRunNormalExecute)
+                                    successful = commands[cmd].Execute(null);
+                            }
                         }
                         else
-                            successful = commands[cmd].Execute(null);
+                        {
+                            bool shouldRunNormalExecute = true;
+                            if (silent)
+                            { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
+                            if(shouldRunNormalExecute)
+                                successful = commands[cmd].Execute(null);
+                        }
                     }
                     else
                         SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
@@ -423,7 +467,8 @@ namespace SR2E
             RegisterCommand(new GravityCommand());
             RegisterCommand(new RotateCommand());
             RegisterCommand(new MoveCommand());
-
+            ConsoleVisibilityCommands.RegisterAllConsoleVisibilityCommands();
+          
             if (!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
             if (!SR2EEntryPoint.infEnergyInstalled)

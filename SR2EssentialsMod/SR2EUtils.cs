@@ -282,4 +282,18 @@ public static class SR2EUtils
     }
     internal static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
 
+    internal static bool inGame
+    {
+        get
+        {
+            try
+            {
+                if (SceneContext.Instance == null) return false;
+                if (SceneContext.Instance.PlayerState == null) return false;
+            }
+            catch
+            { return false; }
+            return true;
+        }
+    }
 }
