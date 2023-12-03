@@ -33,6 +33,7 @@ namespace SR2E.Saving
             public static void Postfix(SRCharacterController __instance)
             {
                 NoClipCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.noclipState);
+                SpeedCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.speed);
                 SceneContext.Instance.player.transform.localScale = Vector3.one * SR2ESavableData.Instance.playerSavedData.size;
                 SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(SR2ESavableData.Instance.playerSavedData.gravityLevel);
                 if (SR2ESavableData.Instance.playerSavedData.noclipState)
@@ -47,7 +48,10 @@ namespace SR2E.Saving
         {
             public static void Prefix(AutoSaveDirector __instance)
             {
-                MelonLogger.Msg("test");
+                if (SR2EEntryPoint.debugLogging)
+                {
+                    MelonLogger.Msg("test");
+                }
                 foreach (var savableSlime in Resources.FindObjectsOfTypeAll<SR2ESlimeDataSaver>())
                 {
                     try
