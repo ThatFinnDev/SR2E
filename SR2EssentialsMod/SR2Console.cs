@@ -223,6 +223,26 @@ namespace SR2E
         }
 
         /// <summary>
+        /// Unregisters a command
+        /// </summary>
+        public static bool UnRegisterCommand(SR2CCommand cmd)
+        {
+            return UnRegisterCommand(cmd.ID);
+        }
+        /// <summary>
+        /// Unregisters a command
+        /// </summary>
+        public static bool UnRegisterCommand(string cmd)
+        {
+            if (commands.ContainsKey(cmd.ToLowerInvariant()))
+            {
+                commands.Remove(cmd.ToLowerInvariant());
+                return true;
+            }
+            SendMessage($"Trying to unregister command with id '<color=white>{cmd.ToLowerInvariant()}</color>' but the ID is not registered!");
+            return false;
+        }
+        /// <summary>
         /// Execute a string as if it was a commandId with args
         /// </summary>
         public static void ExecuteByString(string input, bool silent = false)
