@@ -1,6 +1,11 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.ErrorHandling;
+using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+using Il2CppSystem;
+using SR2E.Saving;
 using System.Reflection;
+using UnityEngine.Localization.SmartFormat.GlobalVariables;
 
 namespace SR2E.Commands
 {
@@ -60,7 +65,8 @@ namespace SR2E.Commands
 
         public readonly List<string> PlayerParam = new List<string>()
         {
-            "CUSTOM_SIZE"
+            "CUSTOM_SIZE",
+            "GRAVITY_LEVEL"
         };
 
 
@@ -304,6 +310,64 @@ namespace SR2E.Commands
             }
             return false;
         }
+
+        public void PlayerSize(bool isGet, float size = 1)
+        {
+            if (isGet)
+            {
+                SR2Console.SendMessage($"The current size of the player is {SceneContext.Instance.player.transform.localScale.x}");
+            }
+            else
+            {
+                SceneContext.Instance.player.transform.localScale = Vector3.one * size;
+                SR2ESavableData.Instance.playerSavedData.size = size;
+                SR2Console.SendMessage($"The new size of the player is {size}");
+
+            }
+        }
+        public void PlayerGravity(bool isGet, float level = 1)
+        {
+            if (isGet)
+            {
+                SR2Console.SendMessage($"The current gravity level of the player is {SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude}");
+            }
+            else
+            {
+                SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Nullable<float>(level);
+                SR2ESavableData.Instance.playerSavedData.gravityLevel = level;
+                SR2Console.SendMessage($"The new gravity level of the player is {level}");
+
+            }
+        }
+
+        public bool ExcPlayer(string[] cmd)
+        {
+            if (cmd[1] == "CUSTOM_SIZE")
+            {
+                if (cmd.Length > 2)
+                {
+                    PlayerSize(false, float.Parse(cmd[2]));
+                }
+                else
+                {
+                    PlayerSize(true);
+                }
+                return true;
+            }
+            else if (cmd[1] == "GRAVITY_LEVEL")
+            {
+                if (cmd.Length > 2)
+                {
+                    PlayerGravity(false, float.Parse(cmd[2]));
+                }
+                else
+                {
+                    PlayerGravity(true);
+                }
+                return true;
+            }
+            return false;
+        }
         public override bool Execute(string[] args)
         {
             if (args[0] == "GORDO")
@@ -320,8 +384,7 @@ namespace SR2E.Commands
             }
             else if (args[0] == "PLAYER")
             {
-                SR2Console.SendError("This has not been implemented yet.");
-                return false;
+                return ExcPlayer(args);
             }
             else if (args[0] == "GADGET")
             {
@@ -352,7 +415,7 @@ namespace SR2E.Commands
                 }
                 else if (args[0] == "PLAYER")
                 {
-                    return ParamPlaceholder;
+                    return PlayerParam;
                 }
                 else if (args[0] == "GADGET")
                 {
@@ -379,6 +442,8 @@ namespace SR2E.Commands
                                 if (type.LocalizedName != null)
                                 {
                                     string localizedString = type.LocalizedName.GetLocalizedString();
+                                    var s = localizedString.Replace(" ", "");
+                                    list.Add(s);
                                 }
                             }
                             catch { }

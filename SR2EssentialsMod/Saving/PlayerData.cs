@@ -11,5 +11,7 @@ namespace SR2E.Saving
     public struct SR2EPlayerData
     {
         public bool noclipState;
+        public float size;
+        public float gravityLevel;
     }
 }

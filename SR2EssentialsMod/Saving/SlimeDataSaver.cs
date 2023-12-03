@@ -38,7 +38,11 @@ namespace SR2E.Saving
         }
         public void Start()
         {
-            LoadData();
+            try
+            {
+                LoadData();
+            }
+            catch { }
         }
     }
 }
