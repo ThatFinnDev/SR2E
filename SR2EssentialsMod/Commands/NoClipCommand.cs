@@ -1,7 +1,6 @@
 ﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Saving;
-using System.Linq;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Commands

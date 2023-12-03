@@ -1,8 +1,6 @@
 ﻿using Il2CppMonomiPark.KFC;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Saving;
-using System.Linq;
-using static UnityEngine.Rendering.HighDefinition.DLSSPass;
 
 namespace SR2E.Commands
 {

@@ -1,11 +1,6 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Commands;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SR2E.Saving
 {
