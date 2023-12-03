@@ -1,6 +1,8 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+﻿using Il2CppKinematicCharacterController;
+using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppSystem;
 using SR2E.Saving;
+using UnityEngine.UIElements;
 
 namespace SR2E.Commands
 {
@@ -19,6 +21,9 @@ namespace SR2E.Commands
         public override string Usage => "util <args>";
 
         public override string Description => "Utility Command";
+
+        public const float playerColliderHeightBase = 2f;
+        public const float playerColliderRadBase = 0.6f;
 
         public readonly List<string> TypeParam = new List<string>()
         {
@@ -62,6 +67,12 @@ namespace SR2E.Commands
         {
             "CUSTOM_SIZE",
             "GRAVITY_LEVEL"
+        };
+
+        public readonly List<string> GadgetParam = new List<string>()
+        {
+            "ROTATION",
+            "POSITION"
         };
 
 
@@ -315,10 +326,20 @@ namespace SR2E.Commands
             else
             {
                 SceneContext.Instance.player.transform.localScale = Vector3.one * size;
+                var KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>();
+                KCC.CapsuleHeight = playerColliderHeightBase * size;
+                KCC.CapsuleRadius = playerColliderRadBase * size;
                 SR2ESavableData.Instance.playerSavedData.size = size;
                 SR2Console.SendMessage($"The new size of the player is {size}");
 
             }
+        }
+        public static void RemoteExc_PlayerSize(float size)
+        {
+            SceneContext.Instance.player.transform.localScale = Vector3.one * size;
+            var KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>();
+            KCC.CapsuleHeight = playerColliderHeightBase * size;
+            KCC.CapsuleRadius = playerColliderRadBase * size;
         }
         public void PlayerGravity(bool isGet, float level = 1)
         {
@@ -333,6 +354,90 @@ namespace SR2E.Commands
                 SR2Console.SendMessage($"The new gravity level of the player is {level}");
 
             }
+        }
+
+        public void GadgetPos(bool isGet, float posX = 0, float posY = 0, float posZ = 0)
+        {
+            try
+            {
+                if (isGet)
+                {
+                    var gadget = SR2EUtils.RaycastForSpawnedGadget();
+                    if (gadget != null)
+                    {
+                        var pos = gadget.transform.position;
+                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {pos.x}, {pos.y}, {pos.z}");
+                    }
+                }
+                else
+                {
+                    var gadget = SR2EUtils.RaycastForSpawnedGadget();
+                    if (gadget != null)
+                    {
+                        var pos = new Vector3(posX, posY, posZ);
+                        gadget.transform.position = pos;
+                        gadget.Model.lastPosition = pos;
+                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {posX}, {posY}, {posZ}");
+                    }
+                }
+            }
+            catch { }
+            
+        }
+        public void GadgetRot(bool isGet, float rot = 0f)
+        {
+            try
+            {
+                if (isGet)
+                {
+                    var gadget = SR2EUtils.RaycastForSpawnedGadget();
+                    if (gadget != null)
+                    {
+                        var gadgetRot = gadget.transform.eulerAngles.y;
+                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is {gadgetRot}");
+                    }
+                }
+                else
+                {
+                    var gadget = SR2EUtils.RaycastForSpawnedGadget();
+                    if (gadget != null)
+                    {
+                            gadget.Model.yRotation = rot;
+                            gadget.transform.eulerAngles = new Vector3(0, rot, 0);
+                            SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
+                    }
+                }
+            }
+            catch { }
+            
+        }
+        public bool ExcGadget(string[] cmd)
+        {
+            if (cmd[1] == "POSITION")
+            {
+                if (cmd.Length > 2)
+                {
+                    GadgetPos(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
+                }
+                else
+                {
+                    GadgetPos(true);
+                }
+                return true;
+            }
+            else if (cmd[1] == "ROTATION")
+            {
+                if (cmd.Length > 2)
+                {
+                    GadgetRot(false, float.Parse(cmd[2]));
+                }
+                else
+                {
+                    GadgetRot(true);
+                }
+                return true;
+            }
+            return false;
         }
 
         public bool ExcPlayer(string[] cmd)
@@ -383,8 +488,7 @@ namespace SR2E.Commands
             }
             else if (args[0] == "GADGET")
             {
-                SR2Console.SendError("This has not been implemented yet.");
-                return false;
+                return ExcGadget(args);
             }
             return false;
         }
@@ -414,7 +518,7 @@ namespace SR2E.Commands
                 }
                 else if (args[0] == "GADGET")
                 {
-                    return ParamPlaceholder;
+                    return GadgetParam;
                 }
             }
             else if (argIndex == 2)
