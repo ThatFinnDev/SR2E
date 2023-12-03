@@ -9,7 +9,7 @@ using Il2CppTMPro;
 using SR2E.Commands;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
+using Il2CppInterop.Runtime.Injection;
 
 namespace SR2E
 {
@@ -83,6 +83,7 @@ namespace SR2E
         public override void OnInitializeMelon()
         {
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
+            ClassInjector.RegisterTypeInIl2Cpp<SR2ESavableData.SR2ESlimeDataSaver>();
             RefreshPrefs();
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)

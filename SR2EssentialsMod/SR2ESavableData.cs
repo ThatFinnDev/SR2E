@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace SR2E
 {
@@ -46,13 +47,31 @@ namespace SR2E
         [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.SaveGame))]
         public static class AutoSaveDirectorSavePatch
         {
-            public static void Postfix()
+            public static void Prefix(AutoSaveDirector __instance)
             {
+                MelonLogger.Msg("test");
                 foreach (var savableSlime in Resources.FindObjectsOfTypeAll<SR2ESavableData.SR2ESlimeDataSaver>())
                 {
-                    savableSlime.SaveData();
-                }
+                    try
+                    {
+                        savableSlime.SaveData();
+                    }
+                    catch
+                    {
 
+                    }
+                }
+                if (SR2ESavableData.Instance.idx != 5)
+                {
+                    SR2ESavableData.currPath = $"{Path.Combine(SR2ESavableData.Instance.dir, SR2ESavableData.Instance.gameName)}_{SR2ESavableData.Instance.idx + 1}.sr2e";
+                    SR2ESavableData.Instance.idx++;
+                }
+                else
+                {
+                    SR2ESavableData.currPath = $"{Path.Combine(SR2ESavableData.Instance.dir, SR2ESavableData.Instance.gameName)}_{0}.sr2e";
+                    SR2ESavableData.Instance.idx = 0;
+                }
+                MelonLogger.Warning(SR2ESavableData.currPath);
                 SR2ESavableData.Instance.TrySave();
             }
         }
@@ -77,6 +96,10 @@ namespace SR2E
                     try
                     {
                         SR2ESavableData.LoadFromStream(new FileStream(Path.Combine(loadPath, $"{saveName}.sr2e"), FileMode.Open));
+                        SR2ESavableData.currPath = Path.Combine(loadPath, $"{saveName}.sr2e");
+                        SR2ESavableData.Instance.dir = $"{loadPath}\\";
+                        SR2ESavableData.Instance.gameName = gameName;
+                        SR2ESavableData.Instance.idx = int.Parse(saveName.Split('_')[2]);
                     }
                     catch (Exception ex)
                     {
@@ -84,16 +107,20 @@ namespace SR2E
                         SR2Console.SendWarning($"Developer error: {ex}");
                         var stream = new FileStream(Path.Combine(loadPath, $"{saveName}.sr2e"), FileMode.OpenOrCreate);
                         new SR2ESavableData();
-                        SR2ESavableData.currStream = stream;
                         SR2ESavableData.currPath = Path.Combine(loadPath, $"{saveName}.sr2e");
+                        SR2ESavableData.Instance.dir = $"{loadPath}\\";
+                        SR2ESavableData.Instance.gameName = gameName;
+                        SR2ESavableData.Instance.idx = int.Parse(saveName.Split('_')[2]);
                     }
                 }
                 else
                 {
                     var stream = new FileStream(Path.Combine(loadPath, $"{saveName}.sr2e"), FileMode.CreateNew);
                     new SR2ESavableData();
-                    SR2ESavableData.currStream = stream;
                     SR2ESavableData.currPath = Path.Combine(loadPath, $"{saveName}.sr2e");
+                    SR2ESavableData.Instance.dir = $"{loadPath}\\";
+                    SR2ESavableData.Instance.gameName = gameName;
+                    SR2ESavableData.Instance.idx = int.Parse(saveName.Split('_')[2]);
                 }
                 SR2ESavableData.SR2ESlimeDataSaver.LoadData();
 
@@ -104,17 +131,12 @@ namespace SR2E
     [Serializable]
     internal class SR2ESavableData
     {
-        private class SR2EJsonWriter : JsonWriter
-        {
-            public override void Flush()
-            {
-                
-            }
 
-        }
-
-        public static Stream currStream;
         public static string currPath;
+        public string dir;
+        public string gameName;
+        public int idx;
+
         public static SR2ESavableData Instance;
         public SR2ESavableData()
         {
@@ -165,7 +187,16 @@ namespace SR2E
 
         public void IncreaseSaveIndex()
         {
-
+            if (idx != 5)
+            {
+                currPath = $"{Path.Combine(dir, gameName)}_{idx + 1}.sr2e";
+                idx++;
+            }
+            else
+            {
+                currPath = $"{Path.Combine(dir, gameName)}_{0}.sr2e";
+                idx = 0;
+            }
         }
 
         [Serializable]
@@ -208,18 +239,30 @@ namespace SR2E
 
         public void DebugSaveToNewFile(string path)
         {
-            var stream = new FileStream(path, FileMode.OpenOrCreate);
-            var writer = new StreamWriter(stream);
+            try
+            {
+                var json = DebugPrint();
+                MelonLogger.Msg(json);
+                using (var writer = new StreamWriter(path))
+                {
+                    writer.Write(json);
+                    writer.Flush();
+                }
+            }
+            catch (Exception error)
+            {
+                SR2Console.SendError($"Saving error: {error}");
+            }
 
-            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
-            writer.Write(json);
         }
+
+        public string DebugPrint() => JsonConvert.SerializeObject(this, Formatting.Indented);
+
         public void TrySave()
         {
-            var writer = new StreamWriter(currStream);
-
-            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
-            writer.Write(json);
+            //var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            //File.WriteAllText(currPath, json);
+            DebugSaveToNewFile(currPath);
         }
         public static SR2ESavableData LoadFromStream(Stream stream)
         {
@@ -227,8 +270,7 @@ namespace SR2E
             {
                 var reader = new StreamReader(localStream);
                 var json = reader.ReadToEnd();
-                SR2ESavableData save = (SR2ESavableData)JsonConvert.DeserializeObject(json);
-                currStream = localStream;
+                SR2ESavableData save = JsonConvert.DeserializeObject<SR2ESavableData>(json);
                 return save;
             }
         }
