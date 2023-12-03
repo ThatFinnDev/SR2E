@@ -73,7 +73,8 @@ namespace SR2E.Saving
             try
             {
                 var json = DebugPrint();
-                MelonLogger.Msg(json);
+                if (SR2EEntryPoint.debugLogging)
+                    MelonLogger.Msg(json);
                 using (var writer = new StreamWriter(path))
                 {
                     writer.Write(json);

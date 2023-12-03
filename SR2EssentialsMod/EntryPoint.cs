@@ -33,6 +33,7 @@ namespace SR2E
         internal static bool consoleFinishedCreating = false;
         internal static bool syncConsole = true;
         internal static bool skipEngagementPrompt = false;
+        internal static bool debugLogging = false;
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
@@ -62,23 +63,22 @@ namespace SR2E
         }
         static bool CheckIfLargo(string value) => (value.Remove(0, 1)).Any(char.IsUpper);
         internal static MelonPreferences_Category prefs;
-        private static float noclipFlySpeed=20;
-        private static float noclipFlySprintSpeed=40;
+        internal static float noclipAdjustSpeed = 235f;
 
         internal static void RefreshPrefs()
         {
-            if (!prefs.HasEntry("noclipFlySpeed"))
-                prefs.CreateEntry("noclipFlySpeed", (float)20f, "NoClip Flying Speed", false);
-            if (!prefs.HasEntry("noclipFlySprintSpeed"))
-                prefs.CreateEntry("noclipFlySprintSpeed", (float)40f, "NoClip Flying SprintSpeed", false);
+            if (!prefs.HasEntry("noclipAdjustSpeed"))
+                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false);
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
             if (!prefs.HasEntry("skipEngagementPrompt"))
                 prefs.CreateEntry("skipEngagementPrompt", (bool)false, "Skip the engagement prompt", false);
-            noclipFlySpeed = prefs.GetEntry<float>("noclipFlySpeed").Value;
-            noclipFlySprintSpeed = prefs.GetEntry<float>("noclipFlySprintSpeed").Value;
+            if (!prefs.HasEntry("debugLogging"))
+                prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false);
+            noclipAdjustSpeed = prefs.GetEntry<float>("noclipAdjustSpeed").Value;
             syncConsole = prefs.GetEntry<bool>("doesConsoleSync").Value;
             skipEngagementPrompt = prefs.GetEntry<bool>("skipEngagementPrompt").Value;
+            debugLogging = prefs.GetEntry<bool>("debugLogging").Value;
 
         }
         public override void OnInitializeMelon()
