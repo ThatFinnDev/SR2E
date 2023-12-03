@@ -39,7 +39,7 @@ namespace SR2E.Saving
             {
                 NoClipCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.noclipState);
                 SpeedCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.speed);
-                SceneContext.Instance.player.transform.localScale = Vector3.one * SR2ESavableData.Instance.playerSavedData.size;
+                UtilCommand.RemoteExc_PlayerSize(SR2ESavableData.Instance.playerSavedData.size);
                 SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(SR2ESavableData.Instance.playerSavedData.gravityLevel);
                 if (SR2ESavableData.Instance.playerSavedData.noclipState)
                 {

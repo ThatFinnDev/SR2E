@@ -5,7 +5,19 @@ namespace SR2E;
 
 public static class SR2EUtils
 {
-
+    public static Gadget RaycastForSpawnedGadget()
+    {
+        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+        {
+            var g = hit.collider.transform.root.GetComponent<Gadget>();
+            if (g != null)
+            {
+                return g;
+            }
+            else return null;
+        }
+        return null;
+    }
     internal static KeyCode KeyToKeyCode(Key key)
     {
         switch (key)

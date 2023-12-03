@@ -8,12 +8,13 @@ namespace SR2E.Saving
         public float scaleX;
         public float scaleY;
         public float scaleZ;
-
+        public bool zeroGrav;
         public SR2ESlimeData()
         {
             scaleX = 1f;
             scaleY = 1f;
             scaleZ = 1f;
+            zeroGrav = false;
         }
     }
 }

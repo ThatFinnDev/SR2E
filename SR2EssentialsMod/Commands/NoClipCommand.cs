@@ -33,9 +33,9 @@ namespace SR2E.Commands
 
             public void Awake()
             {
-                player = SR2EUtils.Get<Transform>("PlayerControllerKCC");
+                player = SceneContext.Instance.player.transform;
                 player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = false;
-                settings = SR2EUtils.Get<KCCSettings>("");
+                settings = Object.FindFirstObjectByType<KCCSettings>();
                 settings.AutoSimulation = false;
             }
 
