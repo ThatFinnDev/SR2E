@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static SR2E.Saving.SR2ESavableData;
 
 namespace SR2E.Saving
 {
@@ -20,31 +19,26 @@ namespace SR2E.Saving
                 scaleZ = transform.localScale.z,
             };
 
-            if (Instance.slimeSavedData.ContainsKey(model.GetActorId()))
+            if (SR2ESavableData.Instance.slimeSavedData.ContainsKey(model.GetActorId()))
             {
-                Instance.slimeSavedData[model.GetActorId()] = data;
+                SR2ESavableData.Instance.slimeSavedData[model.GetActorId()] = data;
             }
             else
             {
-                Instance.slimeSavedData.Add(model.GetActorId(), data);
+                SR2ESavableData.Instance.slimeSavedData.Add(model.GetActorId(), data);
             }
         }
 
-        public static void LoadData()
+        public void LoadData()
         {
-            var model = SceneContext.Instance.GameModel.identifiables;
-
-            foreach (var slime in Instance.slimeSavedData)
-            {
-                if (model.ContainsKey(slime.Key))
-                {
-                    var slimeTransform = model[slime.Key].GetGameObject().transform;
-                    var slimeData = slime.Value;
-
-                    slimeTransform.localScale = new Vector3(slimeData.scaleX, slimeData.scaleY, slimeData.scaleZ);
-                }
-            }
-
+            SR2Console.SendMessage($"load ident debug start: {gameObject.name}");
+            var id = GetComponent<IdentifiableActor>().model.actorId;
+            transform.localScale = new Vector3(SR2ESavableData.Instance.slimeSavedData[id].scaleX, SR2ESavableData.Instance.slimeSavedData[id].scaleY, SR2ESavableData.Instance.slimeSavedData[id].scaleZ);
+            SR2Console.SendMessage("loaded ident");
+        }
+        public void Start()
+        {
+            LoadData();
         }
     }
 }

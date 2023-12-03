@@ -118,7 +118,7 @@ namespace SR2E.Saving
                     SR2ESavableData.Instance.gameName = gameName;
                     SR2ESavableData.Instance.idx = int.Parse(saveName.Split('_')[2]);
                 }
-                SR2ESlimeDataSaver.LoadData();
+
 
             }
         }
