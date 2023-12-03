@@ -14,7 +14,7 @@ namespace SR2E.Saving
         [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
         public static class ExtraSlimeSavedDataPatch
         {
-            public static void Postfix(IdentifiableActor __instance)
+            public static void Postfix(AutoSaveDirector __instance)
             {
                 foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableType>())
                 {
@@ -24,6 +24,16 @@ namespace SR2E.Saving
                         var dataSaver = p.AddComponent<SR2ESlimeDataSaver>();
                     }
                 }
+            }
+        } 
+        [HarmonyPatch(typeof(GordoEat), nameof(GordoEat.Start))]
+        public static class ExtraGordoSavedDataPatch
+        {
+            public static void Postfix(GordoEat __instance)
+            {
+                if (SR2EEntryPoint.debugLogging)
+                    SR2Console.SendMessage($"debug log gordo {__instance.gameObject.name}");
+                __instance.gameObject.AddComponent<SR2EGordoDataSaver>();
             }
         }
 
@@ -63,6 +73,17 @@ namespace SR2E.Saving
 
                     }
                 }
+                foreach (var gordo in Resources.FindObjectsOfTypeAll<SR2EGordoDataSaver>())
+                {
+                    try
+                    {
+                        gordo.SaveData();
+                    }
+                    catch
+                    {
+
+                    }
+                }
                 if (SR2ESavableData.Instance.idx != 5)
                 {
                     SR2ESavableData.currPath = $"{Path.Combine(SR2ESavableData.Instance.dir, SR2ESavableData.Instance.gameName)}_{SR2ESavableData.Instance.idx + 1}.sr2e";
@@ -73,7 +94,8 @@ namespace SR2E.Saving
                     SR2ESavableData.currPath = $"{Path.Combine(SR2ESavableData.Instance.dir, SR2ESavableData.Instance.gameName)}_{0}.sr2e";
                     SR2ESavableData.Instance.idx = 0;
                 }
-                MelonLogger.Warning(SR2ESavableData.currPath);
+                if (SR2EEntryPoint.debugLogging)
+                    SR2Console.SendWarning(SR2ESavableData.currPath);
                 SR2ESavableData.Instance.TrySave();
             }
         }
