@@ -85,6 +85,7 @@ namespace SR2E
         {
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
             ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
+            ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
             RefreshPrefs();
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)
