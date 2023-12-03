@@ -9,7 +9,7 @@ using Il2CppTMPro;
 using SR2E.Commands;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
+using Il2CppInterop.Runtime.Injection;
 
 namespace SR2E
 {
@@ -31,6 +31,7 @@ namespace SR2E
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         internal static bool syncConsole = true;
+        internal static bool skipEngagementPrompt = false;
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
@@ -71,14 +72,18 @@ namespace SR2E
                 prefs.CreateEntry("noclipFlySprintSpeed", (float)40f, "NoClip Flying SprintSpeed", false);
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
+            if (!prefs.HasEntry("skipEngagementPrompt"))
+                prefs.CreateEntry("skipEngagementPrompt", (bool)false, "Skip the engagement prompt", false);
             noclipFlySpeed = prefs.GetEntry<float>("noclipFlySpeed").Value;
             noclipFlySprintSpeed = prefs.GetEntry<float>("noclipFlySprintSpeed").Value;
             syncConsole = prefs.GetEntry<bool>("doesConsoleSync").Value;
+            skipEngagementPrompt = prefs.GetEntry<bool>("skipEngagementPrompt").Value;
 
         }
         public override void OnInitializeMelon()
         {
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
+            ClassInjector.RegisterTypeInIl2Cpp<SR2ESavableData.SR2ESlimeDataSaver>();
             RefreshPrefs();
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)
@@ -97,7 +102,7 @@ namespace SR2E
             switch (sceneName)
             {
                 case "SystemCore":
-                    System.IO.Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TestMod.srtwoessentials.assetbundle");
+                    System.IO.Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SR2E.srtwoessentials.assetbundle");
                     byte[] buffer = new byte[16 * 1024];
                     System.IO.MemoryStream ms = new System.IO.MemoryStream();
                     int read;
@@ -108,12 +113,21 @@ namespace SR2E
                     foreach (var obj in bundle.LoadAllAssets())
                         if (obj != null)
                             if(obj.name=="AllMightyMenus")
-                                GameObject.Instantiate(obj);
+                                Object.Instantiate(obj);
+
+                    if (skipEngagementPrompt)
+                    {
+                        SR2EUtils.Get<GameObject>("EngagementSkipMessage").SetActive(true);
+                    }
                     break;
                 case "MainMenuUI":
                     infEnergy = false;
                     //SceneContext.Instance.PlayerState._model.maxHealth = InvincibleCommand.normalHealth;
                     infHealth = false;
+                    if (skipEngagementPrompt)
+                    {
+                        SR2Console.transform.getObjRec<GameObject>("EngagementSkipMessage").SetActive(false);
+                    }
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
@@ -192,20 +206,6 @@ namespace SR2E
 
                                 if (camera == null)
                                     camera = SR2EUtils.Get<SRCameraController>("PlayerCameraKCC");
-                                
-                                if (Player != null && camera!=null)
-                                    if (NoClipCommand.inNoClip)
-                                    {
-                                        float speed = Keyboard.current.shiftKey.isPressed ? noclipFlySprintSpeed : noclipFlySpeed;
-                                        if(Keyboard.current.wKey.isPressed) 
-                                            Player.Position += camera.transform.forward * speed*Time.deltaTime;
-                                        if(Keyboard.current.sKey.isPressed) 
-                                            Player.Position -= camera.transform.forward * speed*Time.deltaTime;
-                                        if(Keyboard.current.dKey.isPressed) 
-                                            Player.Position += camera.transform.right * speed*Time.deltaTime;
-                                        if(Keyboard.current.aKey.isPressed) 
-                                            Player.Position -= camera.transform.right * speed*Time.deltaTime;
-                                    }
                                 
                             } 
                     
