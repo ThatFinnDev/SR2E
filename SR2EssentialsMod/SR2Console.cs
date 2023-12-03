@@ -445,10 +445,6 @@ namespace SR2E
             SetupCommands();
             SetupData();
             SetupModMenu();
-            SR2ModMenu.parent = transform;
-            SR2ModMenu.gameObject = SR2EUtils.getObjRec<GameObject>(transform, "modMenu");
-            SR2ModMenu.transform = SR2EUtils.getObjRec<Transform>(transform, "modMenu");
-            SR2ModMenu.Start();
         }
 
         static TMP_InputField commandInput;
