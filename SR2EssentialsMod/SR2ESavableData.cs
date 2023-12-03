@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -98,6 +98,15 @@ namespace SR2E
     [Serializable]
     internal class SR2ESavableData
     {
+        private class SR2EJsonWriter : JsonWriter
+        {
+            public override void Flush()
+            {
+                
+            }
+
+        }
+
         public static Stream currStream;
         public static string currPath;
         public static SR2ESavableData Instance;
@@ -185,26 +194,32 @@ namespace SR2E
 
         public void SaveToStream(Stream stream)
         {
-            var formatter = new BinaryFormatter();
-            formatter.Serialize(stream, this);
+            var writer = new StreamWriter(stream);
+
+            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            writer.Write(json);
         }
 
         public void DebugSaveToNewFile(string path)
         {
             var stream = new FileStream(path, FileMode.OpenOrCreate);
-            var formatter = new BinaryFormatter();
-            formatter.Serialize(stream, this);
+            var writer = new StreamWriter(stream);
+
+            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            writer.Write(json);
         }
         public void TrySave()
         {
-            var formatter = new BinaryFormatter();
-            formatter.Serialize(currStream, this);
+            var writer = new StreamWriter(currStream);
+
+            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            writer.Write(json);
         }
         public static SR2ESavableData LoadFromStream(Stream stream)
         {
-            if (currStream != null) currStream.Close();
-            var formatter = new BinaryFormatter();
-            SR2ESavableData save = (SR2ESavableData)formatter.Deserialize(stream);
+            var reader = new StreamReader(stream);
+            var json = reader.ReadToEnd();
+            SR2ESavableData save = (SR2ESavableData)JsonConvert.DeserializeObject(json);
             currStream = stream;
             return save;
         }
