@@ -37,6 +37,10 @@ namespace SR2E
                 {
                     return;
                 }
+                if (message.StartsWith("[]:"))
+                {
+                    return;
+                }
 
                 if (!SR2EEntryPoint.consoleFinishedCreating)
                     return;
@@ -44,17 +48,22 @@ namespace SR2E
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
+                    if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
-                        SendMessage(singularLine, doMLLog);
+                        SendWarning(singularLine, doMLLog);
                     return;
                 }
-
-                if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
-                GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
+                else
+                {
+                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    instance.gameObject.SetActive(true);
+                    instance.transform.GetChild(0).gameObject.SetActive(true);
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 1f, 1f);
+                    _scrollbar.value = 0f;
+                    scrollCompletlyDown = true;
+                    return;
+                }
             }
             catch { }
         }
@@ -93,19 +102,22 @@ namespace SR2E
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
+                    if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
-                        SendError(singularLine, doMLLog);
+                        SendWarning(singularLine, doMLLog);
                     return;
                 }
-
-                if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
-                GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(0).gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0, 0, 1);
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
+                else
+                {
+                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    instance.gameObject.SetActive(true);
+                    instance.transform.GetChild(0).gameObject.SetActive(true);
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0f, 0, 1);
+                    _scrollbar.value = 0f;
+                    scrollCompletlyDown = true;
+                    return;
+                }
             }
             catch { }
         }
@@ -133,25 +145,33 @@ namespace SR2E
                     return;
                 }
 
+                if (message.StartsWith("[]:"))
+                {
+                    return;
+                }
+
                 if (!SR2EEntryPoint.consoleFinishedCreating)
                     return;
                 if (consoleContent.childCount >= maxMessages)
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
+                    if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
                         SendWarning(singularLine, doMLLog);
                     return;
                 }
-
-                if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
-                GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(0).gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0, 1);
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
+                else
+                {
+                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    instance.gameObject.SetActive(true);
+                    instance.transform.GetChild(0).gameObject.SetActive(true);
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0, 1);
+                    _scrollbar.value = 0f;
+                    scrollCompletlyDown = true;
+                    return;
+                }
             }
             catch { }
         }

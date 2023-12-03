@@ -19,9 +19,16 @@ namespace SR2E.Commands
 
             public void OnDestroy()
             {
-                player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = true;
-                settings.AutoSimulation = true;
-                player.GetComponent<SRCharacterController>().Position = player.position;
+                try
+                {
+                    player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = true;
+                    settings.AutoSimulation = true;
+                    player.GetComponent<SRCharacterController>().Position = player.position;
+                }
+                catch
+                {
+                    // ignore error
+                }
             }
 
             public void Awake()
