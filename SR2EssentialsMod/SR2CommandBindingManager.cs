@@ -61,7 +61,7 @@ namespace SR2E
                         if (!SR2ModMenu.isOpen)
                             if (Time.timeScale != 0)
                                 if(SR2Warps.warpTo==null)
-                                    SR2Console.ExecuteByString(keyValuePair.Value);
+                                    SR2Console.ExecuteByString(keyValuePair.Value,true);
         }
     }
 }

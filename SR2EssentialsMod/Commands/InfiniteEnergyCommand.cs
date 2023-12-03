@@ -32,8 +32,7 @@ namespace SR2E.Commands
                 else
                     shouldDisableThrusterHeight = (args[0].ToLower() == "true");
                 
-            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
-            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
             if (SR2EEntryPoint.infEnergy)
             {
