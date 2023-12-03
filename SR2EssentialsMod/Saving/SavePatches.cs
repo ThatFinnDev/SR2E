@@ -28,11 +28,13 @@ namespace SR2E.Saving
         }
 
         [HarmonyPatch(typeof(SRCharacterController), nameof(SRCharacterController.Start))]
-        public static class NoclipStateLoadPatch
+        public static class PlayerDataLoadPatch
         {
             public static void Postfix(SRCharacterController __instance)
             {
                 NoClipCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.noclipState);
+                SceneContext.Instance.player.transform.localScale = Vector3.one * SR2ESavableData.Instance.playerSavedData.size;
+                SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(SR2ESavableData.Instance.playerSavedData.gravityLevel);
                 if (SR2ESavableData.Instance.playerSavedData.noclipState)
                 {
                     SR2Console.SendMessage("Load noclip state debug");
