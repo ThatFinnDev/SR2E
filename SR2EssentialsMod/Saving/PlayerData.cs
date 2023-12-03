@@ -13,5 +13,12 @@ namespace SR2E.Saving
         public bool noclipState;
         public float size;
         public float gravityLevel;
+
+        public SR2EPlayerData()
+        {
+            noclipState = false;
+            size = 1;
+            gravityLevel = 17;
+        }
     }
 }

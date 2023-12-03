@@ -13,7 +13,7 @@ namespace SR2E.Commands
         {
 
             public static float baseSpeed = 15f;
-            public static float speedAdjust = 235f;
+            public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
             public float speed = 15f;
             public Transform player;
             public KCCSettings settings;
