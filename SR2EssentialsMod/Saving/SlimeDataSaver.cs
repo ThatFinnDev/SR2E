@@ -31,10 +31,12 @@ namespace SR2E.Saving
 
         public void LoadData()
         {
-            SR2Console.SendMessage($"load ident debug start: {gameObject.name}");
+            if (SR2EEntryPoint.debugLogging)
+                SR2Console.SendMessage($"load ident debug start: {gameObject.name}");
             var id = GetComponent<IdentifiableActor>().model.actorId;
             transform.localScale = new Vector3(SR2ESavableData.Instance.slimeSavedData[id].scaleX, SR2ESavableData.Instance.slimeSavedData[id].scaleY, SR2ESavableData.Instance.slimeSavedData[id].scaleZ);
-            SR2Console.SendMessage("loaded ident");
+            if (SR2EEntryPoint.debugLogging)
+                SR2Console.SendMessage("loaded ident");
         }
         public void Start()
         {
