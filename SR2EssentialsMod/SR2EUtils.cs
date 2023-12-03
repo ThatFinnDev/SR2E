@@ -5,16 +5,25 @@ namespace SR2E;
 
 public static class SR2EUtils
 {
-    public static Gadget RaycastForSpawnedGadget()
+    public static Gadget RaycastForGadget()
     {
         if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
         {
-            var g = hit.collider.transform.root.GetComponent<Gadget>();
-            if (g != null)
+            Transform currentParent = hit.collider.transform.parent;
+
+            for (int i = 0; i < 10 && currentParent != null; i++)
             {
-                return g;
+                Gadget gadgetComponent = currentParent.GetComponent<Gadget>();
+
+                if (gadgetComponent != null)
+                {
+                    return gadgetComponent;
+                }
+
+                currentParent = currentParent.parent;
             }
-            else return null;
+
+            return null;
         }
         return null;
     }
