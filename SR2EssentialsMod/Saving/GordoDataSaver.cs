@@ -11,12 +11,11 @@ namespace SR2E.Saving
         public void SaveData()
         {
             var model = GetComponent<GordoEat>();
-            SR2Console.SendMessage("1");
+
             var data = new SR2EGordoData()
             {
                 baseSize = model._initScale
             };
-            SR2Console.SendMessage("2");
 
             if (SR2ESavableData.Instance.gordoSavedData.ContainsKey(model.Id))
             {
