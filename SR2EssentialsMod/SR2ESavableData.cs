@@ -14,12 +14,19 @@ namespace SR2E
 {
     public static class SavePatches
     {
-        [HarmonyPatch(typeof(IdentifiableActor), nameof(IdentifiableActor.Awake))]
+        [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
         public static class ExtraSlimeSavedDataPatch
         {
             public static void Postfix(IdentifiableActor __instance)
             {
-                var dataSaver = __instance.gameObject.AddComponent<SR2ESavableData.SR2ESlimeDataSaver>();
+                foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableType>())
+                {
+                    if (ident.prefab != null)
+                    {
+                        var p = ident.prefab;
+                        var dataSaver = p.AddComponent<SR2ESavableData.SR2ESlimeDataSaver>();
+                    }
+                }
             }
         }
 
@@ -39,7 +46,7 @@ namespace SR2E
         [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.SaveGame))]
         public static class AutoSaveDirectorSavePatch
         {
-            public static bool Prefix()
+            public static void Postfix()
             {
                 foreach (var savableSlime in Resources.FindObjectsOfTypeAll<SR2ESavableData.SR2ESlimeDataSaver>())
                 {
@@ -47,7 +54,6 @@ namespace SR2E
                 }
 
                 SR2ESavableData.Instance.TrySave();
-                return true;
             }
         }
 
@@ -217,11 +223,14 @@ namespace SR2E
         }
         public static SR2ESavableData LoadFromStream(Stream stream)
         {
-            var reader = new StreamReader(stream);
-            var json = reader.ReadToEnd();
-            SR2ESavableData save = (SR2ESavableData)JsonConvert.DeserializeObject(json);
-            currStream = stream;
-            return save;
+            using (var localStream = stream)
+            {
+                var reader = new StreamReader(localStream);
+                var json = reader.ReadToEnd();
+                SR2ESavableData save = (SR2ESavableData)JsonConvert.DeserializeObject(json);
+                currStream = localStream;
+                return save;
+            }
         }
     }
 }
