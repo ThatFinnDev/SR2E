@@ -83,7 +83,6 @@ namespace SR2E
         }
         public override void OnInitializeMelon()
         {
-            ClassInjector.RegisterTypeInIl2Cpp<SR2ESavableData.SR2ESlimeDataSaver>();
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
             ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
             ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
