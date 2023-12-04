@@ -552,6 +552,15 @@ namespace SR2E
             }
             if (Keyboard.current.enterKey.wasPressedThisFrame)
                 if (commandInput.text != "") Execute();
+            
+            if (commandHistoryIdx != -1)
+            {
+                if (Keyboard.current.altKey.wasPressedThisFrame)
+                {
+                    commandInput.text = commandHistory[commandHistoryIdx];
+                    commandHistoryIdx -= 1;
+                }
+            }
 
             if (commandHistoryIdx != -1)
             {

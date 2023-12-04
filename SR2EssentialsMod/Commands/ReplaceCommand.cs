@@ -35,7 +35,7 @@ namespace SR2E.Commands
                             }
                         }
                     }
-                    catch (Exception ignored) { }
+                    catch  { }
 
                 }
 

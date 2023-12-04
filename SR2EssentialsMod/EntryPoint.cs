@@ -208,7 +208,6 @@ namespace SR2E
 
                                 if (camera == null)
                                     camera = SR2EUtils.Get<SRCameraController>("PlayerCameraKCC");
-                                
                             } 
                     
 
