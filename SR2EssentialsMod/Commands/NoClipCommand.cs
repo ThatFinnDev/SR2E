@@ -10,6 +10,7 @@ namespace SR2E.Commands
 
         public class NoclipComponent : MonoBehaviour
         {
+            public float baseSpeed = 15f;
             public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
             public float speed = 15f;
             public Transform player;
