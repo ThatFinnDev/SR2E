@@ -24,6 +24,7 @@
             {
                 SR2Console.SendMessage("<color=blue>List of all currently registered commands:</color>");
                 SR2Console.SendMessage("<color=blue><> is a required argument; [] is an optional argument</color>");
+
                 foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
                 {
                     SR2Console.SendMessage(entry.Value.Usage+" | "+entry.Value.Description);
