@@ -471,6 +471,7 @@ namespace SR2E
             RegisterCommand(new GravityCommand());
             RegisterCommand(new RotateCommand());
             RegisterCommand(new MoveCommand());
+            RegisterCommand(new WeatherCommand());
             ConsoleVisibilityCommands.RegisterAllConsoleVisibilityCommands();
           
             if (!SR2EEntryPoint.infHealthInstalled)

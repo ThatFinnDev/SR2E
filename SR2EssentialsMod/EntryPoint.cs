@@ -69,7 +69,6 @@ namespace SR2E
         {
             prefs.DeleteEntry("noclipFlySpeed");
             prefs.DeleteEntry("noclipFlySprintSpeed");
-            prefs.
 
             if (!prefs.HasEntry("noclipAdjustSpeed"))
                 prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false);
