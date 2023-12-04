@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine.InputSystem;
 
 namespace SR2E;
@@ -244,7 +245,20 @@ public static class SR2EUtils
                 return KeyCode.None;
         }
     }
-    
+    public static Il2CppSystem.Type il2cppTypeof(Type type)
+    {
+        string typeName = type.AssemblyQualifiedName;
+
+        if (typeName.ToLower().StartsWith("il2cpp"))
+        {
+            typeName = typeName.Substring("il2cpp".Length);
+        }
+
+        Il2CppSystem.Type il2cppType = Il2CppSystem.Type.GetType(typeName)
+
+        return il2cppType;
+    }
+
     public static T getObjRec<T>(this GameObject obj, string name) where T : class
     {
         var transform = obj.transform;
