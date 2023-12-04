@@ -27,7 +27,7 @@ public static class SR2EUtils
         }
         return null;
     }
-    internal static KeyCode KeyToKeyCode(Key key)
+    public static KeyCode KeyToKeyCode(Key key)
     {
         switch (key)
         {
@@ -245,7 +245,7 @@ public static class SR2EUtils
         }
     }
     
-    internal static T getObjRec<T>(this GameObject obj, string name) where T : class
+    public static T getObjRec<T>(this GameObject obj, string name) where T : class
     {
         var transform = obj.transform;
 
@@ -263,7 +263,7 @@ public static class SR2EUtils
         return null;
     }
 
-    internal static List<GameObject> getAllChildren(this GameObject obj)
+    public static List<GameObject> getAllChildren(this GameObject obj)
     {
         var container = obj.transform;
         List<GameObject> allChildren = new List<GameObject>();
@@ -275,7 +275,7 @@ public static class SR2EUtils
         }
         return allChildren;
     }
-    internal static T getObjRec<T>(this Transform transform, string name) where T : class
+    public static T getObjRec<T>(this Transform transform, string name) where T : class
     {
         List<GameObject> totalChildren = getAllChildren(transform);
         for (int i = 0; i < totalChildren.Count; i++)
@@ -291,7 +291,7 @@ public static class SR2EUtils
         return null;
     }
 
-    internal static List<GameObject> getAllChildren(this Transform container)
+    public static List<GameObject> getAllChildren(this Transform container)
     {
         List<GameObject> allChildren = new List<GameObject>();
         for (int i = 0; i < container.childCount; i++)
@@ -302,9 +302,9 @@ public static class SR2EUtils
         }
         return allChildren;
     }
-    internal static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
+    public static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
 
-    internal static bool inGame
+    public static bool inGame
     {
         get
         {
