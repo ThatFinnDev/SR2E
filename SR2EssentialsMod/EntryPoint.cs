@@ -67,6 +67,10 @@ namespace SR2E
 
         internal static void RefreshPrefs()
         {
+            prefs.DeleteEntry("noclipFlySpeed");
+            prefs.DeleteEntry("noclipFlySprintSpeed");
+            prefs.
+
             if (!prefs.HasEntry("noclipAdjustSpeed"))
                 prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false);
             if (!prefs.HasEntry("doesConsoleSync"))
