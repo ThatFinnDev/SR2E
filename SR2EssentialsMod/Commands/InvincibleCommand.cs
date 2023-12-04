@@ -20,8 +20,7 @@ namespace SR2E.Commands
                 SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
                 return false;
             }
-            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
-            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
             if (SR2EEntryPoint.infHealth)
             {

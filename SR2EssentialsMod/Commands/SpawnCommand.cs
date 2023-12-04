@@ -40,17 +40,7 @@ namespace SR2E.Commands
                 return list;
             }
             if (argIndex == 1)
-            {
-                
-                List<string> list = new List<string>();
-                list.Add("1");
-                list.Add("5");
-                list.Add("10");
-                list.Add("20");
-                list.Add("30");
-                list.Add("50");
-                return list;
-            }
+                return new List<string> {"1","5","10","20","30","50"};
 
             return null;
         }
@@ -69,8 +59,7 @@ namespace SR2E.Commands
             }
 
             
-            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
-            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
 
             string itemName = "";

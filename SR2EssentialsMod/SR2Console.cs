@@ -26,6 +26,8 @@ namespace SR2E
         /// </summary>
         public static void SendMessage(string message, bool doMLLog)
         {
+            if(String.IsNullOrEmpty(message))
+                return;
             try
             {
                 if (message.Contains("[SR2E]:"))
@@ -37,6 +39,10 @@ namespace SR2E
                 {
                     return;
                 }
+                if (message.StartsWith("[]:"))
+                {
+                    return;
+                }
 
                 if (!SR2EEntryPoint.consoleFinishedCreating)
                     return;
@@ -44,19 +50,24 @@ namespace SR2E
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
+                    if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
-                        SendMessage(singularLine, doMLLog);
+                        SendWarning(singularLine, doMLLog);
                     return;
                 }
-
-                if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
-                GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
+                else
+                {
+                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    instance.gameObject.SetActive(true);
+                    instance.transform.GetChild(0).gameObject.SetActive(true);
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 1f, 1f);
+                    _scrollbar.value = 0f;
+                    scrollCompletlyDown = true;
+                    return;
+                }
             }
-            catch{}
+            catch { }
         }
         /// <summary>
         /// Display an error in the console
@@ -70,6 +81,8 @@ namespace SR2E
         /// </summary>
         public static void SendError(string message, bool doMLLog)
         {
+            if(String.IsNullOrEmpty(message))
+                return;
             try
             {
                 if (message.Contains("[SR2E]:"))
@@ -81,6 +94,11 @@ namespace SR2E
                 {
                     return;
                 }
+                
+                if (message.StartsWith("[]:"))
+                {
+                    return;
+                }
 
                 if (!SR2EEntryPoint.consoleFinishedCreating)
                     return;
@@ -88,21 +106,24 @@ namespace SR2E
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
+                    if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
-                        SendError(singularLine, doMLLog);
+                        SendWarning(singularLine, doMLLog);
                     return;
                 }
-
-                if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
-                GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(0).gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0, 0, 1);
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
+                else
+                {
+                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    instance.gameObject.SetActive(true);
+                    instance.transform.GetChild(0).gameObject.SetActive(true);
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0f, 0, 1);
+                    _scrollbar.value = 0f;
+                    scrollCompletlyDown = true;
+                    return;
+                }
             }
-            catch{}
+            catch { }
         }
         /// <summary>
         /// Display an error in the console
@@ -116,6 +137,8 @@ namespace SR2E
         /// </summary>
         public static void SendWarning(string message, bool doMLLog)
         {
+            if(String.IsNullOrEmpty(message))
+                return;
             try
             {
                 if (message.Contains("[SR2E]:"))
@@ -128,27 +151,35 @@ namespace SR2E
                     return;
                 }
 
+                if (message.StartsWith("[]:"))
+                {
+                    return;
+                }
+
                 if (!SR2EEntryPoint.consoleFinishedCreating)
                     return;
                 if (consoleContent.childCount >= maxMessages)
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
+                    if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
                         SendWarning(singularLine, doMLLog);
                     return;
                 }
-
-                if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
-                GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(0).gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0, 1);
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
+                else
+                {
+                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    instance.gameObject.SetActive(true);
+                    instance.transform.GetChild(0).gameObject.SetActive(true);
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+                    instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0, 1);
+                    _scrollbar.value = 0f;
+                    scrollCompletlyDown = true;
+                    return;
+                }
             }
-            catch{}
+            catch { }
         }
         /// <summary>
         /// Check if console is open
@@ -221,9 +252,29 @@ namespace SR2E
         }
 
         /// <summary>
+        /// Unregisters a command
+        /// </summary>
+        public static bool UnRegisterCommand(SR2CCommand cmd)
+        {
+            return UnRegisterCommand(cmd.ID);
+        }
+        /// <summary>
+        /// Unregisters a command
+        /// </summary>
+        public static bool UnRegisterCommand(string cmd)
+        {
+            if (commands.ContainsKey(cmd.ToLowerInvariant()))
+            {
+                commands.Remove(cmd.ToLowerInvariant());
+                return true;
+            }
+            SendMessage($"Trying to unregister command with id '<color=white>{cmd.ToLowerInvariant()}</color>' but the ID is not registered!");
+            return false;
+        }
+        /// <summary>
         /// Execute a string as if it was a commandId with args
         /// </summary>
-        public static void ExecuteByString(string input)
+        public static void ExecuteByString(string input, bool silent = false)
         {
             string[] cmds = input.Split(';');
             foreach (string c in cmds)
@@ -241,13 +292,31 @@ namespace SR2E
                             List<string> split = argString.Split(' ').ToList();
                             split.RemoveAt(0);
                             split.RemoveAt(split.Count - 1);
+                            bool shouldRunNormalExecute = true;
                             if (split.Count != 0)
-                                successful = commands[cmd].Execute(split.ToArray());
+                            {
+                                string[] stringArray = split.ToArray();
+                                if (silent)
+                                { shouldRunNormalExecute = !commands[cmd].SilentExecute(stringArray); }
+                                if(shouldRunNormalExecute)
+                                    successful = commands[cmd].Execute(stringArray);
+                            }
                             else
-                                successful = commands[cmd].Execute(null);
+                            {
+                                if (silent)
+                                { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
+                                if(shouldRunNormalExecute)
+                                    successful = commands[cmd].Execute(null);
+                            }
                         }
                         else
-                            successful = commands[cmd].Execute(null);
+                        {
+                            bool shouldRunNormalExecute = true;
+                            if (silent)
+                            { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
+                            if(shouldRunNormalExecute)
+                                successful = commands[cmd].Execute(null);
+                        }
                     }
                     else
                         SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
@@ -338,7 +407,7 @@ namespace SR2E
                         }));
                     }
             autoCompleteScrollView.SetActive(autoCompleteContent.childCount != 0);
-            
+
         }
 
         //Warps & Keybinding loading
@@ -357,13 +426,6 @@ namespace SR2E
         }
         private static void SetupCommands()
         {
-            if (SR2EEntryPoint.syncConsole)
-            {
-                MelonLogger.MsgDrawingCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
-                MelonLogger.ErrorCallbackHandler += (s, s1) => SendError($"[{s}]: {s1}", false);
-                MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning($"[{s}]: {s}", false);
-            }
-
             consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
             consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
             consoleContent = SR2EUtils.getObjRec<Transform>(transform, "ConsoleContent");
@@ -405,7 +467,8 @@ namespace SR2E
             RegisterCommand(new GravityCommand());
             RegisterCommand(new RotateCommand());
             RegisterCommand(new MoveCommand());
-            
+            ConsoleVisibilityCommands.RegisterAllConsoleVisibilityCommands();
+          
             if (!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
             if (!SR2EEntryPoint.infEnergyInstalled)
@@ -447,10 +510,6 @@ namespace SR2E
             SetupCommands();
             SetupData();
             SetupModMenu();
-            SR2ModMenu.parent = transform;
-            SR2ModMenu.gameObject = SR2EUtils.getObjRec<GameObject>(transform, "modMenu");
-            SR2ModMenu.transform = SR2EUtils.getObjRec<Transform>(transform, "modMenu");
-            SR2ModMenu.Start();
         }
 
         static TMP_InputField commandInput;
@@ -487,13 +546,22 @@ namespace SR2E
                             autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Button>().onClick.Invoke();
                             selectedAutoComplete = 0;
                         }
-                        catch {}
-                    
+                        catch { }
+
                 }
             }
             if (Keyboard.current.enterKey.wasPressedThisFrame)
                 if (commandInput.text != "") Execute();
             
+            if (commandHistoryIdx != -1)
+            {
+                if (Keyboard.current.altKey.wasPressedThisFrame)
+                {
+                    commandInput.text = commandHistory[commandHistoryIdx];
+                    commandHistoryIdx -= 1;
+                }
+            }
+
             if (commandHistoryIdx != -1)
             {
                 if (Keyboard.current.altKey.wasPressedThisFrame)
@@ -565,7 +633,7 @@ namespace SR2E
         public static void PrevAutoComplete()
         {
             selectedAutoComplete -= 1;
-            
+
             if (selectedAutoComplete < 0)
             {
                 selectedAutoComplete = autoCompleteContent.childCount - 1;
