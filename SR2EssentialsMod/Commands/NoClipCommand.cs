@@ -10,8 +10,6 @@ namespace SR2E.Commands
 
         public class NoclipComponent : MonoBehaviour
         {
-
-            public static float baseSpeed = 15f;
             public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
             public float speed = 15f;
             public Transform player;
@@ -111,6 +109,7 @@ namespace SR2E.Commands
             {
                 var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
                 if (cam.GetComponent<NoclipComponent>() == null)
+
                 {
                     cam.AddComponent<NoclipComponent>();
                     SR2ESavableData.Instance.playerSavedData.noclipState = true;

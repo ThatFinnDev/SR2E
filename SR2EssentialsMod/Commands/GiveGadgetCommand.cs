@@ -31,7 +31,7 @@
                             }
                         }
                     }
-                    catch (Exception ignored) { }
+                    catch  { }
 
                 }
 
