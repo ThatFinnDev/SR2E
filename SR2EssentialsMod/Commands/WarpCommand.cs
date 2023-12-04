@@ -24,14 +24,9 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
-            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
-            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
-
-            if (args == null)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
-            if (args.Length != 1)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (args == null) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (args.Length != 1) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
             
             string name = args[0];
             if (!SR2Warps.warps.ContainsKey(name))

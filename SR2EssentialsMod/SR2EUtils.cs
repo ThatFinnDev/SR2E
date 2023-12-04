@@ -5,6 +5,28 @@ namespace SR2E;
 
 public static class SR2EUtils
 {
+    public static Gadget RaycastForGadget()
+    {
+        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+        {
+            Transform currentParent = hit.collider.transform.parent;
+
+            for (int i = 0; i < 10 && currentParent != null; i++)
+            {
+                Gadget gadgetComponent = currentParent.GetComponent<Gadget>();
+
+                if (gadgetComponent != null)
+                {
+                    return gadgetComponent;
+                }
+
+                currentParent = currentParent.parent;
+            }
+
+            return null;
+        }
+        return null;
+    }
     internal static KeyCode KeyToKeyCode(Key key)
     {
         switch (key)
@@ -223,7 +245,37 @@ public static class SR2EUtils
         }
     }
     
-    internal static T getObjRec<T>(Transform transform, string name) where T : class
+    internal static T getObjRec<T>(this GameObject obj, string name) where T : class
+    {
+        var transform = obj.transform;
+
+        List<GameObject> totalChildren = getAllChildren(transform);
+        for (int i = 0; i < totalChildren.Count; i++)
+            if (totalChildren[i].name == name)
+            {
+                if (typeof(T) == typeof(GameObject))
+                    return totalChildren[i] as T;
+                if (typeof(T) == typeof(Transform))
+                    return totalChildren[i].transform as T;
+                if (totalChildren[i].GetComponent<T>() != null)
+                    return totalChildren[i].GetComponent<T>();
+            }
+        return null;
+    }
+
+    internal static List<GameObject> getAllChildren(this GameObject obj)
+    {
+        var container = obj.transform;
+        List<GameObject> allChildren = new List<GameObject>();
+        for (int i = 0; i < container.childCount; i++)
+        {
+            var child = container.GetChild(i);
+            allChildren.Add(child.gameObject);
+            allChildren.AddRange(getAllChildren(child));
+        }
+        return allChildren;
+    }
+    internal static T getObjRec<T>(this Transform transform, string name) where T : class
     {
         List<GameObject> totalChildren = getAllChildren(transform);
         for (int i = 0; i < totalChildren.Count; i++)
@@ -239,7 +291,7 @@ public static class SR2EUtils
         return null;
     }
 
-    internal static List<GameObject> getAllChildren(Transform container)
+    internal static List<GameObject> getAllChildren(this Transform container)
     {
         List<GameObject> allChildren = new List<GameObject>();
         for (int i = 0; i < container.childCount; i++)
@@ -252,4 +304,18 @@ public static class SR2EUtils
     }
     internal static T Get<T>(string name) where T : UnityEngine.Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
 
+    internal static bool inGame
+    {
+        get
+        {
+            try
+            {
+                if (SceneContext.Instance == null) return false;
+                if (SceneContext.Instance.PlayerState == null) return false;
+            }
+            catch
+            { return false; }
+            return true;
+        }
+    }
 }

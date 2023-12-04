@@ -10,47 +10,30 @@
             if (argIndex == 0)
             {
                 string firstArg = "";
-                if (args != null)
-                    firstArg = args[0];
+                if (args != null) firstArg = args[0];
                 List<string> list = new List<string>();
                 int i = -1;
                 foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                 {
-                    if(type.ReferenceId.StartsWith("GadgetDefinition"))
-                        continue;
-                    if (i > 20)
-                        break;
+                    if(type.ReferenceId.StartsWith("GadgetDefinition")) continue;
+                    if (i > 20) break;
                     try
                     {
                         if (type.LocalizedName != null)
                         {
                             string localizedString = type.LocalizedName.GetLocalizedString();
                             if (localizedString.ToLower().Replace(" ", "").StartsWith(firstArg.ToLower()))
-                            {
-                                i++;
-                                list.Add(localizedString.Replace(" ", ""));
-                            }
+                            { i++; list.Add(localizedString.Replace(" ", "")); }
                         }
                     }
                     catch  { }
-
                 }
 
                 return list;
             }
             if (argIndex == 1)
-            {
-                
-                List<string> list = new List<string>();
-                list.Add("1");
-                list.Add("5");
-                list.Add("10");
-                list.Add("20");
-                list.Add("30");
-                list.Add("50");
-                return list;
-            }
-
+                return new List<string> {"1","5","10","20","30","50"};
+            
             return null;
         }
         public override bool Execute(string[] args)
@@ -60,12 +43,9 @@
 
             if (args.Length != 2&&args.Length != 1)
             { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
             
-            if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
-            if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
-
-
+            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            
             string itemName = "";
             string identifierTypeName = args[0];
             IdentifiableType type = SR2EEntryPoint.getIdentifiableByName(identifierTypeName);

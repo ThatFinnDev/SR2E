@@ -1,34 +1,39 @@
 ﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using System.Linq;
+using SR2E.Saving;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
     public class NoClipCommand : SR2CCommand
     {
-        internal bool inNoclip;
+
         public class NoclipComponent : MonoBehaviour
         {
-
-            public static float baseSpeed = 15f;
-            public static float speedAdjust = 235f;
+            public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
             public float speed = 15f;
             public Transform player;
             public KCCSettings settings;
 
             public void OnDestroy()
             {
-                player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = true;
-                settings.AutoSimulation = true;
-                player.GetComponent<SRCharacterController>().Position = player.position;
+                try
+                {
+                    player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = true;
+                    settings.AutoSimulation = true;
+                    player.GetComponent<SRCharacterController>().Position = player.position;
+                }
+                catch
+                {
+                    // ignore error
+                }
             }
 
             public void Awake()
             {
-                player = SR2EUtils.Get<Transform>("PlayerControllerKCC");
+                player = SceneContext.Instance.player.transform;
                 player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = false;
-                settings = SR2EUtils.Get<KCCSettings>("");
+                settings = Object.FindFirstObjectByType<KCCSettings>();
                 settings.AutoSimulation = false;
             }
 
@@ -105,27 +110,16 @@ namespace SR2E.Commands
                 var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
                 if (cam.GetComponent<NoclipComponent>() == null)
 
-
-                    if (SceneContext.Instance == null) { SR2Console.SendError("Load a save first!"); return false; }
-                if (SceneContext.Instance.PlayerState == null) { SR2Console.SendError("Load a save first!"); return false; }
-
-                if (SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC") != null)
                 {
-                    SRCharacterController Player = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC");
-                    SR2EEntryPoint.RefreshPrefs();
-                    if (inNoclip)
-                    {
-                        cam.AddComponent<NoclipComponent>();
-                        SR2ESavableData.Instance.playerSavedData.noclipState = true;
-                    }
-                    else
-                    {
-                        UnityEngine.Object.Destroy(cam.GetComponent<NoclipComponent>());
-                        SR2ESavableData.Instance.playerSavedData.noclipState = false;
-                    }
-                    return true;
+                    cam.AddComponent<NoclipComponent>();
+                    SR2ESavableData.Instance.playerSavedData.noclipState = true;
                 }
-                return false;
+                else
+                {
+                    UnityEngine.Object.Destroy(cam.GetComponent<NoclipComponent>());
+                    SR2ESavableData.Instance.playerSavedData.noclipState = false;
+                }
+                return true;
             }
             catch { return false; }
         }
