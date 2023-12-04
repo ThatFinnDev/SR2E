@@ -491,6 +491,7 @@ namespace SR2E
                 SetupConsoleSync();
             }
 
+
             consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
             consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
             consoleContent = SR2EUtils.getObjRec<Transform>(transform, "ConsoleContent");
@@ -506,6 +507,8 @@ namespace SR2E
             consoleBlock.SetActive(false);
             consoleMenu.SetActive(false);
             commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
+
+            commandInput.
 
             SetupCommands();
             SetupData();
@@ -553,18 +556,9 @@ namespace SR2E
             if (Keyboard.current.enterKey.wasPressedThisFrame)
                 if (commandInput.text != "") Execute();
             
-            if (commandHistoryIdx != -1)
+            if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
             {
-                if (Keyboard.current.altKey.wasPressedThisFrame)
-                {
-                    commandInput.text = commandHistory[commandHistoryIdx];
-                    commandHistoryIdx -= 1;
-                }
-            }
-
-            if (commandHistoryIdx != -1)
-            {
-                if (Keyboard.current.altKey.wasPressedThisFrame)
+                if (Keyboard.current.upArrowKey.wasPressedThisFrame)
                 {
                     commandInput.text = commandHistory[commandHistoryIdx];
                     commandHistoryIdx -= 1;
@@ -577,12 +571,12 @@ namespace SR2E
             if (Keyboard.current.tabKey.wasPressedThisFrame)
                 if (Keyboard.current.ctrlKey.isPressed)
                     Toggle();
-            if (autoCompleteContent.childCount != 0)
+            if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
             {
-                if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
+                if (Keyboard.current.downArrowKey.wasPressedThisFrame)
                     NextAutoComplete();
 
-                if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
+                if (Keyboard.current.upArrowKey.wasPressedThisFrame)
                     PrevAutoComplete();
             }
 
