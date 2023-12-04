@@ -22,13 +22,18 @@
         {
             if (args == null)
             {
-                SR2Console.SendMessage("<color=blue>List of all currently registered commands:</color>");
-                SR2Console.SendMessage("<color=blue><> is a required argument; [] is an optional argument</color>");
+                string currText = null;
+                currText = $"<color=#45d192>List of all currently registered commands:</color>";
+                currText = $"{currText}\n<color=#45d192><> is a required argument; [] is an optional argument</color>";
+                currText = $"{currText}\n";
+
+
                 foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
                 {
-                    SR2Console.SendMessage(entry.Value.Usage+" | "+entry.Value.Description);
+                    currText = $"{currText}\n{entry.Value.Usage} - {entry.Value.Description}";
                 }
-                return true;
+                SR2Console.SendMessage(currText);
+                return true; 
             }
             if (args.Length == 1)
             {
