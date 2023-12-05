@@ -50,7 +50,7 @@ namespace SR2E.Commands
                 WindDirection = new Vector3(45f, 0, 30f)
             };
 
-            // dir.RunState(def, param);
+            dir.RunState(def.Cast<IWeatherState>(), param);
             return true;
         }
 
