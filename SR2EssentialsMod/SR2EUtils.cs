@@ -254,7 +254,7 @@ public static class SR2EUtils
             typeName = typeName.Substring("il2cpp".Length);
         }
 
-        Il2CppSystem.Type il2cppType = Il2CppSystem.Type.GetType(typeName)
+        Il2CppSystem.Type il2cppType = Il2CppSystem.Type.GetType(typeName);
 
         return il2cppType;
     }
