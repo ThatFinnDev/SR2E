@@ -26,7 +26,7 @@
                             { i++; list.Add(localizedString.Replace(" ", "")); }
                         }
                     }
-                    catch { }
+                    catch  { }
                 }
 
                 return list;

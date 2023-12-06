@@ -24,7 +24,7 @@ namespace SR2E
         /// <summary>
         /// Display a message in the console
         /// </summary>
-        public static void SendMessage(string message, bool doMLLog)
+        public static void SendMessage(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
             if(String.IsNullOrEmpty(message))
                 return;
@@ -52,11 +52,12 @@ namespace SR2E
                 {
                     if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
-                        SendWarning(singularLine, doMLLog);
+                        SendMessage(singularLine, doMLLog, false);
                     return;
                 }
                 else
                 {
+                    if (doMLLog && internal_logMLForSingleLine) MelonLogger.Msg($"[SR2E]: {message}");
                     GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
                     instance.gameObject.SetActive(true);
                     instance.transform.GetChild(0).gameObject.SetActive(true);
@@ -79,7 +80,7 @@ namespace SR2E
         /// <summary>
         /// Display an error in the console
         /// </summary>
-        public static void SendError(string message, bool doMLLog)
+        public static void SendError(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
             if(String.IsNullOrEmpty(message))
                 return;
@@ -108,11 +109,13 @@ namespace SR2E
                 {
                     if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
-                        SendWarning(singularLine, doMLLog);
+                        SendError(singularLine, doMLLog, false);
                     return;
                 }
                 else
                 {
+                    if (doMLLog && internal_logMLForSingleLine) MelonLogger.Error($"[SR2E]: {message}");
+
                     GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
                     instance.gameObject.SetActive(true);
                     instance.transform.GetChild(0).gameObject.SetActive(true);
@@ -135,7 +138,7 @@ namespace SR2E
         /// <summary>
         /// Display an error in the console
         /// </summary>
-        public static void SendWarning(string message, bool doMLLog)
+        public static void SendWarning(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
             if(String.IsNullOrEmpty(message))
                 return;
@@ -164,11 +167,12 @@ namespace SR2E
                 {
                     if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
                     foreach (string singularLine in message.Split('\n'))
-                        SendWarning(singularLine, doMLLog);
+                        SendWarning(singularLine, doMLLog, false);
                     return;
                 }
                 else
                 {
+                    if (doMLLog && internal_logMLForSingleLine) MelonLogger.Warning($"[SR2E]: {message}");
                     GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
                     instance.gameObject.SetActive(true);
                     instance.transform.GetChild(0).gameObject.SetActive(true);
@@ -467,6 +471,9 @@ namespace SR2E
             RegisterCommand(new GravityCommand());
             RegisterCommand(new RotateCommand());
             RegisterCommand(new MoveCommand());
+            RegisterCommand(new WeatherCommand());
+            RegisterCommand(new FlingCommand());
+
             ConsoleVisibilityCommands.RegisterAllConsoleVisibilityCommands();
           
             if (!SR2EEntryPoint.infHealthInstalled)
@@ -490,6 +497,7 @@ namespace SR2E
             {
                 SetupConsoleSync();
             }
+
 
             consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
             consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
@@ -552,10 +560,10 @@ namespace SR2E
             }
             if (Keyboard.current.enterKey.wasPressedThisFrame)
                 if (commandInput.text != "") Execute();
-
-            if (commandHistoryIdx != -1)
+            
+            if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
             {
-                if (Keyboard.current.altKey.wasPressedThisFrame)
+                if (Keyboard.current.upArrowKey.wasPressedThisFrame)
                 {
                     commandInput.text = commandHistory[commandHistoryIdx];
                     commandHistoryIdx -= 1;
@@ -568,12 +576,12 @@ namespace SR2E
             if (Keyboard.current.tabKey.wasPressedThisFrame)
                 if (Keyboard.current.ctrlKey.isPressed)
                     Toggle();
-            if (autoCompleteContent.childCount != 0)
+            if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
             {
-                if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
+                if (Keyboard.current.downArrowKey.wasPressedThisFrame)
                     NextAutoComplete();
 
-                if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
+                if (Keyboard.current.upArrowKey.wasPressedThisFrame)
                     PrevAutoComplete();
             }
 
