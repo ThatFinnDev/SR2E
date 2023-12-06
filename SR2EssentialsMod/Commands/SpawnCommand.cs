@@ -19,7 +19,7 @@ namespace SR2E.Commands
                 int i = -1;
                 foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                 {
-                    if (i > 20)
+                    if (i > 55)
                         break;
                     try
                     {

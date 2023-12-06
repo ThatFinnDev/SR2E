@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Il2CppInterop.Runtime.Injection;
 using SR2E.Saving;
+using Il2CppKinematicCharacterController;
 
 namespace SR2E
 {
@@ -26,6 +27,7 @@ namespace SR2E
 
     public class SR2EEntryPoint : MelonMod
     {
+        public static TMP_FontAsset SR2Font;
         internal static bool infEnergy = false;
         internal static bool infHealth = false;
         internal static bool infEnergyInstalled = false;
@@ -48,6 +50,9 @@ namespace SR2E
                     return type;
             return null;
         }
+
+        
+
         internal static IdentifiableType getIdentifiableByLocalizedName(string name)
         {
             foreach (IdentifiableType type in identifiableTypes)
@@ -117,13 +122,17 @@ namespace SR2E
                     AssetBundle bundle = AssetBundle.LoadFromMemory(ms.ToArray());
                     foreach (var obj in bundle.LoadAllAssets())
                         if (obj != null)
-                            if(obj.name=="AllMightyMenus")
+                            if (obj.name == "AllMightyMenus")
+                            {
                                 Object.Instantiate(obj);
 
-                    if (skipEngagementPrompt)
-                    {
-                        SR2EUtils.Get<GameObject>("EngagementSkipMessage").SetActive(true);
-                    }
+                                
+
+                                if (skipEngagementPrompt)
+                                {
+                                    SR2EUtils.Get<GameObject>("EngagementSkipMessage").SetActive(true);
+                                }
+                            }
                     break;
                 case "MainMenuUI":
                     infEnergy = false;
@@ -144,11 +153,25 @@ namespace SR2E
                     InfiniteEnergyCommand.energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
                     break;
                 case "PlayerCore":
+                    NoclipComponent.playerSettings = SR2EUtils.Get<KCCSettings>("");
+                    NoclipComponent.player = SceneContext.Instance.player.transform;
+                    NoclipComponent.playerController = NoclipComponent.player.GetComponent<SRCharacterController>();
+                    NoclipComponent.playerMotor = NoclipComponent.player.GetComponent<KinematicCharacterMotor>();
                     InfiniteEnergyCommand.jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
                     break;
             }
 
         }
+
+        internal static void SetupFonts()
+        {
+            SR2Font = SR2EUtils.Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
+            foreach (var text in SR2EUtils.Get<GameObject>("SR2Console").getAllChildrenOfType<TMP_Text>())
+            {
+                text.font = SR2Font;
+            }
+        }
+
         public override void OnSceneWasInitialized(int buildindex, string sceneName)
         {
             switch (sceneName)
