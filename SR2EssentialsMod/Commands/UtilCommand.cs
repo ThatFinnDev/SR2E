@@ -1,6 +1,8 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Damage;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
-using System.Reflection;
+﻿using Il2CppKinematicCharacterController;
+using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+using Il2CppSystem;
+using SR2E.Saving;
+using UnityEngine.UIElements;
 
 namespace SR2E.Commands
 {
@@ -19,6 +21,9 @@ namespace SR2E.Commands
         public override string Usage => "util <args>";
 
         public override string Description => "Utility Command";
+
+        public const float playerColliderHeightBase = 2f;
+        public const float playerColliderRadBase = 0.6f;
 
         public readonly List<string> TypeParam = new List<string>()
         {
@@ -60,7 +65,14 @@ namespace SR2E.Commands
 
         public readonly List<string> PlayerParam = new List<string>()
         {
-            "CUSTOM_SIZE"
+            "CUSTOM_SIZE",
+            "GRAVITY_LEVEL"
+        };
+
+        public readonly List<string> GadgetParam = new List<string>()
+        {
+            "ROTATION",
+            "POSITION"
         };
 
 
@@ -304,6 +316,158 @@ namespace SR2E.Commands
             }
             return false;
         }
+
+        public void PlayerSize(bool isGet, float size = 1)
+        {
+            if (isGet)
+            {
+                SR2Console.SendMessage($"The current size of the player is {SceneContext.Instance.player.transform.localScale.x}");
+            }
+            else
+            {
+                SceneContext.Instance.player.transform.localScale = Vector3.one * size;
+                var KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>();
+                KCC.CapsuleHeight = playerColliderHeightBase * size;
+                KCC.CapsuleRadius = playerColliderRadBase * size;
+                SR2ESavableData.Instance.playerSavedData.size = size;
+                SR2Console.SendMessage($"The new size of the player is {size}");
+
+            }
+        }
+        public static void RemoteExc_PlayerSize(float size)
+        {
+            SceneContext.Instance.player.transform.localScale = Vector3.one * size;
+            var KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>();
+            KCC.CapsuleHeight = playerColliderHeightBase * size;
+            KCC.CapsuleRadius = playerColliderRadBase * size;
+        }
+        public void PlayerGravity(bool isGet, float level = 1)
+        {
+            if (isGet)
+            {
+                SR2Console.SendMessage($"The current gravity level of the player is {SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude}");
+            }
+            else
+            {
+                SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Nullable<float>(level);
+                SR2ESavableData.Instance.playerSavedData.gravityLevel = level;
+                SR2Console.SendMessage($"The new gravity level of the player is {level}");
+
+            }
+        }
+
+        public void GadgetPos(bool isGet, float posX = 0, float posY = 0, float posZ = 0)
+        {
+            try
+            {
+                if (isGet)
+                {
+                    var gadget = SR2EUtils.RaycastForGadget();
+                    if (gadget != null)
+                    {
+                        var pos = gadget.transform.position;
+                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {pos.x}, {pos.y}, {pos.z}");
+                    }
+                }
+                else
+                {
+                    var gadget = SR2EUtils.RaycastForGadget();
+                    if (gadget != null)
+                    {
+                        var pos = new Vector3(posX, posY, posZ);
+                        gadget.transform.position = pos;
+                        gadget.Model.lastPosition = pos;
+                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {posX}, {posY}, {posZ}");
+                    }
+                }
+            }
+            catch { }
+            
+        }
+        public void GadgetRot(bool isGet, float rot = 0f)
+        {
+            try
+            {
+                if (isGet)
+                {
+                    var gadget = SR2EUtils.RaycastForGadget();
+                    if (gadget != null)
+                    {
+                        var gadgetRot = gadget.transform.eulerAngles.y;
+                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is {gadgetRot}");
+                    }
+                }
+                else
+                {
+                    var gadget = SR2EUtils.RaycastForGadget();
+                    if (gadget != null)
+                    {
+                            gadget.Model.yRotation = rot;
+                            gadget.transform.rotation = Quaternion.EulerRotation(new Vector3(0, rot, 0));
+                            SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
+                    }
+                }
+            }
+            catch { }
+            
+        }
+        public bool ExcGadget(string[] cmd)
+        {
+            if (cmd[1] == "POSITION")
+            {
+                if (cmd.Length > 2)
+                {
+                    GadgetPos(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
+                }
+                else
+                {
+                    GadgetPos(true);
+                }
+                return true;
+            }
+            else if (cmd[1] == "ROTATION")
+            {
+                if (cmd.Length > 2)
+                {
+                    GadgetRot(false, float.Parse(cmd[2]));
+                }
+                else
+                {
+                    GadgetRot(true);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool ExcPlayer(string[] cmd)
+        {
+            if (cmd[1] == "CUSTOM_SIZE")
+            {
+                if (cmd.Length > 2)
+                {
+                    PlayerSize(false, float.Parse(cmd[2]));
+                }
+                else
+                {
+                    PlayerSize(true);
+                }
+                return true;
+            }
+            else if (cmd[1] == "GRAVITY_LEVEL")
+            {
+                if (cmd.Length > 2)
+                {
+                    PlayerGravity(false, float.Parse(cmd[2]));
+                }
+                else
+                {
+                    PlayerGravity(true);
+                }
+                return true;
+            }
+            return false;
+        }
         public override bool Execute(string[] args)
         {
             if (args[0] == "GORDO")
@@ -320,13 +484,11 @@ namespace SR2E.Commands
             }
             else if (args[0] == "PLAYER")
             {
-                SR2Console.SendError("This has not been implemented yet.");
-                return false;
+                return ExcPlayer(args);
             }
             else if (args[0] == "GADGET")
             {
-                SR2Console.SendError("This has not been implemented yet.");
-                return false;
+                return ExcGadget(args);
             }
             return false;
         }
@@ -352,11 +514,11 @@ namespace SR2E.Commands
                 }
                 else if (args[0] == "PLAYER")
                 {
-                    return ParamPlaceholder;
+                    return PlayerParam;
                 }
                 else if (args[0] == "GADGET")
                 {
-                    return ParamPlaceholder;
+                    return GadgetParam;
                 }
             }
             else if (argIndex == 2)
@@ -379,6 +541,8 @@ namespace SR2E.Commands
                                 if (type.LocalizedName != null)
                                 {
                                     string localizedString = type.LocalizedName.GetLocalizedString();
+                                    var s = localizedString.Replace(" ", "");
+                                    list.Add(s);
                                 }
                             }
                             catch { }

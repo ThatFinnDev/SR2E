@@ -1,6 +1,6 @@
 ﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using System.Linq;
+using SR2E.Saving;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
@@ -10,9 +10,8 @@ namespace SR2E.Commands
 
         public class NoclipComponent : MonoBehaviour
         {
-
-            public static float baseSpeed = 15f;
-            public static float speedAdjust = 235f;
+            public float baseSpeed = 15f;
+            public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
             public float speed = 15f;
             public Transform player;
             public KCCSettings settings;
@@ -33,9 +32,9 @@ namespace SR2E.Commands
 
             public void Awake()
             {
-                player = SR2EUtils.Get<Transform>("PlayerControllerKCC");
+                player = SceneContext.Instance.player.transform;
                 player.gameObject.GetComponent<KinematicCharacterMotor>().enabled = false;
-                settings = SR2EUtils.Get<KCCSettings>("");
+                settings = Object.FindFirstObjectByType<KCCSettings>();
                 settings.AutoSimulation = false;
             }
 
@@ -111,6 +110,7 @@ namespace SR2E.Commands
             {
                 var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
                 if (cam.GetComponent<NoclipComponent>() == null)
+
                 {
                     cam.AddComponent<NoclipComponent>();
                     SR2ESavableData.Instance.playerSavedData.noclipState = true;

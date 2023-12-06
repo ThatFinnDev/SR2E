@@ -1,6 +1,4 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.SceneManagement;
-using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 
 namespace SR2E;
 
@@ -16,10 +14,11 @@ internal class WeaponVacuumExpelPatch
     }
 }
 
+
 [HarmonyPatch(typeof(SceneLoader), nameof(SceneLoader.LoadInitialSceneGroup))]
 public static class SR2StartPatch
 {
-    public static void Prefix()
+    public static bool Prefix()
     {
         if (SR2EEntryPoint.skipEngagementPrompt)
         {
@@ -28,6 +27,8 @@ public static class SR2StartPatch
             var sl = SystemContext.Instance.SceneLoader;
 
             sl.LoadMainMenuSceneGroup();
+            return false;
         }
+        return true;
     }
 }
