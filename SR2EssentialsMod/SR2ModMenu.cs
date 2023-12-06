@@ -4,6 +4,7 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Action = System.Action;
@@ -117,11 +118,12 @@ namespace SR2E
         static GameObject entryTemplate;
         static GameObject headerTemplate;
         static GameObject warningText;
+        static Texture2D modMenuTabImage;
         static List<Key> allPossibleKeys=new List<Key>();
         internal static void Start()
         {
-            modMenuBlock = SR2EUtils.getObjRec<GameObject>(parent, "modMenuBlock");
-            entryTemplate = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigurationEntryTemplate");
+            modMenuBlock = parent.getObjRec<GameObject>("modMenuBlock");
+            entryTemplate = transform.getObjRec<GameObject>("ModConfigurationEntryTemplate");
             headerTemplate = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigurationHeaderTemplate");
             warningText = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigRestartWarning");
             Transform content = SR2EUtils.getObjRec<Transform>(transform, "ModConfigurationContent");
@@ -140,7 +142,13 @@ namespace SR2E
             allPossibleKeys.Remove(Key.RightCommand);
             allPossibleKeys.Remove(Key.LeftWindows);
             allPossibleKeys.Remove(Key.RightCommand);
-            
+
+
+            modMenuTabImage = SR2EUtils.Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle").LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
+            var spr = Sprite.Create(modMenuTabImage, new Rect(0f, 0f, modMenuTabImage.width, modMenuTabImage.height), new Vector2(0.5f, 0.5f), 1f);
+            transform.getObjRec<Image>("ModMenu").sprite = spr;
+            transform.getObjRec<Image>("ModConfiguration").sprite = spr;
+
 
             foreach (MelonPreferences_Category category in MelonPreferences.Categories)
             {

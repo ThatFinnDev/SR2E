@@ -1,4 +1,6 @@
-﻿using Il2CppMonomiPark.SlimeRancher.SceneManagement;
+﻿using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.SceneManagement;
+using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 
 namespace SR2E;
 
@@ -11,6 +13,15 @@ internal class WeaponVacuumExpelPatch
         {
             ignoreEmotions = true;
         }
+    }
+}
+[HarmonyPatch(typeof(TeleporterNode), nameof(TeleporterNode.OnTriggerEnter))]
+internal class TeleporterUsePatch
+{
+    public static void Prefix(Collider collider)
+    {
+        if (collider.gameObject == SceneContext.Instance.player)
+            GameContext.Instance.AutoSaveDirector.SaveGame();
     }
 }
 

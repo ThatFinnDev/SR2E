@@ -430,24 +430,10 @@ namespace SR2E
         }
         private static void SetupCommands()
         {
-            consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
-            consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
-            consoleContent = SR2EUtils.getObjRec<Transform>(transform, "ConsoleContent");
-            messagePrefab = SR2EUtils.getObjRec<GameObject>(transform, "messagePrefab");
-            specialMessagePrefab = SR2EUtils.getObjRec<GameObject>(transform, "specialMessagePrefab");
-            commandInput = SR2EUtils.getObjRec<TMP_InputField>(transform, "commandInput");
-            _scrollbar = SR2EUtils.getObjRec<Scrollbar>(transform, "ConsoleScroll");
-            autoCompleteContent = SR2EUtils.getObjRec<Transform>(transform, "AutoCompleteContent");
-            autoCompleteEntryPrefab = SR2EUtils.getObjRec<GameObject>(transform, "AutoCompleteEntry");
-            autoCompleteScrollView = SR2EUtils.getObjRec<GameObject>(transform, "AutoCompleteScroll");
-            autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
-            autoCompleteScrollView.SetActive(false);
-            consoleBlock.SetActive(false);
-            consoleMenu.SetActive(false);
-            commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
             RegisterCommand(new GiveCommand());
             RegisterCommand(new UtilCommand());
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(UtilCommand.ObjectBlocker));
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(ObjectBlocker));
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(IdentifiableObjectDragger));
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
             RegisterCommand(new SpawnCommand());
@@ -481,7 +467,7 @@ namespace SR2E
             if (!SR2EEntryPoint.infEnergyInstalled)
                 RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new NoClipCommand());
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(NoClipCommand.NoclipComponent));
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(NoclipComponent));
         }
         private static void SetupConsoleSync()
         {
@@ -518,6 +504,7 @@ namespace SR2E
             SetupCommands();
             SetupData();
             SetupModMenu();
+            SR2EEntryPoint.SetupFonts();
         }
 
         static TMP_InputField commandInput;
@@ -531,7 +518,6 @@ namespace SR2E
         static GameObject specialMessagePrefab;
         private static int selectedAutoComplete = 0;
         const int maxEntryOnScreen = 6;
-
         internal static void Update()
         {
             if (SR2EEntryPoint.consoleFinishedCreating != true)
@@ -567,6 +553,7 @@ namespace SR2E
                 {
                     commandInput.text = commandHistory[commandHistoryIdx];
                     commandHistoryIdx -= 1;
+                    autoCompleteScrollView.SetActive(false);
                 }
             }
 

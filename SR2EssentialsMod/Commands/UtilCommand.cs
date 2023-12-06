@@ -1,20 +1,18 @@
 ﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using Il2CppSystem;
+using System;
 using SR2E.Saving;
 using UnityEngine.UIElements;
+using System.Linq;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine;
 
 namespace SR2E.Commands
 {
     internal class UtilCommand : SR2CCommand
     {
-        public class ObjectBlocker : MonoBehaviour
-        {
-            public void Start()
-            {
-                Destroy(gameObject);
-            }
-        }
+        
 
         public override string ID => "util";
 
@@ -66,7 +64,8 @@ namespace SR2E.Commands
         public readonly List<string> PlayerParam = new List<string>()
         {
             "CUSTOM_SIZE",
-            "GRAVITY_LEVEL"
+            "GRAVITY_LEVEL",
+            "VAC_MODE"
         };
 
         public readonly List<string> GadgetParam = new List<string>()
@@ -349,7 +348,7 @@ namespace SR2E.Commands
             }
             else
             {
-                SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Nullable<float>(level);
+                SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(level);
                 SR2ESavableData.Instance.playerSavedData.gravityLevel = level;
                 SR2Console.SendMessage($"The new gravity level of the player is {level}");
 
@@ -440,6 +439,55 @@ namespace SR2E.Commands
             return false;
         }
 
+        
+
+        public void PlayerVacModeSet(VacModes mode)
+        {
+            if (mode == VacModes.NORMAL)
+            {
+                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
+                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+            }
+            else if (mode == VacModes.AUTO_VAC)
+            {
+                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
+                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.VAC;
+                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+            }
+            else if (mode == VacModes.AUTO_SHOOT)
+            {
+                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
+                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.SHOOT;
+                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+            }
+            else if (mode == VacModes.NONE)
+            {
+                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+
+                MelonCoroutines.Start(waitForSeconds(1.5f));
+
+                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
+            }
+            /* Currently bugged
+            else if (mode == VacModes.DRAG)
+            {
+                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+
+                MelonCoroutines.Start(waitForSeconds(1.5f));
+
+                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
+                SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>();
+            } 
+            */
+        }
+
+        System.Collections.IEnumerator waitForSeconds(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+        }
+
         public bool ExcPlayer(string[] cmd)
         {
             if (cmd[1] == "CUSTOM_SIZE")
@@ -464,6 +512,15 @@ namespace SR2E.Commands
                 {
                     PlayerGravity(true);
                 }
+                return true;
+            }
+            else if (cmd[1] == "VAC_MODE")
+            {
+                try
+                {
+                    PlayerVacModeSet(Enum.Parse<VacModes>(cmd[2]));
+                }
+                catch { return false; }
                 return true;
             }
             return false;
@@ -492,6 +549,16 @@ namespace SR2E.Commands
             }
             return false;
         }
+
+        internal enum VacModes
+        {
+            AUTO_SHOOT,
+            AUTO_VAC,
+            NORMAL,
+            // DRAG,
+            NONE,
+        }
+
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
             if (argIndex == 0)
@@ -523,6 +590,13 @@ namespace SR2E.Commands
             }
             else if (argIndex == 2)
             {
+                if (args[0] == "PLAYER")
+                {
+                    if (args[1] == "VAC_MODE")
+                    {
+                        return Enum.GetNames(typeof(VacModes)).ToList();
+                    }
+                }
                 if (args[0] == "GAME")
                 {
                     if (args[1] == "DISABLE_ACTOR_TYPE")
