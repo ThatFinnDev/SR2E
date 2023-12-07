@@ -19,6 +19,7 @@ namespace SR2E.Commands
         public override string Usage => "util <args>";
 
         public override string Description => "Utility Command";
+        public override string ExtendedDescription => "Utility command, read the arguments on the help section on SR2E github wiki.";
 
         public const float playerColliderHeightBase = 2f;
         public const float playerColliderRadBase = 0.6f;
@@ -470,7 +471,6 @@ namespace SR2E.Commands
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
                 SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
             }
-            /* Currently bugged
             else if (mode == VacModes.DRAG)
             {
                 SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
@@ -480,7 +480,6 @@ namespace SR2E.Commands
                 SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
                 SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>();
             } 
-            */
         }
 
         System.Collections.IEnumerator waitForSeconds(float seconds)
@@ -555,7 +554,7 @@ namespace SR2E.Commands
             AUTO_SHOOT,
             AUTO_VAC,
             NORMAL,
-            // DRAG,
+            DRAG,
             NONE,
         }
 

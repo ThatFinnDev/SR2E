@@ -70,6 +70,8 @@ namespace SR2E
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed = 235f;
 
+
+        internal static bool devMode;
         internal static void RefreshPrefs()
         {
             prefs.DeleteEntry("noclipFlySpeed");
@@ -83,10 +85,13 @@ namespace SR2E
                 prefs.CreateEntry("skipEngagementPrompt", (bool)false, "Skip the engagement prompt", false);
             if (!prefs.HasEntry("debugLogging"))
                 prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false);
+            if (!prefs.HasEntry("experimentalStuff"))
+                prefs.CreateEntry("experimentalStuff", (bool)false, "Enable experimental stuff", true);
             noclipAdjustSpeed = prefs.GetEntry<float>("noclipAdjustSpeed").Value;
             syncConsole = prefs.GetEntry<bool>("doesConsoleSync").Value;
             skipEngagementPrompt = prefs.GetEntry<bool>("skipEngagementPrompt").Value;
             debugLogging = prefs.GetEntry<bool>("debugLogging").Value;
+            devMode = prefs.GetEntry<bool>("experimentalStuff").Value;
 
         }
         public override void OnInitializeMelon()

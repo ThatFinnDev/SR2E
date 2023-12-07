@@ -5,6 +5,7 @@ public class ClearInventoryCommand : SR2CCommand
     public override string ID => "clearinv";
     public override string Usage => "clearinv";
     public override string Description => "Clears your inventory";
+    public override string ExtendedDescription => "Clears your inventory, careful not to use this by mistake!";
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
