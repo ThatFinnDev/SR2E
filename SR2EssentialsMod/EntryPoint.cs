@@ -27,16 +27,13 @@ namespace SR2E
 
     public class SR2EEntryPoint : MelonMod
     {
+        public static SR2EEntryPoint instance;
         public static TMP_FontAsset SR2Font;
         internal static bool infEnergy = false;
         internal static bool infHealth = false;
         internal static bool infEnergyInstalled = false;
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
-        internal static bool syncConsole = true;
-        internal static bool skipEngagementPrompt = false;
-        internal static bool consoleUsesSR2Font = false;
-        internal static bool debugLogging = false;
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
@@ -69,12 +66,63 @@ namespace SR2E
         }
         static bool CheckIfLargo(string value) => (value.Remove(0, 1)).Any(char.IsUpper);
         internal static MelonPreferences_Category prefs;
-        internal static float noclipAdjustSpeed = 235f;
-        static string onSaveLoadCommand = "";
-        static string onMainMenuLoadCommand = "";
+        internal static float noclipAdjustSpeed
+        {
+            get
+            {
+                return prefs.GetEntry<float>("noclipAdjustSpeed").Value;
+            }
+        }
+        static string onSaveLoadCommand
+        {
+            get
+            {
+                return prefs.GetEntry<string>("onSaveLoadCommand").Value;
+            }
+        }
+        static string onMainMenuLoadCommand
+        {
+            get
+            {
+                return prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
+            }
+        }
+        internal static bool syncConsole
+        {
+            get
+            {
+                return prefs.GetEntry<bool>("doesConsoleSync").Value;
+            }
+        }
+        internal static bool skipEngagementPrompt
+        {
+            get
+            {
+                return prefs.GetEntry<bool>("skipEngagementPrompt").Value;
+            }
+        }
+        internal static bool consoleUsesSR2Font
+        {
+            get
+            {
+                return prefs.GetEntry<bool>("consoleUsesSR2Font").Value;
+            }
+        }
+        internal static bool debugLogging
+        {
+            get
+            {
+                return prefs.GetEntry<bool>("debugLogging").Value;
+            }
+        }
 
-
-        internal static bool devMode;
+        internal static bool devMode
+        {
+            get
+            {
+                return prefs.GetEntry<bool>("experimentalStuff").Value;
+            }
+        }
         internal static void RefreshPrefs()
         {
             prefs.DeleteEntry("noclipFlySpeed");
@@ -96,19 +144,11 @@ namespace SR2E
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false);
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
                 prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false);
-           
-            noclipAdjustSpeed = prefs.GetEntry<float>("noclipAdjustSpeed").Value;
-            syncConsole = prefs.GetEntry<bool>("doesConsoleSync").Value;
-            skipEngagementPrompt = prefs.GetEntry<bool>("skipEngagementPrompt").Value;
-            debugLogging = prefs.GetEntry<bool>("debugLogging").Value;
-            devMode = prefs.GetEntry<bool>("experimentalStuff").Value;
-            consoleUsesSR2Font = prefs.GetEntry<bool>("consoleUsesSR2Font").Value;
-            onSaveLoadCommand = prefs.GetEntry<string>("onSaveLoadCommand").Value;
-            onMainMenuLoadCommand = prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
 
         }
         public override void OnInitializeMelon()
         {
+            instance = this;
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
             ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
             ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();

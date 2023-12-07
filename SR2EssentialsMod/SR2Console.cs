@@ -302,7 +302,6 @@ namespace SR2E
 
                 if (!String.IsNullOrEmpty(c))
                 {
-                    MelonLogger.Msg(c);
                     bool spaces = c.Contains(" ");
                     string cmd = spaces ? c.Substring(0, c.IndexOf(' ')) : c;
 
