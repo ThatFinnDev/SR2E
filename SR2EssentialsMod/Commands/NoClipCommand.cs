@@ -21,8 +21,8 @@ namespace SR2E.Commands
             if (n)
             {
                 SR2ESavableData.Instance.playerSavedData.noclipState = true;
-                var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
-                cam.AddComponent<NoclipComponent>();
+                //var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
+                SceneContext.Instance.Camera.AddComponent<NoclipComponent>();
             }
         }
 
@@ -34,11 +34,9 @@ namespace SR2E.Commands
             }
             try
             {
-                var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
-                if (!cam.RemoveComponent<NoclipComponent>())
-
+                if (!SceneContext.Instance.Camera.RemoveComponent<NoclipComponent>())
                 {
-                    cam.AddComponent<NoclipComponent>();
+                    SceneContext.Instance.Camera.AddComponent<NoclipComponent>();
                     SR2ESavableData.Instance.playerSavedData.noclipState = true;
                 }
                 else

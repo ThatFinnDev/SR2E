@@ -40,7 +40,7 @@ public static class SR2EUtils
         }
         return null;
     }
-    public static KeyCode KeyToKeyCode(Key key)
+    internal static KeyCode KeyToKeyCode(Key key)
     {
         switch (key)
         {
