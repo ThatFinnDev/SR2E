@@ -65,6 +65,7 @@ namespace SR2E
 
             if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
+                draggedObject.GetComponent<Rigidbody>().velocity = Vector3.up * 2f;
                 isDragging = false;
                 draggedObject.GetComponent<Collider>().isTrigger = false;
                 draggedObject = null;
@@ -72,6 +73,7 @@ namespace SR2E
 
             if (isDragging && draggedObject)
             {
+                draggedObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 if (Physics.Raycast(new Ray(mousePos, Camera.main.transform.forward), out var hit))
                 {
                     draggedObject.transform.position = hit.point;

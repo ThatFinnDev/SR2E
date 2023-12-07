@@ -41,6 +41,8 @@ namespace SR2E.Commands
                     cam.AddComponent<NoclipComponent>();
                     SR2ESavableData.Instance.playerSavedData.noclipState = true;
                 }
+                else
+                    SR2ESavableData.Instance.playerSavedData.noclipState = false;
                 return true;
             }
             catch { return false; }
