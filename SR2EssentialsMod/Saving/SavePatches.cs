@@ -41,7 +41,7 @@ namespace SR2E.Saving
                 SpeedCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.speed);
                 UtilCommand.RemoteExc_PlayerSize(SR2ESavableData.Instance.playerSavedData.size);
                 SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(SR2ESavableData.Instance.playerSavedData.gravityLevel);
-                if (SR2ESavableData.Instance.playerSavedData.noclipState)
+                if (SR2ESavableData.Instance.playerSavedData.noclipState && SR2EEntryPoint.debugLogging)
                 {
                     SR2Console.SendMessage("Load noclip state debug");
                 }
