@@ -254,7 +254,20 @@ namespace SR2E
             commands = myList.ToDictionary(x => x.Key, x => x.Value);
             return true;
         }
-
+        /// <summary>
+        /// Registers multiple commands to be used in the console
+        /// </summary>
+        public static bool RegisterCommands(SR2CCommand[] cmds)
+        {
+            bool successful = true;
+            for (int i = 0; i < cmds.Length; i++)
+            {
+                bool didWork = RegisterCommand(cmds[i]);
+                if (!didWork)
+                    successful = false;
+            }
+            return successful;
+        }
         /// <summary>
         /// Unregisters a command
         /// </summary>
@@ -467,10 +480,6 @@ namespace SR2E
             RegisterCommand(new GiveBlueprintCommand());
             RegisterCommand(new GiveUpgradeCommand());
             RegisterCommand(new ReplaceCommand());
-            RegisterCommand(new WarpCommand());
-            RegisterCommand(new SaveWarpCommand());
-            RegisterCommand(new DeleteWarpCommand());
-            RegisterCommand(new WarpListCommand());
             RegisterCommand(new SpeedCommand());
             RegisterCommand(new GravityCommand());
             RegisterCommand(new RotateCommand());
@@ -478,8 +487,10 @@ namespace SR2E
             RegisterCommand(new WeatherCommand());
             RegisterCommand(new FlingCommand());
             RegisterCommand(new PartyCommand());
+            
+            RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
+            RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
-            ConsoleVisibilityCommands.RegisterAllConsoleVisibilityCommands();
           
             if (!SR2EEntryPoint.infHealthInstalled)
                 RegisterCommand(new InvincibleCommand());
