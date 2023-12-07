@@ -17,6 +17,11 @@ public abstract class SR2CCommand
     /// </summary>
     public abstract string Description { get; }
 
+    /// <summary>
+    /// The full description of this command
+    /// </summary>
+    public virtual string ExtendedDescription { get; }
+
 
     /// <summary>
     /// Executes the command

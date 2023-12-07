@@ -29,7 +29,15 @@ namespace SR2E
         public bool isDragging;
         public float distanceFromCamera = 2f;
         private float distanceChangeSpeed = 1f;
-
+        public Vector3 mousePos
+        {
+            get
+            {
+                Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
+                Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, Camera.main.nearClipPlane));
+                return mouseWorldPosition;
+            }
+        }
         public void Update()
         {
             if (Keyboard.current.qKey.isPressed)
@@ -50,10 +58,7 @@ namespace SR2E
                     {
                         isDragging = true;
                         draggedObject = hit.transform.gameObject;
-                        GetComponent<SRCameraController>().enabled = false;
-                        GetComponent<SRCameraHandler>().enabled = false;
-                        UnityEngine.Cursor.visible = true;
-                        UnityEngine.Cursor.lockState = CursorLockMode.Confined;
+                        draggedObject.GetComponent<Collider>().isTrigger = true;
                     }
                 }
             }
@@ -61,19 +66,16 @@ namespace SR2E
             if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
                 isDragging = false;
+                draggedObject.GetComponent<Collider>().isTrigger = false;
                 draggedObject = null;
-                GetComponent<SRCameraController>().enabled = true;
-                GetComponent<SRCameraHandler>().enabled = true;
-                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-                UnityEngine.Cursor.visible = false;
             }
 
             if (isDragging && draggedObject)
             {
-                Vector3 mousePosition = Input.mousePosition;
-                mousePosition.z = distanceFromCamera;
-                Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-                draggedObject.transform.position = worldPosition + Camera.main.transform.forward * distanceFromCamera;
+                if (Physics.Raycast(new Ray(mousePos, Camera.main.transform.forward), out var hit))
+                {
+                    draggedObject.transform.position = hit.point;
+                }
             }
         }
     }

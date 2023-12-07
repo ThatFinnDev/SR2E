@@ -5,6 +5,21 @@
         public override string ID => "help";
         public override string Usage => "help [cmdName]";
         public override string Description => "Displays all commands available and their usage";
+        public override string ExtendedDescription => "Displays all commands available and their usage, can also take a command as a input to display it by itself.";
+        
+        public string GetCommandDescription(string command)
+        {
+            if (SR2Console.commands.ContainsKey(command))
+            {
+                var cmd = SR2Console.commands[command];
+                if (cmd.ExtendedDescription != string.Empty)
+                    return cmd.ExtendedDescription;
+                else
+                    return cmd.Description;
+            }
+            else return string.Empty;
+        }
+        
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
             if (argIndex==0)
@@ -30,16 +45,17 @@
 
                 foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
                 {
-                    currText = $"{currText}\n{entry.Value.Usage} - {entry.Value.Description}";
+                    currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
                 }
                 SR2Console.SendMessage(currText);
                 return true; 
             }
             if (args.Length == 1)
             {
+                var desc = GetCommandDescription(args[0]);
                 if (SR2Console.commands.ContainsKey(args[0]))
                 {
-                    SR2Console.SendMessage($"Usage: {SR2Console.commands[args[0]].Usage}");
+                    SR2Console.SendMessage($"Usage: {SR2Console.commands[args[0]].Usage}\n Description: {desc}");
                 }
                 SR2Console.SendMessage($"The key '<color=white>{args[0]}</color>' is not a valid command");
                 return false;

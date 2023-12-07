@@ -33,6 +33,8 @@ namespace SR2E.Commands
 
         public override string Description => "Force a weather state.";
 
+        public override string ExtendedDescription => "Allows you to make any weather in the game play where you are currently.";
+
         public override bool Execute(string[] args)
         {
             if (args.Length != 1) return false;

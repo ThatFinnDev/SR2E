@@ -5,6 +5,7 @@
         public override string ID => "delwarp";
         public override string Usage => "delwarp <name>";
         public override string Description => "Deletes a warp";
+        public override string ExtendedDescription => "Deletes a warp from the <u>warp</u> command.";
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
             if (argIndex == 0)
