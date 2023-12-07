@@ -57,11 +57,8 @@ namespace SR2E
         {
             foreach (KeyValuePair<Key,string> keyValuePair in keyCodeCommands)
                 if (Keyboard.current[keyValuePair.Key].wasPressedThisFrame)
-                    if (!SR2Console.isOpen)
-                        if (!SR2ModMenu.isOpen)
-                            if (Time.timeScale != 0)
-                                if(SR2Warps.warpTo==null)
-                                    SR2Console.ExecuteByString(keyValuePair.Value,true);
+                    if(SR2Warps.warpTo==null)
+                        SR2Console.ExecuteByString(keyValuePair.Value,true);
         }
     }
 }

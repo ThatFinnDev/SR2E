@@ -297,20 +297,38 @@ namespace SR2E
                             split.RemoveAt(0);
                             split.RemoveAt(split.Count - 1);
                             bool shouldRunNormalExecute = true;
-                            if (split.Count != 0)
+                            bool canPlay = false;
+                            if (!SR2Console.isOpen)
+                                if (!SR2ModMenu.isOpen)
+                                    if (Time.timeScale != 0)
+                                        canPlay = true;
+
+                            if (!canPlay && commands[cmd].executeWhenConsoleIsOpen)
+                                canPlay = true;
+                            if (!silent)
+                                canPlay = true;
+                            if (canPlay)
                             {
-                                string[] stringArray = split.ToArray();
-                                if (silent)
-                                { shouldRunNormalExecute = !commands[cmd].SilentExecute(stringArray); }
-                                if(shouldRunNormalExecute)
-                                    successful = commands[cmd].Execute(stringArray);
-                            }
-                            else
-                            {
-                                if (silent)
-                                { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
-                                if(shouldRunNormalExecute)
-                                    successful = commands[cmd].Execute(null);
+                                if (split.Count != 0)
+                                {
+                                    string[] stringArray = split.ToArray();
+                                    if (silent)
+                                    {
+                                        shouldRunNormalExecute = !commands[cmd].SilentExecute(stringArray);
+                                    }
+
+                                    if (shouldRunNormalExecute)
+                                        successful = commands[cmd].Execute(stringArray);
+                                }
+                                else
+                                { 
+                                    if (silent)
+                                    { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
+
+                                    if (shouldRunNormalExecute)
+                                        successful = commands[cmd].Execute(null);
+                                    
+                                }
                             }
                         }
                         else
@@ -459,6 +477,7 @@ namespace SR2E
             RegisterCommand(new MoveCommand());
             RegisterCommand(new WeatherCommand());
             RegisterCommand(new FlingCommand());
+            RegisterCommand(new PartyCommand());
 
             ConsoleVisibilityCommands.RegisterAllConsoleVisibilityCommands();
           
@@ -599,7 +618,11 @@ namespace SR2E
             SR2CommandBindingManager.Update();
             //Modmenu
             SR2ModMenu.Update();
+            //Console Commands Update
+            foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                pair.Value.Update();
         }
+        
 
         public static void NextAutoComplete()
         {
