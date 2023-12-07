@@ -36,6 +36,7 @@ public class ConsoleVisibilityCommands
         public override string ID => "closeconsole";
         public override string Usage => "closeconsole";
         public override string Description => "Closes the console";
+        public override bool executeWhenConsoleIsOpen => true;
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
             return null;
@@ -58,6 +59,7 @@ public class ConsoleVisibilityCommands
         public override string ID => "toggleconsole";
         public override string Usage => "toggleconsole";
         public override string Description => "Toggles the console";
+        public override bool executeWhenConsoleIsOpen => true;
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
             return null;
