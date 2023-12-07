@@ -54,4 +54,10 @@ public abstract class SR2CCommand
     /// <returns>Return True at the end, if the normal execute should not be executed</returns>
     public virtual bool SilentExecute(string[] args)
     { return false; }
+
+    /// <summary>
+    /// Gets called every frame
+    /// </summary>
+    public virtual void Update()
+    { }
 }
