@@ -17,6 +17,9 @@ namespace SR2E
         /// <summary>
         /// Display a message in the console
         /// </summary>
+
+        public static MelonLogger.Instance mlog;
+
         public static void SendMessage(string message)
         {
             SendMessage(message, SR2EEntryPoint.syncConsole);
@@ -50,7 +53,7 @@ namespace SR2E
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
-                    if (doMLLog) MelonLogger.Msg($"[SR2E]: {message}");
+                    if (doMLLog) mlog.Msg(message);
                     foreach (string singularLine in message.Split('\n'))
                         SendMessage(singularLine, doMLLog, false);
                     return;
@@ -107,7 +110,7 @@ namespace SR2E
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
-                    if (doMLLog) MelonLogger.Error($"[SR2E]: {message}");
+                    if (doMLLog) mlog.Error(message);
                     foreach (string singularLine in message.Split('\n'))
                         SendError(singularLine, doMLLog, false);
                     return;
@@ -165,7 +168,7 @@ namespace SR2E
                     GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 if (message.Contains("\n"))
                 {
-                    if (doMLLog) MelonLogger.Warning($"[SR2E]: {message}");
+                    if (doMLLog) mlog.Msg(message, new Color32(255, 155, 0, 255));
                     foreach (string singularLine in message.Split('\n'))
                         SendWarning(singularLine, doMLLog, false);
                     return;
@@ -295,8 +298,11 @@ namespace SR2E
         {
             string[] cmds = input.Split(';');
             foreach (string c in cmds)
+            {
+
                 if (!String.IsNullOrEmpty(c))
                 {
+                    MelonLogger.Msg(c);
                     bool spaces = c.Contains(" ");
                     string cmd = spaces ? c.Substring(0, c.IndexOf(' ')) : c;
 
@@ -334,13 +340,13 @@ namespace SR2E
                                         successful = commands[cmd].Execute(stringArray);
                                 }
                                 else
-                                { 
+                                {
                                     if (silent)
                                     { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
 
                                     if (shouldRunNormalExecute)
                                         successful = commands[cmd].Execute(null);
-                                    
+
                                 }
                             }
                         }
@@ -349,13 +355,15 @@ namespace SR2E
                             bool shouldRunNormalExecute = true;
                             if (silent)
                             { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
-                            if(shouldRunNormalExecute)
+                            if (shouldRunNormalExecute)
                                 successful = commands[cmd].Execute(null);
                         }
                     }
                     else
                         SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
                 }
+            }
+                
         }
 
 
@@ -515,6 +523,7 @@ namespace SR2E
                 SetupConsoleSync();
             }
 
+            mlog = new MelonLogger.Instance("SR2E");
 
             consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
             consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
