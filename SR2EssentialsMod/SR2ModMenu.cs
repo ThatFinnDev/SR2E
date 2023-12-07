@@ -260,7 +260,7 @@ namespace SR2E
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
                             inputField.text = entry.GetEditedValueAsString();
-                            inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
+                            inputField.contentType = TMP_InputField.ContentType.Standard;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter text";
                             inputField.onValueChanged.AddListener((Action<string>)((text) =>
                             {

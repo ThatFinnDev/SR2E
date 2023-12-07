@@ -70,6 +70,8 @@ namespace SR2E
         static bool CheckIfLargo(string value) => (value.Remove(0, 1)).Any(char.IsUpper);
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed = 235f;
+        static string onSaveLoadCommand = "";
+        static string onMainMenuLoadCommand = "";
 
 
         internal static bool devMode;
@@ -90,12 +92,19 @@ namespace SR2E
                 prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false);
             if (!prefs.HasEntry("experimentalStuff"))
                 prefs.CreateEntry("experimentalStuff", (bool)false, "Enable experimental stuff", true);
+            if (!prefs.HasEntry("onSaveLoadCommand"))
+                prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false);
+            if (!prefs.HasEntry("onMainMenuLoadCommand"))
+                prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false);
+           
             noclipAdjustSpeed = prefs.GetEntry<float>("noclipAdjustSpeed").Value;
             syncConsole = prefs.GetEntry<bool>("doesConsoleSync").Value;
             skipEngagementPrompt = prefs.GetEntry<bool>("skipEngagementPrompt").Value;
             debugLogging = prefs.GetEntry<bool>("debugLogging").Value;
             devMode = prefs.GetEntry<bool>("experimentalStuff").Value;
             consoleUsesSR2Font = prefs.GetEntry<bool>("consoleUsesSR2Font").Value;
+            onSaveLoadCommand = prefs.GetEntry<string>("onSaveLoadCommand").Value;
+            onMainMenuLoadCommand = prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
 
         }
         public override void OnInitializeMelon()
@@ -152,6 +161,8 @@ namespace SR2E
                             }
                     break;
                 case "MainMenuUI":
+                    if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) 
+                        SR2Console.ExecuteByString(onMainMenuLoadCommand);
                     infEnergy = false;
                     //SceneContext.Instance.PlayerState._model.maxHealth = InvincibleCommand.normalHealth;
                     infHealth = false;
@@ -168,6 +179,8 @@ namespace SR2E
                     break;
                 case "UICore":
                     InfiniteEnergyCommand.energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
+                    if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) 
+                        SR2Console.ExecuteByString(onSaveLoadCommand);
                     break;
                 case "PlayerCore":
                     NoclipComponent.playerSettings = SR2EUtils.Get<KCCSettings>("");
@@ -175,6 +188,7 @@ namespace SR2E
                     NoclipComponent.playerController = NoclipComponent.player.GetComponent<SRCharacterController>();
                     NoclipComponent.playerMotor = NoclipComponent.player.GetComponent<KinematicCharacterMotor>();
                     InfiniteEnergyCommand.jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
+                    
                     break;
             }
 
