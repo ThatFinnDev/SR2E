@@ -12,7 +12,7 @@
             if (SR2Console.commands.ContainsKey(command))
             {
                 var cmd = SR2Console.commands[command];
-                if (cmd.ExtendedDescription != string.Empty)
+                if (!string.IsNullOrEmpty(cmd.ExtendedDescription))
                     return cmd.ExtendedDescription;
                 else
                     return cmd.Description;

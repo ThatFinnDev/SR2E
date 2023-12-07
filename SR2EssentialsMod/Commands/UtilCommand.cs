@@ -442,7 +442,7 @@ namespace SR2E.Commands
 
         
 
-        public void PlayerVacModeSet(VacModes mode)
+        public static void PlayerVacModeSet(VacModes mode)
         {
             if (mode == VacModes.NORMAL)
             {
@@ -479,10 +479,11 @@ namespace SR2E.Commands
 
                 SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
                 SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>();
-            } 
+            }
+            SR2ESavableData.Instance.playerSavedData.vacMode = mode;
         }
 
-        System.Collections.IEnumerator waitForSeconds(float seconds)
+        static System.Collections.IEnumerator waitForSeconds(float seconds)
         {
             yield return new WaitForSeconds(seconds);
         }
@@ -549,14 +550,7 @@ namespace SR2E.Commands
             return false;
         }
 
-        internal enum VacModes
-        {
-            AUTO_SHOOT,
-            AUTO_VAC,
-            NORMAL,
-            DRAG,
-            NONE,
-        }
+        
 
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
