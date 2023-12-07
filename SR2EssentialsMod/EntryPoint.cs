@@ -35,6 +35,7 @@ namespace SR2E
         internal static bool consoleFinishedCreating = false;
         internal static bool syncConsole = true;
         internal static bool skipEngagementPrompt = false;
+        internal static bool consoleUsesSR2Font = false;
         internal static bool debugLogging = false;
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
@@ -79,6 +80,8 @@ namespace SR2E
 
             if (!prefs.HasEntry("noclipAdjustSpeed"))
                 prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false);
+            if (!prefs.HasEntry("consoleUsesSR2Font"))
+                prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false);
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
             if (!prefs.HasEntry("skipEngagementPrompt"))
@@ -92,6 +95,7 @@ namespace SR2E
             skipEngagementPrompt = prefs.GetEntry<bool>("skipEngagementPrompt").Value;
             debugLogging = prefs.GetEntry<bool>("debugLogging").Value;
             devMode = prefs.GetEntry<bool>("experimentalStuff").Value;
+            consoleUsesSR2Font = prefs.GetEntry<bool>("consoleUsesSR2Font").Value;
 
         }
         public override void OnInitializeMelon()
@@ -171,9 +175,23 @@ namespace SR2E
         internal static void SetupFonts()
         {
             SR2Font = SR2EUtils.Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
-            foreach (var text in SR2EUtils.Get<GameObject>("SR2Console").getAllChildrenOfType<TMP_Text>())
+            if (consoleUsesSR2Font)
             {
-                text.font = SR2Font;
+                foreach (var text in SR2EUtils.Get<GameObject>("SR2Console").getAllChildrenOfType<TMP_Text>())
+                {
+                    text.font = SR2Font;
+                }
+            }
+            else
+            {
+                foreach (var text in SR2EUtils.Get<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
+                {
+                    text.font = SR2Font;
+                }
+                foreach (var text in SR2EUtils.Get<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>())
+                {
+                    text.font = SR2Font;
+                }
             }
         }
 
