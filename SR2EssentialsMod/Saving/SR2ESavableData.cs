@@ -92,6 +92,11 @@ internal class SR2ESavableData
 
     public void TrySave()
     {
+
+        if (Instance.playerSavedData.vacMode == VacModes.AUTO_VAC || Instance.playerSavedData.vacMode == VacModes.AUTO_VAC)
+        {
+            Instance.playerSavedData.vacMode = VacModes.NORMAL;
+        }
         //var json = JsonConvert.SerializeObject(this, Formatting.Indented);
         //File.WriteAllText(currPath, json);
         DebugSaveToNewFile(currPath);
@@ -103,6 +108,10 @@ internal class SR2ESavableData
             var reader = new StreamReader(localStream);
             var json = reader.ReadToEnd();
             SR2ESavableData save = JsonConvert.DeserializeObject<SR2ESavableData>(json);
+            if (Instance.playerSavedData.vacMode == VacModes.AUTO_VAC || Instance.playerSavedData.vacMode == VacModes.AUTO_VAC)
+            {
+                Instance.playerSavedData.vacMode = VacModes.NORMAL;
+            }
             return save;
         }
     }
