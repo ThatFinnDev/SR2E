@@ -1,12 +1,13 @@
 ﻿using System;
-
+using Newtonsoft.Json;
 namespace SR2E.Saving;
 
 
 [Serializable]
 public struct SR2EGordoData
 {
-    public float baseSize;
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+    public float baseSize = 4f;
 
     public SR2EGordoData()
     {
