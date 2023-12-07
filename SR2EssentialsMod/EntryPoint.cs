@@ -177,6 +177,10 @@ namespace SR2E
                     prompt.EngagementPromptTextUI.SetActive(false);
                     prompt.OnInteract(new InputAction.CallbackContext());
                     break;
+                case "GameCore":
+                    AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
+                    autoSaveDirector.saveSlotCount = 50;
+                    break;
                 case "UICore":
                     InfiniteEnergyCommand.energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) 
@@ -245,10 +249,29 @@ namespace SR2E
 
         static SRCharacterController Player;
         static SRCameraController camera;
+        private static bool saveCountChange = false;
 
         public override void OnUpdate()
         {
             if (mainMenuLoaded)
+            {
+                if (!saveCountChange)
+                {
+                    SaveGamesRootUI ui = GameObject.FindObjectOfType<SaveGamesRootUI>();
+                    if (ui != null)
+                    {
+                        GameObject scrollView = GameObject.Find("ButtonsScrollView");
+                        if (scrollView != null)
+                        {
+                            ScrollRect rect = scrollView.GetComponent<ScrollRect>();
+                            rect.vertical = true;
+                            rect.verticalScrollbar = GameObject.Instantiate(SR2EUtils.getObjRec<Scrollbar>(SR2Console.transform, "saveFilesSlider"), rect.transform);
+                            rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+                            saveCountChange = true;
+                        }
+                    }
+                    
+                }
                 if (!_iconChanged)
                 {
                     Sprite sprite = SR2EUtils.getObjRec<Image>(SR2Console.transform, "modsButtonIconImage").sprite;
@@ -259,6 +282,7 @@ namespace SR2E
                             _iconChanged = true;
                         }
                 }
+            }
 
             if (infEnergy)
                 if (SceneContext.Instance != null)
