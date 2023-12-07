@@ -1,20 +1,19 @@
 ﻿using System;
 
-namespace SR2E.Saving
+namespace SR2E.Saving;
+
+[Serializable]
+public struct SR2ESlimeData
 {
-    [Serializable]
-    public struct SR2ESlimeData
+    public float scaleX;
+    public float scaleY;
+    public float scaleZ;
+    public bool zeroGrav;
+    public SR2ESlimeData()
     {
-        public float scaleX;
-        public float scaleY;
-        public float scaleZ;
-        public bool zeroGrav;
-        public SR2ESlimeData()
-        {
-            scaleX = 1f;
-            scaleY = 1f;
-            scaleZ = 1f;
-            zeroGrav = false;
-        }
+        scaleX = 1f;
+        scaleY = 1f;
+        scaleZ = 1f;
+        zeroGrav = false;
     }
 }

@@ -476,6 +476,7 @@ namespace SR2E
             RegisterCommand(new RefillSlotsCommand());
             RegisterCommand(new NewBucksCommand());
             RegisterCommand(new KillCommand());
+            RegisterCommand(new KillAllCommand());
             RegisterCommand(new GiveGadgetCommand());
             RegisterCommand(new GiveBlueprintCommand());
             RegisterCommand(new GiveUpgradeCommand());

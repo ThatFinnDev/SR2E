@@ -1,16 +1,15 @@
 ﻿using System;
 
-namespace SR2E.Saving
+namespace SR2E.Saving;
+
+
+[Serializable]
+public struct SR2EGordoData
 {
+    public float baseSize;
 
-    [Serializable]
-    public struct SR2EGordoData
+    public SR2EGordoData()
     {
-        public float baseSize;
-
-        public SR2EGordoData()
-        {
-            baseSize = 4f;
-        }
+        baseSize = 4f;
     }
 }

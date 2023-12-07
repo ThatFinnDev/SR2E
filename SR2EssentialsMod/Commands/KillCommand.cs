@@ -13,7 +13,6 @@ public class KillCommand : SR2CCommand
     {
         return null;
     }
-
     public override bool Execute(string[] args)
     {
         if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
