@@ -115,7 +115,15 @@ namespace SR2E
                         break;
                 }
         }
-        
+
+        public override void OnApplicationQuit()
+        {
+            if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay())
+            {
+                GameContext.Instance.AutoSaveDirector.SaveGame();
+            }
+        }
+
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             switch (sceneName)
