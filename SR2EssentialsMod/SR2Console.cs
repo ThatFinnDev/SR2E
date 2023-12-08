@@ -514,6 +514,28 @@ namespace SR2E
             MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning($"[{s}]: {s}", false);
         }
 
+        internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
+        {
+            switch (sceneName)
+            {
+                case "GameCore":
+                    foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                        pair.Value.OnGameCoreLoad();
+                    break;
+                case "PlayerCore":
+                    foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                        pair.Value.OnPlayerCoreLoad();
+                    break;
+                case "UICore":
+                    foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                        pair.Value.OnUICoreLoad();
+                    break;
+                case "MainMenuUI":
+                    foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                        pair.Value.OnMainMenuUILoad();
+                    break;
+            }
+        }
         internal static void Start()
         {
             commandHistory = new List<string>();

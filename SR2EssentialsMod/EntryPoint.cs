@@ -29,8 +29,6 @@ namespace SR2E
     {
         public static SR2EEntryPoint instance;
         public static TMP_FontAsset SR2Font;
-        internal static bool infEnergy = false;
-        internal static bool infHealth = false;
         internal static bool infEnergyInstalled = false;
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
@@ -66,63 +64,15 @@ namespace SR2E
         }
         static bool CheckIfLargo(string value) => (value.Remove(0, 1)).Any(char.IsUpper);
         internal static MelonPreferences_Category prefs;
-        internal static float noclipAdjustSpeed
-        {
-            get
-            {
-                return prefs.GetEntry<float>("noclipAdjustSpeed").Value;
-            }
-        }
-        static string onSaveLoadCommand
-        {
-            get
-            {
-                return prefs.GetEntry<string>("onSaveLoadCommand").Value;
-            }
-        }
-        static string onMainMenuLoadCommand
-        {
-            get
-            {
-                return prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
-            }
-        }
-        internal static bool syncConsole
-        {
-            get
-            {
-                return prefs.GetEntry<bool>("doesConsoleSync").Value;
-            }
-        }
-        internal static bool skipEngagementPrompt
-        {
-            get
-            {
-                return prefs.GetEntry<bool>("skipEngagementPrompt").Value;
-            }
-        }
-        internal static bool consoleUsesSR2Font
-        {
-            get
-            {
-                return prefs.GetEntry<bool>("consoleUsesSR2Font").Value;
-            }
-        }
-        internal static bool debugLogging
-        {
-            get
-            {
-                return prefs.GetEntry<bool>("debugLogging").Value;
-            }
-        }
-
-        internal static bool devMode
-        {
-            get
-            {
-                return prefs.GetEntry<bool>("experimentalStuff").Value;
-            }
-        }
+        internal static float noclipAdjustSpeed { get { return prefs.GetEntry<float>("noclipAdjustSpeed").Value; } }
+        static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
+        static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
+        internal static bool syncConsole { get { return prefs.GetEntry<bool>("doesConsoleSync").Value; } }
+        internal static bool skipEngagementPrompt { get { return prefs.GetEntry<bool>("skipEngagementPrompt").Value; } }
+        internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
+        internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
+        internal static bool devMode { get { return prefs.GetEntry<bool>("experimentalStuff").Value; } }
+        
         internal static void RefreshPrefs()
         {
             prefs.DeleteEntry("noclipFlySpeed");
@@ -175,6 +125,7 @@ namespace SR2E
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
+            SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
             switch (sceneName)
             {
                 case "SystemCore":
@@ -191,26 +142,15 @@ namespace SR2E
                             if (obj.name == "AllMightyMenus")
                             {
                                 Object.Instantiate(obj);
-
-                                
-
                                 if (skipEngagementPrompt)
-                                {
                                     SR2EUtils.Get<GameObject>("EngagementSkipMessage").SetActive(true);
-                                }
                             }
                     break;
                 case "MainMenuUI":
-                    if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) 
-                        SR2Console.ExecuteByString(onMainMenuLoadCommand);
-                    infEnergy = false;
-                    saveCountChange = false;
-                    //SceneContext.Instance.PlayerState._model.maxHealth = InvincibleCommand.normalHealth;
-                    infHealth = false;
+                    if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) SR2Console.ExecuteByString(onMainMenuLoadCommand);
+                    SaveCountChanged = false;
                     if (skipEngagementPrompt)
-                    {
                         SR2Console.transform.getObjRec<GameObject>("EngagementSkipMessage").SetActive(false);
-                    }
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
@@ -223,17 +163,13 @@ namespace SR2E
                     autoSaveDirector.saveSlotCount = 50;
                     break;
                 case "UICore":
-                    InfiniteEnergyCommand.energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
-                    if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) 
-                        SR2Console.ExecuteByString(onSaveLoadCommand);
+                    if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
                     break;
                 case "PlayerCore":
                     NoclipComponent.playerSettings = SR2EUtils.Get<KCCSettings>("");
                     NoclipComponent.player = SceneContext.Instance.player.transform;
                     NoclipComponent.playerController = NoclipComponent.player.GetComponent<SRCharacterController>();
                     NoclipComponent.playerMotor = NoclipComponent.player.GetComponent<KinematicCharacterMotor>();
-                    InfiniteEnergyCommand.jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
-                    
                     break;
             }
 
@@ -243,22 +179,14 @@ namespace SR2E
         {
             SR2Font = SR2EUtils.Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
             if (consoleUsesSR2Font)
-            {
                 foreach (var text in SR2EUtils.Get<GameObject>("SR2Console").getAllChildrenOfType<TMP_Text>())
-                {
                     text.font = SR2Font;
-                }
-            }
             else
             {
                 foreach (var text in SR2EUtils.Get<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
-                {
                     text.font = SR2Font;
-                }
                 foreach (var text in SR2EUtils.Get<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>())
-                {
                     text.font = SR2Font;
-                }
             }
         }
 
@@ -270,9 +198,7 @@ namespace SR2E
                     mainMenuLoaded = true;
                     CreateModMenuButton();
                     break;
-                    
             }
-
         }
         public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
         {
@@ -288,15 +214,29 @@ namespace SR2E
         }
 
 
-        static SRCharacterController Player;
-        static SRCameraController camera;
-        private static bool saveCountChange = false;
+        static SRCharacterController Player
+        {
+            get
+            { if(m_player==null) m_player = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC"); return m_player; }
+            set
+            { m_player = value; }
+        }
+        static SRCharacterController m_player;
+        static SRCameraController Camera
+        {
+            get
+            { if (m_camera == null) m_camera = SR2EUtils.Get<SRCameraController>("PlayerCameraKCC"); return m_camera; }
+            set
+            { m_camera = value; }
+        }
+        static SRCameraController m_camera;
+        public static bool SaveCountChanged = false;
 
         public override void OnUpdate()
         {
             if (mainMenuLoaded)
             {
-                if (!saveCountChange)
+                if (!SaveCountChanged)
                 {
                     SaveGamesRootUI ui = GameObject.FindObjectOfType<SaveGamesRootUI>();
                     if (ui != null)
@@ -306,9 +246,11 @@ namespace SR2E
                         {
                             ScrollRect rect = scrollView.GetComponent<ScrollRect>();
                             rect.vertical = true;
-                            rect.verticalScrollbar = GameObject.Instantiate(SR2EUtils.getObjRec<Scrollbar>(SR2Console.transform, "saveFilesSlider"), rect.transform);
+                            Scrollbar scrollBar = GameObject.Instantiate(SR2EUtils.getObjRec<Scrollbar>(SR2Console.transform, "saveFilesSlider"), rect.transform);
+                            rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
-                            saveCountChange = true;
+                            scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width/250f, 0, 0);
+                            SaveCountChanged = true;
                         }
                     }
                     
@@ -324,28 +266,6 @@ namespace SR2E
                         }
                 }
             }
-
-            if (infEnergy)
-                if (SceneContext.Instance != null)
-                    if (SceneContext.Instance.PlayerState != null)
-                        SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
-            if(infHealth)
-                if (SceneContext.Instance != null)
-                    if (SceneContext.Instance.PlayerState != null)
-                        SceneContext.Instance.PlayerState.SetHealth(int.MaxValue);
-            if (SceneContext.Instance != null)
-                if (SceneContext.Instance.Player != null)
-                    if (!SR2Console.isOpen)
-                        if (!SR2ModMenu.isOpen)
-                            if (Time.timeScale != 0)
-                            {
-                                if (Player == null)
-                                    Player = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC");
-
-                                if (camera == null)
-                                    camera = SR2EUtils.Get<SRCameraController>("PlayerCameraKCC");
-                            } 
-                    
 
             if (!consoleFinishedCreating)
             {

@@ -1,5 +1,6 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
+using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 
 namespace SR2E;
@@ -41,5 +42,13 @@ public static class SR2StartPatch
             return false;
         }
         return true;
+    }
+}
+[HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.Awake))]
+public static class SaveGameRootUIPatch
+{
+    public static void Prefix()
+    {
+        SR2EEntryPoint.SaveCountChanged = false;
     }
 }

@@ -60,4 +60,24 @@ public abstract class SR2CCommand
     /// </summary>
     public virtual void Update()
     { }
+    /// <summary>
+    /// Gets called when the scene GameCore loads
+    /// </summary>
+    public virtual void OnGameCoreLoad()
+    { }
+    /// <summary>
+    /// Gets called when the scene UICore loads
+    /// </summary>
+    public virtual void OnUICoreLoad()
+    { }
+    /// <summary>
+    /// Gets called when the scene PlayerCore loads
+    /// </summary>
+    public virtual void OnPlayerCoreLoad()
+    { }
+    /// <summary>
+    /// Gets called when the scene MainMenuUI loads
+    /// </summary>
+    public virtual void OnMainMenuUILoad()
+    { }
 }
