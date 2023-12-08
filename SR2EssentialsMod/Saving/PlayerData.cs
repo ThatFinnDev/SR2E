@@ -16,6 +16,8 @@ public struct SR2EPlayerData
     public float speed = 1;
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
     public VacModes vacMode = VacModes.NORMAL;
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+    public Vector3Data velocity = new Vector3Data(0, 0, 0);
 
     public SR2EPlayerData()
     {
@@ -24,5 +26,6 @@ public struct SR2EPlayerData
         gravityLevel = 17;
         speed = 1;
         vacMode = VacModes.NORMAL;
+        velocity = new Vector3Data(0, 0, 0);
     }
 }
