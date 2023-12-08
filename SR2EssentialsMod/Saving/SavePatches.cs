@@ -37,19 +37,24 @@ public static class SavePatches
     {
         public static void Postfix(SRCharacterController __instance)
         {
-            if (SR2ESavableData.Instance.playerSavedData.vacMode == VacModes.AUTO_VAC || SR2ESavableData.Instance.playerSavedData.vacMode == VacModes.AUTO_VAC)
+            try
             {
-                SR2ESavableData.Instance.playerSavedData.vacMode = VacModes.NORMAL;
+
+                if (SR2ESavableData.Instance.playerSavedData.vacMode == VacModes.AUTO_VAC || SR2ESavableData.Instance.playerSavedData.vacMode == VacModes.AUTO_VAC)
+                {
+                    SR2ESavableData.Instance.playerSavedData.vacMode = VacModes.NORMAL;
+                }
+                NoClipCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.noclipState);
+                SpeedCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.speed);
+                UtilCommand.RemoteExc_PlayerSize(SR2ESavableData.Instance.playerSavedData.size);
+                UtilCommand.PlayerVacModeSet(SR2ESavableData.Instance.playerSavedData.vacMode);
+                SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(SR2ESavableData.Instance.playerSavedData.gravityLevel);
+                if (SR2ESavableData.Instance.playerSavedData.noclipState && SR2EEntryPoint.debugLogging)
+                {
+                    SR2Console.SendMessage("Load noclip state debug");
+                }
             }
-            NoClipCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.noclipState);
-            SpeedCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.speed);
-            UtilCommand.RemoteExc_PlayerSize(SR2ESavableData.Instance.playerSavedData.size);
-            UtilCommand.PlayerVacModeSet(SR2ESavableData.Instance.playerSavedData.vacMode);
-            SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(SR2ESavableData.Instance.playerSavedData.gravityLevel);
-            if (SR2ESavableData.Instance.playerSavedData.noclipState && SR2EEntryPoint.debugLogging)
-            {
-                SR2Console.SendMessage("Load noclip state debug");
-            }
+            catch { }
         }
     }
 

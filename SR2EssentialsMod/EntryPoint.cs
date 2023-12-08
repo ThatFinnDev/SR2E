@@ -204,6 +204,7 @@ namespace SR2E
                     if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) 
                         SR2Console.ExecuteByString(onMainMenuLoadCommand);
                     infEnergy = false;
+                    saveCountChange = false;
                     //SceneContext.Instance.PlayerState._model.maxHealth = InvincibleCommand.normalHealth;
                     infHealth = false;
                     if (skipEngagementPrompt)
