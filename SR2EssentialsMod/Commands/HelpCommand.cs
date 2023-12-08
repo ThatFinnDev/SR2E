@@ -45,7 +45,7 @@
 
                 foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
                 {
-                    currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
+                    if (!entry.Value.Hidden) currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
                 }
                 SR2Console.SendMessage(currText);
                 return true; 

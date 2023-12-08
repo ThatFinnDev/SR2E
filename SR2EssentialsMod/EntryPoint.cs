@@ -173,6 +173,7 @@ namespace SR2E
                     SaveCountChanged = false;
                     if (skipEngagementPrompt)
                         SR2Console.transform.getObjRec<GameObject>("EngagementSkipMessage").SetActive(false);
+                    Time.timeScale = 1f;
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
