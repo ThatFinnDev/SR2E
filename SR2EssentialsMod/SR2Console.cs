@@ -4,6 +4,7 @@ using Il2CppInterop.Runtime.Attributes;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppTMPro;
 using SR2E.Commands;
+using SR2E.Commands.Secret;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
@@ -496,7 +497,7 @@ namespace SR2E
             RegisterCommand(new FlingCommand());
             RegisterCommand(new PartyCommand());
             RegisterCommand(new GraphicsCommand());
-            
+            if (SR2EEntryPoint.chaosMode) RegisterCommands(new SR2CCommand[] { new FastModeCommand() });
             RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
