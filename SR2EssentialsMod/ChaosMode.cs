@@ -2,6 +2,9 @@
 
 internal class ChaosMode
 {
+    
+
+
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         switch (sceneName)
@@ -13,6 +16,7 @@ internal class ChaosMode
                 material.SetColor("_TopColor", color);
                 material.SetColor("_MiddleColor", color);
                 material.SetColor("_BottomColor", color);
+                tarr.prefab.GetComponent<AttackPlayer>().DamagePerAttack = 1000;
                 break;
             case "MainMenuEnvironment":
                 GameObject playerModel = GameObject.Find("BeatrixMainMenu");
