@@ -62,7 +62,7 @@ public static class SavePatches
     [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.SaveGame))]
     public static class AutoSaveDirectorSavePatch
     {
-        public static void Prefix(AutoSaveDirector __instance)
+        public static void Postfix(AutoSaveDirector __instance)
         {
             if (SR2EEntryPoint.debugLogging)
             {
