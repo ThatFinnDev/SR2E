@@ -35,7 +35,7 @@ internal class SR2ESavableData
 
     public void IncreaseSaveIndex()
     {
-        if (idx != 5)
+        if (idx != AutoSaveDirector.MAX_AUTOSAVES)
         {
             currPath = $"{Path.Combine(dir, gameName)}_{idx + 1}.sr2e";
             idx++;
