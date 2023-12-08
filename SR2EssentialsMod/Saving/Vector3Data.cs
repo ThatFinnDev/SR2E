@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SR2E.Saving
 {
+    [Serializable]
     public struct Vector3Data
     {
         public float X = 0;
