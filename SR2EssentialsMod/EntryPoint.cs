@@ -72,6 +72,7 @@ namespace SR2E
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
         internal static bool devMode { get { return prefs.GetEntry<bool>("experimentalStuff").Value; } }
+        internal static bool chaosMode { get { return prefs.GetEntry<bool>("chaosMode").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
 
         internal static void RefreshPrefs()
@@ -97,6 +98,8 @@ namespace SR2E
                 prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false);
             if (!prefs.HasEntry("noclipSprintMultiply"))
                 prefs.CreateEntry("noclipSprintMultiply", 2f, "Noclip sprint speed multiplier", false);
+            if (!prefs.HasEntry("chaosMode"))
+                prefs.CreateEntry("chaosMode", (bool)false, "\u00af\\_(ツ)_/\u00af", true);
 
         }
         public override void OnInitializeMelon()
@@ -129,6 +132,15 @@ namespace SR2E
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
+            try
+            {
+                if (chaosMode)
+                    ChaosMode.OnSceneWasLoaded(buildIndex, sceneName);
+            }
+            catch
+            {
+            }
+
             switch (sceneName)
             {
                 case "SystemCore":
