@@ -79,7 +79,18 @@ public class NoclipComponent : MonoBehaviour
 {
     public float baseSpeed = 15f;
     public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
-    public float speed = 15f;
+    public float speed
+    {
+        get
+        {
+            if (isSprint)
+            {
+                return baseSpeed * SR2EEntryPoint.noclipSpeedMultiplier;
+            }
+            else return baseSpeed;
+        }
+    }
+    bool isSprint => Keyboard.current.shiftKey.isPressed;
     public static Transform player;
     public static SRCharacterController playerController;
     public static KinematicCharacterMotor playerMotor;
@@ -111,15 +122,6 @@ public class NoclipComponent : MonoBehaviour
         if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
         {
             player.position += -transform.right * (speed * Time.deltaTime);
-        }
-
-        if (Keyboard.current.shiftKey.isPressed)
-        {
-            speed = baseSpeed * 2;
-        }
-        else
-        {
-            speed = baseSpeed;
         }
 
         if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)

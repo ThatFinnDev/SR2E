@@ -72,7 +72,8 @@ namespace SR2E
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
         internal static bool devMode { get { return prefs.GetEntry<bool>("experimentalStuff").Value; } }
-        
+        internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
+
         internal static void RefreshPrefs()
         {
             prefs.DeleteEntry("noclipFlySpeed");
@@ -94,6 +95,8 @@ namespace SR2E
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false);
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
                 prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false);
+            if (!prefs.HasEntry("noclipSprintMultiply"))
+                prefs.CreateEntry("noclipSprintMultiply", 2f, "Noclip sprint speed multiplier", false);
 
         }
         public override void OnInitializeMelon()
