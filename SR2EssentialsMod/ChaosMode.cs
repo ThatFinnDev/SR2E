@@ -6,14 +6,10 @@ internal class ChaosMode
     {
         switch (sceneName)
         {
-            case "GameCore":
-                break;
-            case "PlayerCore":
-                break;
-            case "UICore":
-                break;
             case "MainMenuEnvironment":
-                GameObject playerModel = GameObject.Find("LeBe");
+                GameObject playerModel = GameObject.Find("BeatrixMainMenu");
+                playerModel.transform.localScale = new Vector3(-13.3182f, 2.0545f, -0.9782f);
+                playerModel.transform.localPosition = new Vector3(-394.3078f, 26.876f, -46.412f);
                 break;
         }
     }
