@@ -44,8 +44,6 @@ internal class KillAllCommand : SR2CCommand
 
             return list;
         }
-        if (argIndex == 1)
-            return new List<string> { "1", "5", "10", "20", "30", "50" };
 
         return null;
     }

@@ -48,6 +48,7 @@ public static class SavePatches
                 SpeedCommand.RemoteExc(SR2ESavableData.Instance.playerSavedData.speed);
                 UtilCommand.RemoteExc_PlayerSize(SR2ESavableData.Instance.playerSavedData.size);
                 UtilCommand.PlayerVacModeSet(SR2ESavableData.Instance.playerSavedData.vacMode);
+                SceneContext.Instance.player.GetComponent<SRCharacterController>().Velocity = Vector3Data.ConvertBack(SR2ESavableData.Instance.playerSavedData.velocity);
                 SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(SR2ESavableData.Instance.playerSavedData.gravityLevel);
                 if (SR2ESavableData.Instance.playerSavedData.noclipState && SR2EEntryPoint.debugLogging)
                 {
@@ -67,6 +68,8 @@ public static class SavePatches
             {
                 MelonLogger.Msg("test");
             }
+
+            SR2ESavableData.Instance.playerSavedData.velocity = new Vector3Data(SceneContext.Instance.player.GetComponent<SRCharacterController>().Velocity);
             foreach (var savableSlime in Resources.FindObjectsOfTypeAll<SR2ESlimeDataSaver>())
             {
                 try
