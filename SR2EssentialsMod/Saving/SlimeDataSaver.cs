@@ -15,7 +15,7 @@ public class SR2ESlimeDataSaver : MonoBehaviour
             scaleY = transform.localScale.y,
             scaleZ = transform.localScale.z,
             zeroGrav = GetComponent<Vacuumable>().ignoresGravity,
-            velocity = new Vector3Data(GetComponent<SRCharacterController>().Velocity)
+            velocity = new Vector3Data(GetComponent<Rigidbody>().velocity)
         }; 
         if (SR2ESavableData.Instance.slimeSavedData.ContainsKey(model.GetActorId()))
         {
