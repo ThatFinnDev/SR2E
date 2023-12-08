@@ -143,7 +143,14 @@ namespace SR2E
                             {
                                 Object.Instantiate(obj);
                                 if (skipEngagementPrompt)
+                                {
+
+                                    var logoImage = SR2EUtils.Get<AssetBundle>("56edcc1f1a2084c913ac2ec89d09b725.bundle").LoadAsset("Assets/UI/Textures/MainMenu/logoSR2.png").Cast<Texture2D>();
+                                    var logoSprite = Sprite.Create(logoImage, new Rect(0f, 0f, logoImage.width, logoImage.height), new Vector2(0.5f, 0.5f), 1f);
+
                                     SR2EUtils.Get<GameObject>("EngagementSkipMessage").SetActive(true);
+                                    SR2EUtils.Get<GameObject>("EngagementSkipMessage").getObjRec<Image>("logo").sprite = logoSprite;
+                                }
                             }
                     break;
                 case "MainMenuUI":
