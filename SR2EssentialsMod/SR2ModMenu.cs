@@ -4,7 +4,6 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Action = System.Action;
@@ -52,8 +51,6 @@ namespace SR2E
         internal static void Open()
         {
             if (SR2Console.isOpen)
-                return;
-            if (Object.FindObjectsOfType<MapUI>().Length != 0)
                 return;
             modMenuBlock.SetActive(true);
             gameObject.SetActive(true);
@@ -124,10 +121,10 @@ namespace SR2E
         {
             modMenuBlock = parent.getObjRec<GameObject>("modMenuBlock");
             entryTemplate = transform.getObjRec<GameObject>("ModConfigurationEntryTemplate");
-            headerTemplate = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigurationHeaderTemplate");
-            warningText = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigRestartWarning");
-            Transform content = SR2EUtils.getObjRec<Transform>(transform, "ModConfigurationContent");
-            modInfoText = SR2EUtils.getObjRec<TextMeshProUGUI>(transform, "ModInfoText");
+            headerTemplate = transform.getObjRec<GameObject>("ModConfigurationHeaderTemplate");
+            warningText = transform.getObjRec<GameObject>("ModConfigRestartWarning");
+            Transform content = transform.getObjRec<Transform>("ModConfigurationContent");
+            modInfoText = transform.getObjRec<TextMeshProUGUI>("ModInfoText");
             gameObject.SetActive(false);
             foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
                 if (!String.IsNullOrEmpty(stringKey))
@@ -185,6 +182,7 @@ namespace SR2E
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                            inputField.restoreOriginalTextOnEscape = false;
                             inputField.text = entry.GetEditedValueAsString();
                             inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter a non decimal number";
@@ -209,6 +207,7 @@ namespace SR2E
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                            inputField.restoreOriginalTextOnEscape = false;
                             inputField.text = entry.GetEditedValueAsString();
                             inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter a decimal number";
@@ -234,6 +233,7 @@ namespace SR2E
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                            inputField.restoreOriginalTextOnEscape = false;
                             inputField.text = entry.GetEditedValueAsString();
                             inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter a decimal number";
@@ -259,6 +259,7 @@ namespace SR2E
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                            inputField.restoreOriginalTextOnEscape = false;
                             inputField.text = entry.GetEditedValueAsString();
                             inputField.contentType = TMP_InputField.ContentType.Standard;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter text";
