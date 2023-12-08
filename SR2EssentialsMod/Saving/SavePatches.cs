@@ -92,7 +92,7 @@ public static class SavePatches
 
                 }
             }
-            if (SR2ESavableData.Instance.idx != 5)
+            if (SR2ESavableData.Instance.idx != AutoSaveDirector.MAX_AUTOSAVES)
             {
                 SR2ESavableData.currPath = $"{Path.Combine(SR2ESavableData.Instance.dir, SR2ESavableData.Instance.gameName)}_{SR2ESavableData.Instance.idx + 1}.sr2e";
                 SR2ESavableData.Instance.idx++;
