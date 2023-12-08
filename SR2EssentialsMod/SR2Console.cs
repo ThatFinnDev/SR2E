@@ -390,7 +390,7 @@ namespace SR2E
             if (text.Contains(" "))
             {
                 string cmd = text.Substring(0, text.IndexOf(' '));
-                if (commands.ContainsKey(cmd))
+                if (commands.ContainsKey(cmd) && !commands[cmd].Hidden)
                 {
                     var argString = text;
                     List<string> split = argString.Split(' ').ToList();

@@ -23,6 +23,9 @@ public abstract class SR2CCommand
     public virtual string ExtendedDescription { get; }
 
 
+    public virtual bool Hidden { get; }
+
+
     /// <summary>
     /// Executes the command
     /// </summary>
