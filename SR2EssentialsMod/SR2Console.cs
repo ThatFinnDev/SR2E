@@ -390,7 +390,7 @@ namespace SR2E
             if (text.Contains(" "))
             {
                 string cmd = text.Substring(0, text.IndexOf(' '));
-                if (commands.ContainsKey(cmd) && !commands[cmd].Hidden)
+                if (commands.ContainsKey(cmd))
                 {
                     var argString = text;
                     List<string> split = argString.Split(' ').ToList();
@@ -437,7 +437,7 @@ namespace SR2E
             }
             else
                 foreach (KeyValuePair<string, SR2CCommand> valuePair in commands)
-                    if (valuePair.Key.StartsWith(text))
+                    if (valuePair.Key.StartsWith(text) && !valuePair.Value.Hidden)
                     {
                         GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
                         instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = valuePair.Key;
