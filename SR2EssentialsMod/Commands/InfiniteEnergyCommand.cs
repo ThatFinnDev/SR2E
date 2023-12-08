@@ -14,12 +14,7 @@ namespace SR2E.Commands
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
             if (argIndex==0)
-            {
-                List<string> list = new List<string>();
-                list.Add("true");
-                list.Add("false");
-                return list;
-            }
+                return new List<string> { "true", "false" };
             return null;
         }
         public override bool Execute(string[] args)
@@ -34,9 +29,9 @@ namespace SR2E.Commands
                 
             if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
-            if (SR2EEntryPoint.infEnergy)
+            if (infEnergy)
             {
-                SR2EEntryPoint.infEnergy = false;
+                infEnergy = false;
                 if (energyMeter == null)
                     energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
                 energyMeter.gameObject.active = true;
@@ -53,7 +48,7 @@ namespace SR2E.Commands
             }
             else
             {
-                SR2EEntryPoint.infEnergy = true;
+                infEnergy = true;
                 if (energyMeter == null)
                     energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
                 energyMeter.gameObject.active = false;
@@ -78,11 +73,36 @@ namespace SR2E.Commands
            
             return true;
         }
+
+        public override void Update()
+        {
+            if (infEnergy)
+                if (SceneContext.Instance != null)
+                    if (SceneContext.Instance.PlayerState != null)
+                        SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+        }
+
+        public override void OnMainMenuUILoad()
+        {
+            infEnergy = false;
+        }
+
+        public override void OnPlayerCoreLoad()
+        {
+            jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
+        }
+
+        public override void OnUICoreLoad()
+        {
+            energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
+        }
+
+        static bool infEnergy = false;
         static float normalEnergy = 100;
         static float normalHoverHeight = 0;
         static float normalMaxUpwardThrustForce = 0;
         static float normalUpwardThrustForceIncrement = 0;
-        internal static EnergyMeter energyMeter;
-        internal static JetpackAbilityData jetpackAbilityData;
+        static EnergyMeter energyMeter;
+        static JetpackAbilityData jetpackAbilityData;
     }
 }
