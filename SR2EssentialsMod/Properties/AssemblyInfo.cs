@@ -11,6 +11,7 @@
 [assembly: AssemblyFileVersion(SR2E.BuildInfo.Version)]
 [assembly: MelonInfo(typeof(SR2E.SR2EEntryPoint), SR2E.BuildInfo.Name, SR2E.BuildInfo.Version, SR2E.BuildInfo.Author, SR2E.BuildInfo.DownloadLink)]
 [assembly: MelonColor(255, 35, 255, 35)]
+[assembly: MelonAdditionalDependencies("SR2E Library")]
 
 // Create and Setup a MelonGame Attribute to mark a Melon as Universal or Compatible with specific Games.
 // If no MelonGame Attribute is found or any of the Values for any MelonGame Attribute on the Melon is null or empty it will be assumed the Melon is Universal.
