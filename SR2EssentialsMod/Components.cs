@@ -104,6 +104,8 @@ public class NoclipComponent : MonoBehaviour
             playerMotor.enabled = true;
             playerSettings.AutoSimulation = true;
             playerController.Position = player.position;
+            playerMotor.Capsule.enabled = true;
+            playerMotor.SetCapsuleCollisionsActivation(true);
         }
         catch
         {
@@ -115,6 +117,8 @@ public class NoclipComponent : MonoBehaviour
     {
         playerMotor.enabled = false;
         playerSettings.AutoSimulation = false;
+        playerMotor.SetCapsuleCollisionsActivation(false);
+        playerMotor.Capsule.enabled = false;
     }
 
     public void Update()
