@@ -113,7 +113,7 @@ namespace SR2E
                     MelonLogger.Msg("SR2ELibrary registered: " + mod.MelonAssembly.Assembly.FullName);
                 }
             }
-            if (SR2EMod.Get("SR2ELibraryROOT")) { rootOBJ = SR2EMod.Get("SR2ELibraryROOT"); }
+            if (Get<GameObject>("SR2ELibraryROOT")) { rootOBJ = Get<GameObject>("SR2ELibraryROOT"); }
             else
             {
                 rootOBJ = new GameObject();
@@ -243,15 +243,15 @@ namespace SR2E
                             if (baseMelonBase is SR2EMod)
                                 (baseMelonBase as SR2EMod).GameCoreLoad();
                         
-                        SR2EMod.slimeDefinitions = SR2EMod.Get<SlimeDefinitions>("MainSlimeDefinitions");
+                        slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
 
-                        slimes = SR2EMod.Get<IdentifiableTypeGroup>("SlimesGroup");
-                        baseSlimes = SR2EMod.Get<IdentifiableTypeGroup>("BaseSlimeGroup");
-                        largos = SR2EMod.Get<IdentifiableTypeGroup>("LargoGroup");
-                        meat = SR2EMod.Get<IdentifiableTypeGroup>("MeatGroup");
-                        food = SR2EMod.Get<IdentifiableTypeGroup>("FoodGroup");
-                        veggies = SR2EMod.Get<IdentifiableTypeGroup>("VeggieGroup");
-                        fruit = SR2EMod.Get<IdentifiableTypeGroup>("FruitGroup");
+                        slimes = Get<IdentifiableTypeGroup>("SlimesGroup");
+                        baseSlimes = Get<IdentifiableTypeGroup>("BaseSlimeGroup");
+                        largos = Get<IdentifiableTypeGroup>("LargoGroup");
+                        meat = Get<IdentifiableTypeGroup>("MeatGroup");
+                        food = Get<IdentifiableTypeGroup>("FoodGroup");
+                        veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
+                        fruit = Get<IdentifiableTypeGroup>("FruitGroup");
                     }
                 }
                 else
@@ -259,7 +259,7 @@ namespace SR2E
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
                         if (baseMelonBase is SR2EMod)
                             (baseMelonBase as SR2EMod).PlayerSceneLoad();
-                    SR2EMod.player = SR2EMod.Get("PlayerControllerKCC");
+                    player = Get<GameObject>("PlayerControllerKCC");
                 }
             }
             else
