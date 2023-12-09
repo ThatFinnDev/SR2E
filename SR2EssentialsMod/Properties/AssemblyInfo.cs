@@ -7,7 +7,7 @@
 [assembly: AssemblyCopyright($"Created by {SR2E.BuildInfo.Author}")]
 [assembly: AssemblyTrademark(SR2E.BuildInfo.Company)]
 // [assembly: AssemblyVersion(SR2E.BuildInfo.Version)]
-[assembly: MelonPriority(10000)]
+[assembly: MelonPriority(-10000)]
 [assembly: AssemblyFileVersion(SR2E.BuildInfo.Version)]
 [assembly: MelonInfo(typeof(SR2E.Library.SR2EMod), SR2E.BuildInfo.Name, SR2E.BuildInfo.Version, SR2E.BuildInfo.Author, SR2E.BuildInfo.DownloadLink)]
 [assembly: MelonColor(255, 35, 255, 35)]
