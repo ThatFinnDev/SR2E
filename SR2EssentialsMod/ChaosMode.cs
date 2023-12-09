@@ -75,6 +75,8 @@ internal class ChaosMode
         tarrMaterial.SetColor("_BottomColor", hotPink3);
         tarrDefinition.prefab.GetComponent<AttackPlayer>().DamagePerAttack = 1000;
         var localedir = SystemContext.Instance.LocalizationDirector;
+        tarrDefinition.AddProduceIdent(SR2EUtils.Get<IdentifiableType>("SpringPad"));
+        tarrDefinition.RefreshEatmaps();
         if (localedir.GetCurrentLocaleCode() == "en")
         {
             var tarrStr = localedir.Tables["Actor"].GetEntry("l.tarr_slime");
