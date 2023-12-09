@@ -11,21 +11,20 @@ namespace SR2E.Library
             }
         }
 
-        
-        
-        public virtual void PlayerSceneLoad() { }
-        public virtual void SystemSceneLoad() { }
-        public virtual void GameCoreLoad() { }
-        public virtual void ZoneCoreLoad() { }
-        public virtual void SavedGameLoad() { }
+        public static GameObject player { get { return LibraryUtils.player; } set { LibraryUtils.player = value; } }
+        public static SystemContext systemContext { get { return LibraryUtils.systemContext; } }
+        public static GameContext gameContext { get { return LibraryUtils.gameContext; } }
+        public static SceneContext sceneContext { get { return LibraryUtils.sceneContext; } }
+        public static SlimeDefinitions slimeDefinitions { get { return LibraryUtils.slimeDefinitions; } set { LibraryUtils.slimeDefinitions = value; } }
+
+        public virtual void OnPlayerSceneLoaded() { }
+        public virtual void OnSystemSceneLoaded() { }
+        public virtual void OnGameCoreLoaded() { }
+        public virtual void OnZoneCoreLoaded() { }
+        public virtual void OnSavedGameLoaded() { }
         public virtual void SaveDirectorLoaded() { }
         public virtual void SaveDirectorLoading(AutoSaveDirector saveDirector) { }
         
-
-        
-        
-        
-        public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes) => LibraryUtils.CreateEatmap(driver,mindrive,produce,eat,becomes);
 
         
         /*
@@ -49,16 +48,6 @@ namespace SR2E.Library
             return "m." + prefix + "." + suffix;
         }
 
-        public static void MakeSellable(IdentifiableType ident, float marketValue, float marketSaturation)
-        {
-            if (marketData.ContainsKey(ident))
-            {
-                MelonLogger.Error("Failed to make object sellable: The object is already sellable");
-                return;
-            }
-            marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident });
-            marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
-        }
         */
         
 
