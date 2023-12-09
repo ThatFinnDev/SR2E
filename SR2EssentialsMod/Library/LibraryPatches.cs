@@ -45,7 +45,7 @@ namespace SR2E.Library
         {
             public static void Postfix()
             {
-                SR2EMod.slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
+                slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
                 foreach (SR2EMod lib in mods)
                 {
                     lib.SaveDirectorLoaded();
