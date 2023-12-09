@@ -82,6 +82,32 @@ internal class ChaosMode
     }
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
+        if (sceneName.StartsWith("environment"))
+        {
+            try
+            {
+                GameObject net = Resources.FindObjectsOfTypeAll<GameObject>()
+                    .FirstOrDefault((GameObject x) => x.name == "Fallthrough Net");
+                if (net != null)
+                {
+                    Transform oceanBlade = net.getObjRec<Transform>("oceanBlade");
+                    if (oceanBlade != null)
+                    {
+                        for (int i = 0; i < oceanBlade.childCount; i++)
+                        {
+                            MeshRenderer meshRenderer = oceanBlade.GetChild(i).GetComponent<MeshRenderer>();
+                            if (meshRenderer != null)
+                                meshRenderer.material = null;
+
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
         switch (sceneName)
         {
             case "GameCore":
