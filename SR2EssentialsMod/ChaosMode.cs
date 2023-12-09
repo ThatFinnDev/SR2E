@@ -60,7 +60,7 @@ internal class ChaosMode
 
                 PinkTarr();
 
-                SR2EUtils.Get<SlimeDefinition>("Pink").switchSlimeAppearances(SR2EUtils.Get<SlimeDefinition>("Gold"));
+                GetSlime("Pink").switchSlimeAppearances(GetSlime("Gold"));
 
                 List<string> slimes = new List<string> { 
                     "Pink|40|7", 
@@ -87,6 +87,8 @@ internal class ChaosMode
                     "Tarr|15|27",
                 };
 
+                GetSlime("PinkBoom").MakeSellable(6,6,false);
+                GetSlime("PinkRock").MakeSellable(6,6,true);
                 for (int i = 0; i < slimes.Count; i++)
                 {
                     try
@@ -95,10 +97,10 @@ internal class ChaosMode
                         string name = split[0];
                         float fullSaturation = float.Parse(split[1]);
                         float value = float.Parse(split[2]);
-                        SlimeDefinition definition = SR2EUtils.Get<SlimeDefinition>(name);
+                        SlimeDefinition definition = GetSlime(name);
                         if(definition!=null)
                             definition.MakeSellable(value,fullSaturation);
-                        IdentifiableType plort = SR2EUtils.Get<IdentifiableType>(name+"Plort");
+                        IdentifiableType plort = GetPlort(name+"Plort");
                         if (plort != null)
                             plort.MakeNOTSellable();
                     }

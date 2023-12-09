@@ -157,15 +157,6 @@ namespace SR2E
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-            SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
-            try
-            {
-                if (chaosMode)
-                    ChaosMode.OnSceneWasLoaded(buildIndex, sceneName);
-            }
-            catch
-            {
-            }
 
             switch (sceneName)
             {
@@ -230,7 +221,7 @@ namespace SR2E
                     food = Get<IdentifiableTypeGroup>("FoodGroup");
                     veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
                     fruits = Get<IdentifiableTypeGroup>("FruitGroup");
-                    plorts = Get<IdentifiableTypeGroup>("PlortsGroup");
+                    plorts = Get<IdentifiableTypeGroup>("PlortGroup");
                     break;
                 case "UICore":
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
@@ -254,28 +245,14 @@ namespace SR2E
                     break;
                 
             }
-
             
-            
-            if (!(sceneName == "SystemCore"))
+            SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
+            try
             {
-                if (!(sceneName == "PlayerCore"))
-                {
-                    if (!(sceneName == "GameCore"))
-                    {
-                        if (sceneName == "zoneCore")
-                        {
-                        }
-                    }
-                    else
-                    {
-                    }
-                }
-                else
-                {
-                }
+                if (chaosMode)
+                    ChaosMode.OnSceneWasLoaded(buildIndex, sceneName);
             }
-            else
+            catch
             {
             }
         }
