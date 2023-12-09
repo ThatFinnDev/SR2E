@@ -31,6 +31,15 @@ public class KillCommand : SR2CCommand
                 DeathHandler.Kill(gameobject, damage);
                 didAThing = true;
             }
+            else if (gameobject.GetComponent<GordoEat>())
+            {
+                GordoEat gordoEat = hit.collider.gameObject.GetComponent<GordoEat>();
+                if (gordoEat.isActiveAndEnabled && gordoEat.CanEat())
+                    try
+                    { gordoEat.ImmediateReachedTarget(); didAThing = true; }
+                    catch{}
+                
+            }
             else if (gameobject.GetComponentInParent<Gadget>())
             {
                 GameObject gadgetObj = gameobject.GetComponentInParent<Gadget>().gameObject;
