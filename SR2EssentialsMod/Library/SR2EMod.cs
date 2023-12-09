@@ -10,8 +10,6 @@ namespace SR2E.Library
                 return Info.Version;
             }
         }
-
-        
         
         public virtual void PlayerSceneLoad() { }
         public virtual void SystemSceneLoad() { }
@@ -20,13 +18,6 @@ namespace SR2E.Library
         public virtual void SavedGameLoad() { }
         public virtual void SaveDirectorLoaded() { }
         public virtual void SaveDirectorLoading(AutoSaveDirector saveDirector) { }
-        
-
-        
-        
-        
-        public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes) => LibraryUtils.CreateEatmap(driver,mindrive,produce,eat,becomes);
-
         
         /*
         internal static void AddPageToPediaEntry(PediaEntry pedia, string pageText, PediaPage template)

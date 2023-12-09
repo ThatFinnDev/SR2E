@@ -92,6 +92,7 @@ namespace SR2E.Library
                 SRSingleton<GameContext>.Instance.SlimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(slimedef, slimedef);
             }
             INTERNAL_SetupSaveForIdent(RefID, slimedef);
+            slimedef.properties = Get<SlimeDefinition>("Pink").properties;
             return slimedef;
         }
 
@@ -169,7 +170,7 @@ namespace SR2E.Library
             }
             else { return null; }
         }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
+        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
             {
                 var eatmap = new SlimeDiet.EatMapEntry
                 {
@@ -181,7 +182,7 @@ namespace SR2E.Library
                 };
                 return eatmap;
             }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
+        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
             {
                 var eatmap = new SlimeDiet.EatMapEntry
                 {
