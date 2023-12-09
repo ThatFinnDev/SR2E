@@ -15,7 +15,7 @@ namespace SR2E.Library
             public static void Prefix(MarketUI __instance)
             {
                 __instance.plorts = (from x in __instance.plorts
-                                     where !SR2EMod.marketPlortEntries.Exists((MarketUI.PlortEntry y) => y == x)
+                                     where !marketPlortEntries.Exists((MarketUI.PlortEntry y) => y == x)
                                      select x).ToArray();
                 __instance.plorts.Take(22).ToArray();
             }
@@ -27,7 +27,7 @@ namespace SR2E.Library
             public static void Prefix(EconomyDirector __instance)
             {
                 List<EconomyDirector.ValueMap> valueMaps = new List<EconomyDirector.ValueMap>();
-                foreach (KeyValuePair<IdentifiableType, ModdedMarketData> marketData in SR2EMod.marketData)
+                foreach (KeyValuePair<IdentifiableType, ModdedMarketData> marketData in marketData)
                 {
                     EconomyDirector.ValueMap valueMap = new EconomyDirector.ValueMap
                     {
@@ -45,7 +45,7 @@ namespace SR2E.Library
         {
             public static void Postfix()
             {
-                SR2EMod.slimeDefinitions = SR2EMod.Get<SlimeDefinitions>("MainSlimeDefinitions");
+                SR2EMod.slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
                 foreach (SR2EMod lib in mods)
                 {
                     lib.SaveDirectorLoaded();

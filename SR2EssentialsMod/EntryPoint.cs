@@ -113,13 +113,13 @@ namespace SR2E
                     MelonLogger.Msg("SR2ELibrary registered: " + mod.MelonAssembly.Assembly.FullName);
                 }
             }
-            if (SR2EMod.Get("SR2ELibraryROOT")) { SR2EMod.rootOBJ = SR2EMod.Get("SR2ELibraryROOT"); }
+            if (SR2EMod.Get("SR2ELibraryROOT")) { rootOBJ = SR2EMod.Get("SR2ELibraryROOT"); }
             else
             {
-                SR2EMod.rootOBJ = new GameObject();
-                SR2EMod.rootOBJ.SetActive(false);
-                SR2EMod.rootOBJ.name = "SR2ELibraryROOT";
-                Object.DontDestroyOnLoad(SR2EMod.rootOBJ);
+                rootOBJ = new GameObject();
+                rootOBJ.SetActive(false);
+                rootOBJ.name = "SR2ELibraryROOT";
+                Object.DontDestroyOnLoad(rootOBJ);
             }
         }
         public override void OnInitializeMelon()
@@ -245,13 +245,13 @@ namespace SR2E
                         
                         SR2EMod.slimeDefinitions = SR2EMod.Get<SlimeDefinitions>("MainSlimeDefinitions");
 
-                        SR2EMod.slimes = SR2EMod.Get<IdentifiableTypeGroup>("SlimesGroup");
-                        SR2EMod.baseSlimes = SR2EMod.Get<IdentifiableTypeGroup>("BaseSlimeGroup");
-                        SR2EMod.largos = SR2EMod.Get<IdentifiableTypeGroup>("LargoGroup");
-                        SR2EMod.meat = SR2EMod.Get<IdentifiableTypeGroup>("MeatGroup");
-                        SR2EMod.food = SR2EMod.Get<IdentifiableTypeGroup>("FoodGroup");
-                        SR2EMod.veggies = SR2EMod.Get<IdentifiableTypeGroup>("VeggieGroup");
-                        SR2EMod.fruit = SR2EMod.Get<IdentifiableTypeGroup>("FruitGroup");
+                        slimes = SR2EMod.Get<IdentifiableTypeGroup>("SlimesGroup");
+                        baseSlimes = SR2EMod.Get<IdentifiableTypeGroup>("BaseSlimeGroup");
+                        largos = SR2EMod.Get<IdentifiableTypeGroup>("LargoGroup");
+                        meat = SR2EMod.Get<IdentifiableTypeGroup>("MeatGroup");
+                        food = SR2EMod.Get<IdentifiableTypeGroup>("FoodGroup");
+                        veggies = SR2EMod.Get<IdentifiableTypeGroup>("VeggieGroup");
+                        fruit = SR2EMod.Get<IdentifiableTypeGroup>("FruitGroup");
                     }
                 }
                 else
