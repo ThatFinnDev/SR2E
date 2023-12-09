@@ -11,6 +11,8 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 
 
+[assembly: MelonInfo(typeof(SR2EMod), "SR2E Library", "0.1.0", "ThatFinn & PinkTarr")]
+[assembly: MelonColor(255, 65, 255, 35)]
 
 namespace SR2E.Library
 {
