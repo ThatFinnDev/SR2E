@@ -65,31 +65,16 @@ namespace SR2E.Library
 
         
 
-        public static GameObject? Get(string name)
-        {
-            return Get<GameObject>(name);
-        }
+        public static GameObject? Get(string name) => Get<GameObject>(name);
 
         
-        public virtual void PlayerSceneLoad()
-        {
-        }
-        public virtual void SystemSceneLoad()
-        {
-        }
-        public virtual void GameCoreLoad()
-        {
-        }
-        public virtual void ZoneCoreLoad()
-        {
-        }
-        public virtual void SavedGameLoad()
-        {
-        }
-        public virtual void SaveDirectorLoaded()
-        {
-        }
-
+        public virtual void PlayerSceneLoad() { }
+        public virtual void SystemSceneLoad() { }
+        public virtual void GameCoreLoad() { }
+        public virtual void ZoneCoreLoad() { }
+        public virtual void SavedGameLoad() { }
+        public virtual void SaveDirectorLoaded() { }
+        public virtual void SaveDirectorLoading(AutoSaveDirector saveDirector) { }
 
         public static SlimeDefinition CreateSlimeDef(string Name, Color32 VacColor, Sprite Icon, SlimeAppearance baseAppearance, string appearanceName, string RefID)
         {
