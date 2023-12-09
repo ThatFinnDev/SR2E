@@ -8,7 +8,7 @@ namespace SR2E.Library
     public static class LibraryPatches
     {
         internal static List<SR2EMod> mods = new List<SR2EMod>();
-
+        
         [HarmonyPatch(typeof(MarketUI), "Start")]
         public static class MarketPatch
         {
@@ -17,7 +17,8 @@ namespace SR2E.Library
                 __instance.plorts = (from x in __instance.plorts
                                      where !marketPlortEntries.Exists((MarketUI.PlortEntry y) => y == x)
                                      select x).ToArray();
-                __instance.plorts.Take(22).ToArray();
+                __instance.plorts = __instance.plorts.ToArray<MarketUI.PlortEntry>().AddRangeToArray(marketPlortEntries.ToArray());
+                __instance.plorts = __instance.plorts.Take(34).ToArray();
             }
         }
 
@@ -67,7 +68,7 @@ namespace SR2E.Library
             {
                 foreach (SR2EMod lib in mods)
                 {
-                    lib.SavedGameLoad();
+                    lib.OnSavedGameLoaded();
                 }
             }
         }
