@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Library.Storage
 {
-#pragma warning disable
+
 
     public class TripleDictionary<TKey, TValue1, TValue2> : Dictionary<TKey, (TValue1, TValue2)>
     {

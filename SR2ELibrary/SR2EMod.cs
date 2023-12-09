@@ -2,18 +2,18 @@
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
+using SR2E;
 using SR2E.Library.Storage;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 
+
+
 namespace SR2E.Library
 {
-#pragma warning disable
-
-
-
     public class SR2EMod : MelonMod
     {
         public Semver.SemVersion version
@@ -63,7 +63,7 @@ namespace SR2E.Library
         internal static List<MarketUI.PlortEntry> marketPlortEntries = new List<MarketUI.PlortEntry>(0);
 
 
-        internal static GameObject rootOBJ;
+        public static GameObject rootOBJ;
 
         public static GameV04? Save;
 

@@ -73,7 +73,7 @@
                             break;
                         }
                     }
-                    catch (System.Exception ignored)
+                    catch 
                     {}
             }
             if (foundType == null)
@@ -81,7 +81,7 @@
             
             try
             { bluePrintName = foundType.LocalizedName.GetLocalizedString().Replace(" ", ""); }
-            catch (System.Exception ignored)
+            catch 
             { bluePrintName = foundType.name; }
 
 

@@ -33,6 +33,9 @@
     <None Remove="packages\**" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SR2ELibrary\SR2ELibrary.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>Libs\0Harmony.dll</HintPath>
     </Reference>

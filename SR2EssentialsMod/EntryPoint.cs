@@ -26,7 +26,7 @@ namespace SR2E
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
-    public class SR2EEntryPoint : MelonMod
+    public class SR2EEntryPoint : SR2EMod
     {
         public static SR2EEntryPoint instance;
         public static TMP_FontAsset SR2Font;
