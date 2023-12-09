@@ -15,16 +15,26 @@ namespace SR2E.Library
 {
     public static class LibraryUtils
     {
+        internal static Dictionary<IdentifiableType, ModdedMarketData> marketData = new Dictionary<IdentifiableType, ModdedMarketData>(0);
+        internal static List<MarketUI.PlortEntry> marketPlortEntries = new List<MarketUI.PlortEntry>(0);
+        internal static GameObject rootOBJ;
+        internal static Dictionary<SlimeDefinition, LargoSettings>? LargoData = new Dictionary<SlimeDefinition, LargoSettings>(0);
+        
         public static IdentifiableTypeGroup? slimes;
         public static IdentifiableTypeGroup? largos;
         public static IdentifiableTypeGroup? baseSlimes;
         public static IdentifiableTypeGroup? food;
         public static IdentifiableTypeGroup? meat;
         public static IdentifiableTypeGroup? veggies;
-        public static IdentifiableTypeGroup? fruit;
+        public static IdentifiableTypeGroup? fruits;
         public static GameObject? player;
-        
 
+        public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE }
+        public static SystemContext systemContext { get { return SystemContext.Instance; } }
+        public static GameContext gameContext { get { return GameContext.Instance; } }
+        public static SceneContext sceneContext { get { return SceneContext.Instance; } }
+        
+        
         public static SlimeDefinition CreateSlimeDef(string Name, Color32 VacColor, Sprite Icon, SlimeAppearance baseAppearance, string appearanceName, string RefID)
         {
             SlimeDefinition slimedef = ScriptableObject.CreateInstance<SlimeDefinition>();
@@ -96,7 +106,7 @@ namespace SR2E.Library
         }
 
 
-        public static SlimeDiet CreateMergedDiet(SlimeDiet firstDiet, SlimeDiet secondDiet)
+        public static SlimeDiet CreateMergedDiet(this SlimeDiet firstDiet, SlimeDiet secondDiet)
         {
             var mergedDiet = INTERNAL_CreateNewDiet();
             
@@ -114,11 +124,19 @@ namespace SR2E.Library
 
             return mergedDiet;
         }
+        public static void switchSlimeAppearances(this SlimeDefinition slimeOneDef, SlimeDefinition slimeTwoDef)
+        {
+            var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures; slimeOneDef.AppearancesDefault[0]._structures = slimeTwoDef.AppearancesDefault[0]._structures; slimeTwoDef.AppearancesDefault[0]._structures = appearanceOne;
 
-        public enum LargoSettings
-        { KeepFirstBody, KeepSecondBody, KeepFirstFace, KeepSecondFace, KeepFirstColor, KeepSecondColor, MergeColors }
-        public static SlimeDefinitions? slimeDefinitions
-        { get { return gameContext.SlimeDefinitions; } set { gameContext.SlimeDefinitions = value; } }
+            var structureIcon = slimeOneDef.AppearancesDefault[0]._icon; slimeOneDef.AppearancesDefault[0]._icon = slimeTwoDef.AppearancesDefault[0]._icon; slimeTwoDef.AppearancesDefault[0]._icon = structureIcon;
+            var icon = slimeOneDef.icon; slimeOneDef.icon = slimeTwoDef.icon; slimeTwoDef.icon = icon;
+
+            var debugIcon = slimeOneDef.debugIcon; slimeOneDef.debugIcon = slimeTwoDef.debugIcon; slimeTwoDef.debugIcon = debugIcon;
+
+        }
+
+        public enum LargoSettings { KeepFirstBody, KeepSecondBody, KeepFirstFace, KeepSecondFace, KeepFirstColor, KeepSecondColor, MergeColors }
+        public static SlimeDefinitions? slimeDefinitions { get { return gameContext.SlimeDefinitions; } set { gameContext.SlimeDefinitions = value; } }
 
 
 
@@ -150,15 +168,6 @@ namespace SR2E.Library
             return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
 
-        public static Sprite CreateSprite(Texture2D texture) => Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1f);
-        public static SystemContext systemContext { get { return SystemContext.Instance; } }
-        public static GameContext gameContext { get { return GameContext.Instance; } }
-        public static SceneContext sceneContext { get { return SceneContext.Instance; } }
-        public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE }
-        internal static Dictionary<IdentifiableType, ModdedMarketData> marketData = new Dictionary<IdentifiableType, ModdedMarketData>(0);
-        internal static List<MarketUI.PlortEntry> marketPlortEntries = new List<MarketUI.PlortEntry>(0);
-        internal static GameObject rootOBJ;
-        internal static Dictionary<SlimeDefinition, LargoSettings>? LargoData = new Dictionary<SlimeDefinition, LargoSettings>(0);
         public static IdentifiableType GetIdent(this GameObject obj)
         {
             var comp = obj.GetComponent<IdentifiableActor>();
@@ -169,29 +178,29 @@ namespace SR2E.Library
             }
             else { return null; }
         }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
+        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
+        {
+            var eatmap = new SlimeDiet.EatMapEntry
             {
-                var eatmap = new SlimeDiet.EatMapEntry
-                {
-                    EatsIdent = eat,
-                    ProducesIdent = produce,
-                    BecomesIdent = becomes,
-                    Driver = driver,
-                    MinDrive = mindrive
-                };
-                return eatmap;
-            }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
+                EatsIdent = eat,
+                ProducesIdent = produce,
+                BecomesIdent = becomes,
+                Driver = driver,
+                MinDrive = mindrive
+            };
+            return eatmap;
+        }
+        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
+        {
+            var eatmap = new SlimeDiet.EatMapEntry
             {
-                var eatmap = new SlimeDiet.EatMapEntry
-                {
-                    EatsIdent = eat,
-                    ProducesIdent = produce,
-                    Driver = driver,
-                    MinDrive = mindrive
-                };
-                return eatmap;
-            }
+                EatsIdent = eat,
+                ProducesIdent = produce,
+                Driver = driver,
+                MinDrive = mindrive
+            };
+            return eatmap;
+        }
         public static void ModifyEatmap(this SlimeDiet.EatMapEntry eatmap, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
             {
                 eatmap.EatsIdent = eat;
@@ -227,17 +236,17 @@ namespace SR2E.Library
             {
                 slimedef.Diet.EatMap.Add(eatmap);
             }
+        public static void AddSlimeToEatmap(this SlimeDiet.EatMapEntry eatmap,SlimeDefinition slimedef)
+        {
+            slimedef.Diet.EatMap.Add(eatmap);
+        }
         public static void SetStructColor(this SlimeAppearanceStructure structure, int id, Color color)
             {
                 structure.DefaultMaterials[0].SetColor(id, color);
             }
-        public static void RefreshEatmaps(this SlimeDefinition def)
+        public static void RefreshEatmap(this SlimeDefinition def)
             {
                 def.Diet.RefreshEatMap(slimeDefinitions, def);
-            }
-        public static void SetObjectIdent(GameObject obj, IdentifiableType ident)
-            {
-                obj.GetComponent<IdentifiableActor>().identType = ident;
             }
         public static void ChangeSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG, int index)
             {
@@ -247,18 +256,18 @@ namespace SR2E.Library
             {
                 def.Diet.MajorFoodGroups.AddItem<SlimeEat.FoodGroup>(FG);
             }
-        public static GameObject SpawnActor(GameObject obj, Vector3 pos)
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
             {
                 return SRBehaviour.InstantiateActor(obj,
                     SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
                     false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
             }
-        public static GameObject SpawnDynamic(GameObject obj, Vector3 pos)
+        public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos)
             {
                 return SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
             }
         public static T? Get<T>(string name) where T : Object { return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); }
-        public static void AddToGroup(IdentifiableType type, string groupName)
+        public static void AddToGroup(this IdentifiableType type, string groupName)
         {
             var group = Get<IdentifiableTypeGroup>(groupName);
             group.memberTypes.Add(type);
@@ -327,11 +336,11 @@ namespace SR2E.Library
             return obj;
         }
 
-        public static void SetObjectPrefab(IdentifiableType Object, GameObject prefab)
+        public static void SetObjectPrefab(this IdentifiableType Object, GameObject prefab)
         {
             Object.prefab = prefab;
         }
-        public static void SetObjectIdent(IdentifiableType Object, GameObject prefab)
+        public static void SetObjectIdent(this GameObject prefab, IdentifiableType Object)
         {
             if (Object is SlimeDefinition)
             {
@@ -371,7 +380,7 @@ namespace SR2E.Library
             material.SetColor("_MiddleColor", Middle);
             material.SetColor("_BottomColor", Bottom);
         }
-        public static void MakeSellable(IdentifiableType ident, float marketValue, float marketSaturation)
+        public static void MakeSellable(this IdentifiableType ident, float marketValue, float marketSaturation)
         {
             if (marketData.ContainsKey(ident))
             {
@@ -381,7 +390,21 @@ namespace SR2E.Library
             marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident });
             marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
         }
-        public static void SetSlimeColor(Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec, SlimeDefinition slimedef, int index, int index2, bool isSS, int structure)
+        public static void MakeNOTSellable(this IdentifiableType ident)
+        {
+            if (marketData.ContainsKey(ident))
+            {
+                foreach (MarketUI.PlortEntry entry in marketPlortEntries)
+                {
+                    if (entry.identType == ident)
+                    { marketPlortEntries.Remove(entry); break; }
+                }
+                marketData.Remove(ident);
+            }
+            MelonLogger.Error("Failed to make object unsellable: The object is already unsellable");
+            return;
+        }
+        public static void SetSlimeColor(this SlimeDefinition slimedef, Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec,  int index, int index2, bool isSS, int structure)
         {
             Material mat = null;
             if (isSS == true)
@@ -398,11 +421,11 @@ namespace SR2E.Library
             mat.SetColor("_SpecColor", Spec);
         } 
         
-        public static Sprite ConvertToSprite(Texture2D texture)
+        public static Sprite ConvertToSprite(this Texture2D texture)
         {
             return Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
         }
-        public static GameObject CopyObject(GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
+        public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
 
             
         

@@ -1,67 +1,10 @@
 ﻿using System.Linq;
-using Il2CppMonomiPark.SlimeRancher.UI;
 
 namespace SR2E;
 
 internal class ChaosMode
 {
-    
-    [HarmonyPatch(typeof(MarketUI), "Start")]
-    public static class PatchMarketUIStart
-    {
-        public static void Prefix(MarketUI __instance)
-        {
-            if (SR2EEntryPoint.chaosMode)
-            {
-                __instance.plorts = newSlimesAsPlortEntries.ToArray();
-            }
-        }
-    }
 
-    [HarmonyPatch(typeof(EconomyDirector), "InitModel")]
-    public static class PatchEconomyDirectorInitModel
-    {
-        public static void Prefix(EconomyDirector __instance)
-        {
-            if (SR2EEntryPoint.chaosMode)
-            {
-                __instance.BaseValueMap = newValueMaps.ToArray();
-            }
-        }
-    }
-    public static List<MarketUI.PlortEntry> newSlimesAsPlortEntries = new List<MarketUI.PlortEntry>();
-    public static List<EconomyDirector.ValueMap> newValueMaps = new List<EconomyDirector.ValueMap>();
-
-    static void makeSlimesSellable(string nameWithInfo)
-    {
-        try
-        {
-            string[] split = nameWithInfo.Split("|");
-            string name = split[0];
-            float fullSaturation = float.Parse(split[1]);
-            float value = float.Parse(split[2]);
-            SlimeDefinition definition = SR2EUtils.Get<SlimeDefinition>(name);
-            if(definition==null)
-                return;
-            newSlimesAsPlortEntries.Add(new MarketUI.PlortEntry { identType = definition });
-            newValueMaps.Add(new EconomyDirector.ValueMap { Accept = definition.prefab.GetComponent<Identifiable>(), 
-                FullSaturation = fullSaturation, Value = value });
-        }
-        catch { }
-    }
-    static void switchSlimeAppearances(string slimeOne, string slimeTwo)
-    {
-        SlimeDefinition slimeOneDef = SR2EUtils.Get<SlimeDefinition>(slimeOne);
-        SlimeDefinition slimeTwoDef = SR2EUtils.Get<SlimeDefinition>(slimeTwo);
-
-        var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures; slimeOneDef.AppearancesDefault[0]._structures = slimeTwoDef.AppearancesDefault[0]._structures; slimeTwoDef.AppearancesDefault[0]._structures = appearanceOne;
-
-        var structureIcon = slimeOneDef.AppearancesDefault[0]._icon; slimeOneDef.AppearancesDefault[0]._icon = slimeTwoDef.AppearancesDefault[0]._icon; slimeTwoDef.AppearancesDefault[0]._icon = structureIcon;
-        var icon = slimeOneDef.icon; slimeOneDef.icon = slimeTwoDef.icon; slimeTwoDef.icon = icon;
-
-        var debugIcon = slimeOneDef.debugIcon; slimeOneDef.debugIcon = slimeTwoDef.debugIcon; slimeTwoDef.debugIcon = debugIcon;
-
-    }
 
     public static void PinkTarr()
     {
@@ -76,7 +19,7 @@ internal class ChaosMode
         tarrDefinition.prefab.GetComponent<AttackPlayer>().DamagePerAttack = 1000;
         var localedir = SystemContext.Instance.LocalizationDirector;
         tarrDefinition.AddProduceIdent(SR2EUtils.Get<IdentifiableType>("SpringPad"));
-        tarrDefinition.RefreshEatmaps();
+        tarrDefinition.RefreshEatmap();
         if (localedir.GetCurrentLocaleCode() == "en")
         {
             var tarrStr = localedir.Tables["Actor"].GetEntry("l.tarr_slime");
@@ -117,7 +60,7 @@ internal class ChaosMode
 
                 PinkTarr();
 
-                switchSlimeAppearances("Gold", "Pink"); //Breaks pink largos
+                SR2EUtils.Get<SlimeDefinition>("Pink").switchSlimeAppearances(SR2EUtils.Get<SlimeDefinition>("Gold"));
 
                 List<string> slimes = new List<string> { 
                     "Pink|40|7", 
@@ -145,7 +88,22 @@ internal class ChaosMode
                 };
 
                 for (int i = 0; i < slimes.Count; i++)
-                    makeSlimesSellable(slimes[i]);
+                {
+                    try
+                    {
+                        string[] split = slimes[i].Split("|");
+                        string name = split[0];
+                        float fullSaturation = float.Parse(split[1]);
+                        float value = float.Parse(split[2]);
+                        SlimeDefinition definition = SR2EUtils.Get<SlimeDefinition>(name);
+                        if(definition!=null)
+                            definition.MakeSellable(value,fullSaturation);
+                        IdentifiableType plort = SR2EUtils.Get<IdentifiableType>(name);
+                        if (plort != null)
+                            plort.MakeNOTSellable();
+                    }
+                    catch { }
+                }
                 break;
             case "MainMenuEnvironment":
                 GameObject playerModel = GameObject.Find("BeatrixMainMenu");
