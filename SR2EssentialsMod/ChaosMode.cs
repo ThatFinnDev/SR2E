@@ -98,7 +98,7 @@ internal class ChaosMode
                         SlimeDefinition definition = SR2EUtils.Get<SlimeDefinition>(name);
                         if(definition!=null)
                             definition.MakeSellable(value,fullSaturation);
-                        IdentifiableType plort = SR2EUtils.Get<IdentifiableType>(name);
+                        IdentifiableType plort = SR2EUtils.Get<IdentifiableType>(name+"Plort");
                         if (plort != null)
                             plort.MakeNOTSellable();
                     }
