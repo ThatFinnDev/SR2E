@@ -61,7 +61,12 @@ internal class ChaosMode
                 PinkTarr();
 
                 GetSlime("Pink").switchSlimeAppearances(GetSlime("Gold"));
+                GetSlime("Pink").prefab.AddComponent<SlimeFlee>();
+                
+                
+                
 
+                
                 List<string> slimes = new List<string> { 
                     "Pink|40|7", 
                     "Cotton|30|15", 
@@ -86,20 +91,6 @@ internal class ChaosMode
                     "Lucky|15|27",
                     "Tarr|15|27",
                 };
-                int largoIndex = 0;
-                foreach (var slime in LibraryUtils.slimes.GetAllMembersArray())
-                {
-                    SlimeDefinition slimeReal = slime.Cast<SlimeDefinition>();
-                    if (slimeReal.IsLargo)
-                    {
-                        if (largoIndex == 0)
-                            slime.MakeSellable(28, 27, false);
-                        else
-                            slime.MakeSellable(20, 15, true);
-
-                        largoIndex++;
-                    }
-                }
                 for (int i = 0; i < slimes.Count; i++)
                 {
                     try
@@ -117,6 +108,22 @@ internal class ChaosMode
                     }
                     catch { }
                 }
+                
+                int largoIndex = 0;
+                foreach (var slime in LibraryUtils.slimes.GetAllMembersArray())
+                {
+                    SlimeDefinition slimeReal = slime.Cast<SlimeDefinition>();
+                    if (slimeReal.IsLargo)
+                    {
+                        if (largoIndex == 0)
+                            slime.MakeSellable(28, 27, false);
+                        else
+                            slime.MakeSellable(20, 15, true);
+
+                        largoIndex++;
+                    }
+                }
+                
                 break;
             case "MainMenuEnvironment":
                 GameObject playerModel = GameObject.Find("BeatrixMainMenu");
