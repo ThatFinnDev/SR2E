@@ -11,9 +11,6 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 
 
-[assembly: MelonInfo(typeof(SR2EMod), "SR2E Library", "0.1.0", "ThatFinn & PinkTarr")]
-[assembly: MelonColor(255, 65, 255, 35)]
-
 namespace SR2E.Library
 {
     public class SR2EMod : MelonMod
@@ -79,7 +76,18 @@ namespace SR2E.Library
         public static IdentifiableTypeGroup? veggies;
         public static IdentifiableTypeGroup? fruit;
 
+        public override void OnInitializeMelon() { new SR2EEntryPoint().OnInitializeMelon(); }
+
+
+        public override void OnApplicationQuit() { SR2EEntryPoint.instance.OnApplicationQuit(); }
+
+
+        public override void OnUpdate() { SR2EEntryPoint.instance.OnUpdate(); }
         
+        public override void OnSceneWasUnloaded(int buildIndex, string sceneName) { SR2EEntryPoint.instance.OnSceneWasUnloaded(buildIndex, sceneName); }
+
+        public override void OnSceneWasInitialized(int buildIndex, string sceneName) { SR2EEntryPoint.instance.OnSceneWasInitialized(buildIndex, sceneName); }
+
 
         public override void OnLateInitializeMelon()
         {
@@ -200,6 +208,7 @@ namespace SR2E.Library
             {
                 SystemSceneLoad();
             }
+            SR2EEntryPoint.instance.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
         public static SlimeDefinition CreateSlimeDef(string Name, Color32 VacColor, Sprite Icon, SlimeAppearance baseAppearance, string appearanceName, string RefID)
