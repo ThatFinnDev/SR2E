@@ -193,6 +193,11 @@ namespace SR2E
                                     SR2EUtils.Get<GameObject>("EngagementSkipMessage").getObjRec<Image>("logo").sprite = logoSprite;
                                 }
                             }
+                    
+                    
+                    foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
+                        if (baseMelonBase is SR2EMod)
+                            (baseMelonBase as SR2EMod).OnSystemSceneLoaded();
                     break;
                 case "MainMenuUI":
                     if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) SR2Console.ExecuteByString(onMainMenuLoadCommand);
@@ -210,16 +215,43 @@ namespace SR2E
                 case "GameCore":
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
                     autoSaveDirector.saveSlotCount = 50;
+                    
+                    
+                    foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
+                        if (baseMelonBase is SR2EMod)
+                            (baseMelonBase as SR2EMod).OnGameCoreLoaded();
+                        
+                    slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
+
+                    slimes = Get<IdentifiableTypeGroup>("SlimesGroup");
+                    baseSlimes = Get<IdentifiableTypeGroup>("BaseSlimeGroup");
+                    largos = Get<IdentifiableTypeGroup>("LargoGroup");
+                    meat = Get<IdentifiableTypeGroup>("MeatGroup");
+                    food = Get<IdentifiableTypeGroup>("FoodGroup");
+                    veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
+                    fruits = Get<IdentifiableTypeGroup>("FruitGroup");
                     break;
                 case "UICore":
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
+                    break;
+                case "zoneCore":
+                    foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
+                        if (baseMelonBase is SR2EMod)
+                            (baseMelonBase as SR2EMod).OnZoneCoreLoaded();
                     break;
                 case "PlayerCore":
                     NoclipComponent.playerSettings = SR2EUtils.Get<KCCSettings>("");
                     NoclipComponent.player = SceneContext.Instance.player.transform;
                     NoclipComponent.playerController = NoclipComponent.player.GetComponent<SRCharacterController>();
                     NoclipComponent.playerMotor = NoclipComponent.player.GetComponent<KinematicCharacterMotor>();
+                    
+                    
+                    foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
+                        if (baseMelonBase is SR2EMod)
+                            (baseMelonBase as SR2EMod).OnPlayerSceneLoaded();
+                    player = Get<GameObject>("PlayerControllerKCC");
                     break;
+                
             }
 
             
@@ -232,41 +264,18 @@ namespace SR2E
                     {
                         if (sceneName == "zoneCore")
                         {
-                            foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                                if (baseMelonBase is SR2EMod)
-                                    (baseMelonBase as SR2EMod).ZoneCoreLoad();
                         }
                     }
                     else
                     {
-                        foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                            if (baseMelonBase is SR2EMod)
-                                (baseMelonBase as SR2EMod).GameCoreLoad();
-                        
-                        slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
-
-                        slimes = Get<IdentifiableTypeGroup>("SlimesGroup");
-                        baseSlimes = Get<IdentifiableTypeGroup>("BaseSlimeGroup");
-                        largos = Get<IdentifiableTypeGroup>("LargoGroup");
-                        meat = Get<IdentifiableTypeGroup>("MeatGroup");
-                        food = Get<IdentifiableTypeGroup>("FoodGroup");
-                        veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
-                        fruit = Get<IdentifiableTypeGroup>("FruitGroup");
                     }
                 }
                 else
                 {
-                    foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                        if (baseMelonBase is SR2EMod)
-                            (baseMelonBase as SR2EMod).PlayerSceneLoad();
-                    player = Get<GameObject>("PlayerControllerKCC");
                 }
             }
             else
             {
-                foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                    if (baseMelonBase is SR2EMod)
-                        (baseMelonBase as SR2EMod).SystemSceneLoad();
             }
         }
 
