@@ -5,7 +5,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>SR2E</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>SR2EssentialsMod</AssemblyName>
+    <AssemblyName>SR2E</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>None</DebugType>
