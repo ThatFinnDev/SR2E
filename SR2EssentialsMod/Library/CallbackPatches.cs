@@ -1,7 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.World;
 using static Il2Cpp.AmbianceDirector;
 
-namespace CottonLibrary
+namespace SR2E.Library
 {
     class CallbackPatches
     {

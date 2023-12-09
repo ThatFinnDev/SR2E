@@ -1,5 +1,5 @@
 ﻿#pragma warning disable
-namespace CottonLibrary.Storage
+namespace SR2E.Library.Storage
 {
     public class QuadDictionary<TKey, TValue1, TValue2, TValue3> : Dictionary<TKey, (TValue1, TValue2, TValue3)>
     {

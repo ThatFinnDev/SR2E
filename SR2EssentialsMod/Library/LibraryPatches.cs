@@ -11,7 +11,7 @@ namespace SR2E.Library
         internal static List<SR2EMod> mods = new List<SR2EMod>();
 
         // Token: 0x02000006 RID: 6
-        [HarmonyPatch(typeof(MarketUI ), "Start")]
+        [HarmonyPatch(typeof(MarketUI), "Start")]
         public static class MarketPatch
         {
             // Token: 0x0600003B RID: 59 RVA: 0x00002F94 File Offset: 0x00001194
@@ -32,7 +32,7 @@ namespace SR2E.Library
             public static void Prefix(EconomyDirector __instance)
             {
                 List<EconomyDirector.ValueMap> valueMaps = new List<EconomyDirector.ValueMap>();
-                foreach (KeyValuePair<IdentifiableType, CottonMarketData> marketData in SR2EMod.marketData)
+                foreach (KeyValuePair<IdentifiableType, ModdedMarketData> marketData in SR2EMod.marketData)
                 {
                     EconomyDirector.ValueMap valueMap = new EconomyDirector.ValueMap
                     {

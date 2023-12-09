@@ -1,7 +1,7 @@
 ﻿#pragma warning disable
 using Il2CppMonomiPark.SlimeRancher.World;
 
-namespace CottonLibrary
+namespace SR2E.Library
 {
     public static class Callbacks
     {
