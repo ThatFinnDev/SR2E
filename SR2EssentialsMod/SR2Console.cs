@@ -497,6 +497,7 @@ namespace SR2E
             RegisterCommand(new FlingCommand());
             RegisterCommand(new PartyCommand());
             RegisterCommand(new GraphicsCommand());
+            RegisterCommand(new FreezeCommand());
             if (SR2EEntryPoint.chaosMode) RegisterCommands(new SR2CCommand[] { new FastModeCommand() });
             RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
