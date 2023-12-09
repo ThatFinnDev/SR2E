@@ -443,6 +443,7 @@ namespace SR2E.Library
                 }
             }
         }
+        public static GameObject? Get(string name) => Get<GameObject>(name);
         public static void AddString(this Il2CppStringArray array, string obj)
         {
             var s = new string[0];

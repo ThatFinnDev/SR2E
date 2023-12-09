@@ -25,24 +25,14 @@ namespace SR2E.Library
         public static GameV04? Save;
         
         
-        public virtual void PlayerSceneLoad()
-        {
-        }
-        public virtual void SystemSceneLoad()
-        {
-        }
-        public virtual void GameCoreLoad()
-        {
-        }
-        public virtual void ZoneCoreLoad()
-        {
-        }
-        public virtual void SavedGameLoad()
-        {
-        }
-        public virtual void SaveDirectorLoaded()
-        {
-        }
+        public virtual void PlayerSceneLoad() { }
+        public virtual void SystemSceneLoad() { }
+        public virtual void GameCoreLoad() { }
+        public virtual void ZoneCoreLoad() { }
+        public virtual void SavedGameLoad() { }
+        public virtual void SaveDirectorLoaded() { }
+        public virtual void SaveDirectorLoading(AutoSaveDirector saveDirector) { }
+        
 
         
         
