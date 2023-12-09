@@ -259,6 +259,11 @@ namespace SR2E.Library
             slimedef.icon = Icon;
             slimeDefinitions.Slimes.Add(slimedef);
             AddToGroup(slimedef, "VaccableBaseSlimeGroup");
+            if (!slimedef.IsLargo)
+            {
+                SRSingleton<GameContext>.Instance.SlimeDefinitions.Slimes = SRSingleton<GameContext>.Instance.SlimeDefinitions.Slimes.AddItem(slimedef).ToArray();
+                SRSingleton<GameContext>.Instance.SlimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(slimedef, slimedef);
+            }
             INTERNAL_SetupSaveForIdent(RefID, slimedef);
             return slimedef;
         }
