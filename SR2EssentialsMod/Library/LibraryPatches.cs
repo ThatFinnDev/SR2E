@@ -43,6 +43,13 @@ namespace SR2E.Library
         [HarmonyPatch(typeof(AutoSaveDirector), "Awake")]
         public static class SaveDirectorPatch
         {
+            public static void Prefix(AutoSaveDirector __instance)
+            {
+                foreach (SR2EMod lib in mods)
+                {
+                    lib.SaveDirectorLoading(__instance);
+                }
+            }
             public static void Postfix()
             {
                 SR2EMod.slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
