@@ -134,7 +134,7 @@ namespace SR2E.Library
         public static void RegisterMod(SR2EMod mod)
         {
             LibraryPatches.mods.Add(mod);
-            MelonLogger.Msg("Cotton registered: " + mod.MelonAssembly.Assembly.FullName);
+            MelonLogger.Msg("SR2ELibrary registered: " + mod.MelonAssembly.Assembly.FullName);
         }
 
         public virtual void PlayerSceneLoad()
