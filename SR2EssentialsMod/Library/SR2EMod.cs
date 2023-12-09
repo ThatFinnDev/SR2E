@@ -434,14 +434,7 @@ namespace SR2E.Library
             return Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
         }
 
-        public static GameObject CopyObject(GameObject obj)
-        {
-            Transform emptyobject = new GameObject("_empty").transform;
-            GameObject newobj = Object.Instantiate(obj, emptyobject);
-            newobj.hideFlags = HideFlags.HideAndDontSave;
-            Object.Destroy(emptyobject.gameObject);
-            return newobj;
-        }
+        public static GameObject CopyObject(GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
 
         public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
         {
