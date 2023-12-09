@@ -1,5 +1,5 @@
 ﻿#pragma warning disable
-namespace CottonLibrary.Storage
+namespace SR2E.Library.Storage
 {
     public class DoubleArray<T0, T1>
     {

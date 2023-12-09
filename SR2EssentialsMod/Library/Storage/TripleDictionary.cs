@@ -1,4 +1,4 @@
-﻿namespace CottonLibrary.Storage
+﻿namespace SR2E.Library.Storage
 {
 #pragma warning disable
 

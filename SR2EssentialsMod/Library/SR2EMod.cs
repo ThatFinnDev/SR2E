@@ -58,7 +58,7 @@ namespace SR2E.Library
             }
         }
 
-        internal static Dictionary<IdentifiableType, CottonMarketData> marketData = new Dictionary<IdentifiableType, CottonMarketData>(0);
+        internal static Dictionary<IdentifiableType, ModdedMarketData> marketData = new Dictionary<IdentifiableType, ModdedMarketData>(0);
         internal static List<MarketUI.PlortEntry> marketPlortEntries = new List<MarketUI.PlortEntry>(0);
 
 
@@ -321,7 +321,7 @@ namespace SR2E.Library
                 return;
             }
             marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident });
-            marketData.Add(ident, new CottonMarketData(marketSaturation, marketValue));
+            marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
         }
         */
         internal static SlimeDiet INTERNAL_CreateNewDiet()
@@ -408,7 +408,7 @@ namespace SR2E.Library
                 return;
             }
             marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident });
-            marketData.Add(ident, new CottonMarketData(marketSaturation, marketValue));
+            marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
         }
 
         public virtual void SetSlimeColor(Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec, SlimeDefinition slimedef, int index, int index2, bool isSS, int structure)
