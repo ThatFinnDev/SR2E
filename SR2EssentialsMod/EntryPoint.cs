@@ -20,13 +20,13 @@ namespace SR2E
     {
         public const string Name = "SR2E"; // Name of the Mod.  (MUST BE SET)
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
-        public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
+        public const string Author = "ThatFinn & PinkTarr"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
         public const string Version = "2.0.0-beta.3"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
-    public class SR2EEntryPoint : SR2EMod
+    public class SR2EEntryPoint
     {
         public static SR2EEntryPoint instance;
         public static TMP_FontAsset SR2Font;
@@ -36,10 +36,8 @@ namespace SR2E
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
-
         internal static IdentifiableType[] identifiableTypes
         { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
-        
         internal static IdentifiableType getIdentifiableByName(string name)
         {
             foreach (IdentifiableType type in identifiableTypes)
@@ -47,9 +45,6 @@ namespace SR2E
                     return type;
             return null;
         }
-
-        
-
         internal static IdentifiableType getIdentifiableByLocalizedName(string name)
         {
             foreach (IdentifiableType type in identifiableTypes)
@@ -105,7 +100,7 @@ namespace SR2E
         }
 
         private static bool throwErrors = false;
-        public override void OnInitializeMelon()
+        public  void OnInitializeMelon()
         {
             instance = this;
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
@@ -129,7 +124,7 @@ namespace SR2E
                 }
         }
 
-        public override void OnApplicationQuit()
+        public void OnApplicationQuit()
         {
             if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay())
             {
@@ -137,7 +132,7 @@ namespace SR2E
             }
         }
 
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+        public void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
             try
@@ -221,7 +216,7 @@ namespace SR2E
             }
         }
 
-        public override void OnSceneWasInitialized(int buildindex, string sceneName)
+        public void OnSceneWasInitialized(int buildindex, string sceneName)
         {
             switch (sceneName)
             {
@@ -231,7 +226,7 @@ namespace SR2E
                     break;
             }
         }
-        public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
+        public void OnSceneWasUnloaded(int buildIndex, string sceneName)
         {
             switch (sceneName)
             {
@@ -263,7 +258,7 @@ namespace SR2E
         static SRCameraController m_camera;
         public static bool SaveCountChanged = false;
 
-        public override void OnUpdate()
+        public void OnUpdate()
         {
             if(throwErrors)
             {
