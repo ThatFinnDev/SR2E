@@ -230,6 +230,7 @@ namespace SR2E
                     food = Get<IdentifiableTypeGroup>("FoodGroup");
                     veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
                     fruits = Get<IdentifiableTypeGroup>("FruitGroup");
+                    plorts = Get<IdentifiableTypeGroup>("PlortsGroup");
                     break;
                 case "UICore":
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
