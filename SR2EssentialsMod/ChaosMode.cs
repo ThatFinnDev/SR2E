@@ -54,8 +54,9 @@ internal class ChaosMode
         SlimeDefinition slimeOneDef = SR2EUtils.Get<SlimeDefinition>(slimeOne);
         SlimeDefinition slimeTwoDef = SR2EUtils.Get<SlimeDefinition>(slimeTwo);
 
-        var appearanceOne = slimeOneDef.AppearancesDefault; slimeOneDef.AppearancesDefault = slimeTwoDef.AppearancesDefault; slimeTwoDef.AppearancesDefault = appearanceOne;
+        var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures; slimeOneDef.AppearancesDefault[0]._structures = slimeTwoDef.AppearancesDefault[0]._structures; slimeTwoDef.AppearancesDefault[0]._structures = appearanceOne;
 
+        var structureIcon = slimeOneDef.AppearancesDefault[0]._icon; slimeOneDef.AppearancesDefault[0]._icon = slimeTwoDef.AppearancesDefault[0]._icon; slimeTwoDef.AppearancesDefault[0]._icon = structureIcon;
         var icon = slimeOneDef.icon; slimeOneDef.icon = slimeTwoDef.icon; slimeTwoDef.icon = icon;
 
         var debugIcon = slimeOneDef.debugIcon; slimeOneDef.debugIcon = slimeTwoDef.debugIcon; slimeTwoDef.debugIcon = debugIcon;
@@ -114,7 +115,7 @@ internal class ChaosMode
 
                 PinkTarr();
 
-                // switchSlimeAppearances("Gold", "Pink"); Breaks pink largos
+                switchSlimeAppearances("Gold", "Pink"); //Breaks pink largos
 
                 List<string> slimes = new List<string> { 
                     "Pink|40|7", 
