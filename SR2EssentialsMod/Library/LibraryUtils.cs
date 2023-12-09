@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
+using Il2CppSystem.IO;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 
@@ -16,7 +17,9 @@ namespace SR2E.Library
     public static class LibraryUtils
     {
         internal static Dictionary<IdentifiableType, ModdedMarketData> marketData = new Dictionary<IdentifiableType, ModdedMarketData>(0);
-        internal static List<MarketUI.PlortEntry> marketPlortEntries = new List<MarketUI.PlortEntry>(0);
+
+        internal static Dictionary<MarketUI.PlortEntry, bool> marketPlortEntries = new Dictionary<MarketUI.PlortEntry, bool>();
+        internal static List<IdentifiableType> removeMarketPlortEntries = new List<IdentifiableType>();
         internal static GameObject rootOBJ;
         internal static Dictionary<SlimeDefinition, LargoSettings>? LargoData = new Dictionary<SlimeDefinition, LargoSettings>(0);
         
@@ -382,42 +385,50 @@ namespace SR2E.Library
             material.SetColor("_MiddleColor", Middle);
             material.SetColor("_BottomColor", Bottom);
         }
-        public static void MakeSellable(this IdentifiableType ident, float marketValue, float marketSaturation)
+        public static void MakeSellable(this IdentifiableType ident, float marketValue, float marketSaturation, bool hideInMarket=false)
         {
             if (marketData.ContainsKey(ident))
             {
                 MelonLogger.Error("Failed to make object sellable: The object is already sellable");
                 return;
             }
-            marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident });
+            
+            marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident },hideInMarket);
             marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
         }
+
         public static void MakeNOTSellable(this IdentifiableType ident)
         {
-            if (!marketData.ContainsKey(ident))
+            removeMarketPlortEntries.Add(ident);
+            foreach (var keyPair in marketPlortEntries)
             {
-                MelonLogger.Error("Failed to make object unsellable: The object is already unsellable");
-                return;
-            }
-            foreach (MarketUI.PlortEntry entry in marketPlortEntries)
-            {
+                MarketUI.PlortEntry entry = keyPair.Key;
                 if (entry.identType == ident)
-                { marketPlortEntries.Remove(entry); break; }
+                {
+                    marketPlortEntries.Remove(entry);
+                    break;
+                }
             }
-            marketData.Remove(ident);
+
+            if (marketData.ContainsKey(ident))
+                marketData.Remove(ident);
         }
-        public static SlimeDefinition getSlime(string name)
+        public static Il2CppArrayBase<IdentifiableType> GetAllMembersArray(this IdentifiableTypeGroup group)
         {
-            foreach (IdentifiableType type in slimes.memberTypes)
+            return group.GetAllMembers().ToArray();
+        }
+        public static SlimeDefinition GetSlime(string name)
+        {
+            foreach (IdentifiableType type in slimes.GetAllMembersArray())
                 if (type.name.ToUpper() == name.ToUpper())
-                    if (type is SlimeDefinition)
-                        return type as SlimeDefinition;
+                    return type.Cast<SlimeDefinition>();
                 
             return null;
         }
-        public static IdentifiableType getPlort(string name)
+
+        public static IdentifiableType GetPlort(string name)
         {
-            foreach (IdentifiableType type in plorts.memberTypes)
+            foreach (IdentifiableType type in plorts.GetAllMembersArray())
                 if (type.name.ToUpper() == name.ToUpper())
                     return type;
                 
