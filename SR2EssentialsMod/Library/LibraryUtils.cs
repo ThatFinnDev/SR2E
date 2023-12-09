@@ -393,10 +393,34 @@ namespace SR2E.Library
                 return;
             }
             
+            if (removeMarketPlortEntries.Contains(ident))
+                removeMarketPlortEntries.Remove(ident);
             marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident },hideInMarket);
             marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
         }
 
+        public static bool isSellable(this IdentifiableType ident)
+        {
+            bool returnBool = false;
+            List<string> sellableByDefault = new List<string> { "PinkPlort", "CottonPlort", "PhosphorPlort", "TabbyPlort", "AnglerPlort", "RockPlort", "HoneyPlort", "BoomPlort", "PuddlePlort", "FirePlort", "BattyPlort", "CrystalPlort", "HunterPlort", "FlutterPlort", "RingtailPlort", "SaberPlort", "YolkyPlort", "TanglePlort", "DervishPlort", "GoldPlort" };
+            if(removeMarketPlortEntries.Count!=0)
+                foreach (string sellable in sellableByDefault)
+                    if (sellable == ident.name)
+                    {
+                        returnBool = true;
+                        foreach (IdentifiableType removed in removeMarketPlortEntries)
+                            if (ident == removed)
+                                return false;
+                    }
+            
+            foreach (var keyPair in marketPlortEntries)
+            {
+                MarketUI.PlortEntry entry = keyPair.Key;
+                if (entry.identType == ident)
+                    return true;
+            }
+            return returnBool;
+        }
         public static void MakeNOTSellable(this IdentifiableType ident)
         {
             removeMarketPlortEntries.Add(ident);
