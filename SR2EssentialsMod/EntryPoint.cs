@@ -20,13 +20,13 @@ namespace SR2E
     {
         public const string Name = "SR2E"; // Name of the Mod.  (MUST BE SET)
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
-        public const string Author = "ThatFinn & PinkTarr"; // Author of the Mod.  (MUST BE SET)
+        public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
         public const string Version = "2.0.0-beta.3"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
-    public class SR2EEntryPoint
+    public class SR2EEntryPoint : MelonMod
     {
         public static SR2EEntryPoint instance;
         public static TMP_FontAsset SR2Font;
@@ -36,6 +36,7 @@ namespace SR2E
         bool mainMenuLoaded = false;
         private static bool _iconChanged = false;
         static Image _modsButtonIconImage;
+        private static SR2EMod _sr2EModInstance;
         internal static IdentifiableType[] identifiableTypes
         { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType getIdentifiableByName(string name)
@@ -100,9 +101,31 @@ namespace SR2E
         }
 
         private static bool throwErrors = false;
-        public  void OnInitializeMelon()
+        
+        public override void OnLateInitializeMelon()
+        {
+            foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+            {
+                if (melonBase is SR2EMod)
+                {
+                    SR2EMod mod = melonBase as SR2EMod;
+                    LibraryPatches.mods.Add(mod);
+                    MelonLogger.Msg("SR2ELibrary registered: " + mod.MelonAssembly.Assembly.FullName);
+                }
+            }
+            if (SR2EMod.Get("SR2ELibraryROOT")) { SR2EMod.rootOBJ = SR2EMod.Get("SR2ELibraryROOT"); }
+            else
+            {
+                SR2EMod.rootOBJ = new GameObject();
+                SR2EMod.rootOBJ.SetActive(false);
+                SR2EMod.rootOBJ.name = "SR2ELibraryROOT";
+                Object.DontDestroyOnLoad(SR2EMod.rootOBJ);
+            }
+        }
+        public override void OnInitializeMelon()
         {
             instance = this;
+            _sr2EModInstance = new SR2EMod();
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
             ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
             ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
@@ -124,7 +147,7 @@ namespace SR2E
                 }
         }
 
-        public void OnApplicationQuit()
+        public override void OnApplicationQuit()
         {
             if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay())
             {
@@ -132,7 +155,7 @@ namespace SR2E
             }
         }
 
-        public void OnSceneWasLoaded(int buildIndex, string sceneName)
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
             try
@@ -199,6 +222,52 @@ namespace SR2E
                     break;
             }
 
+            
+            
+            if (!(sceneName == "SystemCore"))
+            {
+                if (!(sceneName == "PlayerCore"))
+                {
+                    if (!(sceneName == "GameCore"))
+                    {
+                        if (sceneName == "zoneCore")
+                        {
+                            foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
+                                if (baseMelonBase is SR2EMod)
+                                    (baseMelonBase as SR2EMod).ZoneCoreLoad();
+                        }
+                    }
+                    else
+                    {
+                        foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
+                            if (baseMelonBase is SR2EMod)
+                                (baseMelonBase as SR2EMod).GameCoreLoad();
+                        
+                        SR2EMod.slimeDefinitions = SR2EMod.Get<SlimeDefinitions>("MainSlimeDefinitions");
+
+                        SR2EMod.slimes = SR2EMod.Get<IdentifiableTypeGroup>("SlimesGroup");
+                        SR2EMod.baseSlimes = SR2EMod.Get<IdentifiableTypeGroup>("BaseSlimeGroup");
+                        SR2EMod.largos = SR2EMod.Get<IdentifiableTypeGroup>("LargoGroup");
+                        SR2EMod.meat = SR2EMod.Get<IdentifiableTypeGroup>("MeatGroup");
+                        SR2EMod.food = SR2EMod.Get<IdentifiableTypeGroup>("FoodGroup");
+                        SR2EMod.veggies = SR2EMod.Get<IdentifiableTypeGroup>("VeggieGroup");
+                        SR2EMod.fruit = SR2EMod.Get<IdentifiableTypeGroup>("FruitGroup");
+                    }
+                }
+                else
+                {
+                    foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
+                        if (baseMelonBase is SR2EMod)
+                            (baseMelonBase as SR2EMod).PlayerSceneLoad();
+                    SR2EMod.player = SR2EMod.Get("PlayerControllerKCC");
+                }
+            }
+            else
+            {
+                foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
+                    if (baseMelonBase is SR2EMod)
+                        (baseMelonBase as SR2EMod).SystemSceneLoad();
+            }
         }
 
         internal static void SetupFonts()
@@ -216,7 +285,7 @@ namespace SR2E
             }
         }
 
-        public void OnSceneWasInitialized(int buildindex, string sceneName)
+        public override void OnSceneWasInitialized(int buildindex, string sceneName)
         {
             switch (sceneName)
             {
@@ -226,7 +295,7 @@ namespace SR2E
                     break;
             }
         }
-        public void OnSceneWasUnloaded(int buildIndex, string sceneName)
+        public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
         {
             switch (sceneName)
             {
@@ -258,7 +327,7 @@ namespace SR2E
         static SRCameraController m_camera;
         public static bool SaveCountChanged = false;
 
-        public void OnUpdate()
+        public override void OnUpdate()
         {
             if(throwErrors)
             {

@@ -76,31 +76,8 @@ namespace SR2E.Library
         public static IdentifiableTypeGroup? veggies;
         public static IdentifiableTypeGroup? fruit;
 
-        public override void OnInitializeMelon() { new SR2EEntryPoint().OnInitializeMelon(); }
 
-
-        public override void OnApplicationQuit() { SR2EEntryPoint.instance.OnApplicationQuit(); }
-
-
-        public override void OnUpdate() { SR2EEntryPoint.instance.OnUpdate(); }
         
-        public override void OnSceneWasUnloaded(int buildIndex, string sceneName) { SR2EEntryPoint.instance.OnSceneWasUnloaded(buildIndex, sceneName); }
-
-        public override void OnSceneWasInitialized(int buildIndex, string sceneName) { SR2EEntryPoint.instance.OnSceneWasInitialized(buildIndex, sceneName); }
-
-
-        public override void OnLateInitializeMelon()
-        {
-            RegisterMod(this);
-            if (Get("SR2ELibraryROOT")) { rootOBJ = Get("SR2ELibraryROOT"); }
-            else
-            {
-                rootOBJ = new GameObject();
-                rootOBJ.SetActive(false);
-                rootOBJ.name = "SR2ELibraryROOT";
-                Object.DontDestroyOnLoad(rootOBJ);
-            }
-        }
         public static System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, string>> addedTranslations = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
 
         public static LocalizedString AddTranslation(string localized, string key = "l.SR2E.LibraryTest", string table = "Actor")
@@ -141,75 +118,26 @@ namespace SR2E.Library
             return Get<GameObject>(name);
         }
 
-        public static void RegisterMod(SR2EMod mod)
-        {
-            LibraryPatches.mods.Add(mod);
-            if(mod.MelonAssembly.Assembly.FullName!="SR2E") 
-                MelonLogger.Msg("SR2ELibrary registered: " + mod.MelonAssembly.Assembly.FullName);
-            
-        }
-
+        
         public virtual void PlayerSceneLoad()
         {
-            player = Get("PlayerControllerKCC");
         }
         public virtual void SystemSceneLoad()
         {
         }
         public virtual void GameCoreLoad()
         {
-
-            slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
-
-            slimes = Get<IdentifiableTypeGroup>("SlimesGroup");
-            baseSlimes = Get<IdentifiableTypeGroup>("BaseSlimeGroup");
-            largos = Get<IdentifiableTypeGroup>("LargoGroup");
-            meat = Get<IdentifiableTypeGroup>("MeatGroup");
-            food = Get<IdentifiableTypeGroup>("FoodGroup");
-            veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
-            fruit = Get<IdentifiableTypeGroup>("FruitGroup");
         }
         public virtual void ZoneCoreLoad()
         {
         }
-
         public virtual void SavedGameLoad()
         {
-
         }
         public virtual void SaveDirectorLoaded()
         {
         }
 
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
-        {
-            if (!(sceneName == "SystemCore"))
-            {
-                if (!(sceneName == "PlayerCore"))
-                {
-                    if (!(sceneName == "GameCore"))
-                    {
-                        if (sceneName == "zoneCore")
-                        {
-                            ZoneCoreLoad();
-                        }
-                    }
-                    else
-                    {
-                        GameCoreLoad();
-                    }
-                }
-                else
-                {
-                    PlayerSceneLoad();
-                }
-            }
-            else
-            {
-                SystemSceneLoad();
-            }
-            SR2EEntryPoint.instance.OnSceneWasLoaded(buildIndex, sceneName);
-        }
 
         public static SlimeDefinition CreateSlimeDef(string Name, Color32 VacColor, Sprite Icon, SlimeAppearance baseAppearance, string appearanceName, string RefID)
         {
@@ -373,12 +301,11 @@ namespace SR2E.Library
             return obj;
         }
 
-        public virtual void SetObjectPrefab(IdentifiableType Object, GameObject prefab)
+        public static void SetObjectPrefab(IdentifiableType Object, GameObject prefab)
         {
             Object.prefab = prefab;
         }
-
-        public virtual void SetObjectIdent(IdentifiableType Object, GameObject prefab)
+        public static void SetObjectIdent(IdentifiableType Object, GameObject prefab)
         {
             if (Object is SlimeDefinition)
             {
@@ -388,7 +315,7 @@ namespace SR2E.Library
 
             prefab.GetComponent<IdentifiableActor>().identType = Object;
         }
-
+        
         public static IdentifiableType CreatePlortType(string Name, Color32 VacColor, Sprite Icon, string RefID, float marketValue, float marketSaturation)
         {
             var plort = ScriptableObject.CreateInstance<IdentifiableType>();
@@ -418,7 +345,6 @@ namespace SR2E.Library
             material.SetColor("_MiddleColor", Middle);
             material.SetColor("_BottomColor", Bottom);
         }
-
         public static void MakeSellable(IdentifiableType ident, float marketValue, float marketSaturation)
         {
             if (marketData.ContainsKey(ident))
@@ -429,8 +355,7 @@ namespace SR2E.Library
             marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident });
             marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
         }
-
-        public virtual void SetSlimeColor(Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec, SlimeDefinition slimedef, int index, int index2, bool isSS, int structure)
+        public static void SetSlimeColor(Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec, SlimeDefinition slimedef, int index, int index2, bool isSS, int structure)
         {
             Material mat = null;
             if (isSS == true)
@@ -445,15 +370,14 @@ namespace SR2E.Library
             mat.SetColor("_MiddleColor", Middle);
             mat.SetColor("_BottomColor", Bottom);
             mat.SetColor("_SpecColor", Spec);
-        }
-
+        } 
+        
         public static Sprite ConvertToSprite(Texture2D texture)
         {
             return Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
         }
-
         public static GameObject CopyObject(GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
-
+       
         public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
         {
             var eatmap = new SlimeDiet.EatMapEntry
@@ -477,7 +401,6 @@ namespace SR2E.Library
             };
             return eatmap;
         }
-
         public static void ModifyEatmap(SlimeDiet.EatMapEntry eatmap, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
         {
             eatmap.EatsIdent = eat;
@@ -493,73 +416,59 @@ namespace SR2E.Library
             eatmap.Driver = driver;
             eatmap.MinDrive = mindrive;
         }
-
         public static void AddProduceIdent(SlimeDefinition slimedef, IdentifiableType ident)
         {
             slimedef.Diet.ProduceIdents.Add(ident);
         }
-
         public static void SetProduceIdent(SlimeDefinition slimedef, IdentifiableType ident, int index)
         {
             slimedef.Diet.ProduceIdents[index] = ident;
         }
-
         public static void AddExtraEatIdent(SlimeDefinition slimedef, IdentifiableType ident)
         {
             slimedef.Diet.AdditionalFoodIdents.Add(ident);
         }
-
         public static void SetFavoriteProduceCount(SlimeDefinition slimedef, int count)
         {
             slimedef.Diet.FavoriteProductionCount = count;
         }
-
         public static void AddEatmapToSlime(SlimeDefinition slimedef, SlimeDiet.EatMapEntry eatmap)
         {
             slimedef.Diet.EatMap.Add(eatmap);
         }
-
         public static void SetStructColor(SlimeAppearanceStructure structure, int id, Color color)
         {
             structure.DefaultMaterials[0].SetColor(id, color);
         }
-
         public static void RefreshEatmaps(SlimeDefinition def)
         {
             def.Diet.RefreshEatMap(slimeDefinitions, def);
         }
-
         public static void SetObjectIdent(GameObject obj, IdentifiableType ident)
         {
             obj.GetComponent<IdentifiableActor>().identType = ident;
         }
-
         public static void ChangeSlimeFoodGroup(SlimeDefinition def, SlimeEat.FoodGroup FG, int index)
         {
             def.Diet.MajorFoodGroups[index] = FG;
         }
-
         public static void AddSlimeFoodGroup(SlimeDefinition def, SlimeEat.FoodGroup FG)
         {
             def.Diet.MajorFoodGroups.AddItem<SlimeEat.FoodGroup>(FG);
         }
-
         public static GameObject SpawnActor(GameObject obj, Vector3 pos)
         {
             return SRBehaviour.InstantiateActor(obj, SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity, false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
         }
-
         public static GameObject SpawnDynamic(GameObject obj, Vector3 pos)
         {
             return SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
         }
-
         public static void AddToGroup(IdentifiableType type, string groupName)
         {
             var group = Get<IdentifiableTypeGroup>(groupName);
             group.memberTypes.Add(type);
         }
-
         public static IdentifiableTypeGroup MakeNewGroup(IdentifiableType[] types, string groupName, IdentifiableTypeGroup[] subGroups = null)
         {
             var group = new IdentifiableTypeGroup();
