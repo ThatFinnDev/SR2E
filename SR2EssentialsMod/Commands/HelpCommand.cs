@@ -27,7 +27,8 @@
                 List<string> list = new List<string>();
                 foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
                 {
-                    list.Add(entry.Key);
+                    if (!entry.Value.Hidden)
+                        list.Add(entry.Key);
                 }
                 return list;
             }
@@ -56,6 +57,7 @@
                 if (SR2Console.commands.ContainsKey(args[0]))
                 {
                     SR2Console.SendMessage($"Usage: {SR2Console.commands[args[0]].Usage}\n Description: {desc}");
+                    return true;
                 }
                 SR2Console.SendMessage($"The key '<color=white>{args[0]}</color>' is not a valid command");
                 return false;
