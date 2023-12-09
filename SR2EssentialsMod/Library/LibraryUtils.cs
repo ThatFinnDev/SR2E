@@ -21,6 +21,7 @@ namespace SR2E.Library
         internal static Dictionary<SlimeDefinition, LargoSettings>? LargoData = new Dictionary<SlimeDefinition, LargoSettings>(0);
         
         public static IdentifiableTypeGroup? slimes;
+        public static IdentifiableTypeGroup? plorts;
         public static IdentifiableTypeGroup? largos;
         public static IdentifiableTypeGroup? baseSlimes;
         public static IdentifiableTypeGroup? food;
@@ -393,17 +394,34 @@ namespace SR2E.Library
         }
         public static void MakeNOTSellable(this IdentifiableType ident)
         {
-            if (marketData.ContainsKey(ident))
+            if (!marketData.ContainsKey(ident))
             {
-                foreach (MarketUI.PlortEntry entry in marketPlortEntries)
-                {
-                    if (entry.identType == ident)
-                    { marketPlortEntries.Remove(entry); break; }
-                }
-                marketData.Remove(ident);
+                MelonLogger.Error("Failed to make object unsellable: The object is already unsellable");
+                return;
             }
-            MelonLogger.Error("Failed to make object unsellable: The object is already unsellable");
-            return;
+            foreach (MarketUI.PlortEntry entry in marketPlortEntries)
+            {
+                if (entry.identType == ident)
+                { marketPlortEntries.Remove(entry); break; }
+            }
+            marketData.Remove(ident);
+        }
+        public static SlimeDefinition getSlime(string name)
+        {
+            foreach (IdentifiableType type in slimes.memberTypes)
+                if (type.name.ToUpper() == name.ToUpper())
+                    if (type is SlimeDefinition)
+                        return type as SlimeDefinition;
+                
+            return null;
+        }
+        public static IdentifiableType getPlort(string name)
+        {
+            foreach (IdentifiableType type in plorts.memberTypes)
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type;
+                
+            return null;
         }
         public static void SetSlimeColor(this SlimeDefinition slimedef, Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec,  int index, int index2, bool isSS, int structure)
         {
