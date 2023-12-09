@@ -1,4 +1,4 @@
-﻿#pragma warning disable
+﻿
 using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Library

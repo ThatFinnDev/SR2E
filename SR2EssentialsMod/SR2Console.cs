@@ -205,7 +205,7 @@ namespace SR2E
 
             consoleBlock.SetActive(false);
             consoleMenu.SetActive(false);
-            try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch (Exception e) { }
+            try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch  { }
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
 
         }
@@ -222,7 +222,7 @@ namespace SR2E
 
             consoleBlock.SetActive(true);
             consoleMenu.SetActive(true);
-            try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch (Exception e) { }
+            try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch  { }
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
             RefreshAutoComplete(commandInput.text);
         }

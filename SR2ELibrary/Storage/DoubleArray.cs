@@ -1,4 +1,4 @@
-﻿#pragma warning disable
+﻿
 namespace SR2E.Library.Storage
 {
     public class DoubleArray<T0, T1>
