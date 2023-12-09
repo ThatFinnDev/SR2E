@@ -1,16 +1,4 @@
-﻿using Il2CppInterop.Runtime.Injection;
-using Il2CppMonomiPark.SlimeRancher.Persist;
-using Il2CppMonomiPark.SlimeRancher.Script.Util;
-using Il2CppMonomiPark.SlimeRancher.UI;
-using SR2E;
-using SR2E.Library.Storage;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Linq;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Tables;
-
-
+﻿
 namespace SR2E.Library
 {
     public class SR2EMod : MelonMod
@@ -22,7 +10,7 @@ namespace SR2E.Library
                 return Info.Version;
             }
         }
-        public static GameV04? Save;
+
         
         
         public virtual void PlayerSceneLoad() { }

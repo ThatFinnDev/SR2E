@@ -65,7 +65,7 @@ namespace SR2E.Library
         {
             public static void Postfix(SavedGame __instance)
             {
-                SR2EMod.Save = __instance.GameState;
+                Save = __instance.GameState;
                 foreach (SR2EMod lib in mods)
                 {
                     lib.SavedGameLoad();

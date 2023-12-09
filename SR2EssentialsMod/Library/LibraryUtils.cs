@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using UnityEngine.Localization;
@@ -115,20 +116,9 @@ namespace SR2E.Library
         }
 
         public enum LargoSettings
-        {
-            KeepFirstBody,
-            KeepSecondBody,
-            KeepFirstFace,
-            KeepSecondFace,
-            KeepFirstColor,
-            KeepSecondColor,
-            MergeColors
-        }
+        { KeepFirstBody, KeepSecondBody, KeepFirstFace, KeepSecondFace, KeepFirstColor, KeepSecondColor, MergeColors }
         public static SlimeDefinitions? slimeDefinitions
-        {
-            get { return gameContext.SlimeDefinitions; }
-            set { gameContext.SlimeDefinitions = value; }
-        }
+        { get { return gameContext.SlimeDefinitions; } set { gameContext.SlimeDefinitions = value; } }
 
 
 
@@ -454,5 +444,6 @@ namespace SR2E.Library
             UnityEngine.Object.DontDestroyOnLoad(obj);
             obj.transform.parent = rootOBJ.transform;
         }
+        public static GameV04? Save => gameContext.AutoSaveDirector.SavedGame.gameState;
     }
 }
