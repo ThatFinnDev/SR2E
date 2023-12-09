@@ -16,6 +16,14 @@ internal class WeaponVacuumExpelPatch
         }
     }
 }
+[HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.MAX_AUTOSAVES),  MethodType.Getter)]
+internal class AutoSaveCountPatch
+{
+    public static bool Prefix(int __result)
+    {
+        
+    }
+}
 [HarmonyPatch(typeof(TeleporterNode), nameof(TeleporterNode.OnTriggerEnter))]
 internal class TeleporterUsePatch
 {
