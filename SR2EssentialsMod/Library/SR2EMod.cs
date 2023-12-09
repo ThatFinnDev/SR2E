@@ -416,7 +416,7 @@ namespace SR2E.Library
             Material mat = null;
             if (isSS == true)
             {
-                mat = slimedef.AppearancesDynamic[index].Structures[structure].DefaultMaterials[index2];
+                mat = slimedef.AppearancesDynamic.ToArray()[index].Structures[structure].DefaultMaterials[index2];
             }
             else
             {
