@@ -3,6 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using SR2E.Library.Storage;
+using System.IO;
 using System.Linq;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
@@ -546,6 +547,32 @@ namespace SR2E.Library
         {
             var group = Get<IdentifiableTypeGroup>(groupName);
             group.memberTypes.Add(type);
+        }
+
+        public static IdentifiableTypeGroup MakeNewGroup(IdentifiableType[] types, string groupName, IdentifiableTypeGroup[] subGroups = null)
+        {
+            var group = new IdentifiableTypeGroup();
+            var typesList = new Il2CppSystem.Collections.Generic.List<IdentifiableType>();
+            foreach (var type in types)
+            {
+                try
+                {
+                    typesList.Add(type);
+                }
+                catch { }
+            }
+                var subGroupsList = new Il2CppSystem.Collections.Generic.List<IdentifiableTypeGroup>();
+            foreach (var subGroup in subGroups)
+            {
+                try
+                {
+                    subGroupsList.Add(subGroup);
+                }
+                catch { }
+            }
+            group.memberTypes = typesList;
+            group.memberGroups = subGroupsList;
+            return group;
         }
     }
 }
