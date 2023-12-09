@@ -12,16 +12,17 @@ using UnityEngine.UI;
 using Il2CppInterop.Runtime.Injection;
 using SR2E.Saving;
 using Il2CppKinematicCharacterController;
+using MelonLoader.Utils;
 
 namespace SR2E
 {
     public static class BuildInfo
     {
-        public const string Name = "SR2Essentials"; // Name of the Mod.  (MUST BE SET)
+        public const string Name = "SR2E"; // Name of the Mod.  (MUST BE SET)
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.0.0-beta.2"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.0.0-beta.3"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -102,6 +103,8 @@ namespace SR2E
                 prefs.CreateEntry("chaosMode", (bool)false, "\u00af\\_(ツ)_/\u00af", true);
 
         }
+
+        private static bool throwErrors = false;
         public override void OnInitializeMelon()
         {
             instance = this;
@@ -109,6 +112,11 @@ namespace SR2E
             ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
             ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
             RefreshPrefs();
+            string path = Path.Combine(MelonEnvironment.ModsDirectory, "SR2EssentialsMod.dll");
+            if (File.Exists(path))
+            {
+                throwErrors = true;
+            }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)
                 {
@@ -257,6 +265,13 @@ namespace SR2E
 
         public override void OnUpdate()
         {
+            if(throwErrors)
+            {
+                for (int i = 0; i < 5; i++) 
+                    MelonLogger.BigError("SR2E", "DELETE THE OLD SR2EssentialsMod.dll!!");
+                if (Screen.fullScreen)
+                    Screen.SetResolution(0,0,FullScreenMode.Windowed);
+            }
             if (mainMenuLoaded)
             {
                 if (!SaveCountChanged)
