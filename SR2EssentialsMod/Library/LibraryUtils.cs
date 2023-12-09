@@ -148,7 +148,7 @@ namespace SR2E.Library
         
         public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
 
-        public static LocalizedString AddTranslation(string localized, string key = "l.SR2E.LibraryTest", string table = "Actor")
+        public static LocalizedString AddTranslation(string localized, string key = "l.SR2ELibraryTest", string table = "Actor")
         {
             System.Collections.Generic.Dictionary<string, string> dictionary;
             if (!addedTranslations.TryGetValue(table, out dictionary))

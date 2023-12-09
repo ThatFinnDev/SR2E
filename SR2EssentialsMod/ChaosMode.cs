@@ -86,9 +86,20 @@ internal class ChaosMode
                     "Lucky|15|27",
                     "Tarr|15|27",
                 };
+                int largoIndex = 0;
+                foreach (var slime in LibraryUtils.slimes.GetAllMembersArray())
+                {
+                    SlimeDefinition slimeReal = slime.Cast<SlimeDefinition>();
+                    if (slimeReal.IsLargo)
+                    {
+                        if (largoIndex == 0)
+                            slime.MakeSellable(28, 27, false);
+                        else
+                            slime.MakeSellable(20, 15, true);
 
-                GetSlime("PinkBoom").MakeSellable(6,6,false);
-                GetSlime("PinkRock").MakeSellable(6,6,true);
+                        largoIndex++;
+                    }
+                }
                 for (int i = 0; i < slimes.Count; i++)
                 {
                     try
