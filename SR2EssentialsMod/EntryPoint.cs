@@ -13,6 +13,7 @@ using Il2CppInterop.Runtime.Injection;
 using SR2E.Saving;
 using Il2CppKinematicCharacterController;
 using MelonLoader.Utils;
+using Il2CppMonomiPark.SlimeRancher.Damage;
 
 namespace SR2E
 {
@@ -152,7 +153,7 @@ namespace SR2E
                 GameContext.Instance.AutoSaveDirector.SaveGame();
             }
         }
-
+        public static Damage killDamage;
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
 
@@ -202,6 +203,13 @@ namespace SR2E
                     prompt.OnInteract(new InputAction.CallbackContext());
                     break;
                 case "GameCore":
+
+                    killDamage = new Damage
+                    {
+                        Amount = 99999999,
+                        DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
+                    };
+                    killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
                     autoSaveDirector.saveSlotCount = 50;
                     

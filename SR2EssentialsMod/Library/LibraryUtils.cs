@@ -541,6 +541,17 @@ namespace SR2E.Library
         }
         */
 
+        public static void SetAppearanceVacColor(this SlimeAppearance appearance, Color color)
+        {
+            appearance._colorPalette = new SlimeAppearance.Palette()
+            {
+                Top = appearance._colorPalette.Top,
+                Middle = appearance._colorPalette.Middle,
+                Bottom = appearance._colorPalette.Bottom,
+                Ammo = color
+            };
+        }
+
         public static SlimeDefinition GetBaseSlime(string name)
         {
             foreach (IdentifiableType type in baseSlimes.GetAllMembersArray())
