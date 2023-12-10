@@ -29,6 +29,8 @@ namespace SR2E.Library
                 
                 //To someone that finds that code, ik it looks like garbage, because it is,
                 //but i've tried for too long to make it work. This works some I just gonna leave it
+                /*
+                
                 List<MarketUI.PlortEntry> list = __instance.plorts.ToList();
                 List<MarketUI.PlortEntry> listTwo = __instance.plorts.ToList();
                 foreach (MarketUI.PlortEntry entry in list)
@@ -39,6 +41,8 @@ namespace SR2E.Library
                 foreach (MarketUI.PlortEntry entry in listTwo)
                     if (entry != null)
                         __instance.plorts.AddItem(entry);
+
+                */ 
                 
                 __instance.plorts = __instance.plorts.ToArray<MarketUI.PlortEntry>().AddRangeToArray(marketPlortEntriesList.ToArray());
                 __instance.plorts = __instance.plorts.Take(34).ToArray();
@@ -62,8 +66,9 @@ namespace SR2E.Library
                     };
                     valueMaps.Add(valueMap);
                 }
-                 
-                //Same as on the top
+                __instance.BaseValueMap = HarmonyLib.CollectionExtensions.AddRangeToArray<EconomyDirector.ValueMap>(__instance.BaseValueMap.ToArray(), valueMaps.ToArray());
+                /*
+                // Same as on the top
                 List<EconomyDirector.ValueMap> list = __instance.BaseValueMap.ToList();
                 List<EconomyDirector.ValueMap> listTwo = __instance.BaseValueMap.ToList();
                 foreach (EconomyDirector.ValueMap entry in list)
@@ -74,8 +79,7 @@ namespace SR2E.Library
                 foreach (EconomyDirector.ValueMap entry in listTwo)
                     if (entry != null)
                         __instance.BaseValueMap.AddItem(entry);
-                
-                __instance.BaseValueMap = HarmonyLib.CollectionExtensions.AddRangeToArray<EconomyDirector.ValueMap>(__instance.BaseValueMap.ToArray(), valueMaps.ToArray());
+                */
             }
         }
         [HarmonyPatch(typeof(AutoSaveDirector), "Awake")]
