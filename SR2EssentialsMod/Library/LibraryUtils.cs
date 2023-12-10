@@ -93,7 +93,7 @@ namespace SR2E.Library
         {
             appearance.Structures.Add(structure);
         }
-        public static SlimeDiet CreateMergedDiet(this SlimeDiet firstDiet, SlimeDiet secondDiet)
+        public static SlimeDiet MergeDiet(this SlimeDiet firstDiet, SlimeDiet secondDiet)
         {
             var mergedDiet = INTERNAL_CreateNewDiet();
             
@@ -505,5 +505,83 @@ namespace SR2E.Library
             obj.transform.parent = rootOBJ.transform;
         }
         public static GameV04? Save => gameContext.AutoSaveDirector.SavedGame.gameState;
+        public static void SetSlimeMatTopColor(this Material mat, Color color) => mat.SetColor("_TopColor", color);
+        public static void SetSlimeMatMiddleColor(this Material mat, Color color) => mat.SetColor("_MiddleColor", color);
+
+        public static void SetSlimeMatBottomColor(this Material mat, Color color) => mat.SetColor("_BottomColor", color);
+
+        public static void SetSlimeMatColors(this Material material, Color32 Top, Color32 Middle, Color32 Bottom, Color32 Specular)
+        {
+            material.SetColor("_TopColor", Top);
+            material.SetColor("_MiddleColor", Middle);
+            material.SetColor("_BottomColor", Bottom);
+            material.SetColor("_SpecColor", Specular);
+        }
+        public static void SetSlimeMatColors(this Material material, Color32 Top, Color32 Middle, Color32 Bottom)
+        {
+            material.SetColor("_TopColor", Top);
+            material.SetColor("_MiddleColor", Middle);
+            material.SetColor("_BottomColor", Bottom);
+        }/*
+        public static void MakeNOTSellable(this IdentifiableType ident)
+        {
+            removeMarketPlortEntries.Add(ident);
+            foreach (var keyPair in marketPlortEntries)
+            {
+                MarketUI.PlortEntry entry = keyPair.Key;
+                if (entry.identType == ident)
+                {
+                    marketPlortEntries.Remove(entry);
+                    break;
+                }
+            }
+
+            if (marketData.ContainsKey(ident))
+                marketData.Remove(ident);
+        }
+        */
+
+        public static SlimeDefinition GetBaseSlime(string name)
+        {
+            foreach (IdentifiableType type in baseSlimes.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetFruit(string name)
+        {
+            foreach (IdentifiableType type in fruits.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetFood(string name)
+        {
+            foreach (IdentifiableType type in food.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetMeat(string name)
+        {
+            foreach (IdentifiableType type in meat.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetVeggie(string name)
+        {
+            foreach (IdentifiableType type in veggies.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetLargo(string name)
+        {
+            foreach (IdentifiableType type in largos.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
     }
 }
