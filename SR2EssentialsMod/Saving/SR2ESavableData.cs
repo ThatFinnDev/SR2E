@@ -58,7 +58,15 @@ internal class SR2ESavableData
     /// </summary>
     public Dictionary<long, SR2ESlimeData> slimeSavedData;
 
+    /// <summary>
+    /// Data saved to the player
+    /// </summary>
     public SR2EPlayerData playerSavedData = new SR2EPlayerData();
+
+    /// <summary>
+    /// Data that can be saved using mods.
+    /// </summary>
+    public List<object> librarySavedData = new List<object>();
 
     public void SaveToStream(Stream stream)
     {
@@ -92,11 +100,6 @@ internal class SR2ESavableData
 
     public void TrySave()
     {
-
-        if (Instance.playerSavedData.vacMode == VacModes.AUTO_VAC || Instance.playerSavedData.vacMode == VacModes.AUTO_VAC)
-        {
-            Instance.playerSavedData.vacMode = VacModes.NORMAL;
-        }
         //var json = JsonConvert.SerializeObject(this, Formatting.Indented);
         //File.WriteAllText(currPath, json);
         DebugSaveToNewFile(currPath);
@@ -108,10 +111,6 @@ internal class SR2ESavableData
             var reader = new StreamReader(localStream);
             var json = reader.ReadToEnd();
             SR2ESavableData save = JsonConvert.DeserializeObject<SR2ESavableData>(json);
-            if (Instance.playerSavedData.vacMode == VacModes.AUTO_VAC || Instance.playerSavedData.vacMode == VacModes.AUTO_VAC)
-            {
-                Instance.playerSavedData.vacMode = VacModes.NORMAL;
-            }
             return save;
         }
     }

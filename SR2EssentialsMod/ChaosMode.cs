@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using Il2Cpp;
+using Il2CppMonomiPark.SlimeRancher.Weather.Activity;
+using Il2CppMonomiPark.SlimeRancher.Weather;
+using System.Linq;
 
 namespace SR2E;
 
@@ -12,7 +15,7 @@ internal class ChaosMode
         Color32 hotPink2 = new Color32(222, 11, 162, 255);
         Color32 hotPink3 = new Color32(186, 13, 137, 255);
         SlimeDefinition tarrDefinition = GetSlime("Tarr");
-        tarrDefinition.ChangeSlimeColors(hotPink1,hotPink2,hotPink3);
+        tarrDefinition.SetSlimeColor(hotPink1, hotPink2, hotPink3, hotPink3, 0, 0, false, 0);
         
         tarrDefinition.prefab.GetComponent<AttackPlayer>().DamagePerAttack = 1000;
         
@@ -25,6 +28,42 @@ internal class ChaosMode
             tarrStr.Value = "Pink Tarr";
         }
     }
+
+    public static void SetupTarrRain()
+    {
+        var slimeRainFields = WeatherState("Slime Rain State Fields");
+
+        var spawnerActivity = new SpawnActorActivity()
+        {
+            name = "Null Slime Rain",
+            ActorType = GetSlime("Tarr"),
+            IntensityDivisor = 0.3f,
+            _intensity = 0.2f,
+            SecondsBetweenSpawns = new Range()
+            {
+                Max = 5,
+                Min = 3,
+            },
+            SpawnStrategy = slimeRainFields.Activities[0].Activity.Cast<SpawnActorActivity>().SpawnStrategy,
+        };
+        var activity = new WeatherStateDefinition.ActivityIntensityMapping()
+        {
+            Activity = spawnerActivity,
+            Intensity = 1
+        };
+        
+        slimeRainFields.Activities.Add(activity);
+
+        var slimeRainValley = WeatherState("Slime Rain State Valley");
+        var slimeRainStrand = WeatherState("Slime Rain State Strand");
+        var slimeRainBluffs = WeatherState("Slime Rain State Bluffs");
+        slimeRainValley.Activities.Add(activity);
+        slimeRainStrand.Activities.Add(activity);
+        slimeRainBluffs.Activities.Add(activity);
+
+
+    }
+
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         if (sceneName.StartsWith("environment"))
@@ -49,7 +88,8 @@ internal class ChaosMode
 
                 PinkTarr();
 
-                GetSlime("Pink").switchSlimeAppearances(GetSlime("Gold"));
+                GetSlime("Pink").SwitchSlimeAppearances(GetSlime("Gold"));
+                GetSlime("Pink").prefab.AddComponent<SlimeFlee>();
                 
                 
                 List<string> slimes = new List<string> { 
