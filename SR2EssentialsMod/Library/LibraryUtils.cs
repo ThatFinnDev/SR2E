@@ -17,11 +17,11 @@ namespace SR2E.Library
     public static class LibraryUtils
     {
         internal static Dictionary<IdentifiableType, ModdedMarketData> marketData = new Dictionary<IdentifiableType, ModdedMarketData>(0);
-
         internal static Dictionary<MarketUI.PlortEntry, bool> marketPlortEntries = new Dictionary<MarketUI.PlortEntry, bool>();
         internal static List<IdentifiableType> removeMarketPlortEntries = new List<IdentifiableType>();
         internal static GameObject rootOBJ;
         internal static Dictionary<SlimeDefinition, LargoSettings>? LargoData = new Dictionary<SlimeDefinition, LargoSettings>(0);
+        internal static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, Dictionary<string, string>>();
         
         public static IdentifiableTypeGroup? slimes;
         public static IdentifiableTypeGroup? plorts;
@@ -33,12 +33,13 @@ namespace SR2E.Library
         public static IdentifiableTypeGroup? fruits;
         public static GameObject? player;
 
-        public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE }
+       public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE }
+        public enum LargoSettings { KeepFirstBody, KeepSecondBody, KeepFirstFace, KeepSecondFace, KeepFirstColor, KeepSecondColor, MergeColors }
+        
         public static SystemContext systemContext { get { return SystemContext.Instance; } }
         public static GameContext gameContext { get { return GameContext.Instance; } }
         public static SceneContext sceneContext { get { return SceneContext.Instance; } }
-        
-        
+        public static SlimeDefinitions slimeDefinitions { get { return gameContext.SlimeDefinitions; } set { gameContext.SlimeDefinitions = value; } }
         public static SlimeDefinition CreateSlimeDef(string Name, Color32 VacColor, Sprite Icon, SlimeAppearance baseAppearance, string appearanceName, string RefID)
         {
             SlimeDefinition slimedef = ScriptableObject.CreateInstance<SlimeDefinition>();
@@ -51,7 +52,7 @@ namespace SR2E.Library
                 SlimeAppearance appearance = Object.Instantiate<SlimeAppearance>(baseAppearance);
                 Object.DontDestroyOnLoad(appearance);
                 appearance.name = appearanceName;
-                slimedef.AppearancesDefault.Add(appearance);
+                slimedef.AppearancesDefault.AddItem(appearance);
                 bool flag = slimedef.AppearancesDefault[0] == null;
                 if (flag)
                 {
@@ -75,7 +76,7 @@ namespace SR2E.Library
                 SlimeAppearance appearance = Object.Instantiate(Get<SlimeAppearance>("CottonDefault"));
                 Object.DontDestroyOnLoad(appearance);
                 appearance.name = appearanceName;
-                slimedef.AppearancesDefault.Add(appearance);
+                slimedef.AppearancesDefault.AddItem(appearance);
                 bool flag = slimedef.AppearancesDefault[0] == null;
                 if (flag)
                 {
@@ -98,7 +99,7 @@ namespace SR2E.Library
             slimedef.Diet = diet;
             slimedef.color = VacColor;
             slimedef.icon = Icon;
-            slimeDefinitions.Slimes.Add(slimedef);
+            slimeDefinitions.Slimes.AddItem(slimedef);
             AddToGroup(slimedef, "VaccableBaseSlimeGroup");
             if (!slimedef.IsLargo)
             {
@@ -109,45 +110,6 @@ namespace SR2E.Library
             slimedef.properties = Get<SlimeDefinition>("Pink").properties;
             return slimedef;
         }
-
-
-        public static SlimeDiet CreateMergedDiet(this SlimeDiet firstDiet, SlimeDiet secondDiet)
-        {
-            var mergedDiet = INTERNAL_CreateNewDiet();
-            
-            mergedDiet.EatMap.AddListRangeNoMultiple(firstDiet.EatMap);
-            mergedDiet.EatMap.AddListRangeNoMultiple(secondDiet.EatMap);
-
-            mergedDiet.AdditionalFoodIdents.AddRange(firstDiet.AdditionalFoodIdents);
-            mergedDiet.AdditionalFoodIdents.AddRange(secondDiet.AdditionalFoodIdents);
-
-            mergedDiet.FavoriteIdents.AddRange(firstDiet.FavoriteIdents);
-            mergedDiet.FavoriteIdents.AddRange(secondDiet.FavoriteIdents);
-
-            mergedDiet.ProduceIdents.AddRange(firstDiet.ProduceIdents);
-            mergedDiet.ProduceIdents.AddRange(secondDiet.ProduceIdents);
-
-            return mergedDiet;
-        }
-        public static void switchSlimeAppearances(this SlimeDefinition slimeOneDef, SlimeDefinition slimeTwoDef)
-        {
-            var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures; slimeOneDef.AppearancesDefault[0]._structures = slimeTwoDef.AppearancesDefault[0]._structures; slimeTwoDef.AppearancesDefault[0]._structures = appearanceOne;
-
-            var structureIcon = slimeOneDef.AppearancesDefault[0]._icon; slimeOneDef.AppearancesDefault[0]._icon = slimeTwoDef.AppearancesDefault[0]._icon; slimeTwoDef.AppearancesDefault[0]._icon = structureIcon;
-            var icon = slimeOneDef.icon; slimeOneDef.icon = slimeTwoDef.icon; slimeTwoDef.icon = icon;
-
-            var debugIcon = slimeOneDef.debugIcon; slimeOneDef.debugIcon = slimeTwoDef.debugIcon; slimeTwoDef.debugIcon = debugIcon;
-
-        }
-
-        public enum LargoSettings { KeepFirstBody, KeepSecondBody, KeepFirstFace, KeepSecondFace, KeepFirstColor, KeepSecondColor, MergeColors }
-        public static SlimeDefinitions? slimeDefinitions { get { return gameContext.SlimeDefinitions; } set { gameContext.SlimeDefinitions = value; } }
-
-
-
-        
-        public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
-
         public static LocalizedString AddTranslation(string localized, string key = "l.SR2ELibraryTest", string table = "Actor")
         {
             System.Collections.Generic.Dictionary<string, string> dictionary;
@@ -173,159 +135,125 @@ namespace SR2E.Library
             return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
 
+        public static SlimeDiet CreateMergedDiet(this SlimeDiet firstDiet, SlimeDiet secondDiet)
+        {
+            var mergedDiet = INTERNAL_CreateNewDiet();
+
+            foreach (SlimeDiet.EatMapEntry entry in firstDiet.EatMap) if(!mergedDiet.EatMap.Contains(entry)) mergedDiet.EatMap.Add(entry);
+            foreach (SlimeDiet.EatMapEntry entry in secondDiet.EatMap) if(!mergedDiet.EatMap.Contains(entry)) mergedDiet.EatMap.Add(entry);
+
+            mergedDiet.AdditionalFoodIdents = HarmonyLib.CollectionExtensions.AddRangeToArray<IdentifiableType>(mergedDiet.AdditionalFoodIdents, firstDiet.AdditionalFoodIdents);
+            mergedDiet.AdditionalFoodIdents = HarmonyLib.CollectionExtensions.AddRangeToArray<IdentifiableType>(mergedDiet.AdditionalFoodIdents, firstDiet.AdditionalFoodIdents);
+
+            mergedDiet.FavoriteIdents = HarmonyLib.CollectionExtensions.AddRangeToArray<IdentifiableType>(mergedDiet.FavoriteIdents, firstDiet.FavoriteIdents);
+            mergedDiet.FavoriteIdents = HarmonyLib.CollectionExtensions.AddRangeToArray<IdentifiableType>(mergedDiet.FavoriteIdents, firstDiet.FavoriteIdents);
+
+            mergedDiet.ProduceIdents = HarmonyLib.CollectionExtensions.AddRangeToArray<IdentifiableType>(mergedDiet.ProduceIdents, firstDiet.ProduceIdents);
+            mergedDiet.ProduceIdents = HarmonyLib.CollectionExtensions.AddRangeToArray<IdentifiableType>(mergedDiet.ProduceIdents, secondDiet.ProduceIdents);
+
+            return mergedDiet;
+        }
+        public static void switchSlimeAppearances(this SlimeDefinition slimeOneDef, SlimeDefinition slimeTwoDef)
+        {
+            var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures; slimeOneDef.AppearancesDefault[0]._structures = slimeTwoDef.AppearancesDefault[0]._structures; slimeTwoDef.AppearancesDefault[0]._structures = appearanceOne;
+
+            var structureIcon = slimeOneDef.AppearancesDefault[0]._icon; slimeOneDef.AppearancesDefault[0]._icon = slimeTwoDef.AppearancesDefault[0]._icon; slimeTwoDef.AppearancesDefault[0]._icon = structureIcon;
+            var icon = slimeOneDef.icon; slimeOneDef.icon = slimeTwoDef.icon; slimeTwoDef.icon = icon;
+
+            var debugIcon = slimeOneDef.debugIcon; slimeOneDef.debugIcon = slimeTwoDef.debugIcon; slimeTwoDef.debugIcon = debugIcon;
+
+        }
+
+        
+
+
+        
+        
+        
         public static IdentifiableType GetIdent(this GameObject obj)
         {
             var comp = obj.GetComponent<IdentifiableActor>();
-
             if (comp != null)
-            {
                 return comp.identType;
-            }
-            else { return null; }
+            return null;
         }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
-            {
-                var eatmap = new SlimeDiet.EatMapEntry
-                {
-                    EatsIdent = eat,
-                    ProducesIdent = produce,
-                    BecomesIdent = becomes,
-                    Driver = driver,
-                    MinDrive = mindrive
-                };
-                return eatmap;
-            }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
-        {
-            var eatmap = new SlimeDiet.EatMapEntry
-            {
-                EatsIdent = eat,
-                ProducesIdent = produce,
-                Driver = driver,
-                MinDrive = mindrive
-            };
-            return eatmap;
-        }
+        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float minDrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes) =>
+            new SlimeDiet.EatMapEntry { EatsIdent = eat, ProducesIdent = produce, BecomesIdent = becomes, Driver = driver, MinDrive = minDrive };
+        
+
+        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float minDrive, IdentifiableType produce, IdentifiableType eat) => 
+            new SlimeDiet.EatMapEntry { EatsIdent = eat, ProducesIdent = produce, Driver = driver, MinDrive = minDrive };
+        
         public static void ModifyEatmap(this SlimeDiet.EatMapEntry eatmap, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
-            {
-                eatmap.EatsIdent = eat;
-                eatmap.BecomesIdent = becomes;
-                eatmap.ProducesIdent = produce;
-                eatmap.Driver = driver;
-                eatmap.MinDrive = mindrive;
-            }
+        { eatmap.EatsIdent = eat; eatmap.BecomesIdent = becomes; eatmap.ProducesIdent = produce; eatmap.Driver = driver; eatmap.MinDrive = mindrive; }
         public static void ModifyEatmap(this SlimeDiet.EatMapEntry eatmap, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
-            {
-                eatmap.EatsIdent = eat;
-                eatmap.ProducesIdent = produce;
-                eatmap.Driver = driver;
-                eatmap.MinDrive = mindrive;
-            }
-        public static void AddProduceIdent(this SlimeDefinition slimedef, IdentifiableType ident)
-            {
-                slimedef.Diet.ProduceIdents.Add(ident);
-            }
-        public static void SetProduceIdent(this SlimeDefinition slimedef, IdentifiableType ident, int index)
-            {
-                slimedef.Diet.ProduceIdents[index] = ident;
-            }
-        public static void AddExtraEatIdent(this SlimeDefinition slimedef, IdentifiableType ident)
-            {
-                slimedef.Diet.AdditionalFoodIdents.Add(ident);
-            }
-        public static void SetFavoriteProduceCount(this SlimeDefinition slimedef, int count)
-            {
-                slimedef.Diet.FavoriteProductionCount = count;
-            }
-        public static void AddEatmapToSlime(this SlimeDefinition slimedef, SlimeDiet.EatMapEntry eatmap)
-            {
-                slimedef.Diet.EatMap.Add(eatmap);
-            }
-        public static void AddSlimeToEatmap(this SlimeDiet.EatMapEntry eatmap,SlimeDefinition slimedef)
-        {
-            slimedef.Diet.EatMap.Add(eatmap);
-        }
-        public static void SetStructColor(this SlimeAppearanceStructure structure, int id, Color color)
-            {
-                structure.DefaultMaterials[0].SetColor(id, color);
-            }
-        public static void RefreshEatmap(this SlimeDefinition def)
-            {
-                def.Diet.RefreshEatMap(slimeDefinitions, def);
-            }
-        public static void ChangeSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG, int index)
-            {
-                def.Diet.MajorFoodGroups[index] = FG;
-            }
-        public static void AddSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG)
-            {
-                def.Diet.MajorFoodGroups.AddItem<SlimeEat.FoodGroup>(FG);
-            }
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
-            {
-                return SRBehaviour.InstantiateActor(obj,
-                    SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
-                    false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
-            }
-        public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos)
-            {
-                return SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
-            }
-        public static T? Get<T>(string name) where T : Object { return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); }
+        { eatmap.EatsIdent = eat; eatmap.ProducesIdent = produce; eatmap.Driver = driver; eatmap.MinDrive = mindrive; }
+        public static void RefreshEatmap(this SlimeDefinition def) =>
+            def.Diet.RefreshEatMap(slimeDefinitions, def);
+        public static void AddEatmap(this SlimeDefinition slimeDef, SlimeDiet.EatMapEntry eatmap) =>
+            slimeDef.Diet.EatMap.Add(eatmap);
+        
+        public static void AddProduceIdent(this SlimeDefinition slimeDef, IdentifiableType ident) =>
+            slimeDef.Diet.ProduceIdents.AddItem(ident);
+        public static void SetProduceIdent(this SlimeDefinition slimeDef, IdentifiableType ident, int index) => 
+            slimeDef.Diet.ProduceIdents[index] = ident;
+        public static void AddExtraEatIdent(this SlimeDefinition slimeDef, IdentifiableType ident) =>
+            slimeDef.Diet.AdditionalFoodIdents.AddItem(ident);
+        public static void SetFavoriteProduceCount(this SlimeDefinition slimeDef, int count) => 
+            slimeDef.Diet.FavoriteProductionCount = count;
+            
+            
+        public static void ChangeSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG, int index) =>
+            def.Diet.MajorFoodGroups[index] = FG;
+        public static void AddSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG) =>
+            def.Diet.MajorFoodGroups.AddItem<SlimeEat.FoodGroup>(FG);
+        
+        public static void SetStructColor(this SlimeAppearanceStructure structure, int id, Color color) =>
+            structure.DefaultMaterials[0].SetColor(id, color);
+        public static void SetTopColor(this SlimeAppearanceStructure structure, Color color) =>
+            structure.DefaultMaterials[0].SetColor("_TopColor", color);
+        public static void SetMiddleColor(this SlimeAppearanceStructure structure, Color color) =>
+            structure.DefaultMaterials[0].SetColor("_MiddleColor", color);
+        public static void SetBottomColor(this SlimeAppearanceStructure structure, Color color) =>
+            structure.DefaultMaterials[0].SetColor("_BottomColor", color);
+            
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos) =>
+            SRBehaviour.InstantiateActor(obj, SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity, false); 
+        public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos) => 
+            SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
+            
+        
         public static void AddToGroup(this IdentifiableType type, string groupName)
         {
             var group = Get<IdentifiableTypeGroup>(groupName);
+            if(group!=null)
+            { group.memberTypes.Add(type); return; }
+            MelonLogger.Msg($"There is no group called {groupName}");
+        }
+        public static void AddToGroup(this IdentifiableType type, IdentifiableTypeGroup group) =>
             group.memberTypes.Add(type);
-        }
-
-        public static IdentifiableTypeGroup MakeNewGroup(IdentifiableType[] types, string groupName, IdentifiableTypeGroup[] subGroups = null)
-            {
-                var group = new IdentifiableTypeGroup();
-                var typesList = new Il2CppSystem.Collections.Generic.List<IdentifiableType>();
-                foreach (var type in types)
-                {
-                    try
-                    {
-                        typesList.Add(type);
-                    }
-                    catch
-                    {
-                    }
-                }
-
-                var subGroupsList = new Il2CppSystem.Collections.Generic.List<IdentifiableTypeGroup>();
-                foreach (var subGroup in subGroups)
-                {
-                    try
-                    {
-                        subGroupsList.Add(subGroup);
-                    }
-                    catch
-                    {
-                    }
-                }
-
-                group.memberTypes = typesList;
-                group.memberGroups = subGroupsList;
-                return group;
-            }
-        
-            
-        internal static SlimeDiet INTERNAL_CreateNewDiet()
+        public static IdentifiableTypeGroup MakeNewGroup(IdentifiableType[] types, string groupName, IdentifiableTypeGroup[] subGroups = null) 
         {
-            var diet = new SlimeDiet();
+            var group = ScriptableObject.CreateInstance<IdentifiableTypeGroup>();
 
-            diet.ProduceIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
-            diet.FavoriteProductionCount = 2;
-            diet.MajorFoodGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<SlimeEat.FoodGroup>(1);
-            diet.EatMap = new Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry>(1);
-            diet.FavoriteIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
-            diet.AdditionalFoodIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
-            diet.MajorFoodIdentifiableTypeGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableTypeGroup>(1);
-            diet.BecomesOnTarrifyIdentifiableType = Get<IdentifiableType>("Tarr");
-            diet.EdiblePlortIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("EdiblePlortFoodGroup");
-            return diet;
+            var typesList = new Il2CppSystem.Collections.Generic.List<IdentifiableType>();
+            if (types != null) 
+                foreach (var type in types) 
+                    try { typesList.Add(type); } catch { }
+            
+
+            var subGroupsList = new Il2CppSystem.Collections.Generic.List<IdentifiableTypeGroup>();
+            if (subGroups != null) 
+                foreach (var subGroup in subGroups) 
+                    try { subGroupsList.Add(subGroup); }catch { }
+            
+            group.memberTypes = typesList;
+            group.memberGroups = subGroupsList;
+            group.hideFlags = HideFlags.HideAndDontSave;
+            return group;
         }
+
+
 
         public static GameObject CreatePrefab(string Name, GameObject baseObject)
         {
@@ -335,16 +263,11 @@ namespace SR2E.Library
             obj.transform.parent = rootOBJ.transform;
             var components = obj.GetComponents<Behaviour>();
             foreach (var component in components)
-            {
                 component.enabled = true;
-            }
             return obj;
         }
+        public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); 
 
-        public static void SetObjectPrefab(this IdentifiableType Object, GameObject prefab)
-        {
-            Object.prefab = prefab;
-        }
         public static void SetObjectIdent(this GameObject prefab, IdentifiableType Object)
         {
             if (Object is SlimeDefinition)
@@ -370,35 +293,49 @@ namespace SR2E.Library
             INTERNAL_SetupSaveForIdent(RefID, plort);
             return plort;
         }
-        internal static void INTERNAL_SetupSaveForIdent(string RefID, IdentifiableType ident)
+        
+        public static void SetColors(this Material material, Color32 Top, Color32 Middle, Color32 Bottom, Color32 Specular)
         {
-            ident.referenceId = RefID;
-            GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeLookup.Add(RefID, ident);
-            GameContext.Instance.AutoSaveDirector.identifiableTypes.memberTypes.Add(ident);
-            GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeToPersistenceId._primaryIndex.AddString(RefID);
-            GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeToPersistenceId._reverseIndex.Add(RefID, GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeToPersistenceId._reverseIndex.Count);
+            material.SetColor("_TopColor", Top);
+            material.SetColor("_MiddleColor", Middle);
+            material.SetColor("_BottomColor", Bottom);
+            material.SetColor("_SpecColor", Specular);
         }
-        public static void SetPlortColor(Color32 Top, Color32 Middle, Color32 Bottom, GameObject Prefab)
+        public static void SetColors(this Material material, Color32 Top, Color32 Middle, Color32 Bottom)
         {
-            var material = Prefab.GetComponent<MeshRenderer>().material;
             material.SetColor("_TopColor", Top);
             material.SetColor("_MiddleColor", Middle);
             material.SetColor("_BottomColor", Bottom);
         }
+        public static void ChangeSlimeColors(this SlimeDefinition slimedef, Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec)
+        => slimedef.AppearancesDefault[0]._structures[0].DefaultMaterials[0].SetColors(Top,Middle,Bottom,Spec);
+        public static void ChangeSlimeColors(this SlimeDefinition slimedef, Color32 Top, Color32 Middle, Color32 Bottom)
+            => slimedef.AppearancesDefault[0]._structures[0].DefaultMaterials[0].SetColors(Top,Middle,Bottom);
+
+        public static void SetSlimeColors(this SlimeDefinition slimedef, Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec, int index, int index2, bool isSS, int structure)
+        {
+            Material mat = null;
+            if (isSS)
+                mat = slimedef.AppearancesDynamic.ToArray()[index]._structures[structure].DefaultMaterials[index2];
+            else
+                mat = slimedef.AppearancesDefault[index]._structures[structure].DefaultMaterials[index2];
+            
+            mat.SetColor("_TopColor", Top);
+            mat.SetColor("_MiddleColor", Middle);
+            mat.SetColor("_BottomColor", Bottom);
+            mat.SetColor("_SpecColor", Spec);
+        } 
+
         public static void MakeSellable(this IdentifiableType ident, float marketValue, float marketSaturation, bool hideInMarket=false)
         {
             if (marketData.ContainsKey(ident))
-            {
-                MelonLogger.Error("Failed to make object sellable: The object is already sellable");
-                return;
-            }
+            { MelonLogger.Error("Failed to make object sellable: The object is already sellable"); return; }
             
             if (removeMarketPlortEntries.Contains(ident))
                 removeMarketPlortEntries.Remove(ident);
             marketPlortEntries.Add(new MarketUI.PlortEntry { identType = ident },hideInMarket);
             marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
         }
-
         public static bool isSellable(this IdentifiableType ident)
         {
             bool returnBool = false;
@@ -437,57 +374,99 @@ namespace SR2E.Library
             if (marketData.ContainsKey(ident))
                 marketData.Remove(ident);
         }
-        public static Il2CppArrayBase<IdentifiableType> GetAllMembersArray(this IdentifiableTypeGroup group)
-        {
-            return group.GetAllMembers().ToArray();
-        }
+        
+        public static Il2CppArrayBase<IdentifiableType> GetAllMembersArray(this IdentifiableTypeGroup group) =>
+            group.GetAllMembers().ToArray();
         public static SlimeDefinition GetSlime(string name)
         {
             foreach (IdentifiableType type in slimes.GetAllMembersArray())
                 if (type.name.ToUpper() == name.ToUpper())
                     return type.Cast<SlimeDefinition>();
-                
             return null;
         }
-
+        public static SlimeDefinition GetBaseSlime(string name)
+        {
+            foreach (IdentifiableType type in baseSlimes.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetFruit(string name)
+        {
+            foreach (IdentifiableType type in fruits.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetFood(string name)
+        {
+            foreach (IdentifiableType type in food.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetMeat(string name)
+        {
+            foreach (IdentifiableType type in meat.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetVeggie(string name)
+        {
+            foreach (IdentifiableType type in veggies.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
+        public static SlimeDefinition GetLargo(string name)
+        {
+            foreach (IdentifiableType type in largos.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type.Cast<SlimeDefinition>();
+            return null;
+        }
         public static IdentifiableType GetPlort(string name)
         {
             foreach (IdentifiableType type in plorts.GetAllMembersArray())
                 if (type.name.ToUpper() == name.ToUpper())
                     return type;
-                
             return null;
         }
-        public static void SetSlimeColor(this SlimeDefinition slimedef, Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec,  int index, int index2, bool isSS, int structure)
-        {
-            Material mat = null;
-            if (isSS == true)
-            {
-                mat = slimedef.AppearancesDynamic.ToArray()[index].Structures[structure].DefaultMaterials[index2];
-            }
-            else
-            {
-                mat = slimedef.AppearancesDefault[index].Structures[structure].DefaultMaterials[index2];
-            }
-            mat.SetColor("_TopColor", Top);
-            mat.SetColor("_MiddleColor", Middle);
-            mat.SetColor("_BottomColor", Bottom);
-            mat.SetColor("_SpecColor", Spec);
-        } 
         
-        public static Sprite ConvertToSprite(this Texture2D texture)
+        
+        internal static SlimeDiet INTERNAL_CreateNewDiet()
         {
-            return Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
+            var diet = new SlimeDiet();
+
+            diet.ProduceIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
+            diet.FavoriteProductionCount = 2;
+            diet.MajorFoodGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<SlimeEat.FoodGroup>(1);
+            diet.EatMap = new Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry>(1);
+            diet.FavoriteIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
+            diet.AdditionalFoodIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
+            diet.MajorFoodIdentifiableTypeGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableTypeGroup>(1);
+            diet.BecomesOnTarrifyIdentifiableType = Get<IdentifiableType>("Tarr");
+            diet.EdiblePlortIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("EdiblePlortFoodGroup");
+            return diet;
         }
+        internal static void INTERNAL_SetupSaveForIdent(string RefID, IdentifiableType ident)
+        {
+            ident.referenceId = RefID;
+            GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeLookup.Add(RefID, ident);
+            GameContext.Instance.AutoSaveDirector.identifiableTypes.memberTypes.Add(ident);
+            GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeToPersistenceId._primaryIndex.AddItem(RefID);
+            GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeToPersistenceId._reverseIndex.Add(RefID, GameContext.Instance.AutoSaveDirector.SavedGame.identifiableTypeToPersistenceId._reverseIndex.Count);
+        }
+
+        
+        
+        public static Sprite ConvertToSprite(this Texture2D texture) => Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
+        
         public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
 
             
-        
-        public static void Add<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
-        {
-            var s = new T[0];
-            array = HarmonyLib.CollectionExtensions.AddToArray(s, obj);
-        }
+        /*
         public static void AddRange<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
         {
             var s = new T[0];
@@ -503,24 +482,22 @@ namespace SR2E.Library
         public static void AddListRangeNoMultiple<T>(this Il2CppSystem.Collections.Generic.List<T> list, Il2CppSystem.Collections.Generic.List<T> obj) where T : Il2CppObjectBase
         {
             foreach (var iobj in obj)
-            {
                 if (!list.Contains(iobj))
-                {
                     list.Add(iobj);
-                }
-            }
         }
-        public static GameObject? Get(string name) => Get<GameObject>(name);
-        public static void AddString(this Il2CppStringArray array, string obj)
-        {
-            var s = new string[0];
-            array = HarmonyLib.CollectionExtensions.AddToArray<string>(s, obj);
-        }
+        */
+        
+
         public static void MakePrefab(this GameObject obj)
         {
             UnityEngine.Object.DontDestroyOnLoad(obj);
             obj.transform.parent = rootOBJ.transform;
         }
-        public static GameV04? Save => gameContext.AutoSaveDirector.SavedGame.gameState;
+        public static GameObject? Get(string name) => Get<GameObject>(name);
+        public static GameV04? Save 
+        {
+            get { return gameContext.AutoSaveDirector.SavedGame.gameState; }
+            set { gameContext.AutoSaveDirector.SavedGame.gameState = value; }
+        }
     }
 }

@@ -11,12 +11,11 @@ internal class ChaosMode
         Color32 hotPink1 = new Color32(255, 0, 183, 255);
         Color32 hotPink2 = new Color32(222, 11, 162, 255);
         Color32 hotPink3 = new Color32(186, 13, 137, 255);
-        SlimeDefinition tarrDefinition = SR2EUtils.Get<SlimeDefinition>("Tarr");
-        Material tarrMaterial = tarrDefinition.AppearancesDefault[0]._structures[0].DefaultMaterials[0];
-        tarrMaterial.SetColor("_TopColor", hotPink1);
-        tarrMaterial.SetColor("_MiddleColor", hotPink2);
-        tarrMaterial.SetColor("_BottomColor", hotPink3);
+        SlimeDefinition tarrDefinition = GetSlime("Tarr");
+        tarrDefinition.ChangeSlimeColors(hotPink1,hotPink2,hotPink3);
+        
         tarrDefinition.prefab.GetComponent<AttackPlayer>().DamagePerAttack = 1000;
+        
         var localedir = SystemContext.Instance.LocalizationDirector;
         tarrDefinition.AddProduceIdent(SR2EUtils.Get<IdentifiableType>("SpringPad"));
         tarrDefinition.RefreshEatmap();
@@ -29,31 +28,21 @@ internal class ChaosMode
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         if (sceneName.StartsWith("environment"))
-        {
             try
             {
-                GameObject net = Resources.FindObjectsOfTypeAll<GameObject>()
-                    .FirstOrDefault((GameObject x) => x.name == "Fallthrough Net");
+                GameObject net = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault((GameObject x) => x.name == "Fallthrough Net");
                 if (net != null)
                 {
                     Transform oceanBlade = net.getObjRec<Transform>("oceanBlade");
                     if (oceanBlade != null)
-                    {
                         for (int i = 0; i < oceanBlade.childCount; i++)
                         {
                             MeshRenderer meshRenderer = oceanBlade.GetChild(i).GetComponent<MeshRenderer>();
                             if (meshRenderer != null)
                                 meshRenderer.material = null;
-
                         }
-                    }
                 }
-            }
-            catch
-            {
-            }
-        }
-
+            }catch { }
         switch (sceneName)
         {
             case "GameCore":
@@ -61,11 +50,7 @@ internal class ChaosMode
                 PinkTarr();
 
                 GetSlime("Pink").switchSlimeAppearances(GetSlime("Gold"));
-                GetSlime("Pink").prefab.AddComponent<SlimeFlee>();
                 
-                
-                
-
                 
                 List<string> slimes = new List<string> { 
                     "Pink|40|7", 
@@ -116,7 +101,10 @@ internal class ChaosMode
                     if (slimeReal.IsLargo)
                     {
                         if (largoIndex == 0)
+                        {
                             slime.MakeSellable(28, 27, false);
+                            MelonLogger.Msg(slime.ValidatableName);
+                        }
                         else
                             slime.MakeSellable(20, 15, true);
 
