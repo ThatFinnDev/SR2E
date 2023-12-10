@@ -26,7 +26,8 @@ namespace SR2E.Library
                                      where !marketPlortEntriesList.Exists
                                          ((MarketUI.PlortEntry y) => y == x)
                                      select x).ToArray();
-                
+                __instance.plorts = __instance.plorts.ToArray<MarketUI.PlortEntry>().AddRangeToArray(marketPlortEntriesList.ToArray());
+
                 //To someone that finds that code, ik it looks like garbage, because it is,
                 //but i've tried for too long to make it work. This works some I just gonna leave it
                 List<MarketUI.PlortEntry> list = __instance.plorts.ToList();
@@ -40,7 +41,6 @@ namespace SR2E.Library
                     if (entry != null)
                         __instance.plorts.AddItem(entry);
                 
-                __instance.plorts = __instance.plorts.ToArray<MarketUI.PlortEntry>().AddRangeToArray(marketPlortEntriesList.ToArray());
                 __instance.plorts = __instance.plorts.Take(34).ToArray();
             }
         }
@@ -62,6 +62,18 @@ namespace SR2E.Library
                     valueMaps.Add(valueMap);
                 }
                 __instance.BaseValueMap = HarmonyLib.CollectionExtensions.AddRangeToArray<EconomyDirector.ValueMap>(__instance.BaseValueMap.ToArray(), valueMaps.ToArray());
+                
+                //Same as on the top
+                List<EconomyDirector.ValueMap> list = __instance.BaseValueMap.ToList();
+                List<EconomyDirector.ValueMap> listTwo = __instance.BaseValueMap.ToList();
+                foreach (EconomyDirector.ValueMap entry in list)
+                foreach (IdentifiableType toRemove in removeMarketPlortEntries)
+                    if (entry.Accept.identType.ValidatableName == toRemove.ValidatableName)
+                        listTwo.Remove(entry);
+                __instance.BaseValueMap = new Il2CppReferenceArray<EconomyDirector.ValueMap>(0);
+                foreach (EconomyDirector.ValueMap entry in listTwo)
+                    if (entry != null)
+                        __instance.BaseValueMap.AddItem(entry);
             }
         }
         [HarmonyPatch(typeof(AutoSaveDirector), "Awake")]
