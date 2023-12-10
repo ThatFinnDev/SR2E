@@ -40,3 +40,13 @@
 - - AddListRangeNoMultiple
 - - AddString
 - - MakePrefab
+- - SetSlimeMatTopColor
+- - SetSlimeMatMiddleColor
+- - SetSlimeMatBottomColor
+- - SetSlimeMatColors
+- - GetBaseSlime
+- - GetFruit
+- - GetFood
+- - GetMeat
+- - GetVeggie
+- - GetLargo
