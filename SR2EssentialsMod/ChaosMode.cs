@@ -15,7 +15,8 @@ internal class ChaosMode
         Color32 hotPink2 = new Color32(222, 11, 162, 255);
         Color32 hotPink3 = new Color32(186, 13, 137, 255);
         SlimeDefinition tarrDefinition = GetSlime("Tarr");
-        tarrDefinition.SetSlimeColor(hotPink1, hotPink2, hotPink3, hotPink3, 0, 0, false, 0);
+        Material tarrMaterial = tarrDefinition.AppearancesDefault[0]._structures[0].DefaultMaterials[0];
+        tarrMaterial.SetSlimeMatColors(hotPink1, hotPink2, hotPink3);
         
         tarrDefinition.prefab.GetComponent<AttackPlayer>().DamagePerAttack = 1000;
         

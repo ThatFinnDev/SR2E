@@ -55,8 +55,12 @@ internal class KillAllCommand : SR2CCommand
             {
                 if (ident.hasStarted)
                 {
+                    var id = ident.model.actorId;
                     if (ident.identType.name != "Player")
+                    {
                         Object.Destroy(ident.gameObject);
+                        SceneContext.Instance.GameModel.identifiables.Remove(id);
+                    }
                 }
             }
             return true;
@@ -69,11 +73,15 @@ internal class KillAllCommand : SR2CCommand
                 {
                     if (ident.identType == SR2EEntryPoint.getIdentifiableByLocalizedName(args[0]))
                     {
+                        var id = ident.model.actorId;
                         Object.Destroy(ident.gameObject);
+                        SceneContext.Instance.GameModel.identifiables.Remove(id);
                     }
                     else if (ident.identType == SR2EEntryPoint.getIdentifiableByName(args[0]))
                     {
+                        var id = ident.model.actorId;
                         Object.Destroy(ident.gameObject);
+                        SceneContext.Instance.GameModel.identifiables.Remove(id);
                     }
                 }
             }

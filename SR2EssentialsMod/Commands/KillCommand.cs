@@ -23,12 +23,8 @@ public class KillCommand : SR2CCommand
             var gameobject = hit.collider.gameObject;
             if (gameobject.GetComponent<Identifiable>())
             {
-                Damage damage = new Damage
-                    { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };
-                ;
-                damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
-                damage.Amount = 99999999;
-                DeathHandler.Kill(gameobject, damage);
+                
+                DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
                 didAThing = true;
             }
             else if (gameobject.GetComponent<GordoEat>())
