@@ -1,4 +1,5 @@
-﻿using Il2CppKinematicCharacterController;
+﻿using System;
+using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using UnityEngine.InputSystem;
 
@@ -12,6 +13,14 @@ public class ObjectBlocker : MonoBehaviour
     }
 }
 
+public class ModMenuActivator : MonoBehaviour
+{
+    public void Start()
+    {
+        if(!SR2ModMenu.isOpen)
+            SR2ModMenu.Open();
+    }
+}
 /// <summary>
 /// For use with camera
 /// 

@@ -34,8 +34,6 @@ namespace SR2E
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         bool mainMenuLoaded = false;
-        private static bool _iconChanged = false;
-        static Image _modsButtonIconImage;
         private static SR2EMod _sr2EModInstance;
         internal static IdentifiableType[] identifiableTypes
         { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
@@ -96,7 +94,7 @@ namespace SR2E
             if (!prefs.HasEntry("noclipSprintMultiply"))
                 prefs.CreateEntry("noclipSprintMultiply", 2f, "Noclip sprint speed multiplier", false);
             if (!prefs.HasEntry("chaosMode"))
-                prefs.CreateEntry("chaosMode", (bool)false, "\u00af\\_(ツ)_/\u00af", true);
+                prefs.CreateEntry("chaosMode", (bool)false, "\u00af\\_(ツ)_/\u00af", "The game takes longer to start with this! Don't freak out!",true);
 
         }
 
@@ -278,7 +276,6 @@ namespace SR2E
             {
                 case "MainMenuUI":
                     mainMenuLoaded = true;
-                    CreateModMenuButton();
                     break;
             }
         }
@@ -344,16 +341,6 @@ namespace SR2E
                     }
                     
                 }
-                if (!_iconChanged)
-                {
-                    Sprite sprite = SR2EUtils.getObjRec<Image>(SR2Console.transform, "modsButtonIconImage").sprite;
-                    if (sprite != null)
-                        if (_modsButtonIconImage != null)
-                        {
-                            _modsButtonIconImage.sprite = sprite;
-                            _iconChanged = true;
-                        }
-                }
             }
 
             if (!consoleFinishedCreating)
@@ -372,38 +359,6 @@ namespace SR2E
 
             SR2Console.Update();
         }
-
-
-        internal static void CreateModMenuButton()
-        {
-            MainMenuLandingRootUI rootUI = Object.FindObjectOfType<MainMenuLandingRootUI>();
-            Transform buttonHolder = rootUI.transform.GetChild(0).GetChild(3);
-            for (int i = 0; i < buttonHolder.childCount; i++)
-                if (buttonHolder.GetChild(i).GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text == "Mods")
-                    Object.Destroy(buttonHolder.GetChild(i).gameObject);
-
-            //Create Button
-            GameObject newButton = Object.Instantiate(buttonHolder.GetChild(0).gameObject, buttonHolder);
-            newButton.transform.SetSiblingIndex(buttonHolder.childCount==4?2:3);
-            newButton.name = "ModsButton";
-            newButton.transform.GetChild(0).GetComponent<CanvasGroup>().enabled = false;
-            newButton.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "Mods";
-            Object.Destroy(newButton.transform.GetChild(0).GetChild(1).GetComponent<UnityEngine.Localization.Components.LocalizeStringEvent>());
-            Object.Destroy(newButton.transform.GetChild(0).GetChild(1).GetComponent<Il2CppMonomiPark.SlimeRancher.UI.Framework.Layout.GameObjectWatcher>());
-            _modsButtonIconImage = newButton.transform.GetChild(0).GetChild(2).GetComponent<Image>();
-
-            _iconChanged = false;
-
-            Object.Destroy(newButton.transform.GetChild(0).GetChild(1).GetComponent<LocalizedVersionText>());
-
-            //Fix Selected Button SpaceBar Icon Dupe
-            for (int i = 0; i < newButton.transform.GetChild(0).GetChild(0).GetChild(0).childCount; i++)
-                newButton.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(i).gameObject.SetActive(false);
-            newButton.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
-
-            Button button = newButton.GetComponent<Button>();
-            button.onClick = new Button.ButtonClickedEvent();
-            button.onClick.AddListener((System.Action)(() => { SR2ModMenu.Open(); }));
-        }
+        
     }
 }

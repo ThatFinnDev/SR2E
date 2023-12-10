@@ -18,6 +18,8 @@
     <EmbeddedResource Include="srtwoessentials.assetbundle" />
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />
+    <None Remove="modsMenuIcon.png" />
+    <EmbeddedResource Include="modsMenuIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Libs\**" />

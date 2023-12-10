@@ -472,9 +472,10 @@ namespace SR2E
         private static void SetupCommands()
         {
             RegisterCommand(new GiveCommand());
-            RegisterCommand(new UtilCommand());
+            RegisterCommand(new UtilCommand());;
             ClassInjector.RegisterTypeInIl2Cpp(typeof(ObjectBlocker));
             ClassInjector.RegisterTypeInIl2Cpp(typeof(IdentifiableObjectDragger));
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(ModMenuActivator));
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
             RegisterCommand(new SpawnCommand());
