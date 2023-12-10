@@ -81,53 +81,53 @@ __MACOSX
 
 
 # Mono auto generated files
-SR2ELibrary/mono_crash.*
+SR2ELibraryExampleMod/mono_crash.*
 
 
 # Build results
-SR2ELibrary/[Dd]ebug/
-SR2ELibrary/[Dd]ebugPublic/
-SR2ELibrary/[Rr]elease/
-SR2ELibrary/[Rr]eleases/
-SR2ELibrary/x64/
-SR2ELibrary/x86/
-SR2ELibrary/[Aa][Rr][Mm]/
-SR2ELibrary/[Aa][Rr][Mm]64/
-SR2ELibrary/bld/
-SR2ELibrary/[Bb]in/
-SR2ELibrary/[Ll]og/
-SR2ELibrary/[Ll]ogs/
+SR2ELibraryExampleMod/[Dd]ebug/
+SR2ELibraryExampleMod/[Dd]ebugPublic/
+SR2ELibraryExampleMod/[Rr]elease/
+SR2ELibraryExampleMod/[Rr]eleases/
+SR2ELibraryExampleMod/x64/
+SR2ELibraryExampleMod/x86/
+SR2ELibraryExampleMod/[Aa][Rr][Mm]/
+SR2ELibraryExampleMod/[Aa][Rr][Mm]64/
+SR2ELibraryExampleMod/bld/
+SR2ELibraryExampleMod/[Bb]in/
+SR2ELibraryExampleMod/[Ll]og/
+SR2ELibraryExampleMod/[Ll]ogs/
 
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
 # Visual Studio 2017 auto generated files
-SR2ELibrary/Generated\ Files/
+SR2ELibraryExampleMod/Generated\ Files/
 
 # MSTest test Results
-SR2ELibrary/[Tt]est[Rr]esult*/
-SR2ELibrary/[Bb]uild[Ll]og.*
+SR2ELibraryExampleMod/[Tt]est[Rr]esult*/
+SR2ELibraryExampleMod/[Bb]uild[Ll]og.*
 
 # NUnit
 *.VisualState.xml
-SR2ELibrary/TestResult.xml
-SR2ELibrary/nunit-*.xml
+SR2ELibraryExampleMod/TestResult.xml
+SR2ELibraryExampleMod/nunit-*.xml
 
 # Build Results of an ATL Project
-SR2ELibrary/[Dd]ebugPS/
-SR2ELibrary/[Rr]eleasePS/
-SR2ELibrary/dlldata.c
+SR2ELibraryExampleMod/[Dd]ebugPS/
+SR2ELibraryExampleMod/[Rr]eleasePS/
+SR2ELibraryExampleMod/dlldata.c
 
 # Benchmark Results
-SR2ELibrary/BenchmarkDotNet.Artifacts/
+SR2ELibraryExampleMod/BenchmarkDotNet.Artifacts/
 
 # .NET Core
-SR2ELibrary/project.lock.json
-SR2ELibrary/project.fragment.lock.json
-SR2ELibrary/artifacts/
+SR2ELibraryExampleMod/project.lock.json
+SR2ELibraryExampleMod/project.fragment.lock.json
+SR2ELibraryExampleMod/artifacts/
 
 # StyleCop
-SR2ELibrary/StyleCopReport.xml
+SR2ELibraryExampleMod/StyleCopReport.xml
 
 
 # Mono auto generated files
@@ -209,11 +209,11 @@ SR2EssentialsMod/StyleCopReport.xml
 
 # Chutzpah Test files
 SR2EssentialsMod/_Chutzpah*
-SR2ELibrary/_Chutzpah*
+SR2ELibraryExampleMod/_Chutzpah*
 
 # Visual C++ cache files
 SR2EssentialsMod/ipch/
-SR2ELibrary/ipch/
+SR2ELibraryExampleMod/ipch/
 *.aps
 *.ncb
 *.opendb
@@ -240,13 +240,13 @@ $tf/
 
 # ReSharper is a .NET coding add-in
 SR2EssentialsMod/_ReSharper*/
-SR2ELibrary/_ReSharper*/
+SR2ELibraryExampleMod/_ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
 # TeamCity is a build add-in
 _SR2EssentialsMod/TeamCity*
-SR2ELibrary/TeamCity*
+SR2ELibraryExampleMod/TeamCity*
 
 # DotCover is a Code Coverage Tool
 *.dotCover
@@ -254,11 +254,11 @@ SR2ELibrary/TeamCity*
 # AxoCover is a Code Coverage Tool
 .axoCover/*
 SR2EssentialsMod/!.axoCover/settings.json
-SR2ELibrary/!.axoCover/settings.json
+SR2ELibraryExampleMod/!.axoCover/settings.json
 
 # Coverlet is a free, cross platform Code Coverage Tool
 SR2EssentialsMod/coverage*[.json, .xml, .info]
-SR2ELibrary/coverage*[.json, .xml, .info]
+SR2ELibraryExampleMod/coverage*[.json, .xml, .info]
 
 # Visual Studio code coverage results
 *.coverage
@@ -266,22 +266,22 @@ SR2ELibrary/coverage*[.json, .xml, .info]
 
 # NCrunch
 SR2EssentialsMod/_NCrunch_*
-SR2ELibrary/_NCrunch_*
+SR2ELibraryExampleMod/_NCrunch_*
 .*crunch*.local.xml
 SR2EssentialsMod/nCrunchTemp_*
-SR2ELibrary/nCrunchTemp_*
+SR2ELibraryExampleMod/nCrunchTemp_*
 
 # MightyMoose
 *.mm.*
 SR2EssentialsMod/AutoTest.Net/
-SR2ELibrary/AutoTest.Net/
+SR2ELibraryExampleMod/AutoTest.Net/
 
 # Web workbench (sass)
 .sass-cache/
 
 # Installshield output folder
 SR2EssentialsMod/[Ee]xpress/
-SR2ELibrary/[Ee]xpress/
+SR2ELibraryExampleMod/[Ee]xpress/
 
 # DocProject is a documentation generator add-in
 SR2EssentialsMod/DocProject/buildhelp/
@@ -292,18 +292,18 @@ SR2EssentialsMod/DocProject/Help/*.hhk
 SR2EssentialsMod/DocProject/Help/*.hhp
 SR2EssentialsMod/DocProject/Help/Html2
 SR2EssentialsMod/DocProject/Help/html
-SR2ELibrary/DocProject/buildhelp/
-SR2ELibrary/DocProject/Help/*.HxT
-SR2ELibrary/DocProject/Help/*.HxC
-SR2ELibrary/DocProject/Help/*.hhc
-SR2ELibrary/DocProject/Help/*.hhk
-SR2ELibrary/DocProject/Help/*.hhp
-SR2ELibrary/DocProject/Help/Html2
-SR2ELibrary/DocProject/Help/html
+SR2ELibraryExampleMod/DocProject/buildhelp/
+SR2ELibraryExampleMod/DocProject/Help/*.HxT
+SR2ELibraryExampleMod/DocProject/Help/*.HxC
+SR2ELibraryExampleMod/DocProject/Help/*.hhc
+SR2ELibraryExampleMod/DocProject/Help/*.hhk
+SR2ELibraryExampleMod/DocProject/Help/*.hhp
+SR2ELibraryExampleMod/DocProject/Help/Html2
+SR2ELibraryExampleMod/DocProject/Help/html
 
 # Click-Once directory
 SR2EssentialsMod/publish/
-SR2ELibrary/publish/
+SR2ELibraryExampleMod/publish/
 
 # Publish Web Output
 *.[Pp]ublish.xml
@@ -317,7 +317,7 @@ SR2ELibrary/publish/
 # checkin your Azure Web App publish settings, but sensitive information contained
 # in these scripts will be unencrypted
 SR2EssentialsMod/PublishScripts/
-SR2ELibrary/PublishScripts/
+SR2ELibraryExampleMod/PublishScripts/
 
 # NuGet Packages
 *.nupkg
@@ -331,22 +331,22 @@ SR2ELibrary/PublishScripts/
 
 # Microsoft Azure Build Output
 SR2EssentialsMod/csx/
-SR2ELibrary/csx/
+SR2ELibraryExampleMod/csx/
 *.build.csdef
 
 # Microsoft Azure Emulator
 SR2EssentialsMod/ecf/
 SR2EssentialsMod/rcf/
-SR2ELibrary/ecf/
-SR2ELibrary/rcf/
+SR2ELibraryExampleMod/ecf/
+SR2ELibraryExampleMod/rcf/
 
 # Windows Store app package directories and files
 SR2EssentialsMod/AppPackages/
 SR2EssentialsMod/BundleArtifacts/
 SR2EssentialsMod/Package.StoreAssociation.xml
-SR2ELibrary/AppPackages/
-SR2ELibrary/BundleArtifacts/
-SR2ELibrary/Package.StoreAssociation.xml
+SR2ELibraryExampleMod/AppPackages/
+SR2ELibraryExampleMod/BundleArtifacts/
+SR2ELibraryExampleMod/Package.StoreAssociation.xml
 _pkginfo.txt
 *.appx
 *.appxbundle
@@ -357,11 +357,11 @@ _pkginfo.txt
 *.[Cc]ache
 # but keep track of directories ending in .cache
 SR2EssentialsMod/!?*.[Cc]ache/
-SR2ELibrary/!?*.[Cc]ache/
+SR2ELibraryExampleMod/!?*.[Cc]ache/
 
 # Others
 SR2EssentialsMod/ClientBin/
-SR2ELibrary/ClientBin/
+SR2ELibraryExampleMod/ClientBin/
 ~$*
 *~
 *.dbmdl
@@ -370,7 +370,7 @@ SR2ELibrary/ClientBin/
 *.pfx
 *.publishsettings
 SR2EssentialsMod/orleans.codegen.cs
-SR2ELibrary/orleans.codegen.cs
+SR2ELibraryExampleMod/orleans.codegen.cs
 
 # Including strong name files can present a security risk
 # (https://github.com/github/gitignore/pull/2483#issue-259490424)
@@ -382,7 +382,7 @@ SR2ELibrary/orleans.codegen.cs
 
 # RIA/Silverlight projects
 SR2EssentialsMod/Generated_Code/
-SR2ELibrary/Generated_Code/
+SR2ELibraryExampleMod/Generated_Code/
 
 # Backup & report files from converting an old project file
 # to a newer Visual Studio version. Backup files are not needed,
@@ -392,11 +392,11 @@ SR2EssentialsMod/Backup*/
 SR2EssentialsMod/UpgradeLog*.XML
 SR2EssentialsMod/UpgradeLog*.htm
 SR2EssentialsMod/ServiceFabricBackup/
-SR2ELibrary/_UpgradeReport_Files/
-SR2ELibrary/Backup*/
-SR2ELibrary/UpgradeLog*.XML
-SR2ELibrary/UpgradeLog*.htm
-SR2ELibrary/ServiceFabricBackup/
+SR2ELibraryExampleMod/_UpgradeReport_Files/
+SR2ELibraryExampleMod/Backup*/
+SR2ELibraryExampleMod/UpgradeLog*.XML
+SR2ELibraryExampleMod/UpgradeLog*.htm
+SR2ELibraryExampleMod/ServiceFabricBackup/
 *.rptproj.bak
 
 # SQL Server files
@@ -415,7 +415,7 @@ SR2ELibrary/ServiceFabricBackup/
 
 # Microsoft Fakes
 SR2EssentialsMod/FakesAssemblies/
-SR2ELibrary/FakesAssemblies/
+SR2ELibraryExampleMod/FakesAssemblies/
 
 # GhostDoc plugin setting file
 *.GhostDoc.xml
@@ -423,7 +423,7 @@ SR2ELibrary/FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 SR2EssentialsMod/node_modules/
-SR2ELibrary/node_modules/
+SR2ELibraryExampleMod/node_modules/
 
 # Visual Studio 6 build log
 *.plg
@@ -509,12 +509,12 @@ SR2EssentialsMod/.idea
 SR2EssentialsMod/.vs
 SR2EssentialsMod/obj
 SR2EssentialsMod/start.bat
-SR2ELibrary/Output
-SR2ELibrary/Libs/MelonLoader.dll
-SR2ELibrary//packages/LavaGang.MelonLoader.0.6.1
-SR2ELibrary/Libs
-SR2ELibrary/.idea
-SR2ELibrary/.vs
-SR2ELibrary/obj
-SR2ELibrary/start.bat
+SR2ELibraryExampleMod/Output
+SR2ELibraryExampleMod/Libs/MelonLoader.dll
+SR2ELibraryExampleMod//packages/LavaGang.MelonLoader.0.6.1
+SR2ELibraryExampleMod/Libs
+SR2ELibraryExampleMod/.idea
+SR2ELibraryExampleMod/.vs
+SR2ELibraryExampleMod/obj
+SR2ELibraryExampleMod/start.bat
 tempreleasenotes.txt
