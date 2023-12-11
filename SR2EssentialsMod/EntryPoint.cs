@@ -142,6 +142,7 @@ namespace SR2E
                         infHealthInstalled = true;
                         break;
                 }
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(CustomPauseItemModel));
         }
 
         public override void OnApplicationQuit()
