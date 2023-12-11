@@ -113,9 +113,8 @@ public static class SR2PauseMenuButtonPatch
                         __instance.pauseUIPrefab.pauseItemModelListProvider.gameCoreWindowsAsset.items.Insert(button.insertIndex, button._model);
                     continue;
                 }
-                CustomPauseItemModel model = ScriptableObject.CreateInstance<CustomPauseItemModel>();
-                model.action = button.action;
-                button._model = model;
+                button._model =  ScriptableObject.CreateInstance<CustomPauseItemModel>();
+                button._model.action = button.action;
                 button._model.label = button.label;
                 button._model.name = button.name;
                 button._model.hideFlags |= HideFlags.HideAndDontSave;
