@@ -80,13 +80,13 @@ public static class SR2PauseMenuButtonPatch
 
 
 
-[HarmonyPatch(typeof(PauseMenuDirector), nameof(PauseMenuDirector.Start))]
+[HarmonyPatch(typeof(PauseMenuDirector), nameof(PauseMenuDirector.Awake))]
 public static class SR2PauseMenuButtonPatch
 {
     internal static List<CustomPauseMenuButton> buttons = new List<CustomPauseMenuButton>();
     internal static bool safeLock;
     internal static bool postSafeLock;
-    public static void Postfix(PauseMenuDirector __instance)
+    public static void Prefix(PauseMenuDirector __instance)
     {
         if (safeLock) { return; }
         safeLock = true;
@@ -113,7 +113,7 @@ public static class SR2PauseMenuButtonPatch
                         __instance.pauseUIPrefab.pauseItemModelListProvider.gameCoreWindowsAsset.items.Insert(button.insertIndex, button._model);
                     continue;
                 }
-                button._model =  ScriptableObject.CreateInstance<CustomPauseItemModel>();
+                button._model =  ScriptableObject.CreateInstance<CustomPauseItemModel>(); 
                 button._model.action = button.action;
                 button._model.label = button.label;
                 button._model.name = button.name;
@@ -134,7 +134,8 @@ public static class SR2PauseMenuButtonPatch
                     __instance.pauseUIPrefab.pauseItemModelListProvider.gameCoreWindowsAsset.items.Insert(button.insertIndex, button._model);
                 if(!__instance.pauseUIPrefab.pauseItemModelListProvider.gameCoreXboxSeriesAsset.items.Contains(button._model))
                     __instance.pauseUIPrefab.pauseItemModelListProvider.gameCoreXboxSeriesAsset.items.Insert(button.insertIndex, button._model);
-            } catch (Exception e){Console.Write(e); }
+            } catch (Exception e){Console.WriteLine(e); }
+            
         }
         safeLock = false;
     }

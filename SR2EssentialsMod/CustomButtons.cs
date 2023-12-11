@@ -63,4 +63,22 @@ public class CustomPauseItemModel : PauseItemModel
     {
         action.Invoke();
     }
+    public LocalizedString Label
+    {
+        get
+        {
+            return this.label;
+        }
+    }
+
+    public bool ShouldPlayCueOnSubmit
+    {
+        get
+        {
+            return this.shouldPlayCueOnSubmit;
+        }
+    }
+
+    private LocalizedString label;
+    private bool shouldPlayCueOnSubmit = true;
 }
