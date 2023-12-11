@@ -14,6 +14,7 @@ using SR2E.Saving;
 using Il2CppKinematicCharacterController;
 using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using UnityEngine.Localization;
 
 namespace SR2E
 {
@@ -124,7 +125,7 @@ namespace SR2E
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
             ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
             ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
-            ClassInjector.RegisterTypeInIl2Cpp<ModMenuActivator>();
+            ClassInjector.RegisterTypeInIl2Cpp<CustomMainMenuButtonPressHandler>();
             RefreshPrefs();
             string path = Path.Combine(MelonEnvironment.ModsDirectory, "SR2EssentialsMod.dll");
             if (File.Exists(path))
@@ -274,9 +275,18 @@ namespace SR2E
             switch (sceneName)
             {
                 case "SystemCore":
-                    new CustomMainMenuButton("ModMenu", AddTranslation("Mods", "b.buttonMods", "UI"), 
+                    LocalizedString label = AddTranslation("Mods", "b.buttonMods", "UI");
+                    new CustomMainMenuButton("ModMenu", label, 
                         LoadSprite("modsMenuIcon"), 2,
-                        typeof(ModMenuActivator)).AddMainMenuButton();
+                        (System.Action)(() =>
+                        {
+                            SR2ModMenu.Open();
+                        })).AddMainMenuButton();
+
+                    new CustomPauseMenuButton("ModMenu", label,3,(System.Action)(() => { SR2ModMenu.Open(); })).AddPauseMenuButton();
+                    /*
+                    new CustomPauseMenuButton("ModMenu", "Mods", 3
+                        , (System.Action)(() => { SR2ModMenu.Open(); })).AddPauseMenuButton();*/
                     break;
                 case "MainMenuUI":
                     mainMenuLoaded = true;

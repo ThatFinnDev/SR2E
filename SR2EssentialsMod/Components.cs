@@ -1,7 +1,9 @@
 ﻿using System;
 using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+using SR2E.Patches;
 using UnityEngine.InputSystem;
+
 
 namespace SR2E;
 
@@ -13,12 +15,16 @@ public class ObjectBlocker : MonoBehaviour
     }
 }
 
-public class ModMenuActivator : MonoBehaviour
+public class CustomMainMenuButtonPressHandler : MonoBehaviour
 {
-    public void Start()
+    public void OnEnable()
     {
-        if(!SR2ModMenu.isOpen)
-            SR2ModMenu.Open();
+        foreach (CustomMainMenuButton button in SR2MainMenuButtonPatch.buttons)
+            if (button.name+"ButtonStarter(Clone)" == gameObject.name)
+            {
+                button.action.Invoke();
+                break;
+            }
         Destroy(gameObject);
     }
 }

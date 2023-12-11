@@ -10,6 +10,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
+using SR2E.Patches;
 
 namespace SR2E.Library
 {
@@ -552,10 +553,20 @@ namespace SR2E.Library
             material.SetColor("_MiddleColor", Middle);
             material.SetColor("_BottomColor", Bottom);
         }
-
+        
+        public static void AddPauseMenuButton(this CustomPauseMenuButton button)
+        {
+            foreach (CustomPauseMenuButton entry in SR2PauseMenuButtonPatch.buttons)
+                if (entry.name == button.name) { MelonLogger.Error($"There is already a button with the name {button.name}"); return; }
+          
+            SR2PauseMenuButtonPatch.buttons.Add(button);
+        }
         public static void AddMainMenuButton(this CustomMainMenuButton button)
         {
-            SR2ModMenuButtonPatch.buttons.Add(button);
+            foreach (CustomMainMenuButton entry in SR2MainMenuButtonPatch.buttons)
+                if (entry.name == button.name) { MelonLogger.Error($"There is already a button with the name {button.name}"); return; }
+          
+            SR2MainMenuButtonPatch.buttons.Add(button);
             if (SR2EEntryPoint.mainMenuLoaded)
             {
                 MainMenuLandingRootUI mainMenu = Object.FindObjectOfType<MainMenuLandingRootUI>();

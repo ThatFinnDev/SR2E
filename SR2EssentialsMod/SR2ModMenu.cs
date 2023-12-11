@@ -26,25 +26,26 @@ namespace SR2E
                 return;
             modMenuBlock.SetActive(false);
             gameObject.SetActive(false);
+            gameObject.getObjRec<Button>("ModMenu").onClick.Invoke();
 
-            foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
+            if(SR2EEntryPoint.mainMenuLoaded)
+                foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
+                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" && loader.parentTransform.name == "MainMenuRoot")
+                    { loader.Start(); break; }
+            if(pauseMenuRoot!=null)
             {
-                if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
-                    loader.parentTransform.name == "MainMenuRoot")
-                {
-                    loader.Start();
-                    break;
-                }
+                pauseMenuRoot.gameObject.SetActive(true);
             }
+                
             
 
             Transform modContent = SR2EUtils.getObjRec<Transform>(transform, "ModContent");
             for (int i = 0; i < modContent.childCount; i++)
                 GameObject.Destroy(modContent.GetChild(i).gameObject);
-
         }
 
         static MainMenuLandingRootUI _mainMenuLandingRootUI;
+        static PauseMenuRoot pauseMenuRoot;
 
         internal static void Open()
         {
@@ -53,10 +54,20 @@ namespace SR2E
             modMenuBlock.SetActive(true);
             gameObject.SetActive(true);
 
-            _mainMenuLandingRootUI = Object.FindObjectOfType<MainMenuLandingRootUI>();
-            _mainMenuLandingRootUI.gameObject.SetActive(false);
-            _mainMenuLandingRootUI.enabled = false;
-            _mainMenuLandingRootUI.Close(true, null);
+            if(SR2EEntryPoint.mainMenuLoaded)
+                try
+                {
+                    _mainMenuLandingRootUI = Object.FindObjectOfType<MainMenuLandingRootUI>();
+                    _mainMenuLandingRootUI.gameObject.SetActive(false);
+                    _mainMenuLandingRootUI.enabled = false;
+                    _mainMenuLandingRootUI.Close(true, null);
+                }catch{}
+            else
+                try
+                {
+                    pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>();
+                    pauseMenuRoot.gameObject.SetActive(false);
+                }catch{}
 
 
 
