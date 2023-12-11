@@ -19,6 +19,7 @@ public class ModMenuActivator : MonoBehaviour
     {
         if(!SR2ModMenu.isOpen)
             SR2ModMenu.Open();
+        Destroy(gameObject);
     }
 }
 /// <summary>
