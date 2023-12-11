@@ -30,13 +30,13 @@ internal class ChaosMode
         }
     }
 
-    public static void SetupTarrRain()
+    /*public static void SetupTarrRain()
     {
         var slimeRainFields = WeatherState("Slime Rain State Fields");
 
         var spawnerActivity = new SpawnActorActivity()
         {
-            name = "Null Slime Rain",
+            name = "Tarr Rain",
             ActorType = GetSlime("Tarr"),
             IntensityDivisor = 0.3f,
             _intensity = 0.2f,
@@ -63,7 +63,7 @@ internal class ChaosMode
         slimeRainBluffs.Activities.Add(activity);
 
 
-    }
+    }*/
 
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
