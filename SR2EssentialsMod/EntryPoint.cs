@@ -29,15 +29,13 @@ namespace SR2E
 
     public class SR2EEntryPoint : MelonMod
     {
-        public static SR2EEntryPoint instance;
-        public static TMP_FontAsset SR2Font;
+        internal static SR2EEntryPoint instance;
+        internal static TMP_FontAsset SR2Font;
         internal static bool infEnergyInstalled = false;
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         bool mainMenuLoaded = false;
-        private static SR2EMod _sr2EModInstance;
-        internal static IdentifiableType[] identifiableTypes
-        { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
+        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType getIdentifiableByName(string name)
         {
             foreach (IdentifiableType type in identifiableTypes)
@@ -58,7 +56,6 @@ namespace SR2E
             
             return null;
         }
-        static bool CheckIfLargo(string value) => (value.Remove(0, 1)).Any(char.IsUpper);
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed { get { return prefs.GetEntry<float>("noclipAdjustSpeed").Value; } }
         static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
@@ -124,10 +121,10 @@ namespace SR2E
         public override void OnInitializeMelon()
         {
             instance = this;
-            _sr2EModInstance = new SR2EMod();
             prefs = MelonPreferences.CreateCategory("SR2Essentials");
             ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
             ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
+            ClassInjector.RegisterTypeInIl2Cpp<ModMenuActivator>();
             RefreshPrefs();
             string path = Path.Combine(MelonEnvironment.ModsDirectory, "SR2EssentialsMod.dll");
             if (File.Exists(path))
@@ -274,6 +271,11 @@ namespace SR2E
         {
             switch (sceneName)
             {
+                case "SystemCore":
+                    new CustomMainMenuButton("ModMenu", AddTranslation("Mods", "b.buttonMods", "UI"), 
+                        LoadSprite("modsMenuIcon"), 2,
+                        typeof(ModMenuActivator)).AddMainMenuButton();
+                    break;
                 case "MainMenuUI":
                     mainMenuLoaded = true;
                     break;
@@ -291,26 +293,7 @@ namespace SR2E
                     break;
             }
         }
-
-
-        static SRCharacterController Player
-        {
-            get
-            { if(m_player==null) m_player = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC"); return m_player; }
-            set
-            { m_player = value; }
-        }
-        static SRCharacterController m_player;
-        static SRCameraController Camera
-        {
-            get
-            { if (m_camera == null) m_camera = SR2EUtils.Get<SRCameraController>("PlayerCameraKCC"); return m_camera; }
-            set
-            { m_camera = value; }
-        }
-        static SRCameraController m_camera;
         public static bool SaveCountChanged = false;
-
         public override void OnUpdate()
         {
             if(throwErrors)

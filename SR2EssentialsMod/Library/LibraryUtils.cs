@@ -1,14 +1,11 @@
-﻿using Il2CppInterop.Runtime.InteropTypes.Arrays;
+﻿using Il2CppSystem.IO;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppInterop.Runtime.InteropTypes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppSystem.IO;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
@@ -553,24 +550,12 @@ namespace SR2E.Library
             material.SetColor("_TopColor", Top);
             material.SetColor("_MiddleColor", Middle);
             material.SetColor("_BottomColor", Bottom);
-        }/*
-        public static void MakeNOTSellable(this IdentifiableType ident)
-        {
-            removeMarketPlortEntries.Add(ident);
-            foreach (var keyPair in marketPlortEntries)
-            {
-                MarketUI.PlortEntry entry = keyPair.Key;
-                if (entry.identType == ident)
-                {
-                    marketPlortEntries.Remove(entry);
-                    break;
-                }
-            }
-
-            if (marketData.ContainsKey(ident))
-                marketData.Remove(ident);
         }
-        */
+
+        public static void AddMainMenuButton(this CustomMainMenuButton button)
+        {
+            SR2ModMenuButtonPatch.buttons.Add(button);
+        }
 
         public static void SetAppearanceVacColor(this SlimeAppearance appearance, Color color)
         {
@@ -624,6 +609,23 @@ namespace SR2E.Library
                 if (type.name.ToUpper() == name.ToUpper())
                     return type.Cast<SlimeDefinition>();
             return null;
+        }
+
+
+    
+
+        internal static Sprite LoadSprite(string fileName) => ConvertToSprite(LoadImage(fileName));
+        
+        internal static Texture2D LoadImage(string filename)
+        {
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            System.IO.Stream manifestResourceStream = executingAssembly.GetManifestResourceStream(executingAssembly.GetName().Name + "." + filename + ".png");
+            byte[] array = new byte[manifestResourceStream.Length];
+            manifestResourceStream.Read(array, 0, array.Length);
+            Texture2D texture2D = new Texture2D(1, 1);
+            ImageConversion.LoadImage(texture2D, array);
+            texture2D.filterMode = FilterMode.Bilinear;
+            return texture2D;
         }
     }
 }

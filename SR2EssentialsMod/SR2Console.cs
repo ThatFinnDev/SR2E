@@ -475,7 +475,6 @@ namespace SR2E
             RegisterCommand(new UtilCommand());;
             ClassInjector.RegisterTypeInIl2Cpp(typeof(ObjectBlocker));
             ClassInjector.RegisterTypeInIl2Cpp(typeof(IdentifiableObjectDragger));
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(ModMenuActivator));
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
             RegisterCommand(new SpawnCommand());

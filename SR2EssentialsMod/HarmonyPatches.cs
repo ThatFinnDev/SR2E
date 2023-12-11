@@ -1,11 +1,13 @@
 ﻿using System.IO;
 using System.Reflection;
+using Il2CppInterop.Runtime;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
+using UnityEngine.Localization;
 
 namespace SR2E;
 
@@ -29,73 +31,93 @@ internal class TeleporterUsePatch
             GameContext.Instance.AutoSaveDirector.SaveGame();
     }
 }
+
+public class CustomMainMenuButton
+{
+    public string name;
+    public LocalizedString label;
+    public Sprite icon;
+    public int insertIndex;
+    public Il2CppSystem.Type monoBehaviourToActivate;
+    internal GameObject _prefabToSpawn;
+    internal CreateNewUIItemDefinition _definition;
+
+    public CustomMainMenuButton(string name, LocalizedString label, Sprite icon, int insertIndex, System.Type monoBehaviourToActivate)
+    {
+        this.name = name;
+        this.label = label;
+        this.icon = icon;
+        this.insertIndex = insertIndex;
+        this.monoBehaviourToActivate = Il2CppType.From(monoBehaviourToActivate);
+    }
+}
 [HarmonyPatch(typeof(MainMenuLandingRootUI), nameof(MainMenuLandingRootUI.CreateModels))]
 public static class SR2ModMenuButtonPatch
 {
-    public static CreateNewUIItemDefinition mmButton = null;
+    internal static List<CustomMainMenuButton> buttons = new List<CustomMainMenuButton>();
     internal static bool safeLock;
     internal static bool postSafeLock;
-    public static GameObject modMenuButtonPrefab = null;
     public static void Prefix(MainMenuLandingRootUI __instance)
     {
-            if (safeLock) { return; }
-            safeLock = true;
-            if (modMenuButtonPrefab == null)
+        if (safeLock) { return; }
+        safeLock = true;
+        foreach (CustomMainMenuButton button in buttons)
+        {
+            if (button.name == null || button.label == null || button.icon == null || button.monoBehaviourToActivate == null) continue;
+            try
             {
-                var obj = new GameObject();
-                UnityEngine.Object.DontDestroyOnLoad(obj);
-                obj.name = "ModMenuButtonStarter";
-                obj.transform.parent = rootOBJ.transform;
-                obj.AddComponent<ModMenuActivator>();
-                obj.AddComponent<ModMenuActivator>().enabled=true;
-                modMenuButtonPrefab = obj;
-            }
-
-            if (mmButton != null)
-            {
-                foreach (var i in __instance._newGameConfig.items)
-                    if (i.name == "ModMenu")
-                        return;
-                var bbd2 = mmButton;
-                __instance._continueGameConfig.items.Insert(3, bbd2);
-                __instance._existingGameNoContinueConfig.items.Insert(2, bbd2);
-                __instance._newGameConfig.items.Insert(2, bbd2);
-                return;
-            }
-            mmButton = ScriptableObject.CreateInstance<CreateNewUIItemDefinition>();
-            
-            mmButton.label = AddTranslation("Mods", "b.buttonMods", "UI");
-            
-            
-            mmButton.name = "ModMenu";
-            mmButton.icon = LibraryUtils.ConvertToSprite(LoadImage("modsMenuIcon"));
-            mmButton.hideFlags |= HideFlags.HideAndDontSave;
-            mmButton.prefabToSpawn = modMenuButtonPrefab;
-            __instance._continueGameConfig.items.Insert(3,mmButton);
-            __instance._existingGameNoContinueConfig.items.Insert(2,mmButton);
-            __instance._newGameConfig.items.Insert(2,mmButton);
-            
+                if (button._prefabToSpawn == null)
+                {
+                    var obj = new GameObject();
+                    UnityEngine.Object.DontDestroyOnLoad(obj);
+                    obj.name = button.name + "ButtonStarter";
+                    obj.transform.parent = rootOBJ.transform;
+                    obj.AddComponent(button.monoBehaviourToActivate);
+                    button._prefabToSpawn = obj;
+                }
+                if (button._definition != null)
+                {
+                    foreach (var i in __instance._newGameConfig.items) if (i.name == button.name) continue;
+                    __instance._continueGameConfig.items.Insert(button.insertIndex+1, button._definition);
+                    __instance._existingGameNoContinueConfig.items.Insert(button.insertIndex, button._definition);
+                    __instance._newGameConfig.items.Insert(button.insertIndex, button._definition);
+                    continue;
+                }
+                button._definition = ScriptableObject.CreateInstance<CreateNewUIItemDefinition>();
+                button._definition.label = button.label;
+                button._definition.name = button.name;
+                button._definition.icon = button.icon;
+                button._definition.hideFlags |= HideFlags.HideAndDontSave;
+                button._definition.prefabToSpawn = button._prefabToSpawn;
+                __instance._continueGameConfig.items.Insert(button.insertIndex + 1, button._definition);
+                __instance._existingGameNoContinueConfig.items.Insert(button.insertIndex + 2, button._definition);
+                __instance._newGameConfig.items.Insert(button.insertIndex + 2, button._definition);
+            } catch { }
         }
+    }
 
     private static void Postfix()
     {
         if (postSafeLock) return;
         postSafeLock = true;
-        if (modMenuButtonPrefab!=null)
-            mmButton.prefabToSpawn = modMenuButtonPrefab;
+        foreach (CustomMainMenuButton button in buttons)
+        {
+            if(button.name==null||button.label==null|| button.icon==null|| button.monoBehaviourToActivate==null) continue;
+            try
+            {
+                if (button._prefabToSpawn == null)
+                {
+                    var obj = new GameObject();
+                    UnityEngine.Object.DontDestroyOnLoad(obj);
+                    obj.name = button.name + "ButtonStarter";
+                    obj.transform.parent = rootOBJ.transform;
+                    obj.AddComponent(button.monoBehaviourToActivate);
+                    button._prefabToSpawn = obj;
+                    button._definition.prefabToSpawn = obj;
+                }
+            } catch { }
+        }
         postSafeLock = false;
-    }
-
-    public static Texture2D LoadImage(string filename)
-    {
-        Assembly executingAssembly = Assembly.GetExecutingAssembly();
-        Stream manifestResourceStream = executingAssembly.GetManifestResourceStream(executingAssembly.GetName().Name + "." + filename + ".png");
-        byte[] array = new byte[manifestResourceStream.Length];
-        manifestResourceStream.Read(array, 0, array.Length);
-        Texture2D texture2D = new Texture2D(1, 1);
-        ImageConversion.LoadImage(texture2D, array);
-        texture2D.filterMode = FilterMode.Bilinear;
-        return texture2D;
     }
 }
 
