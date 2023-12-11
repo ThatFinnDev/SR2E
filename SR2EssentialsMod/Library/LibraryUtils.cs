@@ -32,6 +32,7 @@ namespace SR2E.Library
         public static IdentifiableTypeGroup? meat;
         public static IdentifiableTypeGroup? veggies;
         public static IdentifiableTypeGroup? fruits;
+        public static IdentifiableTypeGroup? crafts;
         public static GameObject? player;
 
         // public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE, WEATHER }
@@ -202,53 +203,58 @@ namespace SR2E.Library
                 eatmap.ProducesIdent = produce;
                 eatmap.Driver = driver;
                 eatmap.MinDrive = mindrive;
-            }
+        }
         public static void AddProduceIdent(this SlimeDefinition slimedef, IdentifiableType ident)
-            {
-                slimedef.Diet.ProduceIdents.Add(ident);
-            }
+        {
+            slimedef.Diet.ProduceIdents.Add(ident);
+        }
         public static void SetProduceIdent(this SlimeDefinition slimedef, IdentifiableType ident, int index)
-            {
-                slimedef.Diet.ProduceIdents[index] = ident;
-            }
+        {
+            slimedef.Diet.ProduceIdents[index] = ident;
+        }
         public static void AddExtraEatIdent(this SlimeDefinition slimedef, IdentifiableType ident)
-            {
-                slimedef.Diet.AdditionalFoodIdents.Add(ident);
-            }
+        {
+            slimedef.Diet.AdditionalFoodIdents = slimedef.Diet.AdditionalFoodIdents.Add(ident);
+
+        }
         public static void SetFavoriteProduceCount(this SlimeDefinition slimedef, int count)
-            {
-                slimedef.Diet.FavoriteProductionCount = count;
-            }
+        {
+            slimedef.Diet.FavoriteProductionCount = count;
+        }
+        public static void AddFavorite(this SlimeDefinition slimedef, IdentifiableType id)
+        {
+            slimedef.Diet.FavoriteIdents = slimedef.Diet.FavoriteIdents.Add(id);
+        }
         public static void AddEatmapToSlime(this SlimeDefinition slimedef, SlimeDiet.EatMapEntry eatmap)
-            {
-                slimedef.Diet.EatMap.Add(eatmap);
-            }
+        {
+            slimedef.Diet.EatMap.Add(eatmap);
+        }
         public static void SetStructColor(this SlimeAppearanceStructure structure, int id, Color color)
-            {
-                structure.DefaultMaterials[0].SetColor(id, color);
-            }
+        {
+            structure.DefaultMaterials[0].SetColor(id, color);
+        }
         public static void RefreshEatmap(this SlimeDefinition def)
-            {
-                def.Diet.RefreshEatMap(slimeDefinitions, def);
-            }
+        {
+            def.Diet.RefreshEatMap(slimeDefinitions, def);
+        }
         public static void ChangeSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG, int index)
-            {
-                def.Diet.MajorFoodGroups[index] = FG;
-            }
+        {
+            def.Diet.MajorFoodGroups[index] = FG;
+        }
         public static void AddSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG)
-            {
-                def.Diet.MajorFoodGroups.AddItem(FG);
-            }
+        {
+            def.Diet.MajorFoodGroups.AddItem(FG);
+        }
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
-            {
-                return SRBehaviour.InstantiateActor(obj,
-                    SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
-                    false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
-            }
+        {
+            return SRBehaviour.InstantiateActor(obj,
+                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
+                false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
+        }
         public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos)
-            {
-                return SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
-            }
+        {
+            return SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
+        }
         public static T? Get<T>(string name) where T : Object { return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); }
         public static void AddToGroup(this IdentifiableType type, string groupName)
         {
@@ -441,6 +447,14 @@ namespace SR2E.Library
                 
             return null;
         }
+        public static IdentifiableType GetCraft(string name)
+        {
+            foreach (IdentifiableType type in crafts.GetAllMembersArray())
+                if (type.name.ToUpper() == name.ToUpper())
+                    return type;
+                
+            return null;
+        }
         public static void SetSlimeColor(this SlimeDefinition slimedef, Color32 Top, Color32 Middle, Color32 Bottom, Color32 Spec,  int index, int index2, bool isSS, int structure)
         {
             Material mat = null;
@@ -466,15 +480,32 @@ namespace SR2E.Library
 
             
         
-        public static void Add<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
+        public static Il2CppReferenceArray<T> Add<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
         {
-            var s = new T[0];
-            array = HarmonyLib.CollectionExtensions.AddToArray(s, obj);
+            var list = new Il2CppSystem.Collections.Generic.List<T>();
+            foreach (var item in array)
+            {
+                list.Add(item);
+            }
+
+            list.Add(obj);
+
+            array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+            return array;
         }
-        public static void AddRange<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
+        public static Il2CppReferenceArray<T> AddRange<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
         {
-            var s = new T[0];
-            array = HarmonyLib.CollectionExtensions.AddRangeToArray(s, obj);
+            var list = new Il2CppSystem.Collections.Generic.List<T>();
+            foreach (var item in array)
+            {
+                list.Add(item);
+            }
+            foreach (var item in obj)
+            {
+                list.Add(item);
+            }
+            array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+            return array;
         }
         public static void AddListRange<T>(this Il2CppSystem.Collections.Generic.List<T> list, Il2CppSystem.Collections.Generic.List<T> obj) where T : Il2CppObjectBase
         {
