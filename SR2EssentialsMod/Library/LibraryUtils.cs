@@ -6,6 +6,7 @@ using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
+using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
@@ -555,6 +556,22 @@ namespace SR2E.Library
         public static void AddMainMenuButton(this CustomMainMenuButton button)
         {
             SR2ModMenuButtonPatch.buttons.Add(button);
+            if (SR2EEntryPoint.mainMenuLoaded)
+            {
+                MainMenuLandingRootUI mainMenu = Object.FindObjectOfType<MainMenuLandingRootUI>();
+                mainMenu.gameObject.SetActive(false);
+                mainMenu.enabled = false;
+                mainMenu.Close(true, null);
+                foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
+                {
+                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
+                        loader.parentTransform.name == "MainMenuRoot")
+                    {
+                        loader.Start();
+                        break;
+                    }
+                }
+            }
         }
 
         public static void SetAppearanceVacColor(this SlimeAppearance appearance, Color color)

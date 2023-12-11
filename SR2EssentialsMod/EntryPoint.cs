@@ -34,7 +34,7 @@ namespace SR2E
         internal static bool infEnergyInstalled = false;
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
-        bool mainMenuLoaded = false;
+        internal static bool mainMenuLoaded = false;
         internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType getIdentifiableByName(string name)
         {
@@ -189,9 +189,11 @@ namespace SR2E
                 case "MainMenuUI":
                     if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) SR2Console.ExecuteByString(onMainMenuLoadCommand);
                     SaveCountChanged = false;
+                    Time.timeScale = 1f;
+                    break;
+                case "LoadScene":
                     if (skipEngagementPrompt)
                         SR2Console.transform.getObjRec<GameObject>("EngagementSkipMessage").SetActive(false);
-                    Time.timeScale = 1f;
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
