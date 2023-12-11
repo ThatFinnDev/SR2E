@@ -44,7 +44,7 @@ public class CustomPauseMenuButton
     public string name;
     public LocalizedString label;
     public int insertIndex;
-    internal PauseItemModel _model;
+    internal CustomPauseItemModel _model;
     public System.Action action;
 
     public CustomPauseMenuButton(string name, LocalizedString label, int insertIndex, System.Action action)
