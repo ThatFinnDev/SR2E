@@ -8,7 +8,6 @@ using Il2CppMonomiPark.SlimeRancher.Weather;
 using SR2E;
 using Il2CppMonomiPark.SlimeRancher.World;
 using Object = UnityEngine.Object;
-using Il2CppSteamworks;
 
 namespace NullSlime
 {

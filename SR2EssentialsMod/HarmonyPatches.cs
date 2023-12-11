@@ -51,12 +51,12 @@ public static class SR2ModMenuButtonPatch
                 modMenuButtonPrefab = obj;
             }
 
-            if (Get<CreateNewUIItemDefinition>("ModMenu") != null)
+            if (mmButton != null)
             {
                 foreach (var i in __instance._newGameConfig.items)
                     if (i.name == "ModMenu")
                         return;
-                var bbd2 = Get<CreateNewUIItemDefinition>("ModMenu");
+                var bbd2 = mmButton;
                 __instance._continueGameConfig.items.Insert(3, bbd2);
                 __instance._existingGameNoContinueConfig.items.Insert(2, bbd2);
                 __instance._newGameConfig.items.Insert(2, bbd2);
