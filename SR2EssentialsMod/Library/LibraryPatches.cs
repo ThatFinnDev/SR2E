@@ -87,6 +87,17 @@ namespace SR2E.Library
         {
             public static void Prefix(AutoSaveDirector __instance)
             {
+
+                slimes = Get<IdentifiableTypeGroup>("SlimesGroup");
+                baseSlimes = Get<IdentifiableTypeGroup>("BaseSlimeGroup");
+                largos = Get<IdentifiableTypeGroup>("LargoGroup");
+                meat = Get<IdentifiableTypeGroup>("MeatGroup");
+                food = Get<IdentifiableTypeGroup>("FoodGroup");
+                veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
+                fruits = Get<IdentifiableTypeGroup>("FruitGroup");
+                plorts = Get<IdentifiableTypeGroup>("PlortGroup");
+                crafts = Get<IdentifiableTypeGroup>("CraftGroup");
+
                 foreach (SR2EMod lib in mods)
                 {
                     lib.SaveDirectorLoading(__instance);

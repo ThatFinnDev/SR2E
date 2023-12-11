@@ -220,14 +220,6 @@ namespace SR2E
                         
                     slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
 
-                    slimes = Get<IdentifiableTypeGroup>("SlimesGroup");
-                    baseSlimes = Get<IdentifiableTypeGroup>("BaseSlimeGroup");
-                    largos = Get<IdentifiableTypeGroup>("LargoGroup");
-                    meat = Get<IdentifiableTypeGroup>("MeatGroup");
-                    food = Get<IdentifiableTypeGroup>("FoodGroup");
-                    veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
-                    fruits = Get<IdentifiableTypeGroup>("FruitGroup");
-                    plorts = Get<IdentifiableTypeGroup>("PlortGroup");
                     break;
                 case "UICore":
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);

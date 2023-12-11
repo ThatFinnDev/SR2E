@@ -98,6 +98,7 @@ namespace NullSlime
 
         public static void Images()
         {
+            slimeDefinition.AppearancesDefault[0]._structures[0].DefaultMaterials[0].SetTexture("_StripeTexture", LoadImage("body_stripes_null"));
             plortDefinition.icon = LoadImage("iconPlortNull").ConvertToSprite();
             slimeDefinition.icon = LoadImage("iconSlimeNull").ConvertToSprite();
             slimeDefinition.AppearancesDefault[0]._icon = LoadImage("iconSlimeNull").ConvertToSprite();
@@ -123,8 +124,6 @@ namespace NullSlime
             {
                 slimeDefinition.Diet.EatMap.Add(slimeDefinition.CreateEatmap(SlimeEmotions.Emotion.HUNGER, 0.1F, plortDefinition, item));
             }
-
-            slimePrefab.GetComponent<SlimeEat>().KeepEatingWhenFull = true;
         }
 
         public static void SetupSpawning()
