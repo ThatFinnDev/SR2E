@@ -29,13 +29,17 @@ namespace SR2E
             gameObject.getObjRec<Button>("ModMenu").onClick.Invoke();
 
             if(SR2EEntryPoint.mainMenuLoaded)
-                foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
-                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" && loader.parentTransform.name == "MainMenuRoot")
-                    { loader.Start(); break; }
-            if(pauseMenuRoot!=null)
             {
-                pauseMenuRoot.gameObject.SetActive(true);
+                foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
+                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
+                        loader.parentTransform.name == "MainMenuRoot")
+                    {
+                        loader.Start();
+                        break;
+                    }
             }
+            else
+                SystemContext.Instance.SceneLoader.UnpauseGame();
                 
             
 
@@ -45,7 +49,6 @@ namespace SR2E
         }
 
         static MainMenuLandingRootUI _mainMenuLandingRootUI;
-        static PauseMenuRoot pauseMenuRoot;
 
         internal static void Open()
         {
@@ -65,8 +68,9 @@ namespace SR2E
             else
                 try
                 {
-                    pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>();
-                    pauseMenuRoot.gameObject.SetActive(false);
+                    PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>();
+                    pauseMenuRoot.Close();
+                    SystemContext.Instance.SceneLoader.TryPauseGame();
                 }catch{}
 
 
@@ -179,7 +183,14 @@ namespace SR2E
                             obj.transform.GetChild(2).GetComponent<Toggle>().onValueChanged.AddListener((Action<bool>)(
                                 (isOn) =>
                                 {
-                                    warningText.SetActive(true);
+                                    if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                        warningText.SetActive(true);
+                                    else
+                                    {
+                                        System.Action action = entriesWithoutWarning[entry];
+                                        if(action!=null)
+                                            action.Invoke();
+                                    }
                                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = isOn.ToString();
                                     entry.BoxedEditedValue = isOn;
                                     category.SaveToFile(false);
@@ -203,7 +214,14 @@ namespace SR2E
                                     int value;
                                     if (int.TryParse(text, out value))
                                     {
-                                        warningText.SetActive(true);
+                                        if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                            warningText.SetActive(true);
+                                        else
+                                        {
+                                            System.Action action = entriesWithoutWarning[entry];
+                                            if(action!=null)
+                                                action.Invoke();
+                                        }
                                         entry.BoxedEditedValue = value;
                                         category.SaveToFile(false);
                                     }
@@ -228,7 +246,14 @@ namespace SR2E
                                     float value;
                                     if (float.TryParse(text, out value))
                                     {
-                                        warningText.SetActive(true);
+                                        if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                            warningText.SetActive(true);
+                                        else
+                                        {
+                                            System.Action action = entriesWithoutWarning[entry];
+                                            if(action!=null)
+                                                action.Invoke();
+                                        }
                                         entry.BoxedEditedValue = value;
                                         category.SaveToFile(false);
                                         obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
@@ -254,7 +279,14 @@ namespace SR2E
                                     double value;
                                     if (double.TryParse(text, out value))
                                     {
-                                        warningText.SetActive(true);
+                                        if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                            warningText.SetActive(true);
+                                        else
+                                        {
+                                            System.Action action = entriesWithoutWarning[entry];
+                                            if(action!=null)
+                                                action.Invoke();
+                                        }
                                         entry.BoxedEditedValue = value;
                                         category.SaveToFile(false);
                                         obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
@@ -274,7 +306,14 @@ namespace SR2E
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter text";
                             inputField.onValueChanged.AddListener((Action<string>)((text) =>
                             {
-                                warningText.SetActive(true);
+                                if(!entriesWithoutWarning.ContainsKey(entry))
+                                    warningText.SetActive(true);
+                                else
+                                {
+                                    System.Action action = entriesWithoutWarning[entry];
+                                    if(action!=null)
+                                        action.Invoke();
+                                }
                                 entry.BoxedEditedValue = text; category.SaveToFile(false);
                             }));
                         }
@@ -302,13 +341,27 @@ namespace SR2E
                                         {
                                             textMesh.text = key.ToString();
                                             entry.BoxedEditedValue = key.Value;
-                                            warningText.SetActive(true);
+                                            if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                                warningText.SetActive(true);
+                                            else
+                                            {
+                                                System.Action action = entriesWithoutWarning[entry];
+                                                if(action!=null)
+                                                    action.Invoke();
+                                            }
                                         }
                                         else if (entry.BoxedEditedValue is KeyCode)
                                         {
                                             textMesh.text = SR2EUtils.KeyToKeyCode(key.Value).ToString();
                                             entry.BoxedEditedValue = SR2EUtils.KeyToKeyCode(key.Value);
-                                            warningText.SetActive(true);
+                                            if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                                warningText.SetActive(true);
+                                            else
+                                            {
+                                                System.Action action = entriesWithoutWarning[entry];
+                                                if(action!=null)
+                                                    action.Invoke();
+                                            }
                                         }
                                     }
                                     listeninAction = null;

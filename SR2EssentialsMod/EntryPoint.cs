@@ -75,23 +75,36 @@ namespace SR2E
             prefs.DeleteEntry("noclipFlySprintSpeed");
 
             if (!prefs.HasEntry("noclipAdjustSpeed"))
-                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false);
+                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
             if (!prefs.HasEntry("consoleUsesSR2Font"))
-                prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false);
+                prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).disableWarning((System.Action)(
+                    () =>
+                    {
+                        SetupFonts(); 
+                    }));
             if (!prefs.HasEntry("doesConsoleSync"))
-                prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
+                prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false).disableWarning((System.Action)(
+                    () =>
+                    {
+                        if (consoleUsesSR2Font != SR2Console.syncedSetuped)
+                        {
+                            if(SR2Console.syncedSetuped) SR2Console.SetupConsoleSync();
+                            else SR2Console.UnSetupConsoleSync();
+                        }
+                        SetupFonts();
+                    }));
             if (!prefs.HasEntry("skipEngagementPrompt"))
-                prefs.CreateEntry("skipEngagementPrompt", (bool)false, "Skip the engagement prompt", false);
+                prefs.CreateEntry("skipEngagementPrompt", (bool)false, "Skip the engagement prompt", false).disableWarning();
             if (!prefs.HasEntry("debugLogging"))
-                prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false);
+                prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
             if (!prefs.HasEntry("experimentalStuff"))
                 prefs.CreateEntry("experimentalStuff", (bool)false, "Enable experimental stuff", true);
             if (!prefs.HasEntry("onSaveLoadCommand"))
-                prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false);
+                prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
-                prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false);
+                prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).disableWarning();
             if (!prefs.HasEntry("noclipSprintMultiply"))
-                prefs.CreateEntry("noclipSprintMultiply", 2f, "Noclip sprint speed multiplier", false);
+                prefs.CreateEntry("noclipSprintMultiply", 2f, "Noclip sprint speed multiplier", false).disableWarning();
             if (!prefs.HasEntry("chaosMode"))
                 prefs.CreateEntry("chaosMode", (bool)false, "\u00af\\_(ツ)_/\u00af", "The game takes longer to start with this! Don't freak out!",true);
 
@@ -122,7 +135,7 @@ namespace SR2E
         public override void OnInitializeMelon()
         {
             instance = this;
-            prefs = MelonPreferences.CreateCategory("SR2Essentials");
+            prefs = MelonPreferences.CreateCategory("SR2Essentials","SR2Essentials");
             ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
             ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
             ClassInjector.RegisterTypeInIl2Cpp<CustomMainMenuButtonPressHandler>();
@@ -256,17 +269,27 @@ namespace SR2E
             }
         }
 
+        internal static TMP_FontAsset defaultFont;
         internal static void SetupFonts()
         {
-            SR2Font = SR2EUtils.Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
+            if(SR2Font==null)
+                SR2Font = SR2EUtils.Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
             if (consoleUsesSR2Font)
-                foreach (var text in SR2EUtils.Get<GameObject>("SR2Console").getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
+                {
+                    if(defaultFont==null)
+                        defaultFont= text.font;
                     text.font = SR2Font;
+                }
+            else if(defaultFont!=null)
+                foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
+                    text.font = defaultFont;
+                
             else
             {
-                foreach (var text in SR2EUtils.Get<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
                     text.font = SR2Font;
-                foreach (var text in SR2EUtils.Get<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>())
                     text.font = SR2Font;
             }
         }
@@ -283,15 +306,13 @@ namespace SR2E
                         (System.Action)(() =>
                         {
                             SR2ModMenu.Open();
-                        })).AddMainMenuButton();
+                        }));
 
                     if (devMode)
                     {
-                        AddPauseMenuButton("DebugPlayer", label2, 3, (System.Action)(() => { LibraryDebug.DebugLogButton(); }));
+                        new CustomPauseMenuButton("DebugPlayer", label2, 3, (System.Action)(() => { LibraryDebug.DebugLogButton(); }));
                     }
-                    /*
-                    new CustomPauseMenuButton("ModMenu", "Mods", 3
-                        , (System.Action)(() => { SR2ModMenu.Open(); })).AddPauseMenuButton();*/
+                    new CustomPauseMenuButton("ModMenu", label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
                     break;
                 case "MainMenuUI":
                     mainMenuLoaded = true;

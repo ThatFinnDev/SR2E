@@ -1,5 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
+using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Pause;
+using SR2E.Patches;
 using UnityEngine.Localization;
 
 namespace SR2E.Library;
@@ -36,6 +38,21 @@ public class CustomMainMenuButton
         this.icon = icon;
         this.insertIndex = insertIndex;
         this.action = action;
+        
+        
+        foreach (CustomMainMenuButton entry in SR2MainMenuButtonPatch.buttons)
+            if (entry.name == this.name) { MelonLogger.Error($"There is already a button with the name {this.name}"); return; }
+          
+        SR2MainMenuButtonPatch.buttons.Add(this);
+        if (SR2EEntryPoint.mainMenuLoaded)
+        {
+            MainMenuLandingRootUI mainMenu = Object.FindObjectOfType<MainMenuLandingRootUI>();
+            if(mainMenu!=null)
+            {
+                mainMenu.gameObject.SetActive(false);
+                mainMenu.gameObject.SetActive(true);
+            }
+        }
     }
 }
 
@@ -53,6 +70,11 @@ public class CustomPauseMenuButton
         this.label = label; ;
         this.insertIndex = insertIndex;
         this.action = action;
+        
+        foreach (CustomPauseMenuButton entry in SR2PauseMenuButtonPatch.buttons)
+            if (entry.name == this.name) { MelonLogger.Error($"There is already a button with the name {this.name}"); return; }
+
+        SR2PauseMenuButtonPatch.buttons.Add(this);
     }
 }
 

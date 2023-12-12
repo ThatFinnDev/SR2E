@@ -1,4 +1,5 @@
-﻿using Il2CppSystem.IO;
+﻿using System;
+using Il2CppSystem.IO;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppInterop.Runtime.InteropTypes;
 using System.Linq;
@@ -264,16 +265,6 @@ namespace SR2E.Library
             group.memberTypes.Add(type);
         }
 
-        public static void AddPauseMenuButton(string name, LocalizedString label, int insertIndex, System.Action action)
-        {
-            var button = new CustomPauseMenuButton(name, label, insertIndex, action);
-
-            foreach (CustomPauseMenuButton entry in SR2PauseMenuButtonPatch.buttons)
-                if (entry.name == button.name) { MelonLogger.Error($"There is already a button with the name {button.name}"); return; }
-
-            SR2PauseMenuButtonPatch.buttons.Add(button);
-            return;
-        }
 
         public static IdentifiableTypeGroup MakeNewGroup(IdentifiableType[] types, string groupName, IdentifiableTypeGroup[] subGroups = null)
             {
@@ -567,20 +558,7 @@ namespace SR2E.Library
             material.SetColor("_MiddleColor", Middle);
             material.SetColor("_BottomColor", Bottom);
         }
-        
-        public static void AddMainMenuButton(this CustomMainMenuButton button)
-        {
-            foreach (CustomMainMenuButton entry in SR2MainMenuButtonPatch.buttons)
-                if (entry.name == button.name) { MelonLogger.Error($"There is already a button with the name {button.name}"); return; }
-          
-            SR2MainMenuButtonPatch.buttons.Add(button);
-            if (SR2EEntryPoint.mainMenuLoaded)
-            {
-                MainMenuLandingRootUI mainMenu = Object.FindObjectOfType<MainMenuLandingRootUI>();
-                mainMenu.gameObject.SetActive(false);
-                mainMenu.gameObject.SetActive(true);
-            }
-        }
+
 
         public static void SetAppearanceVacColor(this SlimeAppearance appearance, Color color)
         {
@@ -652,5 +630,15 @@ namespace SR2E.Library
             texture2D.filterMode = FilterMode.Bilinear;
             return texture2D;
         }
+
+
+        internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithoutWarning = new Dictionary<MelonPreferences_Entry, Action>();
+        public static void disableWarning(this MelonPreferences_Entry entry) => entriesWithoutWarning.Add(entry,null);
+        public static void disableWarning(this MelonPreferences_Entry entry,System.Action action) => entriesWithoutWarning.Add(entry,action);
+            
+        
+        
+        
+        
     }
 }
