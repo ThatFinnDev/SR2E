@@ -16,6 +16,9 @@ namespace SR2E.Library
 {
     public static class LibraryUtils
     {
+        internal static List<SR2EMod> mods = new List<SR2EMod>();
+
+
         internal static Dictionary<IdentifiableType, ModdedMarketData> marketData = new Dictionary<IdentifiableType, ModdedMarketData>(0);
 
         internal static Dictionary<MarketUI.PlortEntry, bool> marketPlortEntries = new Dictionary<MarketUI.PlortEntry, bool>();
@@ -259,6 +262,17 @@ namespace SR2E.Library
         {
             var group = Get<IdentifiableTypeGroup>(groupName);
             group.memberTypes.Add(type);
+        }
+
+        public static void AddPauseMenuButton(string name, LocalizedString label, int insertIndex, System.Action action)
+        {
+            var button = new CustomPauseMenuButton(name, label, insertIndex, action);
+
+            foreach (CustomPauseMenuButton entry in SR2PauseMenuButtonPatch.buttons)
+                if (entry.name == button.name) { MelonLogger.Error($"There is already a button with the name {button.name}"); return; }
+
+            SR2PauseMenuButtonPatch.buttons.Add(button);
+            return;
         }
 
         public static IdentifiableTypeGroup MakeNewGroup(IdentifiableType[] types, string groupName, IdentifiableTypeGroup[] subGroups = null)
@@ -554,13 +568,6 @@ namespace SR2E.Library
             material.SetColor("_BottomColor", Bottom);
         }
         
-        public static void AddPauseMenuButton(this CustomPauseMenuButton button)
-        {
-            foreach (CustomPauseMenuButton entry in SR2PauseMenuButtonPatch.buttons)
-                if (entry.name == button.name) { MelonLogger.Error($"There is already a button with the name {button.name}"); return; }
-          
-            SR2PauseMenuButtonPatch.buttons.Add(button);
-        }
         public static void AddMainMenuButton(this CustomMainMenuButton button)
         {
             foreach (CustomMainMenuButton entry in SR2MainMenuButtonPatch.buttons)
@@ -571,17 +578,7 @@ namespace SR2E.Library
             {
                 MainMenuLandingRootUI mainMenu = Object.FindObjectOfType<MainMenuLandingRootUI>();
                 mainMenu.gameObject.SetActive(false);
-                mainMenu.enabled = false;
-                mainMenu.Close(true, null);
-                foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
-                {
-                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
-                        loader.parentTransform.name == "MainMenuRoot")
-                    {
-                        loader.Start();
-                        break;
-                    }
-                }
+                mainMenu.gameObject.SetActive(true);
             }
         }
 

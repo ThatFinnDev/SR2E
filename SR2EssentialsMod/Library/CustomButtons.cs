@@ -2,7 +2,7 @@
 using Il2CppMonomiPark.SlimeRancher.UI.Pause;
 using UnityEngine.Localization;
 
-namespace SR2E;
+namespace SR2E.Library;
 /*
 public class CustomPauseMenuButton
 {
@@ -50,35 +50,18 @@ public class CustomPauseMenuButton
     public CustomPauseMenuButton(string name, LocalizedString label, int insertIndex, System.Action action)
     {
         this.name = name;
-        this.label = label;;
+        this.label = label; ;
         this.insertIndex = insertIndex;
         this.action = action;
     }
 }
 
-public class CustomPauseItemModel : PauseItemModel
+public class CustomPauseItemModel : ResumePauseItemModel
 {
     public System.Action action;
     public override void InvokeBehavior()
     {
         action.Invoke();
+        return;
     }
-    public LocalizedString Label
-    {
-        get
-        {
-            return this.label;
-        }
-    }
-
-    public bool ShouldPlayCueOnSubmit
-    {
-        get
-        {
-            return this.shouldPlayCueOnSubmit;
-        }
-    }
-
-    private LocalizedString label;
-    private bool shouldPlayCueOnSubmit = true;
 }
