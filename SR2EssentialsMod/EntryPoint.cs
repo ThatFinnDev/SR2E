@@ -106,8 +106,8 @@ namespace SR2E
                 if (melonBase is SR2EMod)
                 {
                     SR2EMod mod = melonBase as SR2EMod;
-                    LibraryPatches.mods.Add(mod);
-                    MelonLogger.Msg("SR2ELibrary registered: " + mod.MelonAssembly.Assembly.FullName);
+                    mods.Add(mod);
+                    MelonLogger.Msg("SR2ELibrary registered mod: " + mod.MelonAssembly.Assembly.FullName);
                 }
             }
             if (Get<GameObject>("SR2ELibraryROOT")) { rootOBJ = Get<GameObject>("SR2ELibraryROOT"); }
@@ -276,7 +276,8 @@ namespace SR2E
             switch (sceneName)
             {
                 case "SystemCore":
-                    LocalizedString label = AddTranslation("Mods", "b.buttonMods", "UI");
+                    LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
+                    LocalizedString label2 = AddTranslation("Debug Log Player", "b.debug_player_sr2e", "UI");
                     new CustomMainMenuButton("ModMenu", label, 
                         LoadSprite("modsMenuIcon"), 2,
                         (System.Action)(() =>
@@ -284,7 +285,10 @@ namespace SR2E
                             SR2ModMenu.Open();
                         })).AddMainMenuButton();
 
-                    new CustomPauseMenuButton("ModMenu", label,3,(System.Action)(() => { SR2ModMenu.Open(); })).AddPauseMenuButton();
+                    if (devMode)
+                    {
+                        AddPauseMenuButton("DebugPlayer", label2, 3, (System.Action)(() => { LibraryDebug.DebugLogButton(); }));
+                    }
                     /*
                     new CustomPauseMenuButton("ModMenu", "Mods", 3
                         , (System.Action)(() => { SR2ModMenu.Open(); })).AddPauseMenuButton();*/
