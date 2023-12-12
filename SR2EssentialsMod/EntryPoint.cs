@@ -14,6 +14,8 @@ using SR2E.Saving;
 using Il2CppKinematicCharacterController;
 using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.UI.RanchHouse;
+using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
 
 namespace SR2E
@@ -156,6 +158,7 @@ namespace SR2E
                         break;
                 }
             ClassInjector.RegisterTypeInIl2Cpp(typeof(CustomPauseItemModel));
+            ClassInjector.RegisterTypeInIl2Cpp(typeof(CustomMainMenuItemDefinition));
         }
 
         public override void OnApplicationQuit()
@@ -218,6 +221,40 @@ namespace SR2E
                     break;
                 case "GameCore":
 
+                    LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
+                    LocalizedString label2 = AddTranslation("Debug Log Player", "b.debug_player_sr2e", "UI");
+                    LocalizedString label3 = AddTranslation("Teleport", "b.button_teleport_sr2e", "UI");
+                    new CustomMainMenuButton("ModMenu", label, 
+                        LoadSprite("modsMenuIcon"), 2,
+                        (System.Action)(() =>
+                        {
+                            SR2ModMenu.Open();
+                        }));
+
+                    if (devMode)
+                    {
+                        new CustomPauseMenuButton("DebugPlayer", label2, 3, (System.Action)(() => { LibraryDebug.DebugLogButton(); }));
+                    }
+                    new CustomPauseMenuButton("ModMenu", label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
+                    new CustomRanchUIButton("ModMenu", label3, 3, (System.Action)(() =>
+                    {
+                        //541.6466 18.646 349.3299
+                        SR2Warps.warpTo = new Warp("SceneGroup.PowderfallBluffs",new Vector3(541.6466f, 18.646f, 349.3299f),
+                            Quaternion.identity);
+                        GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab; 
+                        if (prefab != null)
+                        {
+                            SceneContext.Instance.Player.GetComponent<SRCharacterController>().Position = new Vector3(541.6466f, 18.646f, 349.3299f);
+                            GameObject teleporterCollider = SR2EUtils.getObjRec<GadgetTeleporterNode>(prefab.transform, "Teleport Collider").gameObject;
+                            GameObject obj = GameObject.Instantiate(teleporterCollider, new Vector3(541.6466f, 18.646f, 349.3299f), Quaternion.identity);
+                            obj.SetActive(true);
+                            obj.GetComponent<StaticTeleporterNode>()._hasDestination = true;
+                            obj.GetComponent<StaticTeleporterNode>().UpdateFX();
+                        }
+                        Get<RanchHouseUI>("RanchHouseUI(Clone)").Close();
+                    }));
+                    
+                    
                     killDamage = new Damage
                     {
                         Amount = 99999999,
@@ -274,6 +311,7 @@ namespace SR2E
         {
             if(SR2Font==null)
                 SR2Font = SR2EUtils.Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
+            
             if (consoleUsesSR2Font)
                 foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
                 {
@@ -284,14 +322,11 @@ namespace SR2E
             else if(defaultFont!=null)
                 foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
                     text.font = defaultFont;
-                
-            else
-            {
-                foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
-                    text.font = SR2Font;
-                foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>())
-                    text.font = SR2Font;
-            }
+            foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
+                text.font = SR2Font;
+            foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>()) 
+                text.font = SR2Font;
+            
         }
 
         public override void OnSceneWasInitialized(int buildindex, string sceneName)
@@ -299,20 +334,6 @@ namespace SR2E
             switch (sceneName)
             {
                 case "SystemCore":
-                    LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
-                    LocalizedString label2 = AddTranslation("Debug Log Player", "b.debug_player_sr2e", "UI");
-                    new CustomMainMenuButton("ModMenu", label, 
-                        LoadSprite("modsMenuIcon"), 2,
-                        (System.Action)(() =>
-                        {
-                            SR2ModMenu.Open();
-                        }));
-
-                    if (devMode)
-                    {
-                        new CustomPauseMenuButton("DebugPlayer", label2, 3, (System.Action)(() => { LibraryDebug.DebugLogButton(); }));
-                    }
-                    new CustomPauseMenuButton("ModMenu", label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
                     break;
                 case "MainMenuUI":
                     mainMenuLoaded = true;
