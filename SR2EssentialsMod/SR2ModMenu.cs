@@ -183,6 +183,8 @@ namespace SR2E
                             obj.transform.GetChild(2).GetComponent<Toggle>().onValueChanged.AddListener((Action<bool>)(
                                 (isOn) =>
                                 {
+                                    entry.BoxedEditedValue = isOn;
+                                    category.SaveToFile(false);
                                     if(!entriesWithoutWarning.ContainsKey(entry)) 
                                         warningText.SetActive(true);
                                     else
@@ -192,8 +194,6 @@ namespace SR2E
                                             action.Invoke();
                                     }
                                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = isOn.ToString();
-                                    entry.BoxedEditedValue = isOn;
-                                    category.SaveToFile(false);
                                 }));
 
                         }
@@ -214,6 +214,8 @@ namespace SR2E
                                     int value;
                                     if (int.TryParse(text, out value))
                                     {
+                                        entry.BoxedEditedValue = value;
+                                        category.SaveToFile(false);
                                         if(!entriesWithoutWarning.ContainsKey(entry)) 
                                             warningText.SetActive(true);
                                         else
@@ -222,8 +224,6 @@ namespace SR2E
                                             if(action!=null)
                                                 action.Invoke();
                                         }
-                                        entry.BoxedEditedValue = value;
-                                        category.SaveToFile(false);
                                     }
                                     else
                                         inputField.text = int.MaxValue.ToString();
@@ -246,6 +246,9 @@ namespace SR2E
                                     float value;
                                     if (float.TryParse(text, out value))
                                     {
+                                        entry.BoxedEditedValue = value;
+                                        category.SaveToFile(false);
+                                        obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
                                         if(!entriesWithoutWarning.ContainsKey(entry)) 
                                             warningText.SetActive(true);
                                         else
@@ -254,9 +257,6 @@ namespace SR2E
                                             if(action!=null)
                                                 action.Invoke();
                                         }
-                                        entry.BoxedEditedValue = value;
-                                        category.SaveToFile(false);
-                                        obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
                                     }
                                     else
                                         inputField.text = obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
@@ -279,6 +279,9 @@ namespace SR2E
                                     double value;
                                     if (double.TryParse(text, out value))
                                     {
+                                        entry.BoxedEditedValue = value;
+                                        category.SaveToFile(false);
+                                        obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
                                         if(!entriesWithoutWarning.ContainsKey(entry)) 
                                             warningText.SetActive(true);
                                         else
@@ -287,9 +290,6 @@ namespace SR2E
                                             if(action!=null)
                                                 action.Invoke();
                                         }
-                                        entry.BoxedEditedValue = value;
-                                        category.SaveToFile(false);
-                                        obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
                                     }
                                     else
                                         inputField.text = obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
@@ -306,6 +306,7 @@ namespace SR2E
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter text";
                             inputField.onValueChanged.AddListener((Action<string>)((text) =>
                             {
+                                entry.BoxedEditedValue = text; category.SaveToFile(false);
                                 if(!entriesWithoutWarning.ContainsKey(entry))
                                     warningText.SetActive(true);
                                 else
@@ -314,7 +315,6 @@ namespace SR2E
                                     if(action!=null)
                                         action.Invoke();
                                 }
-                                entry.BoxedEditedValue = text; category.SaveToFile(false);
                             }));
                         }
                         //KeyCode Conversion still has some issue, this is why it is disabled
