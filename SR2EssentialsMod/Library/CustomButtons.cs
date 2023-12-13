@@ -1,9 +1,11 @@
-﻿using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
+﻿using Il2CppInterop.Runtime.Injection;
+using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Model;
 using Il2CppMonomiPark.SlimeRancher.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.UI.RanchHouse;
 using SR2E.Patches;
+using System;
 using UnityEngine.Localization;
 
 namespace SR2E.Library;
@@ -29,9 +31,8 @@ public class CustomMainMenuButton
     public LocalizedString label;
     public Sprite icon;
     public int insertIndex;
-    internal GameObject _prefabToSpawn;
-    //internal CreateNewUIItemDefinition _definition;
-    internal CustomMainMenuItemDefinition _definition;
+    public GameObject _prefabToSpawn;
+    internal CreateNewUIItemDefinition _definition;
     public System.Action action;
 
     public CustomMainMenuButton(string name, LocalizedString label, Sprite icon, int insertIndex, System.Action action)
@@ -109,33 +110,5 @@ public class CustomPauseItemModel : ResumePauseItemModel
     {
         action.Invoke();
         return;
-    }
-}
-
-public class CustomMainMenuBehaviorModel: CreateNewUIBehaviorModel
-{
-    public System.Action action;
-    
-    public CustomMainMenuBehaviorModel(ButtonBehaviorDefinition definition) : base(definition)
-    {
-        
-    }
-    public override void InvokeBehavior()
-    {
-        MelonLogger.Msg("1 "+ action==null);
-        action.Invoke();
-        return;
-    }
-}
-public class CustomMainMenuItemDefinition: CreateNewUIItemDefinition
-{
-    public System.Action action;
-    public CustomMainMenuBehaviorModel loadGameBehaviorModel;
-    public override ButtonBehaviorModel CreateButtonBehaviorModel()
-    { 
-        loadGameBehaviorModel = new CustomMainMenuBehaviorModel(this);
-        MelonLogger.Msg("2 "+action==null);
-        loadGameBehaviorModel.action = action;
-        return loadGameBehaviorModel;
     }
 }

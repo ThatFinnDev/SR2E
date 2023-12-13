@@ -13,38 +13,6 @@ public static class SR2MainMenuButtonPatch
     internal static bool postSafeLock;
     public static void Prefix(MainMenuLandingRootUI __instance)
     {
-        foreach (CustomMainMenuButton button in buttons)
-        {
-            if (button.name == null || button.label == null || button.action == null) continue;
-            try
-            {
-                if (button._definition != null)
-                {
-                    if (__instance._continueGameConfig.items.Contains(button._definition))
-                        continue;
-                    __instance._continueGameConfig.items.Insert(button.insertIndex + 1, button._definition);
-                    __instance._existingGameNoContinueConfig.items.Insert(button.insertIndex, button._definition);
-                    __instance._newGameConfig.items.Insert(button.insertIndex, button._definition);
-                    continue;
-                }
-                button._definition = ScriptableObject.CreateInstance<CustomMainMenuItemDefinition>();
-                button._definition.action = button.action;
-                button._definition.label = button.label;
-                button._definition.name = button.name;
-                button._definition.icon = button.icon;
-                if( button._definition.loadGameBehaviorModel!=null)
-                    button._definition.loadGameBehaviorModel.action = button.action;
-                button._definition.hideFlags |= HideFlags.HideAndDontSave;
-                __instance._continueGameConfig.items.Insert(button.insertIndex + 1, button._definition);
-                __instance._existingGameNoContinueConfig.items.Insert(button.insertIndex, button._definition);
-                __instance._newGameConfig.items.Insert(button.insertIndex, button._definition);
-            }
-            catch (Exception e) { MelonLogger.Error(e); }
-        }
-    }
-/*
-    public static void Prefix(MainMenuLandingRootUI __instance)
-    {
         MelonLogger.Msg(buttons.Count);
         foreach (CustomMainMenuButton button in buttons)
         {
@@ -86,7 +54,7 @@ public static class SR2MainMenuButtonPatch
     {
         foreach (CustomMainMenuButton button in buttons)
         {
-            if (button.name == null || button.label == null  || button.action == null) continue;
+            if (button.name == null || button.label == null || button.action == null) continue;
             try
             {
                 if (button._prefabToSpawn == null)
@@ -102,5 +70,5 @@ public static class SR2MainMenuButtonPatch
             }
             catch (Exception e) { MelonLogger.Error(e); }
         }
-    }*/
+    }
 }

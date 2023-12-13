@@ -158,7 +158,6 @@ namespace SR2E
                         break;
                 }
             ClassInjector.RegisterTypeInIl2Cpp(typeof(CustomPauseItemModel));
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(CustomMainMenuItemDefinition));
         }
 
         public override void OnApplicationQuit()
