@@ -17,6 +17,7 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.UI.RanchHouse;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
+using SR2E.Library.Buttons;
 
 namespace SR2E
 {
