@@ -55,7 +55,7 @@ namespace SR2E.Library
             SlimeAppearance appearance = Object.Instantiate(baseAppearance);
             Object.DontDestroyOnLoad(appearance);
             appearance.name = appearanceName;
-            slimedef.AppearancesDefault.Add(appearance);
+            slimedef.AppearancesDefault = slimedef.AppearancesDefault.Add(appearance);
             if (slimedef.AppearancesDefault[0] == null)
             {
                 slimedef.AppearancesDefault[0] = appearance;
@@ -104,14 +104,14 @@ namespace SR2E.Library
             mergedDiet.EatMap.AddListRangeNoMultiple(firstDiet.EatMap);
             mergedDiet.EatMap.AddListRangeNoMultiple(secondDiet.EatMap);
 
-            mergedDiet.AdditionalFoodIdents.AddRange(firstDiet.AdditionalFoodIdents);
-            mergedDiet.AdditionalFoodIdents.AddRange(secondDiet.AdditionalFoodIdents);
+            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRange(firstDiet.AdditionalFoodIdents);
+            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRange(secondDiet.AdditionalFoodIdents);
 
-            mergedDiet.FavoriteIdents.AddRange(firstDiet.FavoriteIdents);
-            mergedDiet.FavoriteIdents.AddRange(secondDiet.FavoriteIdents);
+            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRange(firstDiet.FavoriteIdents);
+            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRange(secondDiet.FavoriteIdents);
 
-            mergedDiet.ProduceIdents.AddRange(firstDiet.ProduceIdents);
-            mergedDiet.ProduceIdents.AddRange(secondDiet.ProduceIdents);
+            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRange(firstDiet.ProduceIdents);
+            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRange(secondDiet.ProduceIdents);
 
             return mergedDiet;
         }
@@ -209,7 +209,7 @@ namespace SR2E.Library
         }
         public static void AddProduceIdent(this SlimeDefinition slimedef, IdentifiableType ident)
         {
-            slimedef.Diet.ProduceIdents.Add(ident);
+            slimedef.Diet.ProduceIdents = slimedef.Diet.ProduceIdents.Add(ident);
         }
         public static void SetProduceIdent(this SlimeDefinition slimedef, IdentifiableType ident, int index)
         {
@@ -303,13 +303,13 @@ namespace SR2E.Library
         {
             var diet = new SlimeDiet();
 
-            diet.ProduceIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
+            diet.ProduceIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(0);
             diet.FavoriteProductionCount = 2;
-            diet.MajorFoodGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<SlimeEat.FoodGroup>(1);
-            diet.EatMap = new Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry>(1);
-            diet.FavoriteIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
-            diet.AdditionalFoodIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(1);
-            diet.MajorFoodIdentifiableTypeGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableTypeGroup>(1);
+            diet.MajorFoodGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<SlimeEat.FoodGroup>(0);
+            diet.EatMap = new Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry>(0);
+            diet.FavoriteIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(0);
+            diet.AdditionalFoodIdents = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableType>(0);
+            diet.MajorFoodIdentifiableTypeGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<IdentifiableTypeGroup>(0);
             diet.BecomesOnTarrifyIdentifiableType = Get<IdentifiableType>("Tarr");
             diet.EdiblePlortIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("EdiblePlortFoodGroup");
             return diet;
