@@ -114,15 +114,19 @@ namespace NullSlime
 
         public static void Eatmaps()
         {
-
-            slimeDefinition.Diet.MajorFoodIdentifiableTypeGroups.Add(Get<IdentifiableTypeGroup>("CraftGroup"));
+            var craftGroup = Get<IdentifiableTypeGroup>("CraftGroup");
+            craftGroup.isFood = true;
+            slimeDefinition.Diet.MajorFoodIdentifiableTypeGroups = slimeDefinition.Diet.MajorFoodIdentifiableTypeGroups.Add(craftGroup);
             slimeDefinition.Diet.MajorFoodGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<SlimeEat.FoodGroup>(0);
             slimeDefinition.Diet.EatMap = new Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry>(0);
 
             foreach (var item in Get<IdentifiableTypeGroup>("CraftGroup").GetAllMembersArray())
             {
-                slimeDefinition.Diet.EatMap.Add(slimeDefinition.CreateEatmap(SlimeEmotions.Emotion.HUNGER, 0.1F, plortDefinition, item));
+                slimeDefinition.AddExtraEatIdent(item);
             }
+            slimeDefinition.SetFavoriteProduceCount(10);
+            slimeDefinition.AddFavorite(GetCraft("StrangeDiamondCraft"));
+            slimeDefinition.RefreshEatmap();
         }
 
         public static void SetupSpawning()

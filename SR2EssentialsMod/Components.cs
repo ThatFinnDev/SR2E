@@ -1,6 +1,7 @@
 ﻿using System;
 using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+using SR2E.Library.Buttons;
 using SR2E.Patches;
 using UnityEngine.InputSystem;
 
