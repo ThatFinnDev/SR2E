@@ -122,6 +122,9 @@ namespace NullSlime
             slimeDefinition_data.AppearancesDefault [0].SetAppearanceVacColor(vacColor_data);
             slimeDefinition_data.SetSlimeColor(topColor_data, middleColor_data, bottomColor_data, middleColor_data, 0, 0, false, 0);
             SetPlortColor(topColor_data, middleColor_data, bottomColor_data, plortPrefab_data);
+
+            slimeDefinition_null.AppearancesDefault[0]._splatColor = vacColor_null;
+            slimeDefinition_data.AppearancesDefault[0]._splatColor = vacColor_data;
         }
 
         public static void Images()
