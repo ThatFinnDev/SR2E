@@ -12,6 +12,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using SR2E.Patches;
+using UnityEngine.Playables;
 
 namespace SR2E.Library
 {
@@ -136,6 +137,8 @@ namespace SR2E.Library
 
         public static LocalizedString AddTranslation(string localized, string key = "l.SR2ELibraryTest", string table = "Actor")
         {
+            StringTable table2 = LocalizationUtil.GetTable(table);
+
             System.Collections.Generic.Dictionary<string, string> dictionary;
             if (!addedTranslations.TryGetValue(table, out dictionary))
             {
@@ -145,16 +148,20 @@ namespace SR2E.Library
             }
 
             string? key0 = null;
+
             if (key == "l.SR2E.LibraryTest")
             {
-                key0 = key + UnityEngine.Random.RandomRange(10000, 99999).ToString();
+                key0 = $"{key}.{UnityEngine.Random.RandomRange(10000, 99999)}.{UnityEngine.Random.RandomRange(10, 99)}";
+                while (table2.GetEntry(key0) != null)
+                {
+                    key0 = $"{key}.{UnityEngine.Random.RandomRange(10000, 99999)}.{UnityEngine.Random.RandomRange(10, 99)}";
+                }
+
             }
             else
-            {
                 key0 = key;
-            }
+
             dictionary.Add(key0, localized);
-            StringTable table2 = LocalizationUtil.GetTable(table);
             StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
             return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
@@ -246,7 +253,15 @@ namespace SR2E.Library
         }
         public static void AddSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG)
         {
-            def.Diet.MajorFoodGroups.AddItem(FG);
+            def.Diet.MajorFoodGroups = (Il2CppStructArray<SlimeEat.FoodGroup>)def.Diet.MajorFoodGroups.AddItem(FG);
+        }
+        public static void ChangeSlimeFoodIdentGroup(this SlimeDefinition def, IdentifiableTypeGroup FG, int index)
+        {
+            def.Diet.MajorFoodIdentifiableTypeGroups[index] = FG;
+        }
+        public static void AddSlimeFoodIdentGroup(this SlimeDefinition def, IdentifiableTypeGroup FG)
+        {
+            def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
         }
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
         {
