@@ -9,14 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="body_stripes_data.png" />
     <None Remove="body_stripes_null.png" />
+    <None Remove="dataPlort_falloff_map.png" />
+    <None Remove="iconPlortData.png" />
     <None Remove="iconPlortNull.png" />
+    <None Remove="iconSlimeData.png" />
     <None Remove="iconSlimeNull.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="body_stripes_data.png" />
     <EmbeddedResource Include="body_stripes_null.png" />
+    <EmbeddedResource Include="dataPlort_falloff_map.png" />
+    <EmbeddedResource Include="iconPlortData.png" />
     <EmbeddedResource Include="iconPlortNull.png" />
+    <EmbeddedResource Include="iconSlimeData.png" />
     <EmbeddedResource Include="iconSlimeNull.png" />
   </ItemGroup>
 
