@@ -10,21 +10,19 @@ namespace SR2E.Library.Buttons;
 
 public class CustomPauseMenuButton
 {
-    public string name;
     public LocalizedString label;
     public int insertIndex;
     internal CustomPauseItemModel _model;
     public System.Action action;
 
-    public CustomPauseMenuButton(string name, LocalizedString label, int insertIndex, System.Action action)
+    public CustomPauseMenuButton(LocalizedString label, int insertIndex, System.Action action)
     {
-        this.name = name;
         this.label = label; ;
         this.insertIndex = insertIndex;
         this.action = action;
 
         foreach (CustomPauseMenuButton entry in SR2PauseMenuButtonPatch.buttons)
-            if (entry.name == this.name) { MelonLogger.Error($"There is already a button with the name {this.name}"); return; }
+            if (entry.label == this.label) { MelonLogger.Error($"There is already a button with the name {this.label}"); return; }
 
         SR2PauseMenuButtonPatch.buttons.Add(this);
     }

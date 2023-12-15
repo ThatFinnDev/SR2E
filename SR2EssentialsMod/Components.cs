@@ -21,7 +21,7 @@ public class CustomMainMenuButtonPressHandler : MonoBehaviour
     public void OnEnable()
     {
         foreach (CustomMainMenuButton button in SR2MainMenuButtonPatch.buttons)
-            if (button.name+"ButtonStarter(Clone)" == gameObject.name)
+            if (button.label.GetLocalizedString()+"ButtonStarter(Clone)" == gameObject.name)
             {
                 button.action.Invoke();
                 break;
