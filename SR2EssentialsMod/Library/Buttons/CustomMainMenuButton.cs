@@ -12,7 +12,6 @@ namespace SR2E.Library.Buttons;
 
 public class CustomMainMenuButton
 {
-    public string name;
     public LocalizedString label;
     public Sprite icon;
     public int insertIndex;
@@ -20,9 +19,8 @@ public class CustomMainMenuButton
     internal CreateNewUIItemDefinition _definition;
     public System.Action action;
 
-    public CustomMainMenuButton(string name, LocalizedString label, Sprite icon, int insertIndex, System.Action action)
+    public CustomMainMenuButton(LocalizedString label, Sprite icon, int insertIndex, System.Action action)
     {
-        this.name = name;
         this.label = label;
         this.icon = icon;
         this.insertIndex = insertIndex;
@@ -30,7 +28,7 @@ public class CustomMainMenuButton
 
 
         foreach (CustomMainMenuButton entry in SR2MainMenuButtonPatch.buttons)
-            if (entry.name == this.name) { MelonLogger.Error($"There is already a button with the name {this.name}"); return; }
+            if (entry.label == this.label) { MelonLogger.Error($"There is already a button with the name {this.label}"); return; }
 
         SR2MainMenuButtonPatch.buttons.Add(this);
         if (SR2EEntryPoint.mainMenuLoaded)

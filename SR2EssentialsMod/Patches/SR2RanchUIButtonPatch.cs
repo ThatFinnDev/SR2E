@@ -15,7 +15,7 @@ public static class SR2RanchUIButtonPatch
         safeLock = true;
         foreach (CustomRanchUIButton button in buttons)
         {
-            if (button.name == null || button.label == null || button.action == null) continue;
+            if (button.label == null || button.action == null) continue;
             try
             {
                 if (button._model != null)
@@ -29,7 +29,7 @@ public static class SR2RanchUIButtonPatch
                 button._model = ScriptableObject.CreateInstance<RanchHouseMenuItemModel>();
                 button._model._onClick.AddListener(button.action);
                 button._model.label = button.label;
-                button._model.name = button.name;
+                button._model.name = button.label.GetLocalizedString();
                 button._model.hideFlags |= HideFlags.HideAndDontSave;
 
                 if (!__instance._menuItems.Contains(button._model))

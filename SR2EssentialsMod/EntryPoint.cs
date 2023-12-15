@@ -224,8 +224,7 @@ namespace SR2E
                     LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
                     LocalizedString label2 = AddTranslation("Debug Log Player", "b.debug_player_sr2e", "UI");
                     LocalizedString label3 = AddTranslation("Teleport", "b.button_teleport_sr2e", "UI");
-                    new CustomMainMenuButton("ModMenu", label, 
-                        LoadSprite("modsMenuIcon"), 2,
+                    new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
                         (System.Action)(() =>
                         {
                             SR2ModMenu.Open();
@@ -233,10 +232,10 @@ namespace SR2E
 
                     if (devMode)
                     {
-                        new CustomPauseMenuButton("DebugPlayer", label2, 3, (System.Action)(() => { LibraryDebug.DebugLogButton(); }));
+                        new CustomPauseMenuButton( label2, 3, (System.Action)(() => { LibraryDebug.DebugLogButton(); }));
                     }
-                    new CustomPauseMenuButton("ModMenu", label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
-                    new CustomRanchUIButton("ModMenu", label3, 3, (System.Action)(() =>
+                    new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
+                    new CustomRanchUIButton(label3, 3, (System.Action)(() =>
                     {
                         //541.6466 18.646 349.3299
                         SR2Warps.warpTo = new Warp("SceneGroup.PowderfallBluffs",new Vector3(541.6466f, 18.646f, 349.3299f),

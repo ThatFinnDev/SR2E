@@ -20,7 +20,7 @@ public static class SR2PauseMenuButtonPatch
         safeLock = true;
         foreach (CustomPauseMenuButton button in buttons)
         {
-            if (button.name == null || button.label == null || button.action == null) continue;
+            if (button.label == null || button.action == null) continue;
             try
             {
                 if (button._model != null)
@@ -44,7 +44,7 @@ public static class SR2PauseMenuButtonPatch
                 button._model = ScriptableObject.CreateInstance<CustomPauseItemModel>();
                 button._model.action = button.action;
                 button._model.label = button.label;
-                button._model.name = button.name;
+                button._model.name = button.label.GetLocalizedString();
                 button._model.hideFlags |= HideFlags.HideAndDontSave;
                 //button._model.prefabToSpawn = button._prefabToSpawn;
 
