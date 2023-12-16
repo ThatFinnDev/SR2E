@@ -360,7 +360,7 @@ namespace SR2E
                         }
                     }
                     else
-                        if (!SR2Console.isOpen)
+                        if (isOpen)
                             if (!SR2ModMenu.isOpen)
                                 SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
                 }

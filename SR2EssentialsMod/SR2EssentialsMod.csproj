@@ -30,6 +30,8 @@
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
     <None Remove="start.bat" />
+    <None Remove="start.sh" />
+    <None Remove="Output\**" />
     <None Remove="NOTICE.txt" />
     <None Remove="README.md" />
     <None Remove="packages\**" />

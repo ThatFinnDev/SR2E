@@ -509,6 +509,7 @@ SR2EssentialsMod/.idea
 SR2EssentialsMod/.vs
 SR2EssentialsMod/obj
 SR2EssentialsMod/start.bat
+SR2EssentialsMod/start.sh
 SR2ELibraryExampleMod/Output
 SR2ELibraryExampleMod/Libs/MelonLoader.dll
 SR2ELibraryExampleMod//packages/LavaGang.MelonLoader.0.6.1
@@ -517,4 +518,5 @@ SR2ELibraryExampleMod/.idea
 SR2ELibraryExampleMod/.vs
 SR2ELibraryExampleMod/obj
 SR2ELibraryExampleMod/start.bat
+SR2ELibraryExampleMod/start.sh
 tempreleasenotes.txt
