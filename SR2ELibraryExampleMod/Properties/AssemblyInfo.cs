@@ -1,5 +1,5 @@
 ﻿using MelonLoader;
-using NullSlime;
+using VirtualSlime;
 
-[assembly: MelonInfo(typeof(SlimeMain), "NULL Slime", "1.0.0", "Golden Tarr Rancher")]
+[assembly: MelonInfo(typeof(SlimeMain), "Virtual Slimes", "1.0.0", "Golden Tarr Rancher")]
 [assembly: MelonGame("MonomiPark", "SlimeRancher2")]
