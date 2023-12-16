@@ -14,7 +14,6 @@ public static class SR2MainMenuButtonPatch
     internal static bool postSafeLock;
     public static void Prefix(MainMenuLandingRootUI __instance)
     {
-        MelonLogger.Msg(buttons.Count);
         foreach (CustomMainMenuButton button in buttons)
         {
             if (button.label == null || button.action == null) continue;
