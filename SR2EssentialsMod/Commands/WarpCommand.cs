@@ -10,6 +10,7 @@ namespace SR2E.Commands
         public override string ID => "warp";
         public override string Usage => "warp <location>";
         public override string Description => "Warps you to a saved warping point";
+        public override string ExtendedDescription => "Warps you to a saved warping point, use <u>setwarp</u> to create more.";
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
             if (argIndex == 0)

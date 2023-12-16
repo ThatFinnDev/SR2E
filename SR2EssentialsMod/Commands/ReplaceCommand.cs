@@ -82,7 +82,7 @@ namespace SR2E.Commands
                         else
                             objectName = name;
                     }
-                    catch (Exception e)
+                    catch 
                     { oldObjectName = gameobject.GetComponent<Identifiable>().identType.name;}
                     
                     Vector3 position = gameobject.transform.position;

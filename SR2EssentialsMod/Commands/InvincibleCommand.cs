@@ -22,9 +22,9 @@ namespace SR2E.Commands
             }
             if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
-            if (SR2EEntryPoint.infHealth)
+            if (infHealth)
             {
-                SR2EEntryPoint.infHealth = false;
+                infHealth = false;
                 if (healthMeter == null)
                     healthMeter = SR2EUtils.Get<HealthMeter>("Health Meter");
                 healthMeter.gameObject.active = true;
@@ -35,7 +35,7 @@ namespace SR2E.Commands
             }
             else
             {
-                SR2EEntryPoint.infHealth = true;
+                infHealth = true;
                 if (healthMeter == null)
                     healthMeter = SR2EUtils.Get<HealthMeter>("Health Meter");
                 healthMeter.gameObject.active = false;
@@ -49,8 +49,23 @@ namespace SR2E.Commands
             }
             return true;
         }
-        internal static int normalHealth = 100;
-        internal static HealthMeter healthMeter;
+
+        public override void OnMainMenuUILoad()
+        {
+            infHealth = false;
+        }
+
+        public override void Update()
+        {
+            if(infHealth)
+                if (SceneContext.Instance != null)
+                    if (SceneContext.Instance.PlayerState != null)
+                        SceneContext.Instance.PlayerState.SetHealth(int.MaxValue);
+        }
+
+        static int normalHealth = 100;
+        static bool infHealth = false;
+        static HealthMeter healthMeter;
         
     }
 }
