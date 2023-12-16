@@ -232,7 +232,7 @@ namespace SR2E
 
                     if (devMode)
                     {
-                        new CustomPauseMenuButton( label2, 3, (System.Action)(() => { LibraryDebug.DebugLogButton(); }));
+                        new CustomPauseMenuButton( label2, 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
                     }
                     new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
                     new CustomRanchUIButton(label3, 3, (System.Action)(() =>
@@ -399,6 +399,8 @@ namespace SR2E
             }
 
             SR2Console.Update();
+            if(devMode)
+                LibraryDebug.Update();
         }
         
     }
