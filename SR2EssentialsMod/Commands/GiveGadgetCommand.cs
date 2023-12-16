@@ -83,7 +83,7 @@
             
             try
             { itemName = foundType.LocalizedName.GetLocalizedString().Replace(" ", ""); }
-            catch (System.Exception ignored)
+            catch 
             { itemName = foundType.name; }
 
             int amount = 1;

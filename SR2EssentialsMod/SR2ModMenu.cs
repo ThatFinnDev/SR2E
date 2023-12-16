@@ -26,24 +26,26 @@ namespace SR2E
                 return;
             modMenuBlock.SetActive(false);
             gameObject.SetActive(false);
+            gameObject.getObjRec<Button>("ModMenu").onClick.Invoke();
 
-            foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
+            if(SR2EEntryPoint.mainMenuLoaded)
             {
-                if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
-                    loader.parentTransform.name == "MainMenuRoot")
-                {
-                    loader.Start();
-                    break;
-                }
+                foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
+                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
+                        loader.parentTransform.name == "MainMenuRoot")
+                    {
+                        loader.Start();
+                        break;
+                    }
             }
-
-
-            SR2EEntryPoint.CreateModMenuButton();
+            else
+                SystemContext.Instance.SceneLoader.UnpauseGame();
+                
+            
 
             Transform modContent = SR2EUtils.getObjRec<Transform>(transform, "ModContent");
             for (int i = 0; i < modContent.childCount; i++)
                 GameObject.Destroy(modContent.GetChild(i).gameObject);
-
         }
 
         static MainMenuLandingRootUI _mainMenuLandingRootUI;
@@ -52,15 +54,24 @@ namespace SR2E
         {
             if (SR2Console.isOpen)
                 return;
-            if (Object.FindObjectsOfType<MapUI>().Length != 0)
-                return;
             modMenuBlock.SetActive(true);
             gameObject.SetActive(true);
 
-            _mainMenuLandingRootUI = Object.FindObjectOfType<MainMenuLandingRootUI>();
-            _mainMenuLandingRootUI.gameObject.SetActive(false);
-            _mainMenuLandingRootUI.enabled = false;
-            _mainMenuLandingRootUI.Close(true, null);
+            if(SR2EEntryPoint.mainMenuLoaded)
+                try
+                {
+                    _mainMenuLandingRootUI = Object.FindObjectOfType<MainMenuLandingRootUI>();
+                    _mainMenuLandingRootUI.gameObject.SetActive(false);
+                    _mainMenuLandingRootUI.enabled = false;
+                    _mainMenuLandingRootUI.Close(true, null);
+                }catch{}
+            else
+                try
+                {
+                    PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>();
+                    pauseMenuRoot.Close();
+                    SystemContext.Instance.SceneLoader.TryPauseGame();
+                }catch{}
 
 
 
@@ -117,15 +128,16 @@ namespace SR2E
         static GameObject entryTemplate;
         static GameObject headerTemplate;
         static GameObject warningText;
+        static Texture2D modMenuTabImage;
         static List<Key> allPossibleKeys=new List<Key>();
         internal static void Start()
         {
-            modMenuBlock = SR2EUtils.getObjRec<GameObject>(parent, "modMenuBlock");
-            entryTemplate = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigurationEntryTemplate");
-            headerTemplate = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigurationHeaderTemplate");
-            warningText = SR2EUtils.getObjRec<GameObject>(transform, "ModConfigRestartWarning");
-            Transform content = SR2EUtils.getObjRec<Transform>(transform, "ModConfigurationContent");
-            modInfoText = SR2EUtils.getObjRec<TextMeshProUGUI>(transform, "ModInfoText");
+            modMenuBlock = parent.getObjRec<GameObject>("modMenuBlock");
+            entryTemplate = transform.getObjRec<GameObject>("ModConfigurationEntryTemplate");
+            headerTemplate = transform.getObjRec<GameObject>("ModConfigurationHeaderTemplate");
+            warningText = transform.getObjRec<GameObject>("ModConfigRestartWarning");
+            Transform content = transform.getObjRec<Transform>("ModConfigurationContent");
+            modInfoText = transform.getObjRec<TextMeshProUGUI>("ModInfoText");
             gameObject.SetActive(false);
             foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
                 if (!String.IsNullOrEmpty(stringKey))
@@ -140,7 +152,13 @@ namespace SR2E
             allPossibleKeys.Remove(Key.RightCommand);
             allPossibleKeys.Remove(Key.LeftWindows);
             allPossibleKeys.Remove(Key.RightCommand);
-            
+
+
+            modMenuTabImage = SR2EUtils.Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle").LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
+            var spr = Sprite.Create(modMenuTabImage, new Rect(0f, 0f, modMenuTabImage.width, modMenuTabImage.height), new Vector2(0.5f, 0.5f), 1f);
+            transform.getObjRec<Image>("ModMenu").sprite = spr;
+            transform.getObjRec<Image>("ModConfiguration").sprite = spr;
+
 
             foreach (MelonPreferences_Category category in MelonPreferences.Categories)
             {
@@ -155,7 +173,8 @@ namespace SR2E
                         obj.SetActive(true);
                         obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
                         if (!String.IsNullOrEmpty(entry.Description))
-                            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text += $"\n{entry.Description}";
+                            obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text += $"\n{entry.Description.Replace("\n"," ")}";
+                        obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().autoSizeTextContainer = true;
                         obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = entry.GetEditedValueAsString();
                         
                         if (entry.BoxedEditedValue is bool)
@@ -165,10 +184,17 @@ namespace SR2E
                             obj.transform.GetChild(2).GetComponent<Toggle>().onValueChanged.AddListener((Action<bool>)(
                                 (isOn) =>
                                 {
-                                    warningText.SetActive(true);
-                                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = isOn.ToString();
                                     entry.BoxedEditedValue = isOn;
                                     category.SaveToFile(false);
+                                    if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                        warningText.SetActive(true);
+                                    else
+                                    {
+                                        System.Action action = entriesWithoutWarning[entry];
+                                        if(action!=null)
+                                            action.Invoke();
+                                    }
+                                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = isOn.ToString();
                                 }));
 
                         }
@@ -177,6 +203,7 @@ namespace SR2E
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                            inputField.restoreOriginalTextOnEscape = false;
                             inputField.text = entry.GetEditedValueAsString();
                             inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter a non decimal number";
@@ -188,9 +215,16 @@ namespace SR2E
                                     int value;
                                     if (int.TryParse(text, out value))
                                     {
-                                        warningText.SetActive(true);
                                         entry.BoxedEditedValue = value;
                                         category.SaveToFile(false);
+                                        if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                            warningText.SetActive(true);
+                                        else
+                                        {
+                                            System.Action action = entriesWithoutWarning[entry];
+                                            if(action!=null)
+                                                action.Invoke();
+                                        }
                                     }
                                     else
                                         inputField.text = int.MaxValue.ToString();
@@ -201,6 +235,7 @@ namespace SR2E
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                            inputField.restoreOriginalTextOnEscape = false;
                             inputField.text = entry.GetEditedValueAsString();
                             inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter a decimal number";
@@ -212,10 +247,17 @@ namespace SR2E
                                     float value;
                                     if (float.TryParse(text, out value))
                                     {
-                                        warningText.SetActive(true);
                                         entry.BoxedEditedValue = value;
                                         category.SaveToFile(false);
                                         obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
+                                        if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                            warningText.SetActive(true);
+                                        else
+                                        {
+                                            System.Action action = entriesWithoutWarning[entry];
+                                            if(action!=null)
+                                                action.Invoke();
+                                        }
                                     }
                                     else
                                         inputField.text = obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
@@ -226,6 +268,7 @@ namespace SR2E
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                            inputField.restoreOriginalTextOnEscape = false;
                             inputField.text = entry.GetEditedValueAsString();
                             inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter a decimal number";
@@ -237,10 +280,17 @@ namespace SR2E
                                     double value;
                                     if (double.TryParse(text, out value))
                                     {
-                                        warningText.SetActive(true);
                                         entry.BoxedEditedValue = value;
                                         category.SaveToFile(false);
                                         obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
+                                        if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                            warningText.SetActive(true);
+                                        else
+                                        {
+                                            System.Action action = entriesWithoutWarning[entry];
+                                            if(action!=null)
+                                                action.Invoke();
+                                        }
                                     }
                                     else
                                         inputField.text = obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
@@ -251,13 +301,21 @@ namespace SR2E
                             obj.transform.GetChild(1).gameObject.SetActive(false);
                             obj.transform.GetChild(3).gameObject.SetActive(true);
                             TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                            inputField.restoreOriginalTextOnEscape = false;
                             inputField.text = entry.GetEditedValueAsString();
-                            inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
+                            inputField.contentType = TMP_InputField.ContentType.Standard;
                             inputField.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Please enter text";
                             inputField.onValueChanged.AddListener((Action<string>)((text) =>
                             {
-                                warningText.SetActive(true);
                                 entry.BoxedEditedValue = text; category.SaveToFile(false);
+                                if(!entriesWithoutWarning.ContainsKey(entry))
+                                    warningText.SetActive(true);
+                                else
+                                {
+                                    System.Action action = entriesWithoutWarning[entry];
+                                    if(action!=null)
+                                        action.Invoke();
+                                }
                             }));
                         }
                         //KeyCode Conversion still has some issue, this is why it is disabled
@@ -284,13 +342,27 @@ namespace SR2E
                                         {
                                             textMesh.text = key.ToString();
                                             entry.BoxedEditedValue = key.Value;
-                                            warningText.SetActive(true);
+                                            if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                                warningText.SetActive(true);
+                                            else
+                                            {
+                                                System.Action action = entriesWithoutWarning[entry];
+                                                if(action!=null)
+                                                    action.Invoke();
+                                            }
                                         }
                                         else if (entry.BoxedEditedValue is KeyCode)
                                         {
                                             textMesh.text = SR2EUtils.KeyToKeyCode(key.Value).ToString();
                                             entry.BoxedEditedValue = SR2EUtils.KeyToKeyCode(key.Value);
-                                            warningText.SetActive(true);
+                                            if(!entriesWithoutWarning.ContainsKey(entry)) 
+                                                warningText.SetActive(true);
+                                            else
+                                            {
+                                                System.Action action = entriesWithoutWarning[entry];
+                                                if(action!=null)
+                                                    action.Invoke();
+                                            }
                                         }
                                     }
                                     listeninAction = null;

@@ -18,7 +18,7 @@ public class RotateCommand : SR2CCommand
         Vector3 rotation;
         try
         { rotation = new Vector3(float.Parse(args[0]), float.Parse(args[1]), float.Parse(args[2])); }
-        catch (Exception e)
+        catch 
         { SR2Console.SendError($"The vector {args[0]} {args[1]} {args[2]} is invalid!"); return false; }
         
         if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))

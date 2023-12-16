@@ -13,7 +13,6 @@ public class KillCommand : SR2CCommand
     {
         return null;
     }
-
     public override bool Execute(string[] args)
     {
         if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
@@ -24,13 +23,18 @@ public class KillCommand : SR2CCommand
             var gameobject = hit.collider.gameObject;
             if (gameobject.GetComponent<Identifiable>())
             {
-                Damage damage = new Damage
-                    { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };
-                ;
-                damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
-                damage.Amount = 99999999;
-                DeathHandler.Kill(gameobject, damage);
+                
+                DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
                 didAThing = true;
+            }
+            else if (gameobject.GetComponent<GordoEat>())
+            {
+                GordoEat gordoEat = hit.collider.gameObject.GetComponent<GordoEat>();
+                if (gordoEat.isActiveAndEnabled && gordoEat.CanEat())
+                    try
+                    { gordoEat.ImmediateReachedTarget(); didAThing = true; }
+                    catch{}
+                
             }
             else if (gameobject.GetComponentInParent<Gadget>())
             {

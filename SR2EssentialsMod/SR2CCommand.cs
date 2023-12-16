@@ -17,6 +17,14 @@ public abstract class SR2CCommand
     /// </summary>
     public abstract string Description { get; }
 
+    /// <summary>
+    /// The full description of this command
+    /// </summary>
+    public virtual string ExtendedDescription { get; }
+
+
+    public virtual bool Hidden { get; }
+
 
     /// <summary>
     /// Executes the command
@@ -49,4 +57,30 @@ public abstract class SR2CCommand
     /// <returns>Return True at the end, if the normal execute should not be executed</returns>
     public virtual bool SilentExecute(string[] args)
     { return false; }
+
+    /// <summary>
+    /// Gets called every frame
+    /// </summary>
+    public virtual void Update()
+    { }
+    /// <summary>
+    /// Gets called when the scene GameCore loads
+    /// </summary>
+    public virtual void OnGameCoreLoad()
+    { }
+    /// <summary>
+    /// Gets called when the scene UICore loads
+    /// </summary>
+    public virtual void OnUICoreLoad()
+    { }
+    /// <summary>
+    /// Gets called when the scene PlayerCore loads
+    /// </summary>
+    public virtual void OnPlayerCoreLoad()
+    { }
+    /// <summary>
+    /// Gets called when the scene MainMenuUI loads
+    /// </summary>
+    public virtual void OnMainMenuUILoad()
+    { }
 }

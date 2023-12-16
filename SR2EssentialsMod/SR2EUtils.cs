@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using Il2CppInterop.Runtime.InteropTypes;
+using System;
 using System.Linq;
 using UnityEngine.InputSystem;
 
@@ -6,6 +8,18 @@ namespace SR2E;
 
 public static class SR2EUtils
 {
+    public static bool RemoveComponent<T>(this GameObject obj) where T : Component
+    {
+        try
+        {
+            T comp = obj.GetComponent<T>();
+            var check = comp.gameObject;
+            Object.Destroy(comp);
+            return true;
+        }
+        catch { return false; }
+    }
+
     public static Gadget RaycastForGadget()
     {
         if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
@@ -28,7 +42,7 @@ public static class SR2EUtils
         }
         return null;
     }
-    public static KeyCode KeyToKeyCode(Key key)
+    internal static KeyCode KeyToKeyCode(Key key)
     {
         switch (key)
         {
@@ -289,6 +303,33 @@ public static class SR2EUtils
         }
         return allChildren;
     }
+
+    public static T[] getAllChildrenOfType<T>(this GameObject obj) where T : Component
+    {
+        List<T> children = new List<T>();
+        foreach (var child in obj.getAllChildren())
+        {
+            if (child.GetComponent<T>() != null)
+            {
+                children.Add(child.GetComponent<T>());
+            }
+        }
+        return children.ToArray();
+    }
+
+    public static T[] getAllChildrenOfType<T>(this Transform obj) where T : Component
+    {
+        List<T> children = new List<T>();
+        foreach (var child in obj.getAllChildren())
+        {
+            if (child.GetComponent<T>() != null)
+            {
+                children.Add(child.GetComponent<T>());
+            }
+        }
+        return children.ToArray();
+    }
+
     public static T getObjRec<T>(this Transform transform, string name) where T : class
     {
         List<GameObject> totalChildren = getAllChildren(transform);

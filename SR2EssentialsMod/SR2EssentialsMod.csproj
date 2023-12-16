@@ -5,7 +5,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>SR2E</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>SR2EssentialsMod</AssemblyName>
+    <AssemblyName>SR2E</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>None</DebugType>
@@ -18,6 +18,8 @@
     <EmbeddedResource Include="srtwoessentials.assetbundle" />
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />
+    <None Remove="modsMenuIcon.png" />
+    <EmbeddedResource Include="modsMenuIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Libs\**" />
@@ -28,6 +30,8 @@
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
     <None Remove="start.bat" />
+    <None Remove="start.sh" />
+    <None Remove="Output\**" />
     <None Remove="NOTICE.txt" />
     <None Remove="README.md" />
     <None Remove="packages\**" />
