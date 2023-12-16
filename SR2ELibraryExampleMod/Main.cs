@@ -57,7 +57,15 @@ namespace VirtualSlime
         public static GameObject plortPrefab_byte;
         public static SlimeDefinition slimeDefinition_byte;
         public static IdentifiableType plortDefinition_byte;
-        public static SpawnActorActivity spawnerActivity_byte;
+
+        public static Color32 vacColor_code = new Color32(0, 76, 255, 255);
+        public static Color32 topColor_code = new Color32(23, 79, 212, 255);
+        public static Color32 middleColor_code = new Color32(20, 70, 186, 255);
+        public static Color32 bottomColor_code = new Color32(24, 54, 125, 255);
+        public static GameObject slimePrefab_code;
+        public static GameObject plortPrefab_code;
+        public static SlimeDefinition slimeDefinition_code;
+        public static IdentifiableType plortDefinition_code;
 
         int CraftFoodGroupID;
 
@@ -83,6 +91,11 @@ namespace VirtualSlime
             plortDefinition_byte = CreatePlortType("Byte", vacColor_byte, null, "IdentifiableType.BytePlort", 27f, 85f);
             plortPrefab_byte = CreatePrefab("plortByte", Get<GameObject>("plortTabby"));
             slimePrefab_byte = CreatePrefab("slimeByte", Get<GameObject>("slimeCotton"));
+
+            slimeDefinition_code = CreateSlimeDef("Code", vacColor_code, null, Get<SlimeAppearance>("TabbyDefault"), "CodeDefault", "SlimeDefinition.CodeSlime");
+            plortDefinition_code = CreatePlortType("Code", vacColor_code, null, "IdentifiableType.CodePlort", 32f, 92f);
+            plortPrefab_code = CreatePrefab("plortByte", Get<GameObject>("plortTabby"));
+            slimePrefab_code = CreatePrefab("slimeByte", Get<GameObject>("slimeCotton"));
         }
         public override void SaveDirectorLoaded()
         {
@@ -113,6 +126,15 @@ namespace VirtualSlime
             plortPrefab_byte.SetObjectIdent(plortDefinition_byte);
             slimeDefinition_byte.AddProduceIdent(plortDefinition_byte);
 
+            slimeDefinition_code.AppearancesDefault[0]._structures[0].DefaultMaterials[0] = Object.Instantiate(slimeDefinition_code.AppearancesDefault[0]._structures[0].DefaultMaterials[0]);
+            slimeDefinition_code.AppearancesDefault[0]._structures[1].DefaultMaterials[0] = Object.Instantiate(slimeDefinition_code.AppearancesDefault[0]._structures[1].DefaultMaterials[0]);
+            slimeDefinition_code.AppearancesDefault[0]._structures[3].DefaultMaterials[0] = Object.Instantiate(slimeDefinition_code.AppearancesDefault[0]._structures[3].DefaultMaterials[0]);
+            plortDefinition_code.SetObjectPrefab(plortPrefab_code);
+            slimeDefinition_code.SetObjectPrefab(slimePrefab_code);
+            slimePrefab_code.SetObjectIdent(slimeDefinition_code);
+            plortPrefab_code.SetObjectIdent(plortDefinition_code);
+            slimeDefinition_code.AddProduceIdent(plortDefinition_code);
+
             Localization();
             Coloring();
             Images();
@@ -122,9 +144,16 @@ namespace VirtualSlime
 
             slimeDefinition_data.properties.Properties[2].DefaultValue = float.NegativeInfinity;
             slimeDefinition_data.properties.Properties[3].DefaultValue = float.PositiveInfinity;
-            var slimeDataBehaviour0 = slimePrefab_data.AddComponent<MergeBehaviour>();
-            slimeDataBehaviour0.mergeInto = slimeDefinition_byte;
-            slimeDataBehaviour0.mergeWith = slimeDefinition_null;
+
+            var slimeDataBehaviour = slimePrefab_data.AddComponent<MergeBehaviour>();
+            slimeDataBehaviour.mergeInto = slimeDefinition_byte;
+            slimeDataBehaviour.mergeWith = slimeDefinition_null;
+
+            var slimeByteBehaviour = slimePrefab_byte.AddComponent<MergeBehaviour>();
+            slimeByteBehaviour.mergeInto = slimeDefinition_code;
+            slimeByteBehaviour.mergeWith = slimeDefinition_data;
+
+            slimePrefab_null.AddComponent<DisableConsoleBehaviour>();
         }
 
         public static void Localization()
@@ -145,6 +174,11 @@ namespace VirtualSlime
             slimeDefinition_byte.localizationSuffix = "byte_slime";
             plortDefinition_byte.localizedName = AddTranslation("Byte Plort", "l.bytePlort");
             plortDefinition_byte.localizationSuffix = "byte_plort";
+
+            slimeDefinition_code.localizedName = AddTranslation("Code Slime", "l.codeSlime");
+            slimeDefinition_code.localizationSuffix = "code_slime";
+            plortDefinition_code.localizedName = AddTranslation("Code Plort", "l.codePlort");
+            plortDefinition_code.localizationSuffix = "code_plort";
         }
 
         public static void Coloring()
@@ -164,9 +198,16 @@ namespace VirtualSlime
             slimeDefinition_byte.SetSlimeColor(topColor_byte, middleColor_byte, bottomColor_byte, middleColor_byte, 0, 0, false, 4);
             SetPlortColor(topColor_byte, middleColor_byte, bottomColor_byte, plortPrefab_byte);
 
+            slimeDefinition_code.AppearancesDefault[0].SetAppearanceVacColor(vacColor_code);
+            slimeDefinition_code.SetSlimeColor(topColor_code, middleColor_code, bottomColor_code, middleColor_code, 0, 0, false, 0);
+            slimeDefinition_code.SetSlimeColor(topColor_code, middleColor_code, bottomColor_code, middleColor_code, 0, 0, false, 1);
+            slimeDefinition_code.SetSlimeColor(topColor_code, middleColor_code, bottomColor_code, middleColor_code, 0, 0, false, 3);
+            SetPlortColor(topColor_code, middleColor_code, bottomColor_code, plortPrefab_code);
+
             slimeDefinition_null.AppearancesDefault[0]._splatColor = vacColor_null;
             slimeDefinition_data.AppearancesDefault[0]._splatColor = vacColor_data;
             slimeDefinition_byte.AppearancesDefault[0]._splatColor = vacColor_byte;
+            slimeDefinition_code.AppearancesDefault[0]._splatColor = vacColor_code;
         }
 
         public static void Images()
@@ -186,6 +227,12 @@ namespace VirtualSlime
             slimeDefinition_byte.icon = LoadImage("iconSlimeByte").ConvertToSprite();
             slimeDefinition_byte.AppearancesDefault[0]._icon = LoadImage("iconSlimeByte").ConvertToSprite();
             plortDefinition_byte.prefab.GetComponent<MeshRenderer>().material.SetTexture("_StripeTexture", LoadImage("bytePlort_falloff_map"));
+
+            plortDefinition_code.icon = LoadImage("iconPlortCode").ConvertToSprite();
+            slimeDefinition_code.icon = LoadImage("iconSlimeCode").ConvertToSprite();
+            slimeDefinition_code.AppearancesDefault[0]._icon = LoadImage("iconSlimeCode").ConvertToSprite();
+            slimeDefinition_code.AppearancesDefault[0].Structures[0].DefaultMaterials[0].SetTexture("_StripeTexture", LoadImage("body_stripes_code"));
+            plortDefinition_code.prefab.GetComponent<MeshRenderer>().material.SetTexture("_StripeTexture", LoadImage("body_stripes_code"));
         }
 
         public static void Grouping()
@@ -227,7 +274,19 @@ namespace VirtualSlime
 
             slimeDefinition_data.AddFavorite(GetSlime("Tarr"));
             slimeDefinition_data.AddSlimeFoodIdentGroup(slimes);
+            slimeDefinition_byte.Diet.MajorFoodGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<SlimeEat.FoodGroup>(1);
+            slimeDefinition_byte.Diet.MajorFoodGroups[0] = SlimeEat.FoodGroup.NONTARRGOLD_SLIMES;
             slimeDefinition_data.RefreshEatmap();
+
+            slimeDefinition_byte.AddSlimeFoodIdentGroup(Get<IdentifiableTypeGroup>("FruitGroup"));
+            slimeDefinition_byte.Diet.MajorFoodGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<SlimeEat.FoodGroup>(1);
+            slimeDefinition_byte.Diet.MajorFoodGroups[0] = SlimeEat.FoodGroup.FRUIT;
+            slimeDefinition_byte.RefreshEatmap();
+
+            slimeDefinition_code.AddSlimeFoodIdentGroup(Get<IdentifiableTypeGroup>("VeggieGroup"));
+            slimeDefinition_code.Diet.MajorFoodGroups = new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<SlimeEat.FoodGroup>(1);
+            slimeDefinition_code.Diet.MajorFoodGroups[0] = SlimeEat.FoodGroup.VEGGIES;
+            slimeDefinition_code.RefreshEatmap();
         }
 
         public static void SetupSpawning()
@@ -274,6 +333,6 @@ namespace VirtualSlime
             };
             slimeRainValley.Activities.Add(activity2);
         }
-
+        
     }
 }
