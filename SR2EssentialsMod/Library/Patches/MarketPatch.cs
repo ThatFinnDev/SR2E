@@ -40,7 +40,7 @@ public static class MarketPatch
         */
 
         __instance.plorts = __instance.plorts.ToArray<MarketUI.PlortEntry>().AddRangeToArray(marketPlortEntriesList.ToArray());
-        __instance.plorts = __instance.plorts.Take(34).ToArray();
+        __instance.plorts = __instance.plorts.Take(33).ToArray();
 
     }
 }
