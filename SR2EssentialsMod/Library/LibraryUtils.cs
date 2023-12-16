@@ -659,7 +659,10 @@ namespace SR2E.Library
             
         
         
-        
+        public static GameObject GetConsoleObject()
+        {
+            return SR2Console.transform.getObjRec<GameObject>("consoleMenu");
+        }
         
     }
 }
