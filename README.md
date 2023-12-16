@@ -37,6 +37,7 @@
 ![Screenshot 5](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot5.png?raw=true)
 ![Screenshot 6](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot6.png?raw=true)
 ![Screenshot 7](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot7.png?raw=true)
+![Screenshot 8](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot8.png?raw=true)
 
 
 
