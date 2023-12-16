@@ -657,8 +657,8 @@ namespace SR2E.Library
         public static void disableWarning(this MelonPreferences_Entry entry) => entriesWithoutWarning.Add(entry,null);
         public static void disableWarning(this MelonPreferences_Entry entry,System.Action action) => entriesWithoutWarning.Add(entry,action);
             
-        
-        
+        public static bool IsInsideRange(int number, int rangeMin, int rangeMax) => (number >= rangeMin && number <= rangeMax);
+
         public static GameObject GetConsoleObject()
         {
             return SR2Console.transform.getObjRec<GameObject>("consoleMenu");
