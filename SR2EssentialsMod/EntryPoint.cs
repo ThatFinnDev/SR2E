@@ -24,7 +24,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.0.0"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.0.1"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -232,23 +232,7 @@ namespace SR2E
                         new CustomPauseMenuButton( label2, 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
                     }
                     new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
-                    new CustomRanchUIButton(label3, 3, (System.Action)(() =>
-                    {
-                        //541.6466 18.646 349.3299
-                        SR2Warps.warpTo = new Warp("SceneGroup.PowderfallBluffs",new Vector3(541.6466f, 18.646f, 349.3299f),
-                            Quaternion.identity);
-                        GameObject prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab; 
-                        if (prefab != null)
-                        {
-                            SceneContext.Instance.Player.GetComponent<SRCharacterController>().Position = new Vector3(541.6466f, 18.646f, 349.3299f);
-                            GameObject teleporterCollider = SR2EUtils.getObjRec<GadgetTeleporterNode>(prefab.transform, "Teleport Collider").gameObject;
-                            GameObject obj = GameObject.Instantiate(teleporterCollider, new Vector3(541.6466f, 18.646f, 349.3299f), Quaternion.identity);
-                            obj.SetActive(true);
-                            obj.GetComponent<StaticTeleporterNode>()._hasDestination = true;
-                            obj.GetComponent<StaticTeleporterNode>().UpdateFX();
-                        }
-                        Get<RanchHouseUI>("RanchHouseUI(Clone)").Close();
-                    }));
+                    
                     
                     
                     killDamage = new Damage
