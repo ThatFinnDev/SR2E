@@ -253,7 +253,11 @@ namespace SR2E.Library
         }
         public static void AddSlimeFoodGroup(this SlimeDefinition def, SlimeEat.FoodGroup FG)
         {
-            def.Diet.MajorFoodGroups = (Il2CppStructArray<SlimeEat.FoodGroup>)def.Diet.MajorFoodGroups.AddItem(FG);
+            var list = new List<SlimeEat.FoodGroup>();
+            foreach (var item in def.Diet.MajorFoodGroups)
+                list.Add(item);
+
+            def.Diet.MajorFoodGroups = new Il2CppStructArray<SlimeEat.FoodGroup>(list.ToArray());
         }
         public static void ChangeSlimeFoodIdentGroup(this SlimeDefinition def, IdentifiableTypeGroup FG, int index)
         {
@@ -261,6 +265,7 @@ namespace SR2E.Library
         }
         public static void AddSlimeFoodIdentGroup(this SlimeDefinition def, IdentifiableTypeGroup FG)
         {
+            def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
         }
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
@@ -512,6 +517,7 @@ namespace SR2E.Library
             array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
             return array;
         }
+        
         public static Il2CppReferenceArray<T> AddRange<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
         {
             var list = new Il2CppSystem.Collections.Generic.List<T>();
