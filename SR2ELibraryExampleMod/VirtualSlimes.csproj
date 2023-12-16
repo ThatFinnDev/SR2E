@@ -4,16 +4,19 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>NullSlime</AssemblyName>
-    <RootNamespace>NullSlime</RootNamespace>
+    <AssemblyName>VirtualSlimes</AssemblyName>
+    <RootNamespace>VirtualSlime</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="body_stripes_data.png" />
     <None Remove="body_stripes_null.png" />
+    <None Remove="bytePlort_falloff_map.png" />
     <None Remove="dataPlort_falloff_map.png" />
+    <None Remove="iconPlortByte.png" />
     <None Remove="iconPlortData.png" />
     <None Remove="iconPlortNull.png" />
+    <None Remove="iconSlimeByte.png" />
     <None Remove="iconSlimeData.png" />
     <None Remove="iconSlimeNull.png" />
   </ItemGroup>
@@ -21,9 +24,12 @@
   <ItemGroup>
     <EmbeddedResource Include="body_stripes_data.png" />
     <EmbeddedResource Include="body_stripes_null.png" />
+    <EmbeddedResource Include="bytePlort_falloff_map.png" />
     <EmbeddedResource Include="dataPlort_falloff_map.png" />
+    <EmbeddedResource Include="iconPlortByte.png" />
     <EmbeddedResource Include="iconPlortData.png" />
     <EmbeddedResource Include="iconPlortNull.png" />
+    <EmbeddedResource Include="iconSlimeByte.png" />
     <EmbeddedResource Include="iconSlimeData.png" />
     <EmbeddedResource Include="iconSlimeNull.png" />
   </ItemGroup>
