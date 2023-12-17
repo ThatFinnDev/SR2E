@@ -25,6 +25,9 @@
 
  Special thanks to MadMincraftr for helping me fix and implement some stuff.
  Link: https://github.com/MadMincraftr
+
+ Special thanks to AureumApes for a few extra weather commands.
+ Link: https://github.com/AureumApes
  
  Special thanks to LavaGang for MelonLoader
  because otherwise SR2 Mods wouldn't exist.
