@@ -13,8 +13,6 @@ using JetBrains.Annotations;
 
 namespace SR2E.Saving;
 
-
-
 [Serializable]
 internal class SR2ESavableData
 {
@@ -30,6 +28,7 @@ internal class SR2ESavableData
         Instance = this;
         gordoSavedData = new Dictionary<string, SR2EGordoData>();
         slimeSavedData = new Dictionary<long, SR2ESlimeData>();
+        gadgetSavedData = new Dictionary<long, SR2EGadgetData>();
     }
     
 
@@ -57,6 +56,11 @@ internal class SR2ESavableData
     /// Actor ID to Slime Data
     /// </summary>
     public Dictionary<long, SR2ESlimeData> slimeSavedData;
+    
+    /// <summary>
+    /// Actor ID to Gadget Data
+    /// </summary>
+    public Dictionary<long, SR2EGadgetData> gadgetSavedData;
 
     /// <summary>
     /// Data saved to the player
