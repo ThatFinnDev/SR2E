@@ -19,7 +19,7 @@ public class RefillSlotsCommand : SR2CCommand
             return false;
         }
 
-        if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+        if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
         for (int i = 0; i < SceneContext.Instance.PlayerState.Ammo.Slots.Count; i++)
         {
@@ -36,7 +36,7 @@ public class RefillSlotsCommand : SR2CCommand
 
     public override bool SilentExecute(string[] args)
     {
-        if (!SR2EUtils.inGame) return true;
+        if (!inGame) return true;
 
         for (int i = 0; i < SceneContext.Instance.PlayerState.Ammo.Slots.Count; i++)
         {

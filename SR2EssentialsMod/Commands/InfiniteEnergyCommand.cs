@@ -27,17 +27,17 @@ namespace SR2E.Commands
                 else
                     shouldDisableThrusterHeight = (args[0].ToLower() == "true");
                 
-            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
             if (infEnergy)
             {
                 infEnergy = false;
                 if (energyMeter == null)
-                    energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
+                    energyMeter = Get<EnergyMeter>("Energy Meter");
                 energyMeter.gameObject.active = true;
                 
                 if(jetpackAbilityData==null)
-                    jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
+                    jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
                 jetpackAbilityData._hoverHeight = normalHoverHeight;
                 jetpackAbilityData._maxUpwardThrustForce = normalMaxUpwardThrustForce;
                 jetpackAbilityData._upwardThrustForceIncrement = normalUpwardThrustForceIncrement;
@@ -50,11 +50,11 @@ namespace SR2E.Commands
             {
                 infEnergy = true;
                 if (energyMeter == null)
-                    energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
+                    energyMeter = Get<EnergyMeter>("Energy Meter");
                 energyMeter.gameObject.active = false;
                 
                 if(jetpackAbilityData==null)
-                    jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
+                    jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
                 normalHoverHeight = jetpackAbilityData._hoverHeight;
                 normalMaxUpwardThrustForce = jetpackAbilityData._maxUpwardThrustForce;
                 normalUpwardThrustForceIncrement = jetpackAbilityData._upwardThrustForceIncrement;
@@ -89,12 +89,12 @@ namespace SR2E.Commands
 
         public override void OnPlayerCoreLoad()
         {
-            jetpackAbilityData = SR2EUtils.Get<JetpackAbilityData>("Jetpack");
+            jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
         }
 
         public override void OnUICoreLoad()
         {
-            energyMeter = SR2EUtils.Get<EnergyMeter>("Energy Meter");
+            energyMeter = Get<EnergyMeter>("Energy Meter");
         }
 
         static bool infEnergy = false;

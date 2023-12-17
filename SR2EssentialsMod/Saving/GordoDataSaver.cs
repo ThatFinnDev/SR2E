@@ -1,5 +1,6 @@
 ﻿namespace SR2E.Saving;
 
+[RegisterTypeInIl2Cpp]
 public class SR2EGordoDataSaver : MonoBehaviour
 {
     public void SaveData()

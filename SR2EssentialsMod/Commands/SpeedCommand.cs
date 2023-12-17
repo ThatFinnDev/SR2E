@@ -13,10 +13,11 @@ namespace SR2E.Commands
         private static float baseMaxAirSpeed = 10;
         private static float baseAccAirSpeed = 60;
         private static float baseMaxGroundSpeed = 10;
-
+        private static CharacterControllerParameters parameters;
         public static void RemoteExc(float val)
         {
-            var parameters = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+            if(parameters==null)
+                parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
 
             parameters._maxGroundedMoveSpeed = val * baseMaxGroundSpeed;
             parameters._maxAirMoveSpeed = val * baseMaxAirSpeed;
@@ -26,11 +27,10 @@ namespace SR2E.Commands
         {
             if (args == null) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
             if (args.Length != 1) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
-            CharacterControllerParameters parameters;
-
-            parameters = SR2EUtils.Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+            if(parameters==null)
+                parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
             float speedValue = 0;
             if (!float.TryParse(args[0], out speedValue))
             { SR2Console.SendError(args[1] + " is not a valid float!"); return false; }
