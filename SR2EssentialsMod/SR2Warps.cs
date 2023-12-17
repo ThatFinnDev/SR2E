@@ -13,17 +13,8 @@ namespace SR2E
 
         internal static void OnSceneLoaded(string sceneName)
         {
-            if (SceneContext.Instance == null)
-            {
-                warpTo = null;
-                return;
-            }
-
-            if (SceneContext.Instance.PlayerState == null)
-            {
-                warpTo = null;
-                return;
-            }
+            if (SceneContext.Instance == null) { warpTo = null; return; }
+            if (SceneContext.Instance.PlayerState == null) { warpTo = null; return; }
 
             if (warpTo != null)
             {
