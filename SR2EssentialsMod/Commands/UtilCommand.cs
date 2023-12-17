@@ -2,58 +2,26 @@
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using System;
 using SR2E.Saving;
-using UnityEngine.UIElements;
 using System.Linq;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine;
 
 namespace SR2E.Commands
 {
     internal class UtilCommand : SR2CCommand
     {
-        
-
         public override string ID => "util";
-
         public override string Usage => "util <args>";
-
         public override string Description => "Utility Command";
         public override string ExtendedDescription => "Utility command, read the arguments on the help section on SR2E github wiki.";
 
         public const float playerColliderHeightBase = 2f;
         public const float playerColliderRadBase = 0.6f;
 
-        public readonly List<string> TypeParam = new List<string>()
-        {
-            "GAME",
-            "GORDO",
-            "SLIME",
-            "PLAYER",
-            "GADGET"
-        };
-
-        public readonly List<string> GordoParam = new List<string>()
-        {
-            "BASE_SIZE",
-            "EATEN_COUNT",
-            "PRINT_ID"
-        };
-
-        public readonly List<string> GameParam = new List<string>()
-        {
-            "DISABLE_ACTOR_TYPE",
-            "FAST_QUIT"
-        };
-
-        public readonly List<string> SlimeParam = new List<string>()
-        {
-            "SLIME_HUNGER",
-            "SLIME_AGI",
-            "SLIME_FEAR",
-            "ZERO_GRAV",
-            "CUSTOM_SCALE_XYZ"
-        };
+        public readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER", "GADGET" };
+        public readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
+        public readonly List<string> GameParam = new List<string>() { "DISABLE_ACTOR_TYPE", "FAST_QUIT" };
+        public readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR", "ZERO_GRAV", "CUSTOM_SCALE_XYZ" };
+        public readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
+        public readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION", "SCALE" };
 
         public readonly List<string> ParamPlaceholder = new List<string>()
         {
@@ -62,21 +30,7 @@ namespace SR2E.Commands
             "1_2_3"
         };
 
-        public readonly List<string> PlayerParam = new List<string>()
-        {
-            "CUSTOM_SIZE",
-            "GRAVITY_LEVEL",
-            "VAC_MODE"
-        };
-
-        public readonly List<string> GadgetParam = new List<string>()
-        {
-            "ROTATION",
-            "POSITION"
-        };
-
-
-
+        
         public void SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, float val = 1f)
         {
             if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
@@ -126,10 +80,8 @@ namespace SR2E.Commands
                 {
                     actor.ignoresGravity = !actor.ignoresGravity;
                     var logString = "NULL";
-                    if (actor.ignoresGravity)
-                        logString = "deactivated";
-                    else
-                        logString = "activated";
+                    if (actor.ignoresGravity) logString = "deactivated";
+                    else logString = "activated";
                     SR2Console.SendMessage($"The {actor.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s gravity is now {logString}");
                 }
             }
@@ -151,52 +103,26 @@ namespace SR2E.Commands
 
         public bool ExcSlime(string[] cmd)
         {
-            if (cmd[1] == "SLIME_HUNGER")
+            switch (cmd[1])
             {
-                if (cmd.Length == 2)
-                {
-                    SlimeEmotion(true, SlimeEmotions.Emotion.HUNGER);
+                case"SLIME_HUNGER":
+                    if (cmd.Length == 2) SlimeEmotion(true, SlimeEmotions.Emotion.HUNGER);
+                    else SlimeEmotion(false, SlimeEmotions.Emotion.HUNGER, float.Parse(cmd[2]));
                     return true;
-                }
-                else
-                {
-                    SlimeEmotion(false, SlimeEmotions.Emotion.HUNGER, float.Parse(cmd[2]));
+                case"SLIME_AGI":
+                    if (cmd.Length == 2) SlimeEmotion(true, SlimeEmotions.Emotion.AGITATION);
+                    else SlimeEmotion(false, SlimeEmotions.Emotion.AGITATION, float.Parse(cmd[2]));
                     return true;
-                }
-            }
-            else if (cmd[1] == "SLIME_AGI")
-            {
-                if (cmd.Length == 2)
-                {
-                    SlimeEmotion(true, SlimeEmotions.Emotion.AGITATION);
+                case"SLIME_FEAR":
+                    if (cmd.Length == 2) SlimeEmotion(true, SlimeEmotions.Emotion.FEAR);
+                    else SlimeEmotion(false, SlimeEmotions.Emotion.FEAR, float.Parse(cmd[2]));
                     return true;
-                }
-                else
-                {
-                    SlimeEmotion(false, SlimeEmotions.Emotion.AGITATION, float.Parse(cmd[2]));
+                case"ZERO_GRAV":
+                    ToggleActorZeroGrav();
                     return true;
-                }
-            }
-            else if (cmd[1] == "SLIME_FEAR")
-            {
-                if (cmd.Length == 2)
-                {
-                    SlimeEmotion(true, SlimeEmotions.Emotion.FEAR);
+                case"CUSTOM_SCALE_XYZ":
+                    SetActorScale(float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
                     return true;
-                }
-                else
-                {
-                    SlimeEmotion(false, SlimeEmotions.Emotion.FEAR, float.Parse(cmd[2]));
-                    return true;
-                }
-            }
-            else if (cmd[1] == "ZERO_GRAV")
-            {
-                ToggleActorZeroGrav();
-            }
-            else if (cmd[1] == "CUSTOM_SCALE_XYZ")
-            {
-                SetActorScale(float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
             }
             return false;
         }
@@ -254,37 +180,21 @@ namespace SR2E.Commands
         }
         public bool ExcGordo(string[] cmd)
         {
-            if (cmd[1] == "BASE_SIZE")
+            switch (cmd[1])
             {
-                if (cmd.Length == 2)
-                {
-                    GordoSize(true);
+                case"BASE_SIZE":
+                    if (cmd.Length == 2) GordoSize(true);
+                    else GordoSize(false, float.Parse(cmd[2]));
                     return true;
-                }
-                else
-                {
-                    GordoSize(false, float.Parse(cmd[2]));
+                case"EATEN_COUNT":
+                    if (cmd.Length == 2) GordoEatenAmount(true);
+                    else GordoEatenAmount(false, int.Parse(cmd[2]));
                     return true;
-                }
+                case"PRINT_ID":
+                    PrintGordoID();
+                    return true;
+                default: return false;
             }
-            else if (cmd[1] == "EATEN_COUNT")
-            {
-                if (cmd.Length == 2)
-                {
-                    GordoEatenAmount(true);
-                    return true;
-                }
-                else
-                {
-                    GordoEatenAmount(false, int.Parse(cmd[2]));
-                    return true;
-                }
-            }
-            else if (cmd[1] == "PRINT_ID")
-            {
-                PrintGordoID();
-            }
-            return false;
         }
 
         public void DisableIdent(string identName)
@@ -304,17 +214,12 @@ namespace SR2E.Commands
 
         public bool ExcGame(string[] cmd)
         {
-            if (cmd[1] == "DISABLE_ACTOR_TYPE")
+            switch (cmd[1])
             {
-                DisableIdent(cmd[2]);
-                return true;
+                case"DISABLE_ACTOR_TYPE": DisableIdent(cmd[2]); return true;
+                case"FAST_QUIT": Application.Quit(); return true;
+                default: return false;
             }
-            else if (cmd[1] == "FAST_QUIT")
-            {
-                Application.Quit();
-                return true;
-            }
-            return false;
         }
 
         public void PlayerSize(bool isGet, float size = 1)
@@ -384,6 +289,33 @@ namespace SR2E.Commands
             catch { }
             
         }
+        public void GadgetScale(bool isGet, float scaleX = 0, float scaleY = 0, float scaleZ = 0)
+        {
+            try
+            {
+                if (isGet)
+                {
+                    var gadget = RaycastForGadget();
+                    if (gadget != null)
+                    {
+                        var scale = gadget.transform.localScale;
+                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {scale.x}, {scale.y}, {scale.z}");
+                    }
+                }
+                else
+                {
+                    var gadget = RaycastForGadget();
+                    if (gadget != null)
+                    {
+                        var scale = new Vector3(scaleX, scaleY, scaleZ);
+                        gadget.transform.localScale = scale;
+                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {scaleX}, {scaleY}, {scaleZ}");
+                    }
+                }
+            }
+            catch { }
+            
+        }
         public void GadgetRot(bool isGet, float rot = 0f)
         {
             try
@@ -413,31 +345,22 @@ namespace SR2E.Commands
         }
         public bool ExcGadget(string[] cmd)
         {
-            if (cmd[1] == "POSITION")
+            switch (cmd[1])
             {
-                if (cmd.Length > 2)
-                {
-                    GadgetPos(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
-                }
-                else
-                {
-                    GadgetPos(true);
-                }
-                return true;
+                case"POSITION":
+                    if (cmd.Length > 2) GadgetPos(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
+                    else GadgetPos(true);
+                    return true;
+                case"SCALE":
+                    if (cmd.Length > 2) GadgetScale(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
+                    else GadgetScale(true);
+                    return true;
+                case"ROTATION":
+                    if (cmd.Length > 2) GadgetRot(false, float.Parse(cmd[2]));
+                    else GadgetRot(true);
+                    return true;
+                default: return false;
             }
-            else if (cmd[1] == "ROTATION")
-            {
-                if (cmd.Length > 2)
-                {
-                    GadgetRot(false, float.Parse(cmd[2]));
-                }
-                else
-                {
-                    GadgetRot(true);
-                }
-                return true;
-            }
-            return false;
         }
 
         
@@ -490,119 +413,59 @@ namespace SR2E.Commands
 
         public bool ExcPlayer(string[] cmd)
         {
-            if (cmd[1] == "CUSTOM_SIZE")
+            switch (cmd[1])
             {
-                if (cmd.Length > 2)
-                {
-                    PlayerSize(false, float.Parse(cmd[2]));
-                }
-                else
-                {
-                    PlayerSize(true);
-                }
-                return true;
+                case"CUSTOM_SIZE":
+                    if (cmd.Length > 2) PlayerSize(false, float.Parse(cmd[2]));
+                    else PlayerSize(true);
+                    return true;
+                case"GRAVITY_LEVEL":
+                    if (cmd.Length > 2) PlayerGravity(false, float.Parse(cmd[2]));
+                    else PlayerGravity(true);
+                    return true;
+                case"VAC_MODE":
+                    try { PlayerVacModeSet(Enum.Parse<VacModes>(cmd[2])); }catch { return false; } return true;
+                default: return false;
             }
-            else if (cmd[1] == "GRAVITY_LEVEL")
-            {
-                if (cmd.Length > 2)
-                {
-                    PlayerGravity(false, float.Parse(cmd[2]));
-                }
-                else
-                {
-                    PlayerGravity(true);
-                }
-                return true;
-            }
-            else if (cmd[1] == "VAC_MODE")
-            {
-                try
-                {
-                    PlayerVacModeSet(Enum.Parse<VacModes>(cmd[2]));
-                }
-                catch { return false; }
-                return true;
-            }
-            return false;
         }
         public override bool Execute(string[] args)
         {
-            if (args[0] == "GORDO")
+            switch (args[0])
             {
-                return ExcGordo(args);
+                case "GORDO": return ExcGordo(args);
+                case "SLIME": return ExcSlime(args);
+                case "GAME": return ExcGame(args);
+                case "PLAYER": return ExcPlayer(args);
+                case "GADGET": return ExcGadget(args);
+                default: return false;
             }
-            else if (args[0] == "SLIME")
-            {
-                return ExcSlime(args);
-            }
-            else if (args[0] == "GAME")
-            {
-                return ExcGame(args);
-            }
-            else if (args[0] == "PLAYER")
-            {
-                return ExcPlayer(args);
-            }
-            else if (args[0] == "GADGET")
-            {
-                return ExcGadget(args);
-            }
-            return false;
         }
-
-        
 
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
             if (argIndex == 0)
-            {
                 return TypeParam;
-            }
-            else if (argIndex == 1)
-            {
-                if (args[0] == "GORDO")
+            if (argIndex == 1)
+                switch (args[0])
                 {
-                    return GordoParam;
+                    case "GORDO": return GordoParam;
+                    case "SLIME": return SlimeParam;
+                    case "GAME": return GameParam;
+                    case "PLAYER": return PlayerParam;
+                    case "GADGET": return GadgetParam;
+                    default: return null;
                 }
-                else if (args[0] == "SLIME")
-                {
-                    return SlimeParam;
-                }
-                else if (args[0] == "GAME")
-                {
-                    return GameParam;
-                }
-                else if (args[0] == "PLAYER")
-                {
-                    return PlayerParam;
-                }
-                else if (args[0] == "GADGET")
-                {
-                    return GadgetParam;
-                }
-            }
-            else if (argIndex == 2)
+            if (argIndex == 2)
             {
                 if (args[0] == "PLAYER")
-                {
                     if (args[1] == "VAC_MODE")
-                    {
                         return Enum.GetNames(typeof(VacModes)).ToList();
-                    }
-                }
                 if (args[0] == "GAME")
-                {
                     if (args[1] == "DISABLE_ACTOR_TYPE")
                     {
-                        string firstArg = "";
-                        if (args != null)
-                            firstArg = args[0];
                         List<string> list = new List<string>();
-                        int i = -1;
                         foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                         {
-                            if (i > 20)
-                                break;
                             try
                             {
                                 if (type.LocalizedName != null)
@@ -615,10 +478,9 @@ namespace SR2E.Commands
                             catch { }
 
                         }
-
                         return list;
                     }
-                }
+                
             }
             return null;
         }
