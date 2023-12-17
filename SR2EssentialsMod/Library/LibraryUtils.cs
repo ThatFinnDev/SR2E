@@ -424,9 +424,11 @@ namespace SR2E.Library
                         returnBool = true;
                         foreach (IdentifiableType removed in removeMarketPlortEntries)
                             if (ident == removed)
-                                return false;
+                                returnBool = false;
                     }
-            
+
+            if (marketData.ContainsKey(ident))
+                return true;
             foreach (var keyPair in marketPlortEntries)
             {
                 MarketUI.PlortEntry entry = keyPair.Key;
@@ -451,6 +453,7 @@ namespace SR2E.Library
             if (marketData.ContainsKey(ident))
                 marketData.Remove(ident);
         }
+        
         public static Il2CppArrayBase<IdentifiableType> GetAllMembersArray(this IdentifiableTypeGroup group)
         {
             return group.GetAllMembers().ToArray();
@@ -676,7 +679,17 @@ namespace SR2E.Library
         }
         catch { return false; }
     }
-
+    public static bool RemoveComponent<T>(this Transform obj) where T : Component
+    {
+        try
+        {
+            T comp = obj.GetComponent<T>();
+            var check = comp.gameObject;
+            Object.Destroy(comp);
+            return true;
+        }
+        catch { return false; }
+    }
     internal static Gadget RaycastForGadget()
     {
         if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
@@ -916,7 +929,7 @@ namespace SR2E.Library
                 return KeyCode.None;
         }
     }
-    public static Il2CppSystem.Type il2cppTypeof(Type type)
+    public static Il2CppSystem.Type il2cppTypeof(this Type type)
     {
         string typeName = type.AssemblyQualifiedName;
 

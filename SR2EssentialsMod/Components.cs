@@ -104,10 +104,8 @@ public class NoclipComponent : MonoBehaviour
         get
         {
             if (isSprint)
-            {
                 return baseSpeed * SR2EEntryPoint.noclipSpeedMultiplier;
-            }
-            else return baseSpeed;
+            return baseSpeed;
         }
     }
     bool isSprint => Keyboard.current.shiftKey.isPressed;
