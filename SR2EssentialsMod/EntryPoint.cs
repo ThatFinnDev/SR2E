@@ -215,70 +215,44 @@ namespace SR2E
 
                     LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
                     LocalizedString label2 = AddTranslation("Debug Log Player", "b.debug_player_sr2e", "UI");
-                    LocalizedString label3 = AddTranslation("Teleport", "b.button_teleport_sr2e", "UI");
-                    new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
-                        (System.Action)(() =>
-                        {
-                            SR2ModMenu.Open();
-                        }));
-
+                    new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2ModMenu.Open(); }));
                     if (devMode)
-                    {
                         new CustomPauseMenuButton( label2, 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
-                    }
                     new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
                     
                     
                     
-                    killDamage = new Damage
-                    {
-                        Amount = 99999999,
-                        DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
-                    };
+                    killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
                     autoSaveDirector.saveSlotCount = 50;
                     
                     
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                        if (baseMelonBase is SR2EMod)
-                            (baseMelonBase as SR2EMod).OnGameCoreLoaded();
-                        
-                    slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
-
+                        if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnGameCoreLoaded();
                     break;
                 case "UICore":
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
                     break;
                 case "zoneCore":
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                        if (baseMelonBase is SR2EMod)
-                            (baseMelonBase as SR2EMod).OnZoneCoreLoaded();
+                        if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnZoneCoreLoaded();
                     break;
                 case "PlayerCore":
                     NoclipComponent.playerSettings = Get<KCCSettings>("");
                     NoclipComponent.player = SceneContext.Instance.player.transform;
                     NoclipComponent.playerController = NoclipComponent.player.GetComponent<SRCharacterController>();
                     NoclipComponent.playerMotor = NoclipComponent.player.GetComponent<KinematicCharacterMotor>();
-                    
+                    player = Get<GameObject>("PlayerControllerKCC");
                     
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                        if (baseMelonBase is SR2EMod)
-                            (baseMelonBase as SR2EMod).OnPlayerSceneLoaded();
-                    player = Get<GameObject>("PlayerControllerKCC");
+                        if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnPlayerSceneLoaded();
                     break;
                 
             }
             
             SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
-            try
-            {
-                if (chaosMode)
-                    ChaosMode.OnSceneWasLoaded(buildIndex, sceneName);
-            }
-            catch
-            {
-            }
+            try { if (chaosMode) ChaosMode.OnSceneWasLoaded(buildIndex, sceneName); } catch { }
         }
 
         internal static TMP_FontAsset defaultFont;
