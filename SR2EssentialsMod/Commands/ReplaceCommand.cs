@@ -46,7 +46,7 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
-            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
             string objectName = "";
             string identifierTypeName = args[0];

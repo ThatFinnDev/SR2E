@@ -43,7 +43,7 @@ namespace SR2E.Commands
             
             if (def == null) return false;
 
-            var dir = SR2EUtils.Get<WeatherDirector>("WeatherVFX");
+            var dir = Get<WeatherDirector>("WeatherVFX");
 
             if (dir == null) return false;
 

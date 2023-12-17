@@ -28,7 +28,7 @@ public class PartyCommand : SR2CCommand
                 }
         }
 
-        Volume volume = SR2EUtils.Get<Volume>("Default Volume");
+        Volume volume = Get<Volume>("Default Volume");
         if (volume != null)
             if (volume.isGlobal)
             {

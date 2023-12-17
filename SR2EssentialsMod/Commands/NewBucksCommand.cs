@@ -21,7 +21,7 @@ public class NewBucksCommand : SR2CCommand
         if (args.Length != 1)
         { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
 
-        if (!SR2EUtils.inGame)
+        if (!inGame)
         { SR2Console.SendError("Load a save first!"); return false; }
 
         int amount = 0;

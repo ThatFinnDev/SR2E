@@ -21,7 +21,7 @@ internal class ChaosMode
         tarrDefinition.prefab.GetComponent<AttackPlayer>().DamagePerAttack = 1000;
         
         var localedir = SystemContext.Instance.LocalizationDirector;
-        tarrDefinition.AddProduceIdent(SR2EUtils.Get<IdentifiableType>("SpringPad"));
+        tarrDefinition.AddProduceIdent(Get<IdentifiableType>("SpringPad"));
         tarrDefinition.RefreshEatmap();
         if (localedir.GetCurrentLocaleCode() == "en")
         {

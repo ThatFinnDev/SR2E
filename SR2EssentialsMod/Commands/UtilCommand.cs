@@ -362,7 +362,7 @@ namespace SR2E.Commands
             {
                 if (isGet)
                 {
-                    var gadget = SR2EUtils.RaycastForGadget();
+                    var gadget = RaycastForGadget();
                     if (gadget != null)
                     {
                         var pos = gadget.transform.position;
@@ -371,7 +371,7 @@ namespace SR2E.Commands
                 }
                 else
                 {
-                    var gadget = SR2EUtils.RaycastForGadget();
+                    var gadget = RaycastForGadget();
                     if (gadget != null)
                     {
                         var pos = new Vector3(posX, posY, posZ);
@@ -390,7 +390,7 @@ namespace SR2E.Commands
             {
                 if (isGet)
                 {
-                    var gadget = SR2EUtils.RaycastForGadget();
+                    var gadget = RaycastForGadget();
                     if (gadget != null)
                     {
                         var gadgetRot = gadget.transform.eulerAngles.y;
@@ -399,7 +399,7 @@ namespace SR2E.Commands
                 }
                 else
                 {
-                    var gadget = SR2EUtils.RaycastForGadget();
+                    var gadget = RaycastForGadget();
                     if (gadget != null)
                     {
                             gadget.Model.yRotation = rot;

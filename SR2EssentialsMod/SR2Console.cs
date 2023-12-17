@@ -465,16 +465,14 @@ namespace SR2E
         private static void SetupModMenu()
         {
             SR2ModMenu.parent = transform;
-            SR2ModMenu.gameObject = SR2EUtils.getObjRec<GameObject>(transform, "modMenu");
-            SR2ModMenu.transform = SR2EUtils.getObjRec<Transform>(transform, "modMenu");
+            SR2ModMenu.gameObject = transform.getObjRec<GameObject>("modMenu");
+            SR2ModMenu.transform = transform.getObjRec<Transform>("modMenu");
             SR2ModMenu.Start();
         }
         private static void SetupCommands()
         {
             RegisterCommand(new GiveCommand());
             RegisterCommand(new UtilCommand());;
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(ObjectBlocker));
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(IdentifiableObjectDragger));
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
             RegisterCommand(new SpawnCommand());
@@ -500,17 +498,14 @@ namespace SR2E
             RegisterCommand(new PartyCommand());
             RegisterCommand(new GraphicsCommand());
             RegisterCommand(new FreezeCommand());
-            if (SR2EEntryPoint.chaosMode) RegisterCommands(new SR2CCommand[] { new FastModeCommand() });
+            RegisterCommand(new NoClipCommand());
             RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
           
-            if (!SR2EEntryPoint.infHealthInstalled)
-                RegisterCommand(new InvincibleCommand());
-            if (!SR2EEntryPoint.infEnergyInstalled)
-                RegisterCommand(new InfiniteEnergyCommand());
-            RegisterCommand(new NoClipCommand());
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(NoclipComponent));
+            if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InvincibleCommand());
+            if (!SR2EEntryPoint.infEnergyInstalled) RegisterCommand(new InfiniteEnergyCommand());
+            if (SR2EEntryPoint.chaosMode) RegisterCommands(new SR2CCommand[] { new FastModeCommand() });
         }
 
         internal static bool syncedSetuped = false;
@@ -561,16 +556,16 @@ namespace SR2E
 
             mlog = new MelonLogger.Instance("SR2E");
 
-            consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
-            consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
-            consoleContent = SR2EUtils.getObjRec<Transform>(transform, "ConsoleContent");
-            messagePrefab = SR2EUtils.getObjRec<GameObject>(transform, "messagePrefab");
-            specialMessagePrefab = SR2EUtils.getObjRec<GameObject>(transform, "specialMessagePrefab");
-            commandInput = SR2EUtils.getObjRec<TMP_InputField>(transform, "commandInput");
-            _scrollbar = SR2EUtils.getObjRec<Scrollbar>(transform, "ConsoleScroll");
-            autoCompleteContent = SR2EUtils.getObjRec<Transform>(transform, "AutoCompleteContent");
-            autoCompleteEntryPrefab = SR2EUtils.getObjRec<GameObject>(transform, "AutoCompleteEntry");
-            autoCompleteScrollView = SR2EUtils.getObjRec<GameObject>(transform, "AutoCompleteScroll");
+            consoleBlock = transform.getObjRec<GameObject>("consoleBlock");
+            consoleMenu = transform.getObjRec<GameObject>("consoleMenu");
+            consoleContent = transform.getObjRec<Transform>("ConsoleContent");
+            messagePrefab = transform.getObjRec<GameObject>("messagePrefab");
+            specialMessagePrefab = transform.getObjRec<GameObject>("specialMessagePrefab");
+            commandInput = transform.getObjRec<TMP_InputField>("commandInput");
+            _scrollbar = transform.getObjRec<Scrollbar>("ConsoleScroll");
+            autoCompleteContent = transform.getObjRec<Transform>("AutoCompleteContent");
+            autoCompleteEntryPrefab = transform.getObjRec<GameObject>("AutoCompleteEntry");
+            autoCompleteScrollView = transform.getObjRec<GameObject>("AutoCompleteScroll");
             autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
             autoCompleteScrollView.SetActive(false);
             consoleBlock.SetActive(false);

@@ -59,7 +59,7 @@ namespace SR2E.Commands
             }
 
             
-            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
 
             string itemName = "";

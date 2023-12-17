@@ -136,15 +136,10 @@ namespace SR2E
         {
             instance = this;
             prefs = MelonPreferences.CreateCategory("SR2Essentials","SR2Essentials");
-            ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
-            ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
-            ClassInjector.RegisterTypeInIl2Cpp<CustomMainMenuButtonPressHandler>();
             RefreshPrefs();
             string path = Path.Combine(MelonEnvironment.ModsDirectory, "SR2EssentialsMod.dll");
             if (File.Exists(path))
-            {
                 throwErrors = true;
-            }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)
                 {
@@ -155,7 +150,6 @@ namespace SR2E
                         infHealthInstalled = true;
                         break;
                 }
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(CustomPauseItemModel));
         }
 
         public override void OnApplicationQuit()
@@ -188,11 +182,12 @@ namespace SR2E
                                 if (skipEngagementPrompt)
                                 {
 
-                                    var logoImage = SR2EUtils.Get<AssetBundle>("56edcc1f1a2084c913ac2ec89d09b725.bundle").LoadAsset("Assets/UI/Textures/MainMenu/logoSR2.png").Cast<Texture2D>();
+                                    var logoImage = Get<AssetBundle>("56edcc1f1a2084c913ac2ec89d09b725.bundle").LoadAsset("Assets/UI/Textures/MainMenu/logoSR2.png").Cast<Texture2D>();
                                     var logoSprite = Sprite.Create(logoImage, new Rect(0f, 0f, logoImage.width, logoImage.height), new Vector2(0.5f, 0.5f), 1f);
 
-                                    SR2EUtils.Get<GameObject>("EngagementSkipMessage").SetActive(true);
-                                    SR2EUtils.Get<GameObject>("EngagementSkipMessage").getObjRec<Image>("logo").sprite = logoSprite;
+                                    GameObject skipMessage = Get<GameObject>("EngagementSkipMessage");
+                                    skipMessage.SetActive(true);
+                                    skipMessage.getObjRec<Image>("logo").sprite = logoSprite;
                                 }
                             }
                     
@@ -261,7 +256,7 @@ namespace SR2E
                             (baseMelonBase as SR2EMod).OnZoneCoreLoaded();
                     break;
                 case "PlayerCore":
-                    NoclipComponent.playerSettings = SR2EUtils.Get<KCCSettings>("");
+                    NoclipComponent.playerSettings = Get<KCCSettings>("");
                     NoclipComponent.player = SceneContext.Instance.player.transform;
                     NoclipComponent.playerController = NoclipComponent.player.GetComponent<SRCharacterController>();
                     NoclipComponent.playerMotor = NoclipComponent.player.GetComponent<KinematicCharacterMotor>();
@@ -290,7 +285,7 @@ namespace SR2E
         internal static void SetupFonts()
         {
             if(SR2Font==null)
-                SR2Font = SR2EUtils.Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
+                SR2Font = Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
             
             if (consoleUsesSR2Font)
                 foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
@@ -354,7 +349,7 @@ namespace SR2E
                         {
                             ScrollRect rect = scrollView.GetComponent<ScrollRect>();
                             rect.vertical = true;
-                            Scrollbar scrollBar = GameObject.Instantiate(SR2EUtils.getObjRec<Scrollbar>(SR2Console.transform, "saveFilesSlider"), rect.transform);
+                            Scrollbar scrollBar = GameObject.Instantiate(SR2Console.transform.getObjRec<Scrollbar>("saveFilesSlider"), rect.transform);
                             rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
                             scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width/250f, 0, 0);

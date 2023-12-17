@@ -20,13 +20,13 @@ namespace SR2E.Commands
                 SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
                 return false;
             }
-            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
             if (infHealth)
             {
                 infHealth = false;
                 if (healthMeter == null)
-                    healthMeter = SR2EUtils.Get<HealthMeter>("Health Meter");
+                    healthMeter = Get<HealthMeter>("Health Meter");
                 healthMeter.gameObject.active = true;
                 
                 SceneContext.Instance.PlayerState._model.maxHealth = normalHealth;
@@ -37,7 +37,7 @@ namespace SR2E.Commands
             {
                 infHealth = true;
                 if (healthMeter == null)
-                    healthMeter = SR2EUtils.Get<HealthMeter>("Health Meter");
+                    healthMeter = Get<HealthMeter>("Health Meter");
                 healthMeter.gameObject.active = false;
                 
                 

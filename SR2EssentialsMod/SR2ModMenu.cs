@@ -43,7 +43,7 @@ namespace SR2E
                 
             
 
-            Transform modContent = SR2EUtils.getObjRec<Transform>(transform, "ModContent");
+            Transform modContent = transform.getObjRec<Transform>("ModContent");
             for (int i = 0; i < modContent.childCount; i++)
                 GameObject.Destroy(modContent.GetChild(i).gameObject);
         }
@@ -75,8 +75,8 @@ namespace SR2E
 
 
 
-            GameObject buttonPrefab = SR2EUtils.getObjRec<GameObject>(transform, "TemplateModButton");
-            Transform modContent = SR2EUtils.getObjRec<Transform>(transform, "ModContent");
+            GameObject buttonPrefab = transform.getObjRec<GameObject>("TemplateModButton");
+            Transform modContent = transform.getObjRec<Transform>("ModContent");
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
                 GameObject obj = GameObject.Instantiate(buttonPrefab, modContent);
@@ -154,7 +154,7 @@ namespace SR2E
             allPossibleKeys.Remove(Key.RightCommand);
 
 
-            modMenuTabImage = SR2EUtils.Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle").LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
+            modMenuTabImage = Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle").LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
             var spr = Sprite.Create(modMenuTabImage, new Rect(0f, 0f, modMenuTabImage.width, modMenuTabImage.height), new Vector2(0.5f, 0.5f), 1f);
             transform.getObjRec<Image>("ModMenu").sprite = spr;
             transform.getObjRec<Image>("ModConfiguration").sprite = spr;
@@ -353,8 +353,8 @@ namespace SR2E
                                         }
                                         else if (entry.BoxedEditedValue is KeyCode)
                                         {
-                                            textMesh.text = SR2EUtils.KeyToKeyCode(key.Value).ToString();
-                                            entry.BoxedEditedValue = SR2EUtils.KeyToKeyCode(key.Value);
+                                            textMesh.text = KeyToKeyCode(key.Value).ToString();
+                                            entry.BoxedEditedValue = KeyToKeyCode(key.Value);
                                             if(!entriesWithoutWarning.ContainsKey(entry)) 
                                                 warningText.SetActive(true);
                                             else

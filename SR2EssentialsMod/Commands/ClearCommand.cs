@@ -18,7 +18,7 @@
                 return false;
             }
 
-            Transform consoleContent = SR2EUtils.getObjRec<Transform>(SR2Console.transform, "ConsoleContent");
+            Transform consoleContent = SR2Console.transform.getObjRec<Transform>("ConsoleContent");
             for (int i = 0; i < consoleContent.childCount; i++)
                 Object.Destroy(consoleContent.GetChild(i).gameObject);
             
