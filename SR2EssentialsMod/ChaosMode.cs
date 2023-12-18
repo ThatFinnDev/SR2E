@@ -65,6 +65,10 @@ internal class ChaosMode
 
     }*/
 
+    internal static void OnSaveDirectorLoading(AutoSaveDirector saveDirector)
+    {
+        CreateCompleteLargo(GetSlime("Pink"), GetSlime("Gold"));
+    }
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         if (sceneName.StartsWith("environment"))
@@ -89,7 +93,6 @@ internal class ChaosMode
 
                 PinkTarr();
 
-                CreateCompleteLargo(GetSlime("Pink"), GetSlime("Gold"));
                 GetSlime("Pink").SwitchSlimeAppearances(GetSlime("Gold"));
                 GetSlime("Pink").prefab.AddComponent<SlimeFlee>();
                 
