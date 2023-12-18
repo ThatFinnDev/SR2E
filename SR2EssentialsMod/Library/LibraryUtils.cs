@@ -45,7 +45,6 @@ namespace SR2E.Library
         public static GameContext gameContext => GameContext.Instance;  
         public static SceneContext sceneContext => SceneContext.Instance;
         
-        
         public static SlimeDefinition CreateSlimeDef(string Name, Color32 VacColor, Sprite Icon, SlimeAppearance baseAppearance, string appearanceName, string RefID)
         {
             SlimeDefinition slimedef = ScriptableObject.CreateInstance<SlimeDefinition>();

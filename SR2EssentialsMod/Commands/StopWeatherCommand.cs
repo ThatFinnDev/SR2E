@@ -4,19 +4,7 @@ namespace SR2E.Commands;
 
 public class StopWeatherCommand : SR2CCommand
 {
-    public static WeatherStateDefinition[] states => Resources.FindObjectsOfTypeAll<WeatherStateDefinition>();
-    internal static WeatherStateDefinition getWeatherStateByName(string name)
-    {
-        foreach (WeatherStateDefinition state in states)
-            try
-            {
-                if (state.name.ToUpper().Replace(" ", "") == name.ToUpper())
-                    return state;
-            }
-            catch (System.Exception ignored)
-            { }
-        return null;
-    }
+    
     public override string ID => "stopweather";
     public override string Usage => "stopweather <state>";
     public override string Description => "Stops a weather state.";
@@ -25,7 +13,7 @@ public class StopWeatherCommand : SR2CCommand
     public override bool Execute(string[] args)
     {
         if (args.Length != 1) return false;
-        WeatherStateDefinition def = getWeatherStateByName(args[0]);
+        WeatherStateDefinition def = Weather.getWeatherStateByName(args[0]);
         if (def == null) return false;
         var dir = Get<WeatherDirector>("WeatherVFX");
         if (dir == null) return false;
@@ -47,7 +35,7 @@ public class StopWeatherCommand : SR2CCommand
     {
         var list = new List<string>();
 
-        foreach (var state in states)
+        foreach (var state in Weather.states)
         {
             list.Add(state.name.Replace(" ", ""));
         }

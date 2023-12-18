@@ -11,11 +11,9 @@ public class ListWeathersCommand : SR2CCommand
     public override bool Execute(string[] args)
     {
         var states = Get<WeatherDirector>("WeatherVFX")._runningStates;
-        string stateNames = "";
-        foreach (var state in states)
-        {
-            stateNames += $"\n{state.GetName()}";
-        }
+        var stateNames = "";
+        foreach (var state in states) stateNames += $"\n{state.GetName()}";
+
         SR2Console.SendMessage($"Running States are:${stateNames}");
         return true;
     }
