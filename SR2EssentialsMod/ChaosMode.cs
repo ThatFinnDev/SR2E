@@ -89,9 +89,9 @@ internal class ChaosMode
 
                 PinkTarr();
 
+                CreateCompleteLargo(GetSlime("Pink"), GetSlime("Gold"));
                 GetSlime("Pink").SwitchSlimeAppearances(GetSlime("Gold"));
                 GetSlime("Pink").prefab.AddComponent<SlimeFlee>();
-                
                 
                 List<string> slimes = new List<string> { 
                     "Pink|40|7", 
@@ -144,7 +144,6 @@ internal class ChaosMode
                         if (largoIndex == 0)
                         {
                             slime.MakeSellable(28, 27, false);
-                            MelonLogger.Msg(slime.ValidatableName);
                         }
                         else
                             slime.MakeSellable(20, 15, true);
