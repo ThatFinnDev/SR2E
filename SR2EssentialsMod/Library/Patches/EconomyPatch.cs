@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 namespace SR2E.Library.Patches;
 
@@ -25,17 +26,24 @@ public static class EconomyPatch
         }
         __instance.BaseValueMap = HarmonyLib.CollectionExtensions.AddRangeToArray<EconomyDirector.ValueMap>(__instance.BaseValueMap.ToArray(), valueMaps.ToArray());
         /*
-        // Same as on the top
-        List<EconomyDirector.ValueMap> list = __instance.BaseValueMap.ToList();
-        List<EconomyDirector.ValueMap> listTwo = __instance.BaseValueMap.ToList();
-        foreach (EconomyDirector.ValueMap entry in list)
-        foreach (IdentifiableType toRemove in removeMarketPlortEntries)
-            if (entry.Accept.identType.ValidatableName == toRemove.ValidatableName)
-                listTwo.Remove(entry);
-        __instance.BaseValueMap = new Il2CppReferenceArray<EconomyDirector.ValueMap>(0);
-        foreach (EconomyDirector.ValueMap entry in listTwo)
-            if (entry != null)
-                __instance.BaseValueMap.AddItem(entry);
+        // Same as in MarketPatch
         */
+        /*
+        try
+        {
+            List<EconomyDirector.ValueMap> list = __instance.BaseValueMap.ToList();
+            List<EconomyDirector.ValueMap> listTwo = __instance.BaseValueMap.ToList();
+            foreach (EconomyDirector.ValueMap entry in list)
+                if(entry!=null)
+                    foreach (IdentifiableType toRemove in removeMarketPlortEntries)
+                        if(toRemove!=null)
+                            if (entry.Accept.identType.ValidatableName == toRemove.ValidatableName)
+                                listTwo.Remove(entry);
+            __instance.BaseValueMap = new Il2CppReferenceArray<EconomyDirector.ValueMap>(0);
+            foreach (EconomyDirector.ValueMap entry in listTwo)
+                if (entry != null)
+                    __instance.BaseValueMap.AddItem(entry);
+        }
+        catch { }*/
     }
 }
