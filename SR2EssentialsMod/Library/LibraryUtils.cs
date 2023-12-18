@@ -4,6 +4,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppInterop.Runtime.InteropTypes;
 using System.Linq;
 using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -127,6 +128,7 @@ namespace SR2E.Library
             slimedef.prefab.GetComponent<SlimeVarietyModules>().BaseModule = slimedef.BaseModule;
             slimedef.prefab.GetComponent<SlimeVarietyModules>().SlimeModules = slimedef.SlimeModules;
             slimedef.prefab.RemoveComponent<RockSlimeRoll>();
+            slimedef.prefab.RemoveComponent<DamagePlayerOnTouch>();
             
             SlimeAppearance appearance = Object.Instantiate(pinkRock.AppearancesDefault[0]);
             slimedef.AppearancesDefault[0] = appearance;
@@ -153,9 +155,21 @@ namespace SR2E.Library
             
 
             slimedef.Diet=MergeDiet(slimeOne.Diet,slimeTwo.Diet);
-            slimedef.Diet.ProduceIdents = new Il2CppReferenceArray<IdentifiableType>(0);
-            slimedef.AddProduceIdent(slimeOne.Diet.ProduceIdents[0]);
-            slimedef.AddProduceIdent(slimeTwo.Diet.ProduceIdents[0]);
+            SlimeDefinition tarr = Get<SlimeDefinition>("Tarr");
+            slimeOne.Diet.EatMap.Add(CreateEatmap(SlimeEmotions.Emotion.AGITATION, 0.5f, null, 
+               slimeTwo.Diet.ProduceIdents[0],slimedef));
+            slimeTwo.Diet.EatMap.Add(CreateEatmap(SlimeEmotions.Emotion.AGITATION, 0.5f, null, 
+                slimeOne.Diet.ProduceIdents[0],slimedef));
+            foreach (SlimeDiet.EatMapEntry entry in slimedef.Diet.EatMap)
+                if (entry.EatsIdent.IsPlort)
+                    if (entry.EatsIdent.ValidatableName == slimeOne.Diet.ProduceIdents[0].ValidatableName || entry.EatsIdent.ValidatableName == slimeTwo.Diet.ProduceIdents[0].ValidatableName)
+                        slimedef.Diet.EatMap.Remove(entry);
+            foreach (SlimeDiet.EatMapEntry entry in slimedef.Diet.EatMap)
+                entry.BecomesIdent = tarr;
+            
+            slimedef.SetProduceIdent(slimeOne.Diet.ProduceIdents[0],0);
+            slimedef.SetProduceIdent(slimeTwo.Diet.ProduceIdents[0],1);
+            slimedef.RefreshEatmap();
             
             slimeDefinitions.Slimes.Add(slimedef);
             slimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(slimedef, slimedef);
@@ -164,6 +178,7 @@ namespace SR2E.Library
             mainAppearanceDirector.UpdateChosenSlimeAppearance(slimedef, slimedef.AppearancesDefault[0]);
             
             AddToGroup(slimedef, "LargoGroup");
+            AddToGroup(slimedef, "SlimesGroup");
             INTERNAL_SetupSaveForIdent(slimedef.referenceId, slimedef);
             return slimedef;
         }
@@ -181,14 +196,25 @@ namespace SR2E.Library
             mergedDiet.EatMap.AddListRangeNoMultiple(firstDiet.EatMap);
             mergedDiet.EatMap.AddListRangeNoMultiple(secondDiet.EatMap);
 
-            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRange(firstDiet.AdditionalFoodIdents);
-            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRange(secondDiet.AdditionalFoodIdents);
+            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRangeNoMultiple(firstDiet.AdditionalFoodIdents);
+            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRangeNoMultiple(secondDiet.AdditionalFoodIdents);
 
-            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRange(firstDiet.FavoriteIdents);
-            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRange(secondDiet.FavoriteIdents);
+            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRangeNoMultiple(firstDiet.FavoriteIdents);
+            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRangeNoMultiple(secondDiet.FavoriteIdents);
 
-            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRange(firstDiet.ProduceIdents);
-            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRange(secondDiet.ProduceIdents);
+            foreach (SlimeEat.FoodGroup foodGroup in firstDiet.MajorFoodGroups)
+                if (!mergedDiet.MajorFoodGroups.Contains(foodGroup))
+                    mergedDiet.MajorFoodGroups.AddItem(foodGroup);
+            
+            foreach (SlimeEat.FoodGroup foodGroup in secondDiet.MajorFoodGroups)
+                if (!mergedDiet.MajorFoodGroups.Contains(foodGroup))
+                    mergedDiet.MajorFoodGroups.AddItem(foodGroup);;
+            
+            mergedDiet.MajorFoodIdentifiableTypeGroups = mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultiple(firstDiet.MajorFoodIdentifiableTypeGroups);
+            mergedDiet.MajorFoodIdentifiableTypeGroups = mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultiple(secondDiet.MajorFoodIdentifiableTypeGroups);
+            
+            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRangeNoMultiple(firstDiet.ProduceIdents);
+            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRangeNoMultiple(secondDiet.ProduceIdents);
 
             return mergedDiet;
         }
@@ -264,7 +290,7 @@ namespace SR2E.Library
             }
             return null;
         }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
+        public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
             {
                 var eatmap = new SlimeDiet.EatMapEntry
                 {
@@ -276,7 +302,7 @@ namespace SR2E.Library
                 };
                 return eatmap;
             }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
+        public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
         {
             var eatmap = new SlimeDiet.EatMapEntry
             {
@@ -619,6 +645,22 @@ namespace SR2E.Library
             foreach (var item in obj)
             {
                 list.Add(item);
+            }
+            array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+            return array;
+        }
+        public static Il2CppReferenceArray<T> AddRangeNoMultiple<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
+        {
+            var list = new Il2CppSystem.Collections.Generic.List<T>();
+            foreach (var item in array)
+            {
+                if(!list.Contains(item))
+                    list.Add(item);
+            }
+            foreach (var item in obj)
+            {
+                if(!list.Contains(item))
+                    list.Add(item);
             }
             array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
             return array;
