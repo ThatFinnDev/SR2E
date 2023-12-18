@@ -13,6 +13,7 @@ using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using SR2E.Patches;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.Playables;
 
 namespace SR2E.Library
@@ -92,6 +93,80 @@ namespace SR2E.Library
             slimedef.properties = Get<SlimeDefinition>("Pink").properties;
             return slimedef;
         }
+        public static SlimeDefinition CreateCompleteLargo(SlimeDefinition slimeOne, SlimeDefinition slimeTwo)
+        {
+            SlimeDefinition pinkRock = Get<SlimeDefinition>("PinkRock");
+            if(slimeOne.IsLargo||slimeTwo.IsLargo)
+                return null;
+            slimeOne.CanLargofy = true;
+            slimeTwo.CanLargofy = true;
+
+            SlimeDefinition slimedef = Object.Instantiate(pinkRock);
+            slimedef.BaseSlimes =new [] { slimeOne, slimeTwo };
+            slimedef.SlimeModules =new [] { Get<GameObject>("moduleSlime"+slimeOne.name), Get<GameObject>("moduleSlime"+slimeTwo.name) };
+
+            
+            slimedef.localizationSuffix = slimeOne.name.ToLower() + "_" + slimeTwo.name.ToLower() + "_largo";
+            slimedef.referenceId = "SlimeDefinition." + slimeOne.name + slimeTwo.name;
+            slimedef.localizedName = AddTranslation(slimeOne.name+" "+slimeTwo.name+" Largo", "l."+slimedef.localizationSuffix);
+            
+            slimedef.FavoriteToyIdents = new Il2CppReferenceArray<ToyDefinition>(0);
+                
+            Object.DontDestroyOnLoad(slimedef);
+            slimedef.hideFlags = HideFlags.HideAndDontSave;
+            slimedef.name = slimeOne.name+slimeTwo.name;;
+            slimedef.Name = slimeOne.name+" "+slimeTwo.name;;
+            
+            slimedef.prefab = Object.Instantiate(pinkRock.prefab, rootOBJ.transform);
+            slimedef.prefab.name = $"slime{slimeOne.name + slimeTwo.name}";
+            slimedef.prefab.GetComponent<Identifiable>().identType = slimedef;
+            slimedef.prefab.GetComponent<SlimeEat>().SlimeDefinition = slimedef;
+            slimedef.prefab.GetComponent<SlimeAppearanceApplicator>().SlimeDefinition = slimedef;
+            slimedef.prefab.GetComponent<PlayWithToys>().SlimeDefinition = slimedef;
+            slimedef.prefab.GetComponent<ReactToToyNearby>().SlimeDefinition = slimedef;
+            slimedef.prefab.GetComponent<SlimeVarietyModules>().BaseModule = slimedef.BaseModule;
+            slimedef.prefab.GetComponent<SlimeVarietyModules>().SlimeModules = slimedef.SlimeModules;
+            slimedef.prefab.RemoveComponent<RockSlimeRoll>();
+            
+            SlimeAppearance appearance = Object.Instantiate(pinkRock.AppearancesDefault[0]);
+            slimedef.AppearancesDefault[0] = appearance;
+            Object.DontDestroyOnLoad(appearance);
+            appearance.name = slimeOne.AppearancesDefault[0].name+slimeTwo.AppearancesDefault[0].name;
+            
+            appearance._dependentAppearances =new [] { slimeOne.AppearancesDefault[0], slimeTwo.AppearancesDefault[0] };
+            appearance._structures = HarmonyLib.CollectionExtensions.AddRangeToArray<SlimeAppearanceStructure>(slimeOne.AppearancesDefault[0]._structures.ToArray(), slimeTwo.AppearancesDefault[0]._structures.ToArray());
+            /*
+            //This is for making sure there are no duplicates, but pinkgold slimes for example, are just big pink slimes
+            appearance._structures = slimeOne.AppearancesDefault[0]._structures.ToArray();
+            for (int j = 0; j < slimeTwo.AppearancesDefault[0]._structures.Count; j++)
+            {
+                bool canAdd = true;
+                for (int i = 0; i < appearance._structures.Count; i++)
+                {
+                    if (slimeTwo.AppearancesDefault[0]._structures[j].Element.Type == appearance._structures[i].Element.Type)
+                        canAdd = false;
+                }
+
+                if (canAdd)
+                    appearance._structures.AddItem(slimeTwo.AppearancesDefault[0]._structures[j]);
+            }*/
+            
+
+            slimedef.Diet=MergeDiet(slimeOne.Diet,slimeTwo.Diet);
+            slimedef.Diet.ProduceIdents = new Il2CppReferenceArray<IdentifiableType>(0);
+            slimedef.AddProduceIdent(slimeOne.Diet.ProduceIdents[0]);
+            slimedef.AddProduceIdent(slimeTwo.Diet.ProduceIdents[0]);
+            
+            slimeDefinitions.Slimes.Add(slimedef);
+            slimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(slimedef, slimedef);
+            slimeDefinitions._largoDefinitionByBaseDefinitions.TryAdd(new SlimeDefinitions.SlimeDefinitionPair() { SlimeDefinition1 = slimeOne, SlimeDefinition2 = slimeTwo }, slimedef);
+            mainAppearanceDirector.RegisterDependentAppearances(slimedef, slimedef.AppearancesDefault[0]);
+            mainAppearanceDirector.UpdateChosenSlimeAppearance(slimedef, slimedef.AppearancesDefault[0]);
+            
+            AddToGroup(slimedef, "LargoGroup");
+            INTERNAL_SetupSaveForIdent(slimedef.referenceId, slimedef);
+            return slimedef;
+        }
         public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector.weatherStates.items.ToArray();
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
@@ -120,6 +195,9 @@ namespace SR2E.Library
         public static void SwitchSlimeAppearances(this SlimeDefinition slimeOneDef, SlimeDefinition slimeTwoDef)
         {
             var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures; slimeOneDef.AppearancesDefault[0]._structures = slimeTwoDef.AppearancesDefault[0]._structures; slimeTwoDef.AppearancesDefault[0]._structures = appearanceOne;
+            var appearanceSplatOne = slimeOneDef.AppearancesDefault[0]._splatColor; slimeOneDef.AppearancesDefault[0]._splatColor = slimeTwoDef.AppearancesDefault[0]._splatColor; slimeTwoDef.AppearancesDefault[0]._splatColor = appearanceSplatOne;
+
+            var colorPalate = slimeOneDef.AppearancesDefault[0]._colorPalette; slimeOneDef.AppearancesDefault[0]._colorPalette = slimeTwoDef.AppearancesDefault[0]._colorPalette; slimeTwoDef.AppearancesDefault[0]._colorPalette = colorPalate;
 
             var structureIcon = slimeOneDef.AppearancesDefault[0]._icon; slimeOneDef.AppearancesDefault[0]._icon = slimeTwoDef.AppearancesDefault[0]._icon; slimeTwoDef.AppearancesDefault[0]._icon = structureIcon;
             var icon = slimeOneDef.icon; slimeOneDef.icon = slimeTwoDef.icon; slimeTwoDef.icon = icon;
@@ -130,7 +208,16 @@ namespace SR2E.Library
 
         public enum LargoSettings { KeepFirstBody, KeepSecondBody, KeepFirstFace, KeepSecondFace, KeepFirstColor, KeepSecondColor, MergeColors }
         public static SlimeDefinitions? slimeDefinitions { get { return gameContext.SlimeDefinitions; } set { gameContext.SlimeDefinitions = value; } }
-
+        private static SlimeAppearanceDirector _mainAppearanceDirector;
+        public static SlimeAppearanceDirector mainAppearanceDirector
+        {
+            get
+            {
+                if(_mainAppearanceDirector==null) _mainAppearanceDirector = Get<SlimeAppearanceDirector>("MainSlimeAppearanceDirector");
+                return _mainAppearanceDirector;
+            }
+            set { _mainAppearanceDirector = value; }
+        }
 
 
         
