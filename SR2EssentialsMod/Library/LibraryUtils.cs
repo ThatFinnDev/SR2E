@@ -202,13 +202,14 @@ namespace SR2E.Library
             mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRangeNoMultiple(firstDiet.FavoriteIdents);
             mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRangeNoMultiple(secondDiet.FavoriteIdents);
 
+            List<SlimeEat.FoodGroup> foodGroups = new List<SlimeEat.FoodGroup>();
             foreach (SlimeEat.FoodGroup foodGroup in firstDiet.MajorFoodGroups)
-                if (!mergedDiet.MajorFoodGroups.Contains(foodGroup))
-                    mergedDiet.MajorFoodGroups.AddItem(foodGroup);
-            
+                if (!foodGroups.Contains(foodGroup))
+                    foodGroups.Add(foodGroup);
             foreach (SlimeEat.FoodGroup foodGroup in secondDiet.MajorFoodGroups)
-                if (!mergedDiet.MajorFoodGroups.Contains(foodGroup))
-                    mergedDiet.MajorFoodGroups.AddItem(foodGroup);;
+                if (!foodGroups.Contains(foodGroup))
+                    foodGroups.Add(foodGroup);;
+            mergedDiet.MajorFoodGroups = new Il2CppStructArray<SlimeEat.FoodGroup>(foodGroups.ToArray());
             
             mergedDiet.MajorFoodIdentifiableTypeGroups = mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultiple(firstDiet.MajorFoodIdentifiableTypeGroups);
             mergedDiet.MajorFoodIdentifiableTypeGroups = mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultiple(secondDiet.MajorFoodIdentifiableTypeGroups);
@@ -233,7 +234,7 @@ namespace SR2E.Library
         }
 
         public enum LargoSettings { KeepFirstBody, KeepSecondBody, KeepFirstFace, KeepSecondFace, KeepFirstColor, KeepSecondColor, MergeColors }
-        public static SlimeDefinitions? slimeDefinitions { get { return gameContext.SlimeDefinitions; } set { gameContext.SlimeDefinitions = value; } }
+        public static SlimeDefinitions? slimeDefinitions { get { return gameContext.SlimeDefinitions; } /*set { gameContext.SlimeDefinitions = value; }*/ }
         private static SlimeAppearanceDirector _mainAppearanceDirector;
         public static SlimeAppearanceDirector mainAppearanceDirector
         {
