@@ -25,6 +25,17 @@ public static class AutoSaveDirectorSavePatch
 
             }
         }
+        foreach (var savableGadget in Resources.FindObjectsOfTypeAll<SR2EGadgetDataSaver>())
+        {
+            try
+            {
+                savableGadget.SaveData();
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Error(e);
+            }
+        }
         foreach (var gordo in Resources.FindObjectsOfTypeAll<SR2EGordoDataSaver>())
         {
             try
