@@ -471,6 +471,7 @@ namespace SR2E
         }
         private static void SetupCommands()
         {
+            RegisterCommand(new FloatCommand());
             RegisterCommand(new StopWeatherCommand());
             RegisterCommand(new ListWeathersCommand());
             RegisterCommand(new GiveCommand());
