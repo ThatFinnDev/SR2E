@@ -4,6 +4,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppInterop.Runtime.InteropTypes;
 using System.Linq;
 using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -13,6 +14,7 @@ using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using SR2E.Patches;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.Playables;
 
 namespace SR2E.Library
@@ -91,6 +93,94 @@ namespace SR2E.Library
             slimedef.properties = Get<SlimeDefinition>("Pink").properties;
             return slimedef;
         }
+        public static SlimeDefinition CreateCompleteLargo(SlimeDefinition slimeOne, SlimeDefinition slimeTwo)
+        {
+            SlimeDefinition pinkRock = Get<SlimeDefinition>("PinkRock");
+            if(slimeOne.IsLargo||slimeTwo.IsLargo)
+                return null;
+            slimeOne.CanLargofy = true;
+            slimeTwo.CanLargofy = true;
+
+            SlimeDefinition slimedef = Object.Instantiate(pinkRock);
+            slimedef.BaseSlimes =new [] { slimeOne, slimeTwo };
+            slimedef.SlimeModules =new [] { Get<GameObject>("moduleSlime"+slimeOne.name), Get<GameObject>("moduleSlime"+slimeTwo.name) };
+
+            
+            slimedef.localizationSuffix = slimeOne.name.ToLower() + "_" + slimeTwo.name.ToLower() + "_largo";
+            slimedef.referenceId = "SlimeDefinition." + slimeOne.name + slimeTwo.name;
+            slimedef.localizedName = AddTranslation(slimeOne.name+" "+slimeTwo.name+" Largo", "l."+slimedef.localizationSuffix);
+            
+            slimedef.FavoriteToyIdents = new Il2CppReferenceArray<ToyDefinition>(0);
+                
+            Object.DontDestroyOnLoad(slimedef);
+            slimedef.hideFlags = HideFlags.HideAndDontSave;
+            slimedef.name = slimeOne.name+slimeTwo.name;;
+            slimedef.Name = slimeOne.name+" "+slimeTwo.name;;
+            
+            slimedef.prefab = Object.Instantiate(pinkRock.prefab, rootOBJ.transform);
+            slimedef.prefab.name = $"slime{slimeOne.name + slimeTwo.name}";
+            slimedef.prefab.GetComponent<Identifiable>().identType = slimedef;
+            slimedef.prefab.GetComponent<SlimeEat>().SlimeDefinition = slimedef;
+            slimedef.prefab.GetComponent<SlimeAppearanceApplicator>().SlimeDefinition = slimedef;
+            slimedef.prefab.GetComponent<PlayWithToys>().SlimeDefinition = slimedef;
+            slimedef.prefab.GetComponent<ReactToToyNearby>().SlimeDefinition = slimedef;
+            slimedef.prefab.GetComponent<SlimeVarietyModules>().BaseModule = slimedef.BaseModule;
+            slimedef.prefab.GetComponent<SlimeVarietyModules>().SlimeModules = slimedef.SlimeModules;
+            slimedef.prefab.RemoveComponent<RockSlimeRoll>();
+            slimedef.prefab.RemoveComponent<DamagePlayerOnTouch>();
+            
+            SlimeAppearance appearance = Object.Instantiate(pinkRock.AppearancesDefault[0]);
+            slimedef.AppearancesDefault[0] = appearance;
+            Object.DontDestroyOnLoad(appearance);
+            appearance.name = slimeOne.AppearancesDefault[0].name+slimeTwo.AppearancesDefault[0].name;
+            
+            appearance._dependentAppearances =new [] { slimeOne.AppearancesDefault[0], slimeTwo.AppearancesDefault[0] };
+            appearance._structures = HarmonyLib.CollectionExtensions.AddRangeToArray<SlimeAppearanceStructure>(slimeOne.AppearancesDefault[0]._structures.ToArray(), slimeTwo.AppearancesDefault[0]._structures.ToArray());
+            /*
+            //This is for making sure there are no duplicates, but pinkgold slimes for example, are just big pink slimes
+            appearance._structures = slimeOne.AppearancesDefault[0]._structures.ToArray();
+            for (int j = 0; j < slimeTwo.AppearancesDefault[0]._structures.Count; j++)
+            {
+                bool canAdd = true;
+                for (int i = 0; i < appearance._structures.Count; i++)
+                {
+                    if (slimeTwo.AppearancesDefault[0]._structures[j].Element.Type == appearance._structures[i].Element.Type)
+                        canAdd = false;
+                }
+
+                if (canAdd)
+                    appearance._structures.AddItem(slimeTwo.AppearancesDefault[0]._structures[j]);
+            }*/
+            
+
+            slimedef.Diet=MergeDiet(slimeOne.Diet,slimeTwo.Diet);
+            SlimeDefinition tarr = Get<SlimeDefinition>("Tarr");
+            slimeOne.Diet.EatMap.Add(CreateEatmap(SlimeEmotions.Emotion.AGITATION, 0.5f, null, 
+               slimeTwo.Diet.ProduceIdents[0],slimedef));
+            slimeTwo.Diet.EatMap.Add(CreateEatmap(SlimeEmotions.Emotion.AGITATION, 0.5f, null, 
+                slimeOne.Diet.ProduceIdents[0],slimedef));
+            foreach (SlimeDiet.EatMapEntry entry in slimedef.Diet.EatMap)
+                if (entry.EatsIdent.IsPlort)
+                    if (entry.EatsIdent.ValidatableName == slimeOne.Diet.ProduceIdents[0].ValidatableName || entry.EatsIdent.ValidatableName == slimeTwo.Diet.ProduceIdents[0].ValidatableName)
+                        slimedef.Diet.EatMap.Remove(entry);
+            foreach (SlimeDiet.EatMapEntry entry in slimedef.Diet.EatMap)
+                entry.BecomesIdent = tarr;
+            
+            slimedef.SetProduceIdent(slimeOne.Diet.ProduceIdents[0],0);
+            slimedef.SetProduceIdent(slimeTwo.Diet.ProduceIdents[0],1);
+            slimedef.RefreshEatmap();
+            
+            slimeDefinitions.Slimes.Add(slimedef);
+            slimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(slimedef, slimedef);
+            slimeDefinitions._largoDefinitionByBaseDefinitions.TryAdd(new SlimeDefinitions.SlimeDefinitionPair() { SlimeDefinition1 = slimeOne, SlimeDefinition2 = slimeTwo }, slimedef);
+            mainAppearanceDirector.RegisterDependentAppearances(slimedef, slimedef.AppearancesDefault[0]);
+            mainAppearanceDirector.UpdateChosenSlimeAppearance(slimedef, slimedef.AppearancesDefault[0]);
+            
+            AddToGroup(slimedef, "LargoGroup");
+            AddToGroup(slimedef, "SlimesGroup");
+            INTERNAL_SetupSaveForIdent(slimedef.referenceId, slimedef);
+            return slimedef;
+        }
         public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector.weatherStates.items.ToArray();
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
@@ -105,20 +195,35 @@ namespace SR2E.Library
             mergedDiet.EatMap.AddListRangeNoMultiple(firstDiet.EatMap);
             mergedDiet.EatMap.AddListRangeNoMultiple(secondDiet.EatMap);
 
-            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRange(firstDiet.AdditionalFoodIdents);
-            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRange(secondDiet.AdditionalFoodIdents);
+            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRangeNoMultiple(firstDiet.AdditionalFoodIdents);
+            mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRangeNoMultiple(secondDiet.AdditionalFoodIdents);
 
-            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRange(firstDiet.FavoriteIdents);
-            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRange(secondDiet.FavoriteIdents);
+            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRangeNoMultiple(firstDiet.FavoriteIdents);
+            mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRangeNoMultiple(secondDiet.FavoriteIdents);
 
-            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRange(firstDiet.ProduceIdents);
-            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRange(secondDiet.ProduceIdents);
+            List<SlimeEat.FoodGroup> foodGroups = new List<SlimeEat.FoodGroup>();
+            foreach (SlimeEat.FoodGroup foodGroup in firstDiet.MajorFoodGroups)
+                if (!foodGroups.Contains(foodGroup))
+                    foodGroups.Add(foodGroup);
+            foreach (SlimeEat.FoodGroup foodGroup in secondDiet.MajorFoodGroups)
+                if (!foodGroups.Contains(foodGroup))
+                    foodGroups.Add(foodGroup);;
+            mergedDiet.MajorFoodGroups = new Il2CppStructArray<SlimeEat.FoodGroup>(foodGroups.ToArray());
+            
+            mergedDiet.MajorFoodIdentifiableTypeGroups = mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultiple(firstDiet.MajorFoodIdentifiableTypeGroups);
+            mergedDiet.MajorFoodIdentifiableTypeGroups = mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultiple(secondDiet.MajorFoodIdentifiableTypeGroups);
+            
+            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRangeNoMultiple(firstDiet.ProduceIdents);
+            mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRangeNoMultiple(secondDiet.ProduceIdents);
 
             return mergedDiet;
         }
         public static void SwitchSlimeAppearances(this SlimeDefinition slimeOneDef, SlimeDefinition slimeTwoDef)
         {
             var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures; slimeOneDef.AppearancesDefault[0]._structures = slimeTwoDef.AppearancesDefault[0]._structures; slimeTwoDef.AppearancesDefault[0]._structures = appearanceOne;
+            var appearanceSplatOne = slimeOneDef.AppearancesDefault[0]._splatColor; slimeOneDef.AppearancesDefault[0]._splatColor = slimeTwoDef.AppearancesDefault[0]._splatColor; slimeTwoDef.AppearancesDefault[0]._splatColor = appearanceSplatOne;
+
+            var colorPalate = slimeOneDef.AppearancesDefault[0]._colorPalette; slimeOneDef.AppearancesDefault[0]._colorPalette = slimeTwoDef.AppearancesDefault[0]._colorPalette; slimeTwoDef.AppearancesDefault[0]._colorPalette = colorPalate;
 
             var structureIcon = slimeOneDef.AppearancesDefault[0]._icon; slimeOneDef.AppearancesDefault[0]._icon = slimeTwoDef.AppearancesDefault[0]._icon; slimeTwoDef.AppearancesDefault[0]._icon = structureIcon;
             var icon = slimeOneDef.icon; slimeOneDef.icon = slimeTwoDef.icon; slimeTwoDef.icon = icon;
@@ -128,8 +233,17 @@ namespace SR2E.Library
         }
 
         public enum LargoSettings { KeepFirstBody, KeepSecondBody, KeepFirstFace, KeepSecondFace, KeepFirstColor, KeepSecondColor, MergeColors }
-        public static SlimeDefinitions? slimeDefinitions { get { return gameContext.SlimeDefinitions; } set { gameContext.SlimeDefinitions = value; } }
-
+        public static SlimeDefinitions? slimeDefinitions { get { return gameContext.SlimeDefinitions; } /*set { gameContext.SlimeDefinitions = value; }*/ }
+        private static SlimeAppearanceDirector _mainAppearanceDirector;
+        public static SlimeAppearanceDirector mainAppearanceDirector
+        {
+            get
+            {
+                if(_mainAppearanceDirector==null) _mainAppearanceDirector = Get<SlimeAppearanceDirector>("MainSlimeAppearanceDirector");
+                return _mainAppearanceDirector;
+            }
+            set { _mainAppearanceDirector = value; }
+        }
 
 
         
@@ -176,7 +290,7 @@ namespace SR2E.Library
             }
             return null;
         }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
+        public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
             {
                 var eatmap = new SlimeDiet.EatMapEntry
                 {
@@ -188,7 +302,7 @@ namespace SR2E.Library
                 };
                 return eatmap;
             }
-        public static SlimeDiet.EatMapEntry CreateEatmap(this SlimeDefinition def, SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
+        public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive, IdentifiableType produce, IdentifiableType eat)
         {
             var eatmap = new SlimeDiet.EatMapEntry
             {
@@ -531,6 +645,22 @@ namespace SR2E.Library
             foreach (var item in obj)
             {
                 list.Add(item);
+            }
+            array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+            return array;
+        }
+        public static Il2CppReferenceArray<T> AddRangeNoMultiple<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
+        {
+            var list = new Il2CppSystem.Collections.Generic.List<T>();
+            foreach (var item in array)
+            {
+                if(!list.Contains(item))
+                    list.Add(item);
+            }
+            foreach (var item in obj)
+            {
+                if(!list.Contains(item))
+                    list.Add(item);
             }
             array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
             return array;
