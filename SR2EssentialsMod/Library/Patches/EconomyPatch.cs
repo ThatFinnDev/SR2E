@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
+﻿using System.Linq;
 
 namespace SR2E.Library.Patches;
 
@@ -31,19 +26,10 @@ public static class EconomyPatch
         /*
         try
         {
-            List<EconomyDirector.ValueMap> list = __instance.BaseValueMap.ToList();
-            List<EconomyDirector.ValueMap> listTwo = __instance.BaseValueMap.ToList();
-            foreach (EconomyDirector.ValueMap entry in list)
-                if(entry!=null)
-                    foreach (IdentifiableType toRemove in removeMarketPlortEntries)
-                        if(toRemove!=null)
-                            if (entry.Accept.identType.ValidatableName == toRemove.ValidatableName)
-                                listTwo.Remove(entry);
-            __instance.BaseValueMap = new Il2CppReferenceArray<EconomyDirector.ValueMap>(0);
-            foreach (EconomyDirector.ValueMap entry in listTwo)
-                if (entry != null)
-                    __instance.BaseValueMap.AddItem(entry);
-        }
-        catch { }*/
+            __instance.BaseValueMap = (from x in __instance.BaseValueMap 
+                where !removeMarketPlortEntries.Exists((IdentifiableType y) => y.ValidatableName != x.Accept.identType.ValidatableName)
+                select x).ToArray();
+        } catch { }*/
+        
     }
 }

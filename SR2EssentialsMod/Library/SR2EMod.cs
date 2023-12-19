@@ -14,7 +14,7 @@ namespace SR2E.Library
         public static SystemContext systemContext { get { return LibraryUtils.systemContext; } }
         public static GameContext gameContext { get { return LibraryUtils.gameContext; } }
         public static SceneContext sceneContext { get { return LibraryUtils.sceneContext; } }
-        public static SlimeDefinitions slimeDefinitions { get { return LibraryUtils.slimeDefinitions; } set { LibraryUtils.slimeDefinitions = value; } }
+        public static SlimeDefinitions slimeDefinitions { get { return LibraryUtils.slimeDefinitions; } /*set { LibraryUtils.slimeDefinitions = value; }*/ }
         public virtual void OnPlayerSceneLoaded() { }
         public virtual void OnSystemSceneLoaded() { }
         public virtual void OnGameCoreLoaded() { }
