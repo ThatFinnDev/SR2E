@@ -111,7 +111,8 @@ namespace SR2E.Library
                         if (structure != null && !newStructures.Contains(structure))
                         {
                             newStructures.Add(structure);
-                            var mat = structure.DefaultMaterials[0];
+                            var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                            structure.DefaultMaterials[0] = mat;
 
                             try
                             {
@@ -151,7 +152,8 @@ namespace SR2E.Library
                         if (structure != null && !newStructures.Contains(structure))
                         {
                             newStructures.Add(structure);
-                            var mat = structure.DefaultMaterials[0];
+                            var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                            structure.DefaultMaterials[0] = mat;
 
                             try
                             {
@@ -188,7 +190,8 @@ namespace SR2E.Library
                     if (structure != null && !newStructures.Contains(structure))
                 {
                     newStructures.Add(structure);
-                    var mat = structure.DefaultMaterials[0];
+                    var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                    structure.DefaultMaterials[0] = mat;
                     try
                     {
                         if ((settings & LargoSettings.KeepFirstColor) != 0)
@@ -228,7 +231,8 @@ namespace SR2E.Library
                         if (structure != null && !newStructures.Contains(structure))
                         {
                             newStructures.Add(structure);
-                            var mat = structure.DefaultMaterials[0];
+                            var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                            structure.DefaultMaterials[0] = mat;
 
                             try
                             {
@@ -268,7 +272,8 @@ namespace SR2E.Library
                         if (!newStructures.Contains(structure))
                         {
                             newStructures.Add(structure);
-                            var mat = structure.DefaultMaterials[0];
+                            var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                            structure.DefaultMaterials[0] = mat;
 
                             try
                             {
@@ -306,8 +311,8 @@ namespace SR2E.Library
                     if (!newStructures.Contains(structure))
                 {
                     newStructures.Add(structure);
-                    var mat = structure.DefaultMaterials[0];
-
+                    var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                    structure.DefaultMaterials[0] = mat;
                     try
                     {
                         if ((settings & LargoSettings.KeepFirstColor) != 0)
