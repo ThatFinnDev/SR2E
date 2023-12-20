@@ -18,7 +18,7 @@ internal class WeatherCommand : SR2CCommand
     {
         if (args.Length != 1) return false;
 
-        var def = Weather.getWeatherStateByName(args[0]);
+        var def = getWeatherStateByName(args[0]);
 
         if (def == null) return false;
 
@@ -40,7 +40,7 @@ internal class WeatherCommand : SR2CCommand
     {
         var list = new List<string>();
 
-        foreach (var state in Weather.states) list.Add(state.name.Replace(" ", ""));
+        foreach (var state in weatherStateDefinitions) list.Add(state.name.Replace(" ", ""));
 
         return list;
     }

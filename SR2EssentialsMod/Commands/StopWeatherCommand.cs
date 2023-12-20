@@ -13,7 +13,7 @@ public class StopWeatherCommand : SR2CCommand
     public override bool Execute(string[] args)
     {
         if (args.Length != 1) return false;
-        WeatherStateDefinition def = Weather.getWeatherStateByName(args[0]);
+        WeatherStateDefinition def = getWeatherStateByName(args[0]);
         if (def == null) return false;
         var dir = Get<WeatherDirector>("WeatherVFX");
         if (dir == null) return false;
@@ -35,7 +35,7 @@ public class StopWeatherCommand : SR2CCommand
     {
         var list = new List<string>();
 
-        foreach (var state in Weather.states)
+        foreach (var state in weatherStateDefinitions)
         {
             list.Add(state.name.Replace(" ", ""));
         }
