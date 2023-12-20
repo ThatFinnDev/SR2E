@@ -108,7 +108,7 @@ namespace SR2E.Library
                 {
                     if ((settings & LargoSettings.KeepFirstFace) != 0)
                     {
-                        if (structure != null && !newStructures.Contains(structure))
+                        if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
                         {
                             var newStructure = new SlimeAppearanceStructure(structure);
                             newStructures.Add(newStructure);
@@ -150,7 +150,7 @@ namespace SR2E.Library
                 {
                     if ((settings & LargoSettings.KeepFirstBody) != 0)
                     {
-                        if (structure != null && !newStructures.Contains(structure))
+                        if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
                         {
                             var newStructure = new SlimeAppearanceStructure(structure);
                             newStructures.Add(newStructure);
@@ -189,7 +189,7 @@ namespace SR2E.Library
                     }
                 }
                 else
-                    if (structure != null && !newStructures.Contains(structure))
+                    if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
                 {
                     var newStructure = new SlimeAppearanceStructure(structure);
                     newStructures.Add(newStructure);
@@ -231,7 +231,7 @@ namespace SR2E.Library
                 {
                     if ((settings & LargoSettings.KeepSecondFace) != 0)
                     {
-                        if (structure != null && !newStructures.Contains(structure))
+                        if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
                         {
                             var newStructure = new SlimeAppearanceStructure(structure);
                             newStructures.Add(newStructure);
@@ -313,8 +313,9 @@ namespace SR2E.Library
                     }
                 }
                 else
-                    if (!newStructures.Contains(structure))
+                    if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
                 {
+                   
                     var newStructure = new SlimeAppearanceStructure(structure);
                     newStructures.Add(newStructure);
                     var mat = Object.Instantiate(structure.DefaultMaterials[0]);
@@ -398,7 +399,7 @@ namespace SR2E.Library
             appearance._dependentAppearances =new [] { slimeOne.AppearancesDefault[0], slimeTwo.AppearancesDefault[0] };
             appearance._structures = MergeStructures(appearance._dependentAppearances[0], appearance._dependentAppearances[1], settings);
             slimedef.Diet=MergeDiet(slimeOne.Diet,slimeTwo.Diet);
-            SlimeDefinition tarr = Get<SlimeDefinition>("Tarr");
+            SlimeDefinition tarr = Get<SlimeDefinition>("Tarr");/*
             slimeOne.Diet.EatMap.Add(CreateEatmap(SlimeEmotions.Emotion.AGITATION, 0.5f, null, 
                slimeTwo.Diet.ProduceIdents[0],slimedef));
             slimeTwo.Diet.EatMap.Add(CreateEatmap(SlimeEmotions.Emotion.AGITATION, 0.5f, null, 
@@ -411,7 +412,7 @@ namespace SR2E.Library
                 entry.BecomesIdent = tarr;
             
             slimedef.SetProduceIdent(slimeOne.Diet.ProduceIdents[0],0);
-            slimedef.SetProduceIdent(slimeTwo.Diet.ProduceIdents[0],1);
+            slimedef.SetProduceIdent(slimeTwo.Diet.ProduceIdents[0],1);*/
             slimedef.RefreshEatmap();
             
             slimeDefinitions.Slimes.Add(slimedef);
