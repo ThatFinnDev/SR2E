@@ -568,6 +568,7 @@ MigrationBackup/
 
 # End of https://www.toptal.com/developers/gitignore/api/git,visualstudio
 
+.idea/
 SR2EssentialsMod/Output
 SR2EssentialsMod/Libs/MelonLoader.dll
 SR2EssentialsMod//packages/LavaGang.MelonLoader.0.6.1

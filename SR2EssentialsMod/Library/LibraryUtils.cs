@@ -21,6 +21,8 @@ namespace SR2E.Library
 {
     public static class LibraryUtils
     {
+        public static WeatherStateDefinition[] weatherStateDefinitions => Resources.FindObjectsOfTypeAll<WeatherStateDefinition>();
+        
         internal static List<SR2EMod> mods = new List<SR2EMod>();
 
 
@@ -46,7 +48,6 @@ namespace SR2E.Library
         public static SystemContext systemContext => SystemContext.Instance;
         public static GameContext gameContext => GameContext.Instance;  
         public static SceneContext sceneContext => SceneContext.Instance;
-        
         
         public static SlimeDefinition CreateSlimeDef(string Name, Color32 VacColor, Sprite Icon, SlimeAppearance baseAppearance, string appearanceName, string RefID)
         {
@@ -426,6 +427,20 @@ namespace SR2E.Library
             INTERNAL_SetupSaveForIdent(slimedef.referenceId, slimedef);
             return slimedef;
         }
+        
+        public static WeatherStateDefinition getWeatherStateByName(string name)
+        {
+            foreach (WeatherStateDefinition state in weatherStateDefinitions)
+                try
+                {
+                    if (state.name.ToUpper().Replace(" ", "") == name.ToUpper())
+                        return state;
+                }
+                catch (System.Exception ignored)
+                { }
+            return null;
+        }
+        
         public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector.weatherStates.items.ToArray();
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
