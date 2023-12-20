@@ -95,7 +95,268 @@ namespace SR2E.Library
             slimedef.properties = Get<SlimeDefinition>("Pink").properties;
             return slimedef;
         }
-        public static SlimeDefinition CreateCompleteLargo(SlimeDefinition slimeOne, SlimeDefinition slimeTwo)
+
+
+
+        public static Il2CppReferenceArray<SlimeAppearanceStructure> MergeStructures(SlimeAppearance slime1, SlimeAppearance slime2, LargoSettings settings)
+        {
+            var newStructures = new List<SlimeAppearanceStructure>(0);
+            SlimeAppearance.Palette firstColor = slime1._colorPalette;
+            SlimeAppearance.Palette secondColor = slime2._colorPalette;
+            foreach (var structure in slime1.Structures)
+            {
+                if (structure.Element.Type == SlimeAppearanceElement.ElementType.FACE || structure.Element.Type == SlimeAppearanceElement.ElementType.FACE_ATTACH)
+                {
+                    if ((settings & LargoSettings.KeepFirstFace) != 0)
+                    {
+                        if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
+                        {
+                            var newStructure = new SlimeAppearanceStructure(structure);
+                            newStructures.Add(newStructure);
+                            var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                            structure.DefaultMaterials[0] = mat;
+
+                            try
+                            {
+                                if ((settings & LargoSettings.KeepFirstColor) != 0)
+                                {
+                                    mat.SetColor("_TopColor", firstColor.Top);
+                                    mat.SetColor("_MiddleColor", firstColor.Middle);
+                                    mat.SetColor("_BottomColor", firstColor.Bottom);
+                                    mat.SetColor("_SpecColor", firstColor.Middle);
+                                }
+                                else if ((settings & LargoSettings.KeepSecondColor) != 0)
+                                {
+                                    mat.SetColor("_TopColor", secondColor.Top);
+                                    mat.SetColor("_MiddleColor", secondColor.Middle);
+                                    mat.SetColor("_BottomColor", secondColor.Bottom);
+                                    mat.SetColor("_SpecColor", secondColor.Middle);
+                                }
+                                else if ((settings & LargoSettings.MergeColors) != 0)
+                                {
+                                    var top = Color.Lerp(firstColor.Top, secondColor.Top, 0.5f);
+                                    var middle = Color.Lerp(firstColor.Middle, secondColor.Middle, 0.5f);
+                                    var bottom = Color.Lerp(firstColor.Bottom, secondColor.Bottom, 0.5f);
+                                    mat.SetColor("_TopColor", top);
+                                    mat.SetColor("_MiddleColor", middle);
+                                    mat.SetColor("_BottomColor", bottom);
+                                    mat.SetColor("_SpecColor", middle);
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                }
+                else if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                {
+                    if ((settings & LargoSettings.KeepFirstBody) != 0)
+                    {
+                        if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
+                        {
+                            var newStructure = new SlimeAppearanceStructure(structure);
+                            newStructures.Add(newStructure);
+                            var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                            structure.DefaultMaterials[0] = mat;
+
+                            try
+                            {
+                                if ((settings & LargoSettings.KeepFirstColor) != 0)
+                                {
+                                    mat.SetColor("_TopColor", firstColor.Top);
+                                    mat.SetColor("_MiddleColor", firstColor.Middle);
+                                    mat.SetColor("_BottomColor", firstColor.Bottom);
+                                    mat.SetColor("_SpecColor", firstColor.Middle);
+                                }
+                                else if ((settings & LargoSettings.KeepSecondColor) != 0)
+                                {
+                                    mat.SetColor("_TopColor", secondColor.Top);
+                                    mat.SetColor("_MiddleColor", secondColor.Middle);
+                                    mat.SetColor("_BottomColor", secondColor.Bottom);
+                                    mat.SetColor("_SpecColor", secondColor.Middle);
+                                }
+                                else if ((settings & LargoSettings.MergeColors) != 0)
+                                {
+                                    var top = Color.Lerp(firstColor.Top, secondColor.Top, 0.5f);
+                                    var middle = Color.Lerp(firstColor.Middle, secondColor.Middle, 0.5f);
+                                    var bottom = Color.Lerp(firstColor.Bottom, secondColor.Bottom, 0.5f);
+                                    mat.SetColor("_TopColor", top);
+                                    mat.SetColor("_MiddleColor", middle);
+                                    mat.SetColor("_BottomColor", bottom);
+                                    mat.SetColor("_SpecColor", middle);
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                }
+                else
+                    if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
+                {
+                    var newStructure = new SlimeAppearanceStructure(structure);
+                    newStructures.Add(newStructure);
+                    var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                    structure.DefaultMaterials[0] = mat;
+                    try
+                    {
+                        if ((settings & LargoSettings.KeepFirstColor) != 0)
+                        {
+                            mat.SetColor("_TopColor", firstColor.Top);
+                            mat.SetColor("_MiddleColor", firstColor.Middle);
+                            mat.SetColor("_BottomColor", firstColor.Bottom);
+                            mat.SetColor("_SpecColor", firstColor.Middle);
+                        }
+                        else if ((settings & LargoSettings.KeepSecondColor) != 0)
+                        {
+                            mat.SetColor("_TopColor", secondColor.Top);
+                            mat.SetColor("_MiddleColor", secondColor.Middle);
+                            mat.SetColor("_BottomColor", secondColor.Bottom);
+                            mat.SetColor("_SpecColor", secondColor.Middle);
+                        }
+                        else if ((settings & LargoSettings.MergeColors) != 0)
+                        {
+                            var top = Color.Lerp(firstColor.Top, secondColor.Top, 0.5f);
+                            var middle = Color.Lerp(firstColor.Middle, secondColor.Middle, 0.5f);
+                            var bottom = Color.Lerp(firstColor.Bottom, secondColor.Bottom, 0.5f);
+                            mat.SetColor("_TopColor", top);
+                            mat.SetColor("_MiddleColor", middle);
+                            mat.SetColor("_BottomColor", bottom);
+                            mat.SetColor("_SpecColor", middle);
+                        }
+                    }
+                    catch { }
+                }
+            }
+            foreach (var structure in slime2.Structures)
+            {
+                if (structure.Element.Type == SlimeAppearanceElement.ElementType.FACE || structure.Element.Type == SlimeAppearanceElement.ElementType.FACE_ATTACH)
+                {
+                    if ((settings & LargoSettings.KeepSecondFace) != 0)
+                    {
+                        if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
+                        {
+                            var newStructure = new SlimeAppearanceStructure(structure);
+                            newStructures.Add(newStructure);
+                            var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                            structure.DefaultMaterials[0] = mat;
+
+                            try
+                            {
+                                if ((settings & LargoSettings.KeepFirstColor) != 0)
+                                {
+                                    mat.SetColor("_TopColor", firstColor.Top);
+                                    mat.SetColor("_MiddleColor", firstColor.Middle);
+                                    mat.SetColor("_BottomColor", firstColor.Bottom);
+                                    mat.SetColor("_SpecColor", firstColor.Middle);
+                                }
+                                else if ((settings & LargoSettings.KeepSecondColor) != 0)
+                                {
+                                    mat.SetColor("_TopColor", secondColor.Top);
+                                    mat.SetColor("_MiddleColor", secondColor.Middle);
+                                    mat.SetColor("_BottomColor", secondColor.Bottom);
+                                    mat.SetColor("_SpecColor", secondColor.Middle);
+                                }
+                                else if ((settings & LargoSettings.MergeColors) != 0)
+                                {
+                                    var top = Color.Lerp(firstColor.Top, secondColor.Top, 0.5f);
+                                    var middle = Color.Lerp(firstColor.Middle, secondColor.Middle, 0.5f);
+                                    var bottom = Color.Lerp(firstColor.Bottom, secondColor.Bottom, 0.5f);
+                                    mat.SetColor("_TopColor", top);
+                                    mat.SetColor("_MiddleColor", middle);
+                                    mat.SetColor("_BottomColor", bottom);
+                                    mat.SetColor("_SpecColor", middle);
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                }
+                else if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                {
+                    if ((settings & LargoSettings.KeepSecondBody) != 0)
+                    {
+                        if (!newStructures.Contains(structure))
+                        {
+                            var newStructure = new SlimeAppearanceStructure(structure);
+                            newStructures.Add(newStructure);
+                            var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                            structure.DefaultMaterials[0] = mat;
+
+                            try
+                            {
+                                if ((settings & LargoSettings.KeepFirstColor) != 0)
+                                {
+                                    mat.SetColor("_TopColor", firstColor.Top);
+                                    mat.SetColor("_MiddleColor", firstColor.Middle);
+                                    mat.SetColor("_BottomColor", firstColor.Bottom);
+                                    mat.SetColor("_SpecColor", firstColor.Middle);
+                                }
+                                else if ((settings & LargoSettings.KeepSecondColor) != 0)
+                                {
+                                    mat.SetColor("_TopColor", secondColor.Top);
+                                    mat.SetColor("_MiddleColor", secondColor.Middle);
+                                    mat.SetColor("_BottomColor", secondColor.Bottom);
+                                    mat.SetColor("_SpecColor", secondColor.Middle);
+                                }
+                                else if ((settings & LargoSettings.MergeColors) != 0)
+                                {
+                                    var top = Color.Lerp(firstColor.Top, secondColor.Top, 0.5f);
+                                    var middle = Color.Lerp(firstColor.Middle, secondColor.Middle, 0.5f);
+                                    var bottom = Color.Lerp(firstColor.Bottom, secondColor.Bottom, 0.5f);
+                                    mat.SetColor("_TopColor", top);
+                                    mat.SetColor("_MiddleColor", middle);
+                                    mat.SetColor("_BottomColor", bottom);
+                                    mat.SetColor("_SpecColor", middle);
+                                }
+                            }
+                            catch { }
+                        }
+
+                    }
+                }
+                else
+                    if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
+                {
+                   
+                    var newStructure = new SlimeAppearanceStructure(structure);
+                    newStructures.Add(newStructure);
+                    var mat = Object.Instantiate(structure.DefaultMaterials[0]);
+                    structure.DefaultMaterials[0] = mat;
+                    try
+                    {
+                        if ((settings & LargoSettings.KeepFirstColor) != 0)
+                        {
+                            mat.SetColor("_TopColor", firstColor.Top);
+                            mat.SetColor("_MiddleColor", firstColor.Middle);
+                            mat.SetColor("_BottomColor", firstColor.Bottom);
+                            mat.SetColor("_SpecColor", firstColor.Middle);
+                        }
+                        else if ((settings & LargoSettings.KeepSecondColor) != 0)
+                        {
+                            mat.SetColor("_TopColor", secondColor.Top);
+                            mat.SetColor("_MiddleColor", secondColor.Middle);
+                            mat.SetColor("_BottomColor", secondColor.Bottom);
+                            mat.SetColor("_SpecColor", secondColor.Middle);
+                        }
+                        else if ((settings & LargoSettings.MergeColors) != 0)
+                        {
+                            var top = Color.Lerp(firstColor.Top, secondColor.Top, 0.5f);
+                            var middle = Color.Lerp(firstColor.Middle, secondColor.Middle, 0.5f);
+                            var bottom = Color.Lerp(firstColor.Bottom, secondColor.Bottom, 0.5f);
+                            mat.SetColor("_TopColor", top);
+                            mat.SetColor("_MiddleColor", middle);
+                            mat.SetColor("_BottomColor", bottom);
+                            mat.SetColor("_SpecColor", middle);
+                        }
+                    }
+                    catch { }
+                }
+
+
+            }
+            return new Il2CppReferenceArray<SlimeAppearanceStructure>(newStructures.ToArray());
+        }
+
+        public static SlimeDefinition CreateCompleteLargo(SlimeDefinition slimeOne, SlimeDefinition slimeTwo, LargoSettings settings)
         {
             SlimeDefinition pinkRock = Get<SlimeDefinition>("PinkRock");
             if(slimeOne.IsLargo||slimeTwo.IsLargo)
@@ -137,26 +398,9 @@ namespace SR2E.Library
             appearance.name = slimeOne.AppearancesDefault[0].name+slimeTwo.AppearancesDefault[0].name;
             
             appearance._dependentAppearances =new [] { slimeOne.AppearancesDefault[0], slimeTwo.AppearancesDefault[0] };
-            appearance._structures = HarmonyLib.CollectionExtensions.AddRangeToArray<SlimeAppearanceStructure>(slimeOne.AppearancesDefault[0]._structures.ToArray(), slimeTwo.AppearancesDefault[0]._structures.ToArray());
-            /*
-            //This is for making sure there are no duplicates, but pinkgold slimes for example, are just big pink slimes
-            appearance._structures = slimeOne.AppearancesDefault[0]._structures.ToArray();
-            for (int j = 0; j < slimeTwo.AppearancesDefault[0]._structures.Count; j++)
-            {
-                bool canAdd = true;
-                for (int i = 0; i < appearance._structures.Count; i++)
-                {
-                    if (slimeTwo.AppearancesDefault[0]._structures[j].Element.Type == appearance._structures[i].Element.Type)
-                        canAdd = false;
-                }
-
-                if (canAdd)
-                    appearance._structures.AddItem(slimeTwo.AppearancesDefault[0]._structures[j]);
-            }*/
-            
-
+            appearance._structures = MergeStructures(appearance._dependentAppearances[0], appearance._dependentAppearances[1], settings);
             slimedef.Diet=MergeDiet(slimeOne.Diet,slimeTwo.Diet);
-            SlimeDefinition tarr = Get<SlimeDefinition>("Tarr");
+            SlimeDefinition tarr = Get<SlimeDefinition>("Tarr");/*
             slimeOne.Diet.EatMap.Add(CreateEatmap(SlimeEmotions.Emotion.AGITATION, 0.5f, null, 
                slimeTwo.Diet.ProduceIdents[0],slimedef));
             slimeTwo.Diet.EatMap.Add(CreateEatmap(SlimeEmotions.Emotion.AGITATION, 0.5f, null, 
@@ -169,7 +413,7 @@ namespace SR2E.Library
                 entry.BecomesIdent = tarr;
             
             slimedef.SetProduceIdent(slimeOne.Diet.ProduceIdents[0],0);
-            slimedef.SetProduceIdent(slimeTwo.Diet.ProduceIdents[0],1);
+            slimedef.SetProduceIdent(slimeTwo.Diet.ProduceIdents[0],1);*/
             slimedef.RefreshEatmap();
             
             slimeDefinitions.Slimes.Add(slimedef);
