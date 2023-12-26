@@ -8,7 +8,7 @@
     <AssemblyName>SR2E</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>None</DebugType>
+    <DebugType>embedded</DebugType>
     <OutputPath>$(SolutionDir)Output\</OutputPath>
     <DefineConstants>
     </DefineConstants>

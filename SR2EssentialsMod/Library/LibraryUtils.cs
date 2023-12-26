@@ -114,7 +114,7 @@ namespace SR2E.Library
                             var newStructure = new SlimeAppearanceStructure(structure);
                             newStructures.Add(newStructure);
                             var mat = Object.Instantiate(structure.DefaultMaterials[0]);
-                            structure.DefaultMaterials[0] = mat;
+                            newStructure.DefaultMaterials[0] = mat;
 
                             try
                             {
@@ -156,7 +156,7 @@ namespace SR2E.Library
                             var newStructure = new SlimeAppearanceStructure(structure);
                             newStructures.Add(newStructure);
                             var mat = Object.Instantiate(structure.DefaultMaterials[0]);
-                            structure.DefaultMaterials[0] = mat;
+                            newStructure.DefaultMaterials[0] = mat;
 
                             try
                             {
@@ -189,8 +189,7 @@ namespace SR2E.Library
                         }
                     }
                 }
-                else
-                    if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
+                else if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
                 {
                     var newStructure = new SlimeAppearanceStructure(structure);
                     newStructures.Add(newStructure);
@@ -237,7 +236,7 @@ namespace SR2E.Library
                             var newStructure = new SlimeAppearanceStructure(structure);
                             newStructures.Add(newStructure);
                             var mat = Object.Instantiate(structure.DefaultMaterials[0]);
-                            structure.DefaultMaterials[0] = mat;
+                            newStructure.DefaultMaterials[0] = mat;
 
                             try
                             {
@@ -279,7 +278,7 @@ namespace SR2E.Library
                             var newStructure = new SlimeAppearanceStructure(structure);
                             newStructures.Add(newStructure);
                             var mat = Object.Instantiate(structure.DefaultMaterials[0]);
-                            structure.DefaultMaterials[0] = mat;
+                            newStructure.DefaultMaterials[0] = mat;
 
                             try
                             {
@@ -313,14 +312,13 @@ namespace SR2E.Library
 
                     }
                 }
-                else
-                    if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
+                else if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
                 {
                    
                     var newStructure = new SlimeAppearanceStructure(structure);
                     newStructures.Add(newStructure);
                     var mat = Object.Instantiate(structure.DefaultMaterials[0]);
-                    structure.DefaultMaterials[0] = mat;
+                    newStructure.DefaultMaterials[0] = mat;
                     try
                     {
                         if ((settings & LargoSettings.KeepFirstColor) != 0)
