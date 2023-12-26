@@ -9,8 +9,16 @@ namespace SR2E
     {
         internal static Dictionary<string, Warp> warps = new Dictionary<string, Warp>();
         internal static Warp warpTo = null;
-        private static string path = SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath + "SR2EssentialsWarps.warps";
-
+        private static string path
+        {
+            get
+            {
+                try
+                { return SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath + "SR2EssentialsWarps.warps"; }
+                catch
+                { return Application.persistentDataPath + "/SR2EssentialsWarps.warps"; }
+            }
+        }
         internal static void OnSceneLoaded(string sceneName)
         {
             if (SceneContext.Instance == null) { warpTo = null; return; }
