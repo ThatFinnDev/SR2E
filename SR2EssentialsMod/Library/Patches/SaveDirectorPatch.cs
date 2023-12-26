@@ -25,6 +25,7 @@ public static class SaveDirectorPatch
 
         if (SR2EEntryPoint.chaosMode)
             ChaosMode.OnSaveDirectorLoading(__instance);
+        SR2EEntryPoint.OnSaveDirectorLoading(__instance);
         foreach (SR2EMod lib in mods)
         {
             lib.SaveDirectorLoading(__instance);
@@ -32,6 +33,7 @@ public static class SaveDirectorPatch
     }
     public static void Postfix()
     {
+        SR2EEntryPoint.SaveDirectorLoaded();
         foreach (SR2EMod lib in mods)
         {
             lib.SaveDirectorLoaded();

@@ -14,13 +14,23 @@ namespace SR2E.Commands
             return null;
         }
         public override bool Execute(string[] args)
+        { 
+            return Code(args, false);
+        }
+        public override bool SilentExecute(string[] args)
+        {
+            Code(args, true);
+            return true;
+        }
+
+        public bool Code(string[] args, bool silent)
         {
             if (args != null)
             {
-                SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
+                if(!silent) SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
                 return false;
             }
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { if(!silent) SR2Console.SendError("Load a save first!"); return false; }
 
             if (infHealth)
             {
@@ -31,7 +41,7 @@ namespace SR2E.Commands
                 
                 SceneContext.Instance.PlayerState._model.maxHealth = normalHealth;
                 SceneContext.Instance.PlayerState.SetHealth(normalHealth); 
-                SR2Console.SendMessage("You're no longer invincible!");
+                if(!silent) SR2Console.SendMessage("You're no longer invincible!");
             }
             else
             {
@@ -45,7 +55,7 @@ namespace SR2E.Commands
                 
                 SceneContext.Instance.PlayerState.SetHealth(int.MaxValue); 
                 SceneContext.Instance.PlayerState._model.maxHealth = int.MaxValue;
-                SR2Console.SendMessage("You're now invincible!");
+                if(!silent) SR2Console.SendMessage("You're now invincible!");
             }
             return true;
         }

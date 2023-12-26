@@ -17,17 +17,28 @@ namespace SR2E.Commands
                 return new List<string> { "true", "false" };
             return null;
         }
+
         public override bool Execute(string[] args)
+        { 
+            return Code(args, false);
+        }
+        public override bool SilentExecute(string[] args)
+        {
+            Code(args, true);
+            return true;
+        }
+
+        public bool Code(string[] args, bool silent)
         {
             
             bool shouldDisableThrusterHeight = false;
             if (args != null)
                 if (args.Length != 1)
-                { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+                { if(!silent) SR2Console.SendMessage($"Usage: {Usage}"); return false; }
                 else
                     shouldDisableThrusterHeight = (args[0].ToLower() == "true");
                 
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { if(!silent) SR2Console.SendError("Load a save first!"); return false; }
 
             if (infEnergy)
             {
@@ -44,7 +55,7 @@ namespace SR2E.Commands
 
                 energyMeter.maxEnergy = new NullableFloatProperty(normalEnergy);
                 SceneContext.Instance.PlayerState.SetEnergy(0);
-                SR2Console.SendMessage("Energy is no longer infinite");
+                if(!silent) SR2Console.SendMessage("Energy is no longer infinite");
             }
             else
             {
@@ -67,13 +78,13 @@ namespace SR2E.Commands
                 SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue); 
                 normalEnergy = energyMeter.maxEnergy;
                 energyMeter.maxEnergy = new NullableFloatProperty(2.14748365E+09f);
-                SR2Console.SendMessage("Energy is now infinite");
+                if(!silent) SR2Console.SendMessage("Energy is now infinite");
             }
 
            
             return true;
         }
-
+    
         public override void Update()
         {
             if (infEnergy)

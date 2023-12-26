@@ -74,11 +74,11 @@ internal class ChaosMode
 
     }*/
 
-    public static LargoSettings pinkGoldSettings = LargoSettings.KeepFirstFace | LargoSettings.KeepSecondBody | LargoSettings.KeepFirstColor;
+    public static LargoSettings pinkGoldSettings = LargoSettings.KeepFirstFace | LargoSettings.KeepFirstBody | LargoSettings.KeepSecondColor;
 
     internal static void OnSaveDirectorLoading(AutoSaveDirector saveDirector)
     {
-        CreateCompleteLargo(GetSlime("Pink"), GetSlime("Gold"), pinkGoldSettings);
+        CreateCompleteLargo(GetSlime("Gold"), GetSlime("Pink"), pinkGoldSettings);
     }
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
