@@ -24,12 +24,14 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.0.1"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.1.0"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
     public class SR2EEntryPoint : MelonMod
     {
+        public static bool mSRMLIsInstalled => _mSRMLIsInstalled;
+        internal static bool _mSRMLIsInstalled = false;
         internal static SR2EEntryPoint instance;
         internal static TMP_FontAsset SR2Font;
         internal static bool infEnergyInstalled = false;
@@ -68,6 +70,7 @@ namespace SR2E
         internal static bool devMode { get { return prefs.GetEntry<bool>("experimentalStuff").Value; } }
         internal static bool chaosMode { get { return prefs.GetEntry<bool>("chaosMode").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
+        internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
 
         internal static void RefreshPrefs()
         {
@@ -82,6 +85,12 @@ namespace SR2E
                     {
                         SetupFonts(); 
                     }));
+            
+            
+            if (!prefs.HasEntry("enableDebugDirector"))
+                prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable Debug Menu", false).disableWarning((System.Action)(
+                    () => { SrDebugDirector.isEnabled = enableDebugDirector; }));
+            
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false).disableWarning((System.Action)(
                     () =>
@@ -149,6 +158,9 @@ namespace SR2E
                     case "InfiniteHealth":
                         infHealthInstalled = true;
                         break;
+                    case "mSRML":
+                        _mSRMLIsInstalled = true;
+                        break;
                 }
         }
 
@@ -212,16 +224,6 @@ namespace SR2E
                     prompt.OnInteract(new InputAction.CallbackContext());
                     break;
                 case "GameCore":
-
-                    LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
-                    LocalizedString label2 = AddTranslation("Debug Log Player", "b.debug_player_sr2e", "UI");
-                    new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2ModMenu.Open(); }));
-                    if (devMode)
-                        new CustomPauseMenuButton( label2, 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
-                    new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
-                    
-                    
-                    
                     killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
@@ -233,6 +235,8 @@ namespace SR2E
                     break;
                 case "UICore":
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
+                    if(SceneContext.Instance.Player.GetComponent<SrDebugDirector>()==null)
+                        SceneContext.Instance.Player.AddComponent<SrDebugDirector>();
                     break;
                 case "zoneCore":
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
@@ -278,6 +282,19 @@ namespace SR2E
             
         }
 
+        internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
+        {
+            }
+
+        internal static void SaveDirectorLoaded()
+        {
+            LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
+            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2ModMenu.Open(); }));
+            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
+            
+            if (devMode) new CustomPauseMenuButton( AddTranslation("Debug Player", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
+
+        }
         public override void OnSceneWasInitialized(int buildindex, string sceneName)
         {
             switch (sceneName)
@@ -347,7 +364,6 @@ namespace SR2E
                     SR2Console.Start();
                 }
             }
-
             SR2Console.Update();
             if(devMode)
                 LibraryDebug.Update();
