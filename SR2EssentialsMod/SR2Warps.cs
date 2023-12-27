@@ -13,10 +13,9 @@ namespace SR2E
         {
             get
             {
-                try
-                { return SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath + "SR2EssentialsWarps.warps"; }
-                catch
-                { return Application.persistentDataPath + "/SR2EssentialsWarps.warps"; }
+                FileStorageProvider provider = SystemContext.Instance.GetStorageProvider().TryCast<FileStorageProvider>();
+                if (provider==null) return Application.persistentDataPath + "/SR2EssentialsWarps.warps";
+                return provider.savePath + "SR2EssentialsWarps.warps";
             }
         }
         internal static void OnSceneLoaded(string sceneName)

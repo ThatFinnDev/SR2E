@@ -9,10 +9,9 @@ namespace SR2E
         {
             get
             {
-                try
-                { return SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath + oldPath; }
-                catch
-                { return Application.persistentDataPath + "/" +oldPath; }
+                FileStorageProvider provider = SystemContext.Instance.GetStorageProvider().TryCast<FileStorageProvider>();
+                if (provider==null) return Application.persistentDataPath + "/" +oldPath;
+                return provider.savePath + oldPath;
             }
         }
             
