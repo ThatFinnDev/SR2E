@@ -6,6 +6,7 @@
     <RootNamespace>SR2E</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>SR2E</AssemblyName>
+    <Configurations>Debug;Release;Development</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>embedded</DebugType>
@@ -13,6 +14,9 @@
     <DefineConstants>
     </DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
+    <DefineConstants>$(DefineConstants);DEV</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="srtwoessentials.assetbundle" />
