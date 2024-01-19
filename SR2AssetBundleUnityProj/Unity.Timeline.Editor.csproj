@@ -62,8 +62,8 @@
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\treeview\Control.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Undo\ApplyDefaultUndoAttribute.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Actions\Invoker.cs" />
-    <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Manipulators\Utils\EditModeRippleUtils.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\CustomEditors\CustomTimelineEditorCache.cs" />
+    <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Manipulators\Utils\EditModeRippleUtils.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Actions\MarkerAction.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Manipulators\Utils\EditModeMixUtils.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Manipulators\Sequence\TrackZoom.cs" />
@@ -258,8 +258,8 @@
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Manipulators\Utils\ManipulatorsUtils.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Extensions\AnimationTrackExtensions.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Window\WindowConstants.cs" />
-    <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\treeview\Snapping\ISnappable.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Manipulators\EditMode.cs" />
+    <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\treeview\Snapping\ISnappable.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\treeview\TimelineDataSource.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\Animation\AnimationOffsetMenu.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.6.5\Editor\CustomEditors\MarkerEditor.cs" />
