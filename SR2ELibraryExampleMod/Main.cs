@@ -52,7 +52,7 @@ namespace VirtualSlime
         public static Color32 vacColor_byte = new Color32(199, 43, 255, 255);
         public static Color32 topColor_byte = new Color32(168, 52, 235, 255);
         public static Color32 middleColor_byte = new Color32(145, 23, 207, 255);
-        public static Color32 bottomColor_byte = new Color32(18, 1, 48);
+        public static Color32 bottomColor_byte = new Color32(18, 1, 48, 255);
         public static GameObject slimePrefab_byte;
         public static GameObject plortPrefab_byte;
         public static SlimeDefinition slimeDefinition_byte;
