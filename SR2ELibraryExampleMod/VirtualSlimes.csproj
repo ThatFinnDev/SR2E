@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>VirtualSlimes</AssemblyName>
     <RootNamespace>VirtualSlime</RootNamespace>
+    <Configurations>Debug;Release;Development</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
