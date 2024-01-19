@@ -10,4 +10,5 @@ public enum VacModes
     NORMAL,
     DRAG,
     NONE,
+    LAUNCH,
 }

@@ -3,6 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using System;
 using SR2E.Saving;
 using System.Linq;
+using SR2E.Library;
 
 namespace SR2E.Commands
 {
@@ -371,18 +372,21 @@ namespace SR2E.Commands
             {
                 SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
                 SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }
             else if (mode == VacModes.AUTO_VAC)
             {
                 SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
                 SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.VAC;
+                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }
             else if (mode == VacModes.AUTO_SHOOT)
             {
                 SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
                 SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.SHOOT;
+                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }
             else if (mode == VacModes.NONE)
@@ -392,6 +396,7 @@ namespace SR2E.Commands
                 MelonCoroutines.Start(waitForSeconds(1.5f));
 
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
             }
             else if (mode == VacModes.DRAG)
@@ -401,7 +406,18 @@ namespace SR2E.Commands
                 MelonCoroutines.Start(waitForSeconds(1.5f));
 
                 SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
+                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>();
+            }
+            else if (mode == VacModes.LAUNCH)
+            {
+                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+
+                MelonCoroutines.Start(waitForSeconds(1.5f));
+
+                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
+                SceneContext.Instance.Camera.AddComponent<FlingMode>();
+                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }
             SR2ESavableData.Instance.playerSavedData.vacMode = mode;
         }

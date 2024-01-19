@@ -15,6 +15,7 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
 using SR2E.Library.Buttons;
+using SR2E.Library.SaveExplorer;
 
 namespace SR2E
 {
@@ -38,6 +39,9 @@ namespace SR2E
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         internal static bool mainMenuLoaded = false;
+
+        internal static AssetBundle bundle;
+
         internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType getIdentifiableByName(string name)
         {
@@ -185,7 +189,7 @@ namespace SR2E
                     while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
                         ms.Write(buffer, 0, read);
 
-                    AssetBundle bundle = AssetBundle.LoadFromMemory(ms.ToArray());
+                    bundle = AssetBundle.LoadFromMemory(ms.ToArray());
                     foreach (var obj in bundle.LoadAllAssets())
                         if (obj != null)
                             if (obj.name == "AllMightyMenus")
@@ -237,6 +241,9 @@ namespace SR2E
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
                     if(SceneContext.Instance.Player.GetComponent<SrDebugDirector>()==null)
                         SceneContext.Instance.Player.AddComponent<SrDebugDirector>();
+
+                    var obj2 = Object.Instantiate(bundle.LoadAsset("assets/SaveExplorer.prefab"));
+                    obj2.Cast<GameObject>().AddComponent<SaveExplorerRoot>();
                     break;
                 case "zoneCore":
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)

@@ -16,6 +16,23 @@ public class ObjectBlocker : MonoBehaviour
         Destroy(gameObject);
     }
 }
+
+[RegisterTypeInIl2Cpp]
+public class FlingMode : MonoBehaviour
+{
+    public void Update()
+    {
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            SR2Console.ExecuteByString("fling 100");
+        }
+        else if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            SR2Console.ExecuteByString("fling -100");
+        }
+    }
+}
+
 [RegisterTypeInIl2Cpp]
 public class CustomMainMenuButtonPressHandler : MonoBehaviour
 {
