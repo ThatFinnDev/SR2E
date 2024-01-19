@@ -515,7 +515,7 @@ namespace SR2E
             RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
-            if (SR2EEntryPoint.devMode) RegisterCommands(new SR2CCommand[] { new AddToGroupCommand(), new RemoveFromGroupCommand() , new RefreshEatmapCommand(), new LoadAllIdentsCommand() });
+            if (SR2EEntryPoint.devMode) RegisterCommands(new SR2CCommand[] { new AddToGroupCommand(), new RemoveFromGroupCommand() , new RefreshEatmapCommand(), });
             if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InvincibleCommand());
             if (!SR2EEntryPoint.infEnergyInstalled) RegisterCommand(new InfiniteEnergyCommand());
             if (SR2EEntryPoint.chaosMode) RegisterCommands(new SR2CCommand[] { new FastModeCommand() });
