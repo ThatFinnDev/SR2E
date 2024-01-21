@@ -1,13 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.World;
-using SR2E.Library;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
 
-namespace SR2E.Commands.Secret
+namespace SR2E.Commands
 {
     internal class StrikeCommand : SR2CCommand
     {
