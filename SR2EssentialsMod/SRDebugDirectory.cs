@@ -2,7 +2,7 @@
 
 namespace SR2E;
 
-[RegisterTypeInIl2Cpp]
+[RegisterTypeInIl2Cpp(false)]
 public class SrDebugDirector : MonoBehaviour
 {
 	public static bool isEnabled;

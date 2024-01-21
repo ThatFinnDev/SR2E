@@ -2,7 +2,7 @@ using Il2CppMonomiPark.SlimeRancher.DataModel;
 
 namespace SR2E.Saving;
 
-[RegisterTypeInIl2Cpp]
+[RegisterTypeInIl2Cpp(false)]
 public class SR2EGadgetDataSaver : MonoBehaviour
 {
     public void SaveData()
