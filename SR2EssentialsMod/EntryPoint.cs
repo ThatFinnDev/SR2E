@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Il2CppSystem.IO;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -46,21 +48,14 @@ namespace SR2E
         internal static IdentifiableType getIdentifiableByName(string name)
         {
             foreach (IdentifiableType type in identifiableTypes)
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
+                if (type.name.ToUpper() == name.ToUpper()) return type;
             return null;
         }
         internal static IdentifiableType getIdentifiableByLocalizedName(string name)
         {
-            foreach (IdentifiableType type in identifiableTypes)
-                try
-                {
-                    if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == name.ToUpper())
-                        return type;
-                }
-                catch (System.Exception ignored)
-                {}
-            
+            foreach (IdentifiableType type in identifiableTypes) 
+                try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == name.ToUpper()) return type; }
+                catch {}
             return null;
         }
         internal static MelonPreferences_Category prefs;
@@ -72,6 +67,7 @@ namespace SR2E
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
         internal static bool devMode { get { return prefs.GetEntry<bool>("experimentalStuff").Value; } }
+        internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
         internal static bool chaosMode { get { return prefs.GetEntry<bool>("chaosMode").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
@@ -89,7 +85,9 @@ namespace SR2E
                     {
                         SetupFonts(); 
                     }));
-            
+
+            if (!prefs.HasEntry("showUnityErrors"))
+                prefs.CreateEntry("showUnityErrors", (bool)false, "Shows unity errors in the console", true);
             
             if (!prefs.HasEntry("enableDebugDirector"))
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable Debug Menu", false).disableWarning((System.Action)(
@@ -145,11 +143,44 @@ namespace SR2E
                 Object.DontDestroyOnLoad(rootOBJ);
             }
         }
+        //Logging code from KomiksPL
+        private static void AppLogUnity(string message, string trace, LogType type)
+        {
+            if (message.Equals(string.Empty))
+                return;
+
+            string toDisplay = message;
+            if (!trace.Equals(string.Empty))
+                toDisplay += "\n" + trace;
+            toDisplay = Regex.Replace(toDisplay, @"\[INFO]\s|\[ERROR]\s|\[WARNING]\s", "");
+
+            switch (type)
+            {
+                case LogType.Assert:
+                    MelonLogger.Error("[Unity] "+toDisplay);
+                    break;
+                case LogType.Exception:
+                    MelonLogger.Error("[Unity] "+toDisplay+trace);
+                    break;
+                case LogType.Log:
+                    MelonLogger.Msg("[Unity] "+toDisplay);
+                    break;
+                case LogType.Error:
+                    MelonLogger.Error("[Unity] "+toDisplay+trace);
+                    break;
+                case LogType.Warning:
+                    MelonLogger.Warning("[Unity] "+toDisplay);
+                    break;
+            }
+        }
         public override void OnInitializeMelon()
         {
             instance = this;
             prefs = MelonPreferences.CreateCategory("SR2Essentials","SR2Essentials");
             RefreshPrefs();
+            if (showUnityErrors)
+                Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
+            
             string path = Path.Combine(MelonEnvironment.ModsDirectory, "SR2EssentialsMod.dll");
             if (File.Exists(path))
                 throwErrors = true;
