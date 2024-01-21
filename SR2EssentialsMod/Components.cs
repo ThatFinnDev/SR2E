@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 namespace SR2E;
 
-[RegisterTypeInIl2Cpp]
+[RegisterTypeInIl2Cpp(false)]
 public class ObjectBlocker : MonoBehaviour
 {
     public void Start()
@@ -17,7 +17,7 @@ public class ObjectBlocker : MonoBehaviour
     }
 }
 
-[RegisterTypeInIl2Cpp]
+[RegisterTypeInIl2Cpp(false)]
 public class FlingMode : MonoBehaviour
 {
     public void Update()
@@ -33,7 +33,7 @@ public class FlingMode : MonoBehaviour
     }
 }
 
-[RegisterTypeInIl2Cpp]
+[RegisterTypeInIl2Cpp(false)]
 public class CustomMainMenuButtonPressHandler : MonoBehaviour
 {
     public void OnEnable()
@@ -52,7 +52,7 @@ public class CustomMainMenuButtonPressHandler : MonoBehaviour
 /// 
 /// Currently bugged...
 /// </summary>
-[RegisterTypeInIl2Cpp]
+[RegisterTypeInIl2Cpp(false)]
 public class IdentifiableObjectDragger : MonoBehaviour
 {
     public GameObject draggedObject;
@@ -111,7 +111,7 @@ public class IdentifiableObjectDragger : MonoBehaviour
         }
     }
 }
-[RegisterTypeInIl2Cpp]
+[RegisterTypeInIl2Cpp(false)]
 public class NoclipComponent : MonoBehaviour
 {
     public float baseSpeed = 15f;
