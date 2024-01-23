@@ -41,7 +41,6 @@ namespace SR2E.Library.SaveExplorer
 
         public void Update()
         {
-            return;
             if (Keyboard.current.f10Key.wasPressedThisFrame)
             {
                 transform.GetChild(0).gameObject.SetActive(!transform.GetChild(0).gameObject.active);
