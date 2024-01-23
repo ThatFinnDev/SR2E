@@ -17,7 +17,7 @@ public class ClearInventoryCommand : SR2CCommand
         if (args != null)
         { SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
 
-        if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+        if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
         foreach (Ammo.Slot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
             slot.Clear();
@@ -28,7 +28,7 @@ public class ClearInventoryCommand : SR2CCommand
 
     public override bool SilentExecute(string[] args)
     {
-        if (!SR2EUtils.inGame) return true;
+        if (!inGame) return true;
         foreach (Ammo.Slot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
             slot.Clear();
         return true;

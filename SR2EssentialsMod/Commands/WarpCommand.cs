@@ -27,7 +27,7 @@ namespace SR2E.Commands
         {
             if (args == null) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
             if (args.Length != 1) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
             
             string name = args[0];
             if (!SR2Warps.warps.ContainsKey(name))
@@ -71,7 +71,7 @@ namespace SR2E.Commands
 
                                 if (prefab != null)
                                 {
-                                    GameObject teleporterCollider = SR2EUtils.getObjRec<GadgetTeleporterNode>(prefab.transform, "Teleport Collider").gameObject;
+                                    GameObject teleporterCollider = prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject;
                                     GameObject obj = GameObject.Instantiate(teleporterCollider, SceneContext.Instance.Player.transform.position, Quaternion.identity);
                                     obj.SetActive(true);
                                     obj.GetComponent<StaticTeleporterNode>()._hasDestination = true;

@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Il2CppSystem.IO;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -15,6 +17,7 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
 using SR2E.Library.Buttons;
+using SR2E.Library.SaveExplorer;
 
 namespace SR2E
 {
@@ -24,37 +27,35 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.0.1"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.1.0"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
     public class SR2EEntryPoint : MelonMod
     {
+        public static bool mSRMLIsInstalled => _mSRMLIsInstalled;
+        internal static bool _mSRMLIsInstalled = false;
         internal static SR2EEntryPoint instance;
         internal static TMP_FontAsset SR2Font;
         internal static bool infEnergyInstalled = false;
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         internal static bool mainMenuLoaded = false;
+
+        internal static AssetBundle bundle;
+
         internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType getIdentifiableByName(string name)
         {
             foreach (IdentifiableType type in identifiableTypes)
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
+                if (type.name.ToUpper() == name.ToUpper()) return type;
             return null;
         }
         internal static IdentifiableType getIdentifiableByLocalizedName(string name)
         {
-            foreach (IdentifiableType type in identifiableTypes)
-                try
-                {
-                    if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == name.ToUpper())
-                        return type;
-                }
-                catch (System.Exception ignored)
-                {}
-            
+            foreach (IdentifiableType type in identifiableTypes) 
+                try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == name.ToUpper()) return type; }
+                catch {}
             return null;
         }
         internal static MelonPreferences_Category prefs;
@@ -66,8 +67,10 @@ namespace SR2E
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
         internal static bool devMode { get { return prefs.GetEntry<bool>("experimentalStuff").Value; } }
+        internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
         internal static bool chaosMode { get { return prefs.GetEntry<bool>("chaosMode").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
+        internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
 
         internal static void RefreshPrefs()
         {
@@ -82,6 +85,14 @@ namespace SR2E
                     {
                         SetupFonts(); 
                     }));
+
+            if (!prefs.HasEntry("showUnityErrors"))
+                prefs.CreateEntry("showUnityErrors", (bool)false, "Shows unity errors in the console", true);
+            
+            if (!prefs.HasEntry("enableDebugDirector"))
+                prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable Debug Menu", false).disableWarning((System.Action)(
+                    () => { SrDebugDirector.isEnabled = enableDebugDirector; }));
+            
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false).disableWarning((System.Action)(
                     () =>
@@ -132,19 +143,47 @@ namespace SR2E
                 Object.DontDestroyOnLoad(rootOBJ);
             }
         }
+        //Logging code from KomiksPL
+        private static void AppLogUnity(string message, string trace, LogType type)
+        {
+            if (message.Equals(string.Empty))
+                return;
+
+            string toDisplay = message;
+            if (!trace.Equals(string.Empty))
+                toDisplay += "\n" + trace;
+            toDisplay = Regex.Replace(toDisplay, @"\[INFO]\s|\[ERROR]\s|\[WARNING]\s", "");
+
+            switch (type)
+            {
+                case LogType.Assert:
+                    MelonLogger.Error("[Unity] "+toDisplay);
+                    break;
+                case LogType.Exception:
+                    MelonLogger.Error("[Unity] "+toDisplay+trace);
+                    break;
+                case LogType.Log:
+                    MelonLogger.Msg("[Unity] "+toDisplay);
+                    break;
+                case LogType.Error:
+                    MelonLogger.Error("[Unity] "+toDisplay+trace);
+                    break;
+                case LogType.Warning:
+                    MelonLogger.Warning("[Unity] "+toDisplay);
+                    break;
+            }
+        }
         public override void OnInitializeMelon()
         {
             instance = this;
             prefs = MelonPreferences.CreateCategory("SR2Essentials","SR2Essentials");
-            ClassInjector.RegisterTypeInIl2Cpp<SR2ESlimeDataSaver>();
-            ClassInjector.RegisterTypeInIl2Cpp<SR2EGordoDataSaver>();
-            ClassInjector.RegisterTypeInIl2Cpp<CustomMainMenuButtonPressHandler>();
             RefreshPrefs();
+            if (showUnityErrors)
+                Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
+            
             string path = Path.Combine(MelonEnvironment.ModsDirectory, "SR2EssentialsMod.dll");
             if (File.Exists(path))
-            {
                 throwErrors = true;
-            }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)
                 {
@@ -154,8 +193,10 @@ namespace SR2E
                     case "InfiniteHealth":
                         infHealthInstalled = true;
                         break;
+                    case "mSRML":
+                        _mSRMLIsInstalled = true;
+                        break;
                 }
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(CustomPauseItemModel));
         }
 
         public override void OnApplicationQuit()
@@ -179,7 +220,7 @@ namespace SR2E
                     while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
                         ms.Write(buffer, 0, read);
 
-                    AssetBundle bundle = AssetBundle.LoadFromMemory(ms.ToArray());
+                    bundle = AssetBundle.LoadFromMemory(ms.ToArray());
                     foreach (var obj in bundle.LoadAllAssets())
                         if (obj != null)
                             if (obj.name == "AllMightyMenus")
@@ -188,11 +229,12 @@ namespace SR2E
                                 if (skipEngagementPrompt)
                                 {
 
-                                    var logoImage = SR2EUtils.Get<AssetBundle>("56edcc1f1a2084c913ac2ec89d09b725.bundle").LoadAsset("Assets/UI/Textures/MainMenu/logoSR2.png").Cast<Texture2D>();
+                                    var logoImage = Get<AssetBundle>("56edcc1f1a2084c913ac2ec89d09b725.bundle").LoadAsset("Assets/UI/Textures/MainMenu/logoSR2.png").Cast<Texture2D>();
                                     var logoSprite = Sprite.Create(logoImage, new Rect(0f, 0f, logoImage.width, logoImage.height), new Vector2(0.5f, 0.5f), 1f);
 
-                                    SR2EUtils.Get<GameObject>("EngagementSkipMessage").SetActive(true);
-                                    SR2EUtils.Get<GameObject>("EngagementSkipMessage").getObjRec<Image>("logo").sprite = logoSprite;
+                                    GameObject skipMessage = Get<GameObject>("EngagementSkipMessage");
+                                    skipMessage.SetActive(true);
+                                    skipMessage.getObjRec<Image>("logo").sprite = logoSprite;
                                 }
                             }
                     
@@ -217,80 +259,49 @@ namespace SR2E
                     prompt.OnInteract(new InputAction.CallbackContext());
                     break;
                 case "GameCore":
-
-                    LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
-                    LocalizedString label2 = AddTranslation("Debug Log Player", "b.debug_player_sr2e", "UI");
-                    LocalizedString label3 = AddTranslation("Teleport", "b.button_teleport_sr2e", "UI");
-                    new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
-                        (System.Action)(() =>
-                        {
-                            SR2ModMenu.Open();
-                        }));
-
-                    if (devMode)
-                    {
-                        new CustomPauseMenuButton( label2, 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
-                    }
-                    new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
-                    
-                    
-                    
-                    killDamage = new Damage
-                    {
-                        Amount = 99999999,
-                        DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
-                    };
+                    killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
                     autoSaveDirector.saveSlotCount = 50;
                     
                     
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                        if (baseMelonBase is SR2EMod)
-                            (baseMelonBase as SR2EMod).OnGameCoreLoaded();
-                        
-                    slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
-
+                        if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnGameCoreLoaded();
                     break;
                 case "UICore":
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
+                    if(SceneContext.Instance.Player.GetComponent<SrDebugDirector>()==null)
+                        SceneContext.Instance.Player.AddComponent<SrDebugDirector>();
+
+                    var obj2 = Object.Instantiate(bundle.LoadAsset("assets/SaveExplorer.prefab"));
+                    obj2.Cast<GameObject>().AddComponent<SaveExplorerRoot>();
                     break;
                 case "zoneCore":
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                        if (baseMelonBase is SR2EMod)
-                            (baseMelonBase as SR2EMod).OnZoneCoreLoaded();
+                        if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnZoneCoreLoaded();
                     break;
                 case "PlayerCore":
-                    NoclipComponent.playerSettings = SR2EUtils.Get<KCCSettings>("");
+                    NoclipComponent.playerSettings = Get<KCCSettings>("");
                     NoclipComponent.player = SceneContext.Instance.player.transform;
                     NoclipComponent.playerController = NoclipComponent.player.GetComponent<SRCharacterController>();
                     NoclipComponent.playerMotor = NoclipComponent.player.GetComponent<KinematicCharacterMotor>();
-                    
+                    player = Get<GameObject>("PlayerControllerKCC");
                     
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
-                        if (baseMelonBase is SR2EMod)
-                            (baseMelonBase as SR2EMod).OnPlayerSceneLoaded();
-                    player = Get<GameObject>("PlayerControllerKCC");
+                        if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnPlayerSceneLoaded();
                     break;
                 
             }
             
             SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
-            try
-            {
-                if (chaosMode)
-                    ChaosMode.OnSceneWasLoaded(buildIndex, sceneName);
-            }
-            catch
-            {
-            }
+            try { if (chaosMode) ChaosMode.OnSceneWasLoaded(buildIndex, sceneName); } catch { }
         }
 
         internal static TMP_FontAsset defaultFont;
         internal static void SetupFonts()
         {
             if(SR2Font==null)
-                SR2Font = SR2EUtils.Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
+                SR2Font = Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
             
             if (consoleUsesSR2Font)
                 foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
@@ -309,6 +320,19 @@ namespace SR2E
             
         }
 
+        internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
+        {
+            }
+
+        internal static void SaveDirectorLoaded()
+        {
+            LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
+            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2ModMenu.Open(); }));
+            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
+            
+            if (devMode) new CustomPauseMenuButton( AddTranslation("Debug Player", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
+
+        }
         public override void OnSceneWasInitialized(int buildindex, string sceneName)
         {
             switch (sceneName)
@@ -354,7 +378,7 @@ namespace SR2E
                         {
                             ScrollRect rect = scrollView.GetComponent<ScrollRect>();
                             rect.vertical = true;
-                            Scrollbar scrollBar = GameObject.Instantiate(SR2EUtils.getObjRec<Scrollbar>(SR2Console.transform, "saveFilesSlider"), rect.transform);
+                            Scrollbar scrollBar = GameObject.Instantiate(SR2Console.transform.getObjRec<Scrollbar>("saveFilesSlider"), rect.transform);
                             rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
                             scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width/250f, 0, 0);
@@ -378,7 +402,6 @@ namespace SR2E
                     SR2Console.Start();
                 }
             }
-
             SR2Console.Update();
             if(devMode)
                 LibraryDebug.Update();

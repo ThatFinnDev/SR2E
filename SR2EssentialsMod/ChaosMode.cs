@@ -8,21 +8,30 @@ namespace SR2E;
 internal class ChaosMode
 {
 
-
-    public static void PinkTarr()
+    static void PinkTarr()
     {
         Color32 hotPink1 = new Color32(255, 0, 183, 255);
         Color32 hotPink2 = new Color32(222, 11, 162, 255);
         Color32 hotPink3 = new Color32(186, 13, 137, 255);
+        Color ammo = new Color(1f, 0f, 0.45f, 1f);
         SlimeDefinition tarrDefinition = GetSlime("Tarr");
         Material tarrMaterial = tarrDefinition.AppearancesDefault[0]._structures[0].DefaultMaterials[0];
         tarrMaterial.SetSlimeMatColors(hotPink1, hotPink2, hotPink3);
         
         tarrDefinition.prefab.GetComponent<AttackPlayer>().DamagePerAttack = 1000;
+        SlimeAppearance appearance = tarrDefinition.AppearancesDefault[0];
         
+        appearance._colorPalette = new SlimeAppearance.Palette()
+        {
+            Top = appearance._colorPalette.Top,
+            Middle = appearance._colorPalette.Middle,
+            Bottom = appearance._colorPalette.Bottom,
+            Ammo = ammo
+        };
         var localedir = SystemContext.Instance.LocalizationDirector;
-        tarrDefinition.AddProduceIdent(SR2EUtils.Get<IdentifiableType>("SpringPad"));
+        tarrDefinition.AddProduceIdent(Get<IdentifiableType>("SpringPad"));
         tarrDefinition.RefreshEatmap();
+        
         if (localedir.GetCurrentLocaleCode() == "en")
         {
             var tarrStr = localedir.Tables["Actor"].GetEntry("l.tarr_slime");
@@ -65,6 +74,12 @@ internal class ChaosMode
 
     }*/
 
+    public static LargoSettings pinkGoldSettings = LargoSettings.KeepFirstFace | LargoSettings.KeepSecondBody | LargoSettings.KeepFirstColor;
+
+    internal static void OnSaveDirectorLoading(AutoSaveDirector saveDirector)
+    {
+        CreateCompleteLargo(GetSlime("Pink"), GetSlime("Gold"), pinkGoldSettings);
+    }
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         if (sceneName.StartsWith("environment"))
@@ -91,7 +106,6 @@ internal class ChaosMode
 
                 GetSlime("Pink").SwitchSlimeAppearances(GetSlime("Gold"));
                 GetSlime("Pink").prefab.AddComponent<SlimeFlee>();
-                
                 
                 List<string> slimes = new List<string> { 
                     "Pink|40|7", 
@@ -144,7 +158,6 @@ internal class ChaosMode
                         if (largoIndex == 0)
                         {
                             slime.MakeSellable(28, 27, false);
-                            MelonLogger.Msg(slime.ValidatableName);
                         }
                         else
                             slime.MakeSellable(20, 15, true);

@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 
 namespace SR2E;
 
+[RegisterTypeInIl2Cpp(false)]
 public class ObjectBlocker : MonoBehaviour
 {
     public void Start()
@@ -16,6 +17,23 @@ public class ObjectBlocker : MonoBehaviour
     }
 }
 
+[RegisterTypeInIl2Cpp(false)]
+public class FlingMode : MonoBehaviour
+{
+    public void Update()
+    {
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            SR2Console.ExecuteByString("fling 100");
+        }
+        else if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            SR2Console.ExecuteByString("fling -100");
+        }
+    }
+}
+
+[RegisterTypeInIl2Cpp(false)]
 public class CustomMainMenuButtonPressHandler : MonoBehaviour
 {
     public void OnEnable()
@@ -34,6 +52,7 @@ public class CustomMainMenuButtonPressHandler : MonoBehaviour
 /// 
 /// Currently bugged...
 /// </summary>
+[RegisterTypeInIl2Cpp(false)]
 public class IdentifiableObjectDragger : MonoBehaviour
 {
     public GameObject draggedObject;
@@ -92,6 +111,7 @@ public class IdentifiableObjectDragger : MonoBehaviour
         }
     }
 }
+[RegisterTypeInIl2Cpp(false)]
 public class NoclipComponent : MonoBehaviour
 {
     public float baseSpeed = 15f;
@@ -101,10 +121,8 @@ public class NoclipComponent : MonoBehaviour
         get
         {
             if (isSprint)
-            {
                 return baseSpeed * SR2EEntryPoint.noclipSpeedMultiplier;
-            }
-            else return baseSpeed;
+            return baseSpeed;
         }
     }
     bool isSprint => Keyboard.current.shiftKey.isPressed;

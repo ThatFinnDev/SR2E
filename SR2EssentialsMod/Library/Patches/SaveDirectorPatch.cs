@@ -23,6 +23,9 @@ public static class SaveDirectorPatch
         plorts = Get<IdentifiableTypeGroup>("PlortGroup");
         crafts = Get<IdentifiableTypeGroup>("CraftGroup");
 
+        if (SR2EEntryPoint.chaosMode)
+            ChaosMode.OnSaveDirectorLoading(__instance);
+        SR2EEntryPoint.OnSaveDirectorLoading(__instance);
         foreach (SR2EMod lib in mods)
         {
             lib.SaveDirectorLoading(__instance);
@@ -30,7 +33,7 @@ public static class SaveDirectorPatch
     }
     public static void Postfix()
     {
-        slimeDefinitions = Get<SlimeDefinitions>("MainSlimeDefinitions");
+        SR2EEntryPoint.SaveDirectorLoaded();
         foreach (SR2EMod lib in mods)
         {
             lib.SaveDirectorLoaded();

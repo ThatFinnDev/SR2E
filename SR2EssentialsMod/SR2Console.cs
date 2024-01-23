@@ -4,6 +4,7 @@ using Il2CppInterop.Runtime.Attributes;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppTMPro;
 using SR2E.Commands;
+using SR2E.Commands.Library;
 using SR2E.Commands.Secret;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
@@ -30,6 +31,7 @@ namespace SR2E
         /// </summary>
         public static void SendMessage(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -86,6 +88,7 @@ namespace SR2E
         /// </summary>
         public static void SendError(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -144,6 +147,7 @@ namespace SR2E
         /// </summary>
         public static void SendWarning(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -215,6 +219,7 @@ namespace SR2E
         /// </summary>
         public static void Open()
         {
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if (SR2ModMenu.isOpen)
                 return;
             if (SR2Warps.warpTo != null)
@@ -231,6 +236,7 @@ namespace SR2E
         /// </summary>
         public static void Toggle()
         {
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "StandaloneStart" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "LoadScene")
@@ -381,7 +387,9 @@ namespace SR2E
 
         static void RefreshAutoComplete(string text)
         {
-            autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, 744, autoCompleteContent.position.z);
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            
+            // autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, ((744f/1080f)*Screen.height), autoCompleteContent.position.z);
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
             {
                 selectedAutoComplete = 0;
@@ -458,23 +466,25 @@ namespace SR2E
         //Warps & Keybinding loading
         private static void SetupData()
         {
-            SR2CommandBindingManager.Start();
+            if (!SR2EEntryPoint._mSRMLIsInstalled)
+                SR2CommandBindingManager.Start();
             SR2Warps.Start();
         }
         //Setup ModMenu
         private static void SetupModMenu()
         {
             SR2ModMenu.parent = transform;
-            SR2ModMenu.gameObject = SR2EUtils.getObjRec<GameObject>(transform, "modMenu");
-            SR2ModMenu.transform = SR2EUtils.getObjRec<Transform>(transform, "modMenu");
+            SR2ModMenu.gameObject = transform.getObjRec<GameObject>("modMenu");
+            SR2ModMenu.transform = transform.getObjRec<Transform>("modMenu");
             SR2ModMenu.Start();
         }
         private static void SetupCommands()
         {
+            RegisterCommand(new FloatCommand());
+            RegisterCommand(new StopWeatherCommand());
+            RegisterCommand(new ListWeathersCommand());
             RegisterCommand(new GiveCommand());
             RegisterCommand(new UtilCommand());;
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(ObjectBlocker));
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(IdentifiableObjectDragger));
             RegisterCommand(new BindCommand());
             RegisterCommand(new UnbindCommand());
             RegisterCommand(new SpawnCommand());
@@ -500,17 +510,15 @@ namespace SR2E
             RegisterCommand(new PartyCommand());
             RegisterCommand(new GraphicsCommand());
             RegisterCommand(new FreezeCommand());
-            if (SR2EEntryPoint.chaosMode) RegisterCommands(new SR2CCommand[] { new FastModeCommand() });
+            RegisterCommand(new NoClipCommand());
+            RegisterCommand(new StrikeCommand());
             RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
-          
-            if (!SR2EEntryPoint.infHealthInstalled)
-                RegisterCommand(new InvincibleCommand());
-            if (!SR2EEntryPoint.infEnergyInstalled)
-                RegisterCommand(new InfiniteEnergyCommand());
-            RegisterCommand(new NoClipCommand());
-            ClassInjector.RegisterTypeInIl2Cpp(typeof(NoclipComponent));
+            if (SR2EEntryPoint.devMode) RegisterCommands(new SR2CCommand[] { new AddToGroupCommand(), new RemoveFromGroupCommand() , new RefreshEatmapCommand(), });
+            if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InvincibleCommand());
+            if (!SR2EEntryPoint.infEnergyInstalled) RegisterCommand(new InfiniteEnergyCommand());
+            if (SR2EEntryPoint.chaosMode) RegisterCommands(new SR2CCommand[] { new FastModeCommand() });
         }
 
         internal static bool syncedSetuped = false;
@@ -554,31 +562,33 @@ namespace SR2E
         internal static void Start()
         {
             commandHistory = new List<string>();
-            if (SR2EEntryPoint.syncConsole)
-            {
-                SetupConsoleSync();
-            }
+            if(!SR2EEntryPoint._mSRMLIsInstalled)
+                if (SR2EEntryPoint.syncConsole)
+                    SetupConsoleSync();
 
             mlog = new MelonLogger.Instance("SR2E");
 
-            consoleBlock = SR2EUtils.getObjRec<GameObject>(transform, "consoleBlock");
-            consoleMenu = SR2EUtils.getObjRec<GameObject>(transform, "consoleMenu");
-            consoleContent = SR2EUtils.getObjRec<Transform>(transform, "ConsoleContent");
-            messagePrefab = SR2EUtils.getObjRec<GameObject>(transform, "messagePrefab");
-            specialMessagePrefab = SR2EUtils.getObjRec<GameObject>(transform, "specialMessagePrefab");
-            commandInput = SR2EUtils.getObjRec<TMP_InputField>(transform, "commandInput");
-            _scrollbar = SR2EUtils.getObjRec<Scrollbar>(transform, "ConsoleScroll");
-            autoCompleteContent = SR2EUtils.getObjRec<Transform>(transform, "AutoCompleteContent");
-            autoCompleteEntryPrefab = SR2EUtils.getObjRec<GameObject>(transform, "AutoCompleteEntry");
-            autoCompleteScrollView = SR2EUtils.getObjRec<GameObject>(transform, "AutoCompleteScroll");
+            consoleBlock = transform.getObjRec<GameObject>("consoleBlock");
+            consoleMenu = transform.getObjRec<GameObject>("consoleMenu");
+            consoleContent = transform.getObjRec<Transform>("ConsoleContent"); 
+            messagePrefab = transform.getObjRec<GameObject>("messagePrefab");
+            specialMessagePrefab = transform.getObjRec<GameObject>("specialMessagePrefab");
+            commandInput = transform.getObjRec<TMP_InputField>("commandInput");
+            _scrollbar = transform.getObjRec<Scrollbar>("ConsoleScroll");
+            autoCompleteContent = transform.getObjRec<Transform>("AutoCompleteContent");
+            autoCompleteEntryPrefab = transform.getObjRec<GameObject>("AutoCompleteEntry");
+            autoCompleteScrollView = transform.getObjRec<GameObject>("AutoCompleteScroll");
             autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
             autoCompleteScrollView.SetActive(false);
             consoleBlock.SetActive(false);
             consoleMenu.SetActive(false);
-            commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
-
+            if (!SR2EEntryPoint._mSRMLIsInstalled)
+            {
+                commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); })); 
+            }
             SetupCommands();
             SetupData();
+
             SetupModMenu();
             SR2EEntryPoint.SetupFonts();
         }
@@ -596,93 +606,116 @@ namespace SR2E
         const int maxEntryOnScreen = 6;
         internal static void Update()
         {
-            if (SR2EEntryPoint.consoleFinishedCreating != true)
-                return;
-            commandInput.ActivateInputField();
-            if (isOpen)
+            if (!SR2EEntryPoint._mSRMLIsInstalled)
             {
-                if (scrollCompletlyDown)
-                    if (_scrollbar.value != 0)
-                    {
-                        _scrollbar.value = 0f;
-                        scrollCompletlyDown = false;
-                    }
+                if (SR2EEntryPoint.consoleFinishedCreating != true)
+                    return;
+                commandInput.ActivateInputField();
+                if (isOpen)
+                {
+                    if (scrollCompletlyDown)
+                        if (_scrollbar.value != 0)
+                        {
+                            _scrollbar.value = 0f;
+                            scrollCompletlyDown = false;
+                        }
 
+                    if (Keyboard.current.tabKey.wasPressedThisFrame)
+                    {
+                        if (autoCompleteContent.childCount != 0)
+                            try
+                            {
+                                autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Button>().onClick
+                                    .Invoke();
+                                selectedAutoComplete = 0;
+                            }
+                            catch
+                            {
+                            }
+
+                    }
+                }
+
+                if (Keyboard.current.enterKey.wasPressedThisFrame)
+                    if (commandInput.text != "")
+                        Execute();
+
+                if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
+                {
+                    if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                    {
+                        commandInput.text = commandHistory[commandHistoryIdx];
+                        commandHistoryIdx -= 1;
+                        autoCompleteScrollView.SetActive(false);
+                    }
+                }
+
+                if (Keyboard.current.ctrlKey.wasPressedThisFrame)
+                    if (Keyboard.current.tabKey.isPressed)
+                        Toggle();
                 if (Keyboard.current.tabKey.wasPressedThisFrame)
+                    if (Keyboard.current.ctrlKey.isPressed)
+                        Toggle();
+                if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
+                {
+                    if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+                        NextAutoComplete();
+
+                    if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                        PrevAutoComplete();
+                }
+
+                if (selectedAutoComplete == autoCompleteContent.childCount)
+                {
+                    selectedAutoComplete = 0;
+                }
+
+                if (_scrollbar != null)
+                {
+                    float value = Mouse.current.scroll.ReadValue().y;
+                    if (Mouse.current.scroll.ReadValue().y != 0)
+                        _scrollbar.value =
+                            Mathf.Clamp(
+                                _scrollbar.value + ((value > 0.01 ? 1.25f : value < -0.01 ? -1.25f : 0) *
+                                                    _scrollbar.size), 0, 1f);
+
+                }
+
+                try
                 {
                     if (autoCompleteContent.childCount != 0)
-                        try
-                        {
-                            autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Button>().onClick.Invoke();
-                            selectedAutoComplete = 0;
-                        }
-                        catch { }
+                    {
+                        autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color =
+                            new Color32(255, 211, 0, 120);
+                        if (selectedAutoComplete > maxEntryOnScreen)
+                            autoCompleteContent.position = new Vector3(autoCompleteContent.position.x,
+                                ((744f/1080f)*Screen.height) - (27 * maxEntryOnScreen) + (27 * selectedAutoComplete),
+                                autoCompleteContent.position.z);
 
+                        else
+                            autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, ((744f/1080f)*Screen.height),
+                                autoCompleteContent.position.z);
+                    }
                 }
-            }
-            if (Keyboard.current.enterKey.wasPressedThisFrame)
-                if (commandInput.text != "") Execute();
-            
-            if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
-            {
-                if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                catch
                 {
-                    commandInput.text = commandHistory[commandHistoryIdx];
-                    commandHistoryIdx -= 1;
-                    autoCompleteScrollView.SetActive(false);
                 }
-            }
 
-            if (Keyboard.current.ctrlKey.wasPressedThisFrame)
-                if (Keyboard.current.tabKey.isPressed)
-                    Toggle();
-            if (Keyboard.current.tabKey.wasPressedThisFrame)
-                if (Keyboard.current.ctrlKey.isPressed)
-                    Toggle();
-            if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
-            {
-                if (Keyboard.current.downArrowKey.wasPressedThisFrame)
-                    NextAutoComplete();
-
-                if (Keyboard.current.upArrowKey.wasPressedThisFrame)
-                    PrevAutoComplete();
-            }
-
-            if (selectedAutoComplete == autoCompleteContent.childCount)
-            {
-                selectedAutoComplete = 0;
-            }
-            if (_scrollbar != null)
-            {
-                float value = Mouse.current.scroll.ReadValue().y;
-                if (Mouse.current.scroll.ReadValue().y != 0)
-                    _scrollbar.value = Mathf.Clamp(_scrollbar.value + ((value > 0.01 ? 1.25f : value < -0.01 ? -1.25f : 0) * _scrollbar.size), 0, 1f);
+                SR2CommandBindingManager.Update();
 
             }
-            try
-            {
-                if (autoCompleteContent.childCount != 0)
-                {
-                    autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color = new Color32(255, 211, 0, 120);
-                    if (selectedAutoComplete > maxEntryOnScreen)
-                        autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, 744 - (27 * maxEntryOnScreen) + (27 * selectedAutoComplete), autoCompleteContent.position.z);
 
-                    else
-                        autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, 744, autoCompleteContent.position.z);
-                }
-            }
-            catch { }
-            SR2CommandBindingManager.Update();
-            //Modmenu
-            SR2ModMenu.Update();
             //Console Commands Update
-            foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+            foreach (KeyValuePair<string, SR2CCommand> pair in commands)
                 pair.Value.Update();
+            //Modmenu
+            try { SR2ModMenu.Update(); } catch{ }
         }
         
 
         public static void NextAutoComplete()
         {
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             selectedAutoComplete += 1;
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
             {
@@ -698,6 +731,7 @@ namespace SR2E
         }
         public static void PrevAutoComplete()
         {
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             selectedAutoComplete -= 1;
 
             if (selectedAutoComplete < 0)
@@ -715,6 +749,7 @@ namespace SR2E
 
         static void Execute()
         {
+            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             string cmds = commandInput.text;
             commandHistory.Add(cmds);
             commandHistoryIdx = commandHistory.Count - 1;

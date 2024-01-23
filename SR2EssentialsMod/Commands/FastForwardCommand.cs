@@ -23,7 +23,7 @@ public class FastForwardCommand : SR2CCommand
 
     public override bool Execute(string[] args)
     {
-        if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+        if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
         if ((args?.Length ?? 0) == 1)
@@ -46,7 +46,7 @@ public class FastForwardCommand : SR2CCommand
 
     public override bool SilentExecute(string[] args)
     {
-        if (!SR2EUtils.inGame) return true;
+        if (!inGame) return true;
 
 
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();

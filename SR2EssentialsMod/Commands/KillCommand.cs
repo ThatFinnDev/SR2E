@@ -15,7 +15,7 @@ public class KillCommand : SR2CCommand
     }
     public override bool Execute(string[] args)
     {
-        if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+        if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
         if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
         {
@@ -75,7 +75,7 @@ public class KillCommand : SR2CCommand
 
     public override bool SilentExecute(string[] args)
     {
-        if (!SR2EUtils.inGame) return true;
+        if (!inGame) return true;
 
         if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
         {

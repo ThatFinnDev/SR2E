@@ -6,13 +6,17 @@
     <RootNamespace>SR2E</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>SR2E</AssemblyName>
+    <Configurations>Debug;Release;Development</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>None</DebugType>
+    <DebugType>embedded</DebugType>
     <OutputPath>$(SolutionDir)Output\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
+    <DefineConstants>$(DefineConstants);DEV</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="srtwoessentials.assetbundle" />
@@ -43,6 +47,15 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>Libs\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppDOTween">
+      <HintPath>Libs\Il2CppDOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppFebucci.TextAnimator.Demo.Runtime">
+      <HintPath>Libs\Il2CppFebucci.TextAnimator.Demo.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppFebucci.TextAnimator.Runtime">
+      <HintPath>Libs\Il2CppFebucci.TextAnimator.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Il2CppInterop.Common">
       <HintPath>Libs\Il2CppInterop.Common.dll</HintPath>
     </Reference>
@@ -52,47 +65,98 @@
     <Reference Include="Il2CppInterop.Runtime">
       <HintPath>Libs\Il2CppInterop.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppLogger">
+      <HintPath>Libs\Il2CppLogger.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppMono.Security">
+      <HintPath>Libs\Il2CppMono.Security.dll</HintPath>
+    </Reference>
     <Reference Include="Il2Cppmscorlib">
       <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
     </Reference>
     <Reference Include="MelonLoader">
       <HintPath>Libs\MelonLoader.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppNewtonsoft.Json">
+      <HintPath>Libs\Il2CppNewtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppPlayFab">
+      <HintPath>Libs\Il2CppPlayFab.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Animation.Runtime">
       <HintPath>Libs\Unity.2D.Animation.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppSystem">
+      <HintPath>Libs\Il2CppSystem.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Addressables">
       <HintPath>Libs\Unity.Addressables.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppSystem.Configuration">
+      <HintPath>Libs\Il2CppSystem.Configuration.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AI.Navigation">
       <HintPath>Libs\Unity.AI.Navigation.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppSystem.Core">
+      <HintPath>Libs\Il2CppSystem.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Burst">
       <HintPath>Libs\Unity.Burst.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppSystem.Data">
+      <HintPath>Libs\Il2CppSystem.Data.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Unsafe">
       <HintPath>Libs\Unity.Burst.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppSystem.Numerics">
+      <HintPath>Libs\Il2CppSystem.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Collections">
       <HintPath>Libs\Unity.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppSystem.Runtime.Serialization">
+      <HintPath>Libs\Il2CppSystem.Runtime.Serialization.dll</HintPath>
     </Reference>
     <Reference Include="Unity.InputSystem">
       <HintPath>Libs\Unity.InputSystem.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppSystem.Xml">
+      <HintPath>Libs\Il2CppSystem.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.InternalAPIEngineBridge.001">
       <HintPath>Libs\Unity.InternalAPIEngineBridge.001.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppSystem.Xml.Linq">
+      <HintPath>Libs\Il2CppSystem.Xml.Linq.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Localization">
       <HintPath>Libs\Unity.Localization.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppXGamingRuntime">
+      <HintPath>Libs\Il2CppXGamingRuntime.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Mathematics">
       <HintPath>Libs\Unity.Mathematics.dll</HintPath>
     </Reference>
+    <Reference Include="MelonLoader">
+      <HintPath>Libs\Unity.MelonLoader.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Polybrush">
       <HintPath>Libs\Unity.Polybrush.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>Libs\Unity.InputSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Localization">
+      <HintPath>Libs\Unity.Localization.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
       <HintPath>Libs\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
