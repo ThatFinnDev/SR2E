@@ -2,6 +2,7 @@
 
 namespace SR2E.Saving;
 
+[RegisterTypeInIl2Cpp(false)]
 public class SR2ESlimeDataSaver : MonoBehaviour
 {
     public void SaveData()

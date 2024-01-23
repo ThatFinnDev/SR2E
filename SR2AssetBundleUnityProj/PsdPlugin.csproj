@@ -85,8 +85,8 @@
     <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\PsdFile\Layers\Channel.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\PsdFile\ImageResource.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\AssemblyInfo.cs" />
-    <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\PsdFile\ImageResources\ResolutionInfo.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\PsdFile\RleRowLengths.cs" />
+    <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\PsdFile\ImageResources\ResolutionInfo.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\PhotoShopFileType\BlendModeMapping.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\PsdFile\Exceptions.cs" />
     <Compile Include="Library\PackageCache\com.unity.2d.psdimporter@6.0.7\Editor\PSDPlugin\PsdFile\ImageResources\Thumbnail.cs" />

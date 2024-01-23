@@ -25,7 +25,7 @@ public class GraphicsCommand : SR2CCommand
             rangeLightInstance.GetComponent<SunAndMoonVector>().enabled = false;
             return;
         }
-        GameObject obj = GameObject.Instantiate(SR2EUtils.Get<GameObject>("Range Lights"));
+        GameObject obj = GameObject.Instantiate(Get<GameObject>("Range Lights"));
         obj.transform.GetChild(1).gameObject.SetActive(false);
         Object.DontDestroyOnLoad(obj);
         rangeLightInstance = obj;

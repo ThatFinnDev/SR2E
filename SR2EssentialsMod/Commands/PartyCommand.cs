@@ -11,24 +11,24 @@ public class PartyCommand : SR2CCommand
         return null;
     }
     internal static Volume defaultVolume = null;
+    internal static ColorAdjustments myAdjustments = null;
     public override bool Execute(string[] args)
     {
         if (args != null)
         { SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
         if (defaultVolume != null)
         {
-            if (defaultVolume.profile.Has<ColorAdjustments>())
-                if (defaultVolume.profile.TryGet(out ColorAdjustments adjustments))
-                {
-                    adjustments.hueShift.value = 0;
-                    adjustments.hueShift.overrideState = false;
-                    defaultVolume = null;
-                    SR2Console.SendMessage("Successfully disabled party mode!");
-                    return true;
-                }
+            if (myAdjustments != null)
+            { 
+                myAdjustments.hueShift.value = 0;
+                myAdjustments.hueShift.overrideState = false;
+                defaultVolume = null;
+                SR2Console.SendMessage("Successfully disabled party mode!"); 
+                return true;
+            }
         }
 
-        Volume volume = SR2EUtils.Get<Volume>("Default Volume");
+        Volume volume = Get<Volume>("Default Volume");
         if (volume != null)
             if (volume.isGlobal)
             {
@@ -47,21 +47,20 @@ public class PartyCommand : SR2CCommand
         {
             try
             {
-                ColorAdjustments adjustments = null;
-                if (defaultVolume.profile.Has<ColorAdjustments>())
+                if (myAdjustments == null)
                 {
-                    defaultVolume.profile.TryGet(out adjustments);
+                    if (defaultVolume.profile.Has<ColorAdjustments>())
+                        defaultVolume.profile.Remove<ColorAdjustments>();
+                    myAdjustments = defaultVolume.profile.Add<ColorAdjustments>();
                 }
-                else
-                    adjustments = defaultVolume.profile.Add<ColorAdjustments>();
-                    
-                float currentValue = adjustments.hueShift.GetValue<float>();
+                
+                float currentValue = myAdjustments.hueShift.GetValue<float>();
                 currentValue += 80f * Time.deltaTime;
                 if (currentValue > 180)
                     currentValue = -180;
-                adjustments.hueShift.overrideState = true;
-                adjustments.hueShift.m_Value = currentValue;
-                adjustments.hueShift.value = currentValue;
+                myAdjustments.hueShift.overrideState = true;
+                myAdjustments.hueShift.m_Value = currentValue;
+                myAdjustments.hueShift.value = currentValue;
             }
             catch {}
         }

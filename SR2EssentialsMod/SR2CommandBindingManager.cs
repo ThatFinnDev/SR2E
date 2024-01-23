@@ -5,7 +5,16 @@ namespace SR2E
 {
     internal static class SR2CommandBindingManager
     {
-        private static string path = SystemContext.Instance.GetStorageProvider().Cast<FileStorageProvider>().savePath + "SR2EssentialsBinds.binds";
+        private static string path
+        {
+            get
+            {
+                FileStorageProvider provider = SystemContext.Instance.GetStorageProvider().TryCast<FileStorageProvider>();
+                if (provider==null) return Application.persistentDataPath + "/" +oldPath;
+                return provider.savePath + oldPath;
+            }
+        }
+            
         private static string oldPath = "SR2EssentialsBinds.binds";
 
         internal static Dictionary<Key, string> keyCodeCommands = new Dictionary<Key, string>();

@@ -47,7 +47,7 @@
             if (args.Length != 1)
             { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
             
-            if (!SR2EUtils.inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
 
 
             string bluePrintName = "";

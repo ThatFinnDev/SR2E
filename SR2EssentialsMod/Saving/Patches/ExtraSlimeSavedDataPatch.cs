@@ -10,7 +10,18 @@ public static class ExtraSlimeSavedDataPatch
             if (ident.prefab != null)
             {
                 var p = ident.prefab;
-                var dataSaver = p.AddComponent<SR2ESlimeDataSaver>();
+                if(p.GetComponent<SR2ESlimeDataSaver>()==null)
+                    p.AddComponent<SR2ESlimeDataSaver>();
+            }
+        }
+        foreach (var ident in Resources.FindObjectsOfTypeAll<GadgetDefinition>())
+        {
+            if (ident.prefab != null)
+            {
+                var p = ident.prefab;
+                p.RemoveComponent<SR2ESlimeDataSaver>();
+                if(p.GetComponent<SR2EGadgetDataSaver>()==null)
+                    p.AddComponent<SR2EGadgetDataSaver>();
             }
         }
     }
