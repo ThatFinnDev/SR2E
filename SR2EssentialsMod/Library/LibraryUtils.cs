@@ -537,6 +537,7 @@ namespace SR2E.Library
             StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
             return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
+        
 
         public static IdentifiableType GetIdentifiableType(this GameObject obj)
         {
@@ -644,6 +645,18 @@ namespace SR2E.Library
         {
             return SRBehaviour.InstantiateActor(obj,
                 SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
+                false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
+        }
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)
+        {
+            return SRBehaviour.InstantiateActor(obj,
+                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.Euler(rot),
+                false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
+        }
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Quaternion rot)
+        {
+            return SRBehaviour.InstantiateActor(obj,
+                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, rot,
                 false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
         }
         public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos)
