@@ -18,6 +18,7 @@ using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
 using SR2E.Library.Buttons;
 using SR2E.Library.SaveExplorer;
+using SR2E.SaveEditor;
 
 namespace SR2E
 {
@@ -27,7 +28,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.1.0"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.2.0"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -238,12 +239,15 @@ namespace SR2E
                                 }
                             }
                     
+                    var saveEditor = Object.Instantiate(bundle.LoadAsset("assets/SaveEditor.prefab"));
+                    saveEditor.Cast<GameObject>().AddComponent<SR2ESaveEditor>();
                     
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
                         if (baseMelonBase is SR2EMod)
                             (baseMelonBase as SR2EMod).OnSystemSceneLoaded();
                     break;
                 case "MainMenuUI":
+                    
                     if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) SR2Console.ExecuteByString(onMainMenuLoadCommand);
                     SaveCountChanged = false;
                     Time.timeScale = 1f;
@@ -275,6 +279,8 @@ namespace SR2E
 
                     var obj2 = Object.Instantiate(bundle.LoadAsset("assets/SaveExplorer.prefab"));
                     obj2.Cast<GameObject>().AddComponent<SaveExplorerRoot>();
+                    
+                    
                     break;
                 case "zoneCore":
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
@@ -313,6 +319,11 @@ namespace SR2E
             else if(defaultFont!=null)
                 foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
                     text.font = defaultFont;
+            foreach (var text in SR2ESaveEditor.instance.gameObject.getAllChildrenOfType<TMP_Text>())
+            {
+                text.font = SR2Font;
+                MelonLogger.Msg("LOG");
+            }
             foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
             foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>()) 
@@ -329,7 +340,8 @@ namespace SR2E
             LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
             new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2ModMenu.Open(); }));
             new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
-            
+            //new CustomPauseMenuButton(AddTranslation("Save Edit", "b.button_save_edit_sr2e", "UI"), 4, (System.Action)(() => { SR2ESaveEditor.Open(); }));
+
             if (devMode) new CustomPauseMenuButton( AddTranslation("Debug Player", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
 
         }
@@ -340,6 +352,7 @@ namespace SR2E
                 case "SystemCore":
                     break;
                 case "MainMenuUI":
+                    
                     mainMenuLoaded = true;
                     break;
             }

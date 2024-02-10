@@ -94,7 +94,8 @@ namespace SR2E.Commands
                     DeathHandler.Kill(gameobject, damage);
                     
                     //Add new one 
-                    var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE,SlimeAppearance.AppearanceSaveSet.NONE);
+                    var spawned = GameObject.Instantiate(type.prefab, hit.point, Quaternion.identity);
+                    //var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE,SlimeAppearance.AppearanceSaveSet.NONE);
                     spawned.transform.position = position;
                     spawned.transform.rotation = rotation;
 

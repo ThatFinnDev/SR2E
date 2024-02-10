@@ -282,7 +282,7 @@ namespace SR2E.Commands
                     {
                         var pos = new Vector3(posX, posY, posZ);
                         gadget.transform.position = pos;
-                        gadget.Model.lastPosition = pos;
+                        gadget._model.lastPosition = pos;
                         SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {posX}, {posY}, {posZ}");
                     }
                 }
@@ -335,7 +335,7 @@ namespace SR2E.Commands
                     var gadget = RaycastForGadget();
                     if (gadget != null)
                     {
-                            gadget.Model.yRotation = rot;
+                            gadget._model.eulerRotation = new Vector3(0, rot, 0);
                             gadget.transform.rotation = Quaternion.EulerRotation(new Vector3(0, rot, 0));
                             SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
                     }
@@ -370,52 +370,52 @@ namespace SR2E.Commands
         {
             if (mode == VacModes.NORMAL)
             {
-                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
-                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
+                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
                 SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }
             else if (mode == VacModes.AUTO_VAC)
             {
-                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
-                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.VAC;
+                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
+                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.VAC;
                 SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }
             else if (mode == VacModes.AUTO_SHOOT)
             {
-                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(true);
-                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.SHOOT;
+                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
+                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.SHOOT;
                 SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }
             else if (mode == VacModes.NONE)
             {
-                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
 
                 MelonCoroutines.Start(waitForSeconds(1.5f));
 
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
                 SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
+                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
             }
             else if (mode == VacModes.DRAG)
             {
-                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
 
                 MelonCoroutines.Start(waitForSeconds(1.5f));
 
-                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
+                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
                 SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
                 SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>();
             }
             else if (mode == VacModes.LAUNCH)
             {
-                SceneContext.Instance.PlayerState.Vacuum._vacMode = WeaponVacuum.VacMode.NONE;
+                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
 
                 MelonCoroutines.Start(waitForSeconds(1.5f));
 
-                SceneContext.Instance.PlayerState.Vacuum.gameObject.SetActive(false);
+                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
                 SceneContext.Instance.Camera.AddComponent<FlingMode>();
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }

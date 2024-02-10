@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands;
+﻿using Il2CppMonomiPark.SlimeRancher.World;
+
+namespace SR2E.Commands;
 
 public class MoveCommand: SR2CCommand
 {
@@ -35,7 +37,7 @@ public class MoveCommand: SR2CCommand
                 try
                 {
                     gameobject.GetComponentInParent<Gadget>().transform.position += move;
-                    gameobject.GetComponentInParent<Gadget>().Model.lastPosition += move;
+                    gameobject.GetComponentInParent<Gadget>()._model.lastPosition += move;
                 }
                 catch { }
                 didAThing = true;

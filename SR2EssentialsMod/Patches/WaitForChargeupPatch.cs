@@ -1,4 +1,4 @@
-﻿namespace SR2E.Patches;
+﻿/*namespace SR2E.Patches;
 
 [HarmonyPatch(typeof(WaitForChargeup), nameof(WaitForChargeup.Update))]
 public static class WaitForChargeupPatch
@@ -9,4 +9,4 @@ public static class WaitForChargeupPatch
             return false;
         return true;
     }
-}
+}*/

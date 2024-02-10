@@ -12,6 +12,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
+using Il2CppMonomiPark.SlimeRancher.World;
 using SR2E.Patches;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
@@ -367,9 +368,9 @@ namespace SR2E.Library
             slimedef.SlimeModules = new[] { Get<GameObject>("moduleSlime" + slimeOne.name), Get<GameObject>("moduleSlime" + slimeTwo.name) };
 
 
-            slimedef.localizationSuffix = slimeOne.name.ToLower() + "_" + slimeTwo.name.ToLower() + "_largo";
+            slimedef._pediaPersistenceSuffix = slimeOne.name.ToLower() + "_" + slimeTwo.name.ToLower() + "_largo";
             slimedef.referenceId = "SlimeDefinition." + slimeOne.name + slimeTwo.name;
-            slimedef.localizedName = AddTranslation(slimeOne.name + " " + slimeTwo.name + " Largo", "l." + slimedef.localizationSuffix);
+            slimedef.localizedName = AddTranslation(slimeOne.name + " " + slimeTwo.name + " Largo", "l." + slimedef._pediaPersistenceSuffix);
 
             slimedef.FavoriteToyIdents = new Il2CppReferenceArray<ToyDefinition>(0);
 
@@ -640,7 +641,7 @@ namespace SR2E.Library
         {
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
-        }
+        }/*
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
         {
             return SRBehaviour.InstantiateActor(obj,
@@ -662,7 +663,7 @@ namespace SR2E.Library
         public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos)
         {
             return SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
-        }
+        }*/
         public static T? Get<T>(string name) where T : Object { return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); }
         public static void AddToGroup(this IdentifiableType type, string groupName)
         {
@@ -964,7 +965,7 @@ namespace SR2E.Library
             UnityEngine.Object.DontDestroyOnLoad(obj);
             obj.transform.parent = rootOBJ.transform;
         }
-        public static GameV04? Save => gameContext.AutoSaveDirector.SavedGame.gameState;
+        public static GameV05? Save => gameContext.AutoSaveDirector.SavedGame.gameState;
         public static void SetSlimeMatTopColor(this Material mat, Color color) => mat.SetColor("_TopColor", color);
         public static void SetSlimeMatMiddleColor(this Material mat, Color color) => mat.SetColor("_MiddleColor", color);
 

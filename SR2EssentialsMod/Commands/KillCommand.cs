@@ -1,5 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Persist;
+using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
@@ -21,7 +23,26 @@ public class KillCommand : SR2CCommand
         {
             bool didAThing = false;
             var gameobject = hit.collider.gameObject;
-            if (gameobject.GetComponent<Identifiable>())
+            if (gameobject.GetComponent<Gadget>())
+            {
+                GameObject gadgetObj = gameobject.GetComponent<Gadget>().gameObject;
+                GameModel model = Object.FindObjectOfType<GameModel>();
+                foreach (var pair in model.identifiables)
+                {
+                    if (pair.Value.GetGameObject() == gadgetObj)
+                    {
+                        model.identifiables.Remove(pair.Key);
+                        break;
+                    }
+                }
+
+                gameobject.GetComponent<Gadget>().gameObject.hideFlags |= HideFlags.HideAndDontSave;
+                gameobject.GetComponent<Gadget>().hideFlags |= HideFlags.HideAndDontSave;
+                gameobject.GetComponent<Gadget>().hasStarted = false;
+                gameobject.GetComponent<Gadget>().RequestDestroy("ok");
+                didAThing = true;
+            }
+            else if (gameobject.GetComponent<Identifiable>())
             {
                 
                 DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
@@ -35,25 +56,6 @@ public class KillCommand : SR2CCommand
                     { gordoEat.ImmediateReachedTarget(); didAThing = true; }
                     catch{}
                 
-            }
-            else if (gameobject.GetComponentInParent<Gadget>())
-            {
-                GameObject gadgetObj = gameobject.GetComponentInParent<Gadget>().gameObject;
-                GameModel model = Object.FindObjectOfType<GameModel>();
-                foreach (var pair in model.identifiables)
-                {
-                    if (pair.Value.GetGameObject() == gadgetObj)
-                    {
-                        model.identifiables.Remove(pair.Key);
-                        break;
-                    }
-                }
-
-                gameobject.GetComponentInParent<Gadget>().gameObject.hideFlags |= HideFlags.HideAndDontSave;
-                gameobject.GetComponentInParent<Gadget>().hideFlags |= HideFlags.HideAndDontSave;
-                gameobject.GetComponentInParent<Gadget>().hasStarted = false;
-                gameobject.GetComponentInParent<Gadget>().RequestDestroy("ok");
-                didAThing = true;
             }
             else if (gameobject.GetComponentInParent<LandPlot>())
             {
