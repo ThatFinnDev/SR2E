@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands;
+﻿using Il2CppMonomiPark.SlimeRancher.World;
+
+namespace SR2E.Commands;
 
 public class RotateCommand : SR2CCommand
 {
@@ -33,7 +35,7 @@ public class RotateCommand : SR2CCommand
             else if (gameobject.GetComponentInParent<Gadget>())
             {
                 gameobject.GetComponentInParent<Gadget>().transform.Rotate(new Vector3(rotation.x,0,rotation.z));
-                gameobject.GetComponentInParent<Gadget>().AddRotation(rotation.y);
+                gameobject.GetComponentInParent<Gadget>()._model.eulerRotation += new Vector3(rotation.x, 0, rotation.z);
                 didAThing = true;
             }
             if (didAThing)

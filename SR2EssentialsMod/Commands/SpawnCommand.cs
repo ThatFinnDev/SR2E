@@ -1,4 +1,6 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Regions;
+using Il2CppMonomiPark.SlimeRancher.World;
+
 namespace SR2E.Commands
 {
     public class SpawnCommand: SR2CCommand
@@ -104,13 +106,23 @@ namespace SR2E.Commands
                 {
                     try
                     {
+                        var spawned = GameObject.Instantiate(type.prefab, hit.point, Quaternion.identity);
+                        //var spawned = SRBehaviour.Instantiate(type.prefab, hit.point,Quaternion.identity);
+                        spawned.transform.position = hit.point+hit.normal*PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
+                        var delta = -(hit.point - Camera.main.transform.position).normalized;
+                        spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
+                        if(type is GadgetDefinition) 
+                            SceneContext.Instance.ActorRegistry.Register(spawned.GetComponent<Gadget>());
+                        
+                        /* 0.4 broke this
                         var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE,SlimeAppearance.AppearanceSaveSet.NONE);
                         //var spawned = SRBehaviour.Instantiate(type.prefab, hit.point,Quaternion.identity);
                         spawned.transform.position = hit.point+hit.normal*PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
                         var delta = -(hit.point - Camera.main.transform.position).normalized;
                         spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
-                        if(type is GadgetDefinition)
-                         SceneContext.Instance.ActorRegistry.Register(spawned.GetComponent<Gadget>());
+                        if(type is GadgetDefinition) 
+                            SceneContext.Instance.ActorRegistry.Register(spawned.GetComponent<Gadget>());
+                            */
                     }
                     catch 
                     { }

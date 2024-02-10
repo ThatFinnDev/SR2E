@@ -31,7 +31,6 @@ internal class ChaosMode
         var localedir = SystemContext.Instance.LocalizationDirector;
         tarrDefinition.AddProduceIdent(Get<IdentifiableType>("SpringPad"));
         tarrDefinition.RefreshEatmap();
-        
         if (localedir.GetCurrentLocaleCode() == "en")
         {
             var tarrStr = localedir.Tables["Actor"].GetEntry("l.tarr_slime");
