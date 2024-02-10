@@ -19,6 +19,8 @@ using UnityEngine.Localization;
 using SR2E.Library.Buttons;
 using SR2E.Library.SaveExplorer;
 using SR2E.SaveEditor;
+using SR2E.Library.Storage;
+using UnityEngine;
 
 namespace SR2E
 {
@@ -268,7 +270,15 @@ namespace SR2E
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
                     autoSaveDirector.saveSlotCount = 50;
                     
-                    
+                    foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
+                    {
+                        var pname = particle.gameObject.name.Replace(' ', '_');
+                        if (!FXLibrary.ContainsKey(particle.gameObject))
+                            FXLibrary.AddItems(particle.gameObject, particle, pname);
+                        if (!FXLibraryReversable.ContainsKey(pname))
+                            FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
+                    }
+
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
                         if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnGameCoreLoaded();
                     break;
