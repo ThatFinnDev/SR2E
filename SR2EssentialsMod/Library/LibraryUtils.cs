@@ -17,6 +17,7 @@ using SR2E.Patches;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.Playables;
+using SR2E.Library.Storage;
 
 namespace SR2E.Library
 {
@@ -641,29 +642,54 @@ namespace SR2E.Library
         {
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
-        }/*
+        }
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
         {
-            return SRBehaviour.InstantiateActor(obj,
+            
+            return InstantiationHelpers.InstantiateActor(obj,
                 SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
                 false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
         }
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)
         {
-            return SRBehaviour.InstantiateActor(obj,
+            return InstantiationHelpers.InstantiateActor(obj,
                 SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.Euler(rot),
                 false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
         }
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Quaternion rot)
         {
-            return SRBehaviour.InstantiateActor(obj,
+            return InstantiationHelpers.InstantiateActor(obj,
                 SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, rot,
                 false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
         }
-        public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos)
+        public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos, Quaternion rot)
         {
-            return SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
-        }*/
+            return InstantiationHelpers.InstantiateDynamic(obj, pos, rot);
+        }
+        public static GameObject SpawnGadget(this GameObject obj, Vector3 pos, Quaternion rot)
+        {
+            return GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+        }
+        public static GameObject SpawnGadget(this GameObject obj, Vector3 pos)
+        {
+            return GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
+        }
+        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos, Quaternion rot)
+        {
+            return GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+        }
+        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos)
+        {
+            return GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
+        }
+        public static GameObject SpawnFX(this GameObject fx, Vector3 pos)
+        {
+            return FXHelpers.SpawnFX(fx, pos, Quaternion.identity);
+        }
+        public static GameObject SpawnFX(this GameObject fx, Vector3 pos, Quaternion rot)
+        {
+            return FXHelpers.SpawnFX(fx, pos, rot);
+        }
         public static T? Get<T>(string name) where T : Object { return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); }
         public static void AddToGroup(this IdentifiableType type, string groupName)
         {
@@ -1454,6 +1480,9 @@ namespace SR2E.Library
                 return null;
             }
         }
+
+        public static TripleDictionary<GameObject, ParticleSystemRenderer, string> FXLibrary = new TripleDictionary<GameObject, ParticleSystemRenderer, string>();
+        public static TripleDictionary<string, ParticleSystemRenderer, GameObject> FXLibraryReversable = new TripleDictionary<string, ParticleSystemRenderer, GameObject>();
 
     }
 }

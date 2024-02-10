@@ -512,6 +512,7 @@ namespace SR2E
             RegisterCommand(new FreezeCommand());
             RegisterCommand(new NoClipCommand());
             RegisterCommand(new StrikeCommand());
+            RegisterCommand(new FXPlayCommand());
             RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
