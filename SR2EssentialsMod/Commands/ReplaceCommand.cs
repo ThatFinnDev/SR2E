@@ -75,12 +75,9 @@ namespace SR2E.Commands
                     string oldObjectName = "";
                     try
                     {
-                        string name = gameobject.GetComponent<Identifiable>().identType.LocalizedName
-                            .GetLocalizedString();
-                        if (name.Contains(" "))
-                            objectName = "'" + name + "'";
-                        else
-                            objectName = name;
+                        string name = gameobject.GetComponent<Identifiable>().identType.LocalizedName.GetLocalizedString();
+                        if (name.Contains(" ")) objectName = "'" + name + "'";
+                        else objectName = name;
                     }
                     catch 
                     { oldObjectName = gameobject.GetComponent<Identifiable>().identType.name;}
@@ -88,10 +85,7 @@ namespace SR2E.Commands
                     Vector3 position = gameobject.transform.position;
                     Quaternion rotation = gameobject.transform.rotation;
                     //Remove old one
-                    Damage damage = new Damage { DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };;
-                    damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
-                    damage.Amount = 99999999;
-                    DeathHandler.Kill(gameobject, damage);
+                    DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
                     
                     //Add new one 
                     var spawned = GameObject.Instantiate(type.prefab, hit.point, Quaternion.identity);
