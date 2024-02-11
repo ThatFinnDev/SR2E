@@ -8,7 +8,6 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
@@ -699,7 +698,7 @@ namespace SR2E.Library
         {
             return FXHelpers.SpawnFX(fx, pos, rot);
         }
-        public static T? Get<T>(string name) where T : Object { return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); }
+        public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
         public static void AddToGroup(this IdentifiableType type, string groupName)
         {
             var group = Get<IdentifiableTypeGroup>(groupName);
