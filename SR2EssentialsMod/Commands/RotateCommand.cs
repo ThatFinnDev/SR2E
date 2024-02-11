@@ -34,8 +34,8 @@ public class RotateCommand : SR2CCommand
             }
             else if (gameobject.GetComponentInParent<Gadget>())
             {
-                gameobject.GetComponentInParent<Gadget>().transform.Rotate(new Vector3(rotation.x,0,rotation.z));
-                gameobject.GetComponentInParent<Gadget>()._model.eulerRotation += new Vector3(rotation.x, 0, rotation.z);
+                gameobject.GetComponentInParent<Gadget>().transform.Rotate(new Vector3(rotation.x,rotation.y,rotation.z));
+                gameobject.GetComponentInParent<Gadget>()._model.eulerRotation += new Vector3(rotation.x, rotation.y, rotation.z);
                 didAThing = true;
             }
             if (didAThing)

@@ -17,7 +17,7 @@
 
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
-                SR2EConsole.SendMessage(melonBase.Info.Name+" by:"+melonBase.Info.Author);
+                SR2EConsole.SendMessage(melonBase.Info.Name+" by: "+melonBase.Info.Author);
             }
 
             return true;

@@ -1,5 +1,6 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
@@ -41,11 +42,7 @@ public class KillCommand : SR2CCommand
         bool didAThing = false;
         if (gameObject.GetComponentInParent<Gadget>())
         {
-            Object.FindObjectOfType<GameModel>().identifiables.Remove(gameObject.GetComponentInParent<Gadget>().GetActorId());
-            gameObject.GetComponentInParent<Gadget>().gameObject.hideFlags |= HideFlags.HideAndDontSave;
-            gameObject.GetComponentInParent<Gadget>().hideFlags |= HideFlags.HideAndDontSave;
-            gameObject.GetComponentInParent<Gadget>().hasStarted = false;
-            gameObject.GetComponentInParent<Gadget>().RequestDestroy("ok");
+            gameObject.GetComponentInParent<Gadget>().DestroyGadget(null,null);;
             didAThing = true;
         }
         else if (gameObject.GetComponent<Identifiable>())
