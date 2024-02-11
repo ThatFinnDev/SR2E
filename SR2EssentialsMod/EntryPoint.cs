@@ -205,7 +205,9 @@ namespace SR2E
                 GameContext.Instance.AutoSaveDirector.SaveGame();
             }
         }
-        public static Damage killDamage;
+
+        public static Damage KillDamage => killDamage;
+        internal static Damage killDamage;
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
 
@@ -374,7 +376,7 @@ namespace SR2E
                     break;
             }
         }
-        public static bool SaveCountChanged = false;
+        internal static bool SaveCountChanged = false;
         public override void OnUpdate()
         {
             if(throwErrors)
