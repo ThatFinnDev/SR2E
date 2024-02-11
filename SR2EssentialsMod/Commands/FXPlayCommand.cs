@@ -48,6 +48,7 @@ namespace SR2E.Commands
 
             return null;
         }
+        public ParticleSystem currFX;
         public override bool Execute(string[] args)
         {
             if (args == null)
@@ -56,15 +57,17 @@ namespace SR2E.Commands
                 return false;
             }
 
-            if (args.Length <= 3)
+            if (!(args.Length <= 3))
             {
                 SR2Console.SendMessage($"Usage: {Usage}");
                 return false;
             }
 
-            
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
-
+            if (currFX != null && !currFX.isStopped)
+            {
+                SR2Console.SendError("Please wait for the current FX to stop.");
+                return false;
+            }
             
             if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
             {
@@ -88,6 +91,7 @@ namespace SR2E.Commands
                             fxobj.AddComponent<FXPlayPauseFunction>();
                     }
                 }
+                currFX = fxobj.GetComponent<ParticleSystem>();
             }
             return true;
         }
