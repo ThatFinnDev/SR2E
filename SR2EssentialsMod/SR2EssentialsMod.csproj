@@ -89,9 +89,6 @@
     <Reference Include="Unity.2D.Animation.Runtime">
       <HintPath>Libs\Unity.2D.Animation.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSystem">
-      <HintPath>Libs\Il2CppSystem.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Addressables">
       <HintPath>Libs\Unity.Addressables.dll</HintPath>
     </Reference>
