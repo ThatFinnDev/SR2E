@@ -46,7 +46,7 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
 
             string objectName = "";
             string identifierTypeName = args[0];
@@ -56,7 +56,7 @@ namespace SR2E.Commands
             {
                 type = SR2EEntryPoint.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
                 if (type == null)
-                { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
+                { SR2EConsole.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
                 string name = type.LocalizedName.GetLocalizedString();
                 if (name.Contains(" "))
                     objectName = "'" + name + "'";
@@ -88,16 +88,18 @@ namespace SR2E.Commands
                     DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
                     
                     //Add new one 
-                    var spawned = GameObject.Instantiate(type.prefab, hit.point, Quaternion.identity);
+                    GameObject spawned = null;
+                    if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
+                    else spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
                     //var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE,SlimeAppearance.AppearanceSaveSet.NONE);
                     spawned.transform.position = position;
                     spawned.transform.rotation = rotation;
 
-                    SR2Console.SendMessage($"Successfully replaced {oldObjectName} with {objectName}!");
+                    SR2EConsole.SendMessage($"Successfully replaced {oldObjectName} with {objectName}!");
                     return true;
                 }
             }
-            SR2Console.SendError("Not looking at a valid object!");
+            SR2EConsole.SendError("Not looking at a valid object!");
             return false;
         }
     }

@@ -1,26 +1,19 @@
 ﻿using System;
 using System.Linq;
-using Il2CppInterop.Runtime.Attributes;
-using Il2CppInterop.Runtime.Injection;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Commands.Library;
-using SR2E.Commands.Secret;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 namespace SR2E
 {
-    public static class SR2Console
+    public static class SR2EConsole
     {
-        public static List<string> commandHistory;
-        public static int commandHistoryIdx = -1;
         /// <summary>
         /// Display a message in the console
         /// </summary>
-
-        public static MelonLogger.Instance mlog;
 
         public static void SendMessage(string message)
         {
@@ -220,9 +213,9 @@ namespace SR2E
         public static void Open()
         {
             if (SR2EEntryPoint._mSRMLIsInstalled) return;
-            if (SR2ModMenu.isOpen)
+            if (SR2EModMenu.isOpen)
                 return;
-            if (SR2Warps.warpTo != null)
+            if (SR2EWarps.warpTo != null)
                 return;
 
             consoleBlock.SetActive(true);
@@ -250,6 +243,7 @@ namespace SR2E
         /// <summary>
         /// Registers a command to be used in the console
         /// </summary>
+        
         public static bool RegisterCommand(SR2CCommand cmd)
         {
             if (commands.ContainsKey(cmd.ID.ToLowerInvariant()))
@@ -323,8 +317,8 @@ namespace SR2E
                             split.RemoveAt(split.Count - 1);
                             bool shouldRunNormalExecute = true;
                             bool canPlay = false;
-                            if (!SR2Console.isOpen)
-                                if (!SR2ModMenu.isOpen)
+                            if (!SR2EConsole.isOpen)
+                                if (!SR2EModMenu.isOpen)
                                     if (Time.timeScale != 0)
                                         canPlay = true;
 
@@ -367,7 +361,7 @@ namespace SR2E
                     }
                     else
                         if (isOpen)
-                            if (!SR2ModMenu.isOpen)
+                            if (!SR2EModMenu.isOpen)
                                 SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
                 }
             }
@@ -380,6 +374,10 @@ namespace SR2E
         internal static GameObject gameObject;
         internal static Dictionary<string, SR2CCommand> commands = new Dictionary<string, SR2CCommand>();
 
+        static List<string> commandHistory;
+        static int commandHistoryIdx = -1;
+
+        static MelonLogger.Instance mlog;
         static Scrollbar _scrollbar;
         static bool shouldResetTime = false;
         const int maxMessages = 100;
@@ -464,21 +462,21 @@ namespace SR2E
         }
 
         //Warps & Keybinding loading
-        private static void SetupData()
+        static void SetupData()
         {
             if (!SR2EEntryPoint._mSRMLIsInstalled)
-                SR2CommandBindingManager.Start();
-            SR2Warps.Start();
+                SR2ECommandBindingManager.Start();
+            SR2EWarps.Start();
         }
         //Setup ModMenu
-        private static void SetupModMenu()
+        static void SetupModMenu()
         {
-            SR2ModMenu.parent = transform;
-            SR2ModMenu.gameObject = transform.getObjRec<GameObject>("modMenu");
-            SR2ModMenu.transform = transform.getObjRec<Transform>("modMenu");
-            SR2ModMenu.Start();
+            SR2EModMenu.parent = transform;
+            SR2EModMenu.gameObject = transform.getObjRec<GameObject>("modMenu");
+            SR2EModMenu.transform = transform.getObjRec<Transform>("modMenu");
+            SR2EModMenu.Start();
         }
-        private static void SetupCommands()
+        static void SetupCommands()
         {
             RegisterCommand(new FloatCommand());
             RegisterCommand(new StopWeatherCommand());
@@ -519,7 +517,6 @@ namespace SR2E
             if (SR2EEntryPoint.devMode) RegisterCommands(new SR2CCommand[] { new AddToGroupCommand(), new RemoveFromGroupCommand() , new RefreshEatmapCommand(), });
             if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InvincibleCommand());
             if (!SR2EEntryPoint.infEnergyInstalled) RegisterCommand(new InfiniteEnergyCommand());
-            if (SR2EEntryPoint.chaosMode) RegisterCommands(new SR2CCommand[] { new FastModeCommand() });
         }
 
         internal static bool syncedSetuped = false;
@@ -702,7 +699,7 @@ namespace SR2E
                 {
                 }
 
-                SR2CommandBindingManager.Update();
+                SR2ECommandBindingManager.Update();
 
             }
 
@@ -710,11 +707,11 @@ namespace SR2E
             foreach (KeyValuePair<string, SR2CCommand> pair in commands)
                 pair.Value.Update();
             //Modmenu
-            try { SR2ModMenu.Update(); } catch{ }
+            try { SR2EModMenu.Update(); } catch{ }
         }
         
 
-        public static void NextAutoComplete()
+        static void NextAutoComplete()
         {
             if (SR2EEntryPoint._mSRMLIsInstalled) return;
             selectedAutoComplete += 1;
@@ -730,7 +727,7 @@ namespace SR2E
                 autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color = new Color32(255, 211, 0, 120);
             }
         }
-        public static void PrevAutoComplete()
+        static void PrevAutoComplete()
         {
             if (SR2EEntryPoint._mSRMLIsInstalled) return;
             selectedAutoComplete -= 1;
@@ -760,7 +757,6 @@ namespace SR2E
             ExecuteByString(cmds);
 
         }
-
 
 
     }

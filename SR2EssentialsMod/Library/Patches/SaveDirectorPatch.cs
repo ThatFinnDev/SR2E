@@ -23,8 +23,6 @@ public static class SaveDirectorPatch
         plorts = Get<IdentifiableTypeGroup>("PlortGroup");
         crafts = Get<IdentifiableTypeGroup>("CraftGroup");
 
-        if (SR2EEntryPoint.chaosMode)
-            ChaosMode.OnSaveDirectorLoading(__instance);
         SR2EEntryPoint.OnSaveDirectorLoading(__instance);
         foreach (SR2EMod lib in mods)
         {

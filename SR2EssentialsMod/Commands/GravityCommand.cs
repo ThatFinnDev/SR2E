@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using UnityEngine.InputSystem;
-
-namespace SR2E.Commands
+﻿namespace SR2E.Commands
 {
     public class GravityCommand : SR2CCommand
     {
@@ -12,23 +8,20 @@ namespace SR2E.Commands
 
         public override bool Execute(string[] args)
         {
-            if (args == null)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
-            if (args.Length != 3)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (args == null || args.Length != 3 ) return SendUsage();
+            if (!inGame) return SendLoadASaveFirstMessage();
 
             Vector3 gravBase;
             try
             {
                 gravBase = new Vector3(-float.Parse(args[0]), -float.Parse(args[1]), -float.Parse(args[2]));
                 Physics.gravity = gravBase * 9.81f;
-                SR2Console.SendMessage($"Successfully changed the gravity to {args[0]} {args[1]} {args[2]}!");
+                SR2EConsole.SendMessage($"Successfully changed the gravity to {args[0]} {args[1]} {args[2]}!");
                 return true;
             }
             catch
             {
-                SR2Console.SendError($"The vector {args[0]} {args[1]} {args[2]} is invalid!");
+                SR2EConsole.SendError($"The vector {args[0]} {args[1]} {args[2]} is invalid!");
                 return false;
             }
             return false;

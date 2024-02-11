@@ -10,8 +10,7 @@ using Action = System.Action;
 
 namespace SR2E
 {
-
-    internal static class SR2ModMenu
+    public static class SR2EModMenu
     {
         internal static Transform parent;
         internal static Transform transform;
@@ -20,10 +19,12 @@ namespace SR2E
         static TextMeshProUGUI modInfoText;
         static UIPrefabLoader _uiActivator;
         
-        static void Close()
+        /// <summary>
+        /// Closes the mod menu
+        /// </summary>
+        public static void Close()
         {
-            if (Object.FindObjectsOfType<MapUI>().Length != 0)
-                return;
+            if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
             modMenuBlock.SetActive(false);
             gameObject.SetActive(false);
             gameObject.getObjRec<Button>("ModMenu").onClick.Invoke();
@@ -31,29 +32,26 @@ namespace SR2E
             if(SR2EEntryPoint.mainMenuLoaded)
             {
                 foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
-                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
-                        loader.parentTransform.name == "MainMenuRoot")
-                    {
-                        loader.Start();
-                        break;
-                    }
+                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" && loader.parentTransform.name == "MainMenuRoot")
+                    { loader.Start(); break; }
             }
-            else
-                SystemContext.Instance.SceneLoader.UnpauseGame();
+            else SystemContext.Instance.SceneLoader.UnpauseGame();
                 
             
 
             Transform modContent = transform.getObjRec<Transform>("ModContent");
             for (int i = 0; i < modContent.childCount; i++)
-                GameObject.Destroy(modContent.GetChild(i).gameObject);
+                Object.Destroy(modContent.GetChild(i).gameObject);
         }
 
         static MainMenuLandingRootUI _mainMenuLandingRootUI;
 
-        internal static void Open()
+        /// <summary>
+        /// Opens the mod menu
+        /// </summary>
+        public static void Open()
         {
-            if (SR2Console.isOpen)
-                return;
+            if (SR2EConsole.isOpen) return;
             modMenuBlock.SetActive(true);
             gameObject.SetActive(true);
 
@@ -64,14 +62,14 @@ namespace SR2E
                     _mainMenuLandingRootUI.gameObject.SetActive(false);
                     _mainMenuLandingRootUI.enabled = false;
                     _mainMenuLandingRootUI.Close(true, null);
-                }catch{}
+                } catch {}
             else
                 try
                 {
                     PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>();
                     pauseMenuRoot.Close();
                     SystemContext.Instance.SceneLoader.TryPauseGame();
-                }catch{}
+                } catch {}
 
 
 
@@ -94,15 +92,12 @@ namespace SR2E
                         modInfoText.text += "\nDownloadLink: " + melonBase.Info.DownloadLink;
 
                     string universalModName = "Unknown";
-                    MelonGameAttribute universalMod =
-                        melonBase.MelonAssembly.Assembly.GetCustomAttribute<MelonGameAttribute>();
-                    if (universalMod != null)
-                        universalModName = universalMod.Universal.ToString();
+                    MelonGameAttribute universalMod = melonBase.MelonAssembly.Assembly.GetCustomAttribute<MelonGameAttribute>();
+                    if (universalMod != null) universalModName = universalMod.Universal.ToString();
                     modInfoText.text += "\nIsUniversalMod: " + universalModName;
 
 
-                    AssemblyDescriptionAttribute desc = melonBase.MelonAssembly.Assembly
-                        .GetCustomAttribute<AssemblyDescriptionAttribute>();
+                    AssemblyDescriptionAttribute desc = melonBase.MelonAssembly.Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
                     if (desc != null)
                         if (!String.IsNullOrEmpty(desc.Description))
                             modInfoText.text += "\nDescription: " + desc.Description + "\n";
@@ -112,12 +107,13 @@ namespace SR2E
 
         }
 
-        static void Toggle()
+        /// <summary>
+        /// Toggles the mod menu
+        /// </summary>
+        public static void Toggle()
         {
-            if (isOpen)
-                Close();
-            else
-                Open();
+            if (isOpen) Close();
+            else Open();
         }
 
         internal static bool isOpen

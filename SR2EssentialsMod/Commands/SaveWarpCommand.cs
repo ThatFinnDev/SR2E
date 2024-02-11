@@ -15,27 +15,27 @@ namespace SR2E.Commands
         {
             if (args == null)
             {
-                SR2Console.SendError($"Usage: {Usage}");
+                SR2EConsole.SendError($"Usage: {Usage}");
                 return false;
             }
 
             if (args.Length != 1)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            { SR2EConsole.SendMessage($"Usage: {Usage}"); return false; }
             
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
 
             string name = args[0];
-            if (SR2Warps.warps.ContainsKey(name))
-            { SR2Console.SendError($"There is already a warp with the name: {name}"); return false; }
+            if (SR2EWarps.warps.ContainsKey(name))
+            { SR2EConsole.SendError($"There is already a warp with the name: {name}"); return false; }
 
             Vector3 pos = SceneContext.Instance.Player.transform.position;
             Quaternion rotation = SceneContext.Instance.Player.transform.rotation;
             string sceneGroup = SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId;
             
-            SR2Warps.warps.Add(name,new Warp(sceneGroup,pos,rotation));
-            SR2Warps.SaveWarps();
+            SR2EWarps.warps.Add(name,new Warp(sceneGroup,pos,rotation));
+            SR2EWarps.SaveWarps();
             
-            SR2Console.SendMessage($"Successfully added the Warp: {name}");
+            SR2EConsole.SendMessage($"Successfully added the Warp: {name}");
             return true;
         }
     }

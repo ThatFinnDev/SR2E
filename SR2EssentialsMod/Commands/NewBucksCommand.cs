@@ -15,24 +15,18 @@ public class NewBucksCommand : SR2CCommand
 
     public override bool Execute(string[] args)
     {
-        if (args == null)
-        { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
-        if (args.Length != 1)
-        { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
-        if (!inGame)
-        { SR2Console.SendError("Load a save first!"); return false; }
+        if (args == null || args.Length != 1) return SendUsage();
+        if (!inGame) return SendLoadASaveFirstMessage();
 
         int amount = 0;
         if (!int.TryParse(args[0], out amount))
-        { SR2Console.SendError(args[1] + " is not a valid integer!"); return false; }
+        { SR2EConsole.SendError(args[1] + " is not a valid integer!"); return false; }
 
 
         int newNewBuckAmount = Mathf.Clamp(amount + SceneContext.Instance.PlayerState._model.currency, 0, int.MaxValue);
         SceneContext.Instance.PlayerState._model.SetCurrency(newNewBuckAmount);
         SceneContext.Instance.PlayerState._model.SetCurrencyEverCollected(newNewBuckAmount);
-        SR2Console.SendMessage($"Successfully addded {amount} newbucks");
+        SR2EConsole.SendMessage($"Successfully addded {amount} newbucks");
         return true;
     }
 

@@ -24,7 +24,7 @@ public static class PlayerDataLoadPatch
             SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(SR2ESavableData.Instance.playerSavedData.gravityLevel);
             if (SR2ESavableData.Instance.playerSavedData.noclipState && SR2EEntryPoint.debugLogging)
             {
-                SR2Console.SendMessage("Load noclip state debug");
+                SR2EConsole.SendMessage("Load noclip state debug");
             }
         }
         catch { }

@@ -25,11 +25,11 @@ public class SR2EGordoDataSaver : MonoBehaviour
     public void LoadData()
     {
         if (SR2EEntryPoint.debugLogging)
-            SR2Console.SendMessage($"load ident debug start: {gameObject.name}");
+            SR2EConsole.SendMessage($"load ident debug start: {gameObject.name}");
         var id = GetComponent<GordoEat>().Id;
         GetComponent<GordoEat>()._initScale = SR2ESavableData.Instance.gordoSavedData[id].baseSize;
         if (SR2EEntryPoint.debugLogging)
-            SR2Console.SendMessage("loaded ident");
+            SR2EConsole.SendMessage("loaded ident");
     }
     public void Start()
     {
