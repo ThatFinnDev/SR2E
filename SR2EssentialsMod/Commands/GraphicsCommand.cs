@@ -35,7 +35,7 @@ public class GraphicsCommand : SR2CCommand
     internal static bool activated = false;
     public override bool Execute(string[] args)
     {
-        if (args == null || args.Length != 2) return SendUsage();
+        if (args == null || args.Length != 1) return SendUsage();
 
 
         if (rangeLightInstance == null)
