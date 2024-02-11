@@ -26,7 +26,7 @@ public class MultiKey
                     wasPressed = true;
                     foreach (Key keyTwo in requiredKeys)
                         if (key != keyTwo)
-                            if (!Keyboard.current[key].isPressed)
+                            if (!Keyboard.current[keyTwo].isPressed)
                                 wasPressed = false;
                 }
             return wasPressed;
@@ -44,7 +44,7 @@ public class MultiKey
                     wasReleased = true;
                     foreach (Key keyTwo in requiredKeys)
                         if (key != keyTwo)
-                            if (!Keyboard.current[key].isPressed)
+                            if (!Keyboard.current[keyTwo].isPressed)
                                 wasReleased = false;
                 }
             return wasReleased;
