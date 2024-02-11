@@ -28,11 +28,7 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
-            if (args == null)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
-            if (args.Length != 1)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (args == null || args.Length != 1) return SendUsage();
 
             int e;
             string keyToParse = args[0];
@@ -44,18 +40,18 @@ namespace SR2E.Commands
             Key key;
             if (Key.TryParse(keyToParse,true,out key))
             {
-                if (!SR2CommandBindingManager.keyCodeCommands.ContainsKey(key))
+                if (!SR2ECommandBindingManager.keyCodeCommands.ContainsKey(key))
                 {
-                    SR2Console.SendMessage($"{args[0]} is not bound to anything!");
+                    SR2EConsole.SendMessage($"{args[0]} is not bound to anything!");
                     return false;
                 }
-                SR2CommandBindingManager.keyCodeCommands.Remove(key);
-                SR2CommandBindingManager.SaveKeyBinds();
-                SR2Console.SendMessage($"Successfully unbound key {key}");
+                SR2ECommandBindingManager.keyCodeCommands.Remove(key);
+                SR2ECommandBindingManager.SaveKeyBinds();
+                SR2EConsole.SendMessage($"Successfully unbound key {key}");
                 return true;
             }
             
-            SR2Console.SendMessage($"{args[0]} is not a valid KeyCode!");
+            SR2EConsole.SendMessage($"{args[0]} is not a valid KeyCode!");
             return false;
         }
     }

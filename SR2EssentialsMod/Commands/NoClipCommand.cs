@@ -1,42 +1,30 @@
-﻿using Il2CppKinematicCharacterController;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using SR2E.Saving;
-using UnityEngine.InputSystem;
+﻿using SR2E.Saving;
 
 namespace SR2E.Commands
 {
     public class NoClipCommand : SR2CCommand
     {
-
-        
-
         public override string ID => "noclip";
-
         public override string Usage => "noclip";
-
         public override string Description => "Toggles noclip";
-
         public static void RemoteExc(bool n)
         {
             if (n)
             {
                 SR2ESavableData.Instance.playerSavedData.noclipState = true;
                 //var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
-                SceneContext.Instance.Camera.AddComponent<NoclipComponent>();
+                SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
             }
         }
 
         public override bool Execute(string[] args)
         {
-            if (args != null)
-            {
-                return false;
-            }
+            if (args != null) return SendUsage();
             try
             {
-                if (!SceneContext.Instance.Camera.RemoveComponent<NoclipComponent>())
+                if (!SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>())
                 {
-                    SceneContext.Instance.Camera.AddComponent<NoclipComponent>();
+                    SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
                     SR2ESavableData.Instance.playerSavedData.noclipState = true;
                 }
                 else

@@ -32,7 +32,7 @@ internal class WeatherCommand : SR2CCommand
         };
 
         dir.RunState(def.Cast<IWeatherState>(), param);
-        SR2Console.SendMessage($"Successfully run weather state \"{def.name.Replace(" ", "")}\"");
+        SR2EConsole.SendMessage($"Successfully run weather state \"{def.name.Replace(" ", "")}\"");
         return true;
     }
 

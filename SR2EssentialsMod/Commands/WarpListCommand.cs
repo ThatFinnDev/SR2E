@@ -11,21 +11,17 @@
         }
         public override bool Execute(string[] args)
         {
-            if (args != null)
-            {
-                SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
-                return false;
-            }
+            if (args == null || args.Length != 1) return SendNoArguments();
 
-            if (SR2Warps.warps.Count == 0)
+            if (SR2EWarps.warps.Count == 0)
             {
-                SR2Console.SendError("There are no warps yet!");
+                SR2EConsole.SendError("There are no warps yet!");
                 return false;
             }
-            SR2Console.SendMessage("<color=blue>List of all Warps:</color>");
-            foreach (KeyValuePair<string, Warp> pair in SR2Warps.warps)
+            SR2EConsole.SendMessage("<color=blue>List of all Warps:</color>");
+            foreach (KeyValuePair<string, Warp> pair in SR2EWarps.warps)
             {
-                SR2Console.SendMessage($"'{pair.Key}' in '{pair.Value.sceneGroup}' at '{pair.Value.x} {pair.Value.y} {pair.Value.z}'");
+                SR2EConsole.SendMessage($"'{pair.Key}' in '{pair.Value.sceneGroup}' at '{pair.Value.x} {pair.Value.y} {pair.Value.z}'");
             }
 
             return true;

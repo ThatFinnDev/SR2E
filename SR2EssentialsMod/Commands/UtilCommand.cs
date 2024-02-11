@@ -47,7 +47,7 @@ namespace SR2E.Commands
                     };
                     if (isGet)
                     {
-                        SR2Console.SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is {emotions[emotion]}");
+                        SR2EConsole.SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is {emotions[emotion]}");
                         return;
                     }
                     else
@@ -55,17 +55,17 @@ namespace SR2E.Commands
                         if (emotion == SlimeEmotions.Emotion.HUNGER)
                         {
                             slime._model.emotionHunger.CurrVal = val;
-                            SR2Console.SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
+                            SR2EConsole.SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
                         }
                         if (emotion == SlimeEmotions.Emotion.AGITATION)
                         {
                             slime._model.emotionAgitation.CurrVal = val;
-                            SR2Console.SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
+                            SR2EConsole.SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
                         }
                         if (emotion == SlimeEmotions.Emotion.FEAR)
                         {
                             slime._model.emotionFear.CurrVal = val;
-                            SR2Console.SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
+                            SR2EConsole.SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
                         }
 
                     }
@@ -83,7 +83,7 @@ namespace SR2E.Commands
                     var logString = "NULL";
                     if (actor.ignoresGravity) logString = "deactivated";
                     else logString = "activated";
-                    SR2Console.SendMessage($"The {actor.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s gravity is now {logString}");
+                    SR2EConsole.SendMessage($"The {actor.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s gravity is now {logString}");
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace SR2E.Commands
                 {
                     actor.transform.localScale = new Vector3(x, y, z);
 
-                    SR2Console.SendMessage($"The {actor.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s scale vector is now {x}, {y}, {z}");
+                    SR2EConsole.SendMessage($"The {actor.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s scale vector is now {x}, {y}, {z}");
                 }
             }
         }
@@ -137,13 +137,13 @@ namespace SR2E.Commands
                 {
                     if (isGet)
                     {
-                        SR2Console.SendMessage($"The {gordo.SlimeDefinition.name.ToLower()} gordo\'s base size is {gordo._initScale}");
+                        SR2EConsole.SendMessage($"The {gordo.SlimeDefinition.name.ToLower()} gordo\'s base size is {gordo._initScale}");
                         return;
                     }
                     else
                     {
                         gordo._initScale = size;
-                        SR2Console.SendMessage($"The {gordo.SlimeDefinition.name} Gordo\'s size is now {size}");
+                        SR2EConsole.SendMessage($"The {gordo.SlimeDefinition.name} Gordo\'s size is now {size}");
                     }
                 }
             }
@@ -157,13 +157,13 @@ namespace SR2E.Commands
                 {
                     if (isGet)
                     {
-                        SR2Console.SendMessage($"The amount of food the {gordo.SlimeDefinition.name.ToLower()} gordo ate is {gordo.GetEatenCount()}");
+                        SR2EConsole.SendMessage($"The amount of food the {gordo.SlimeDefinition.name.ToLower()} gordo ate is {gordo.GetEatenCount()}");
                         return;
                     }
                     else
                     {
                         gordo.SetEatenCount(amount);
-                        SR2Console.SendMessage($"The {gordo.SlimeDefinition.name} Gordo\'s eaten count is now {amount}");
+                        SR2EConsole.SendMessage($"The {gordo.SlimeDefinition.name} Gordo\'s eaten count is now {amount}");
                     }
                 }
             }
@@ -175,7 +175,7 @@ namespace SR2E.Commands
                 var gordo = hit.collider.gameObject.GetComponent<GordoEat>();
                 if (gordo != null)
                 {
-                    SR2Console.SendMessage($"This {gordo.SlimeDefinition.name.ToLower()} gordo\'s ID is {gordo._id}");
+                    SR2EConsole.SendMessage($"This {gordo.SlimeDefinition.name.ToLower()} gordo\'s ID is {gordo._id}");
                 }
             }
         }
@@ -227,7 +227,7 @@ namespace SR2E.Commands
         {
             if (isGet)
             {
-                SR2Console.SendMessage($"The current size of the player is {SceneContext.Instance.player.transform.localScale.x}");
+                SR2EConsole.SendMessage($"The current size of the player is {SceneContext.Instance.player.transform.localScale.x}");
             }
             else
             {
@@ -236,7 +236,7 @@ namespace SR2E.Commands
                 KCC.CapsuleHeight = playerColliderHeightBase * size;
                 KCC.CapsuleRadius = playerColliderRadBase * size;
                 SR2ESavableData.Instance.playerSavedData.size = size;
-                SR2Console.SendMessage($"The new size of the player is {size}");
+                SR2EConsole.SendMessage($"The new size of the player is {size}");
 
             }
         }
@@ -251,13 +251,13 @@ namespace SR2E.Commands
         {
             if (isGet)
             {
-                SR2Console.SendMessage($"The current gravity level of the player is {SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude}");
+                SR2EConsole.SendMessage($"The current gravity level of the player is {SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude}");
             }
             else
             {
                 SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(level);
                 SR2ESavableData.Instance.playerSavedData.gravityLevel = level;
-                SR2Console.SendMessage($"The new gravity level of the player is {level}");
+                SR2EConsole.SendMessage($"The new gravity level of the player is {level}");
 
             }
         }
@@ -272,7 +272,7 @@ namespace SR2E.Commands
                     if (gadget != null)
                     {
                         var pos = gadget.transform.position;
-                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {pos.x}, {pos.y}, {pos.z}");
+                        SR2EConsole.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {pos.x}, {pos.y}, {pos.z}");
                     }
                 }
                 else
@@ -283,7 +283,7 @@ namespace SR2E.Commands
                         var pos = new Vector3(posX, posY, posZ);
                         gadget.transform.position = pos;
                         gadget._model.lastPosition = pos;
-                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {posX}, {posY}, {posZ}");
+                        SR2EConsole.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {posX}, {posY}, {posZ}");
                     }
                 }
             }
@@ -300,7 +300,7 @@ namespace SR2E.Commands
                     if (gadget != null)
                     {
                         var scale = gadget.transform.localScale;
-                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {scale.x}, {scale.y}, {scale.z}");
+                        SR2EConsole.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {scale.x}, {scale.y}, {scale.z}");
                     }
                 }
                 else
@@ -310,7 +310,7 @@ namespace SR2E.Commands
                     {
                         var scale = new Vector3(scaleX, scaleY, scaleZ);
                         gadget.transform.localScale = scale;
-                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {scaleX}, {scaleY}, {scaleZ}");
+                        SR2EConsole.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {scaleX}, {scaleY}, {scaleZ}");
                     }
                 }
             }
@@ -327,7 +327,7 @@ namespace SR2E.Commands
                     if (gadget != null)
                     {
                         var gadgetRot = gadget.transform.eulerAngles.y;
-                        SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is {gadgetRot}");
+                        SR2EConsole.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is {gadgetRot}");
                     }
                 }
                 else
@@ -337,7 +337,7 @@ namespace SR2E.Commands
                     {
                             gadget._model.eulerRotation = new Vector3(0, rot, 0);
                             gadget.transform.rotation = Quaternion.EulerRotation(new Vector3(0, rot, 0));
-                            SR2Console.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
+                            SR2EConsole.SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
                     }
                 }
             }

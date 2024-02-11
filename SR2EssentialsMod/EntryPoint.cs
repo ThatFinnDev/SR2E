@@ -71,7 +71,6 @@ namespace SR2E
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
         internal static bool devMode { get { return prefs.GetEntry<bool>("experimentalStuff").Value; } }
         internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
-        internal static bool chaosMode { get { return prefs.GetEntry<bool>("chaosMode").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
 
@@ -94,16 +93,16 @@ namespace SR2E
             
             if (!prefs.HasEntry("enableDebugDirector"))
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable Debug Menu", false).disableWarning((System.Action)(
-                    () => { SrDebugDirector.isEnabled = enableDebugDirector; }));
+                    () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
             
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false).disableWarning((System.Action)(
                     () =>
                     {
-                        if (consoleUsesSR2Font != SR2Console.syncedSetuped)
+                        if (consoleUsesSR2Font != SR2EConsole.syncedSetuped)
                         {
-                            if(SR2Console.syncedSetuped) SR2Console.SetupConsoleSync();
-                            else SR2Console.UnSetupConsoleSync();
+                            if(SR2EConsole.syncedSetuped) SR2EConsole.SetupConsoleSync();
+                            else SR2EConsole.UnSetupConsoleSync();
                         }
                         SetupFonts();
                     }));
@@ -119,9 +118,6 @@ namespace SR2E
                 prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).disableWarning();
             if (!prefs.HasEntry("noclipSprintMultiply"))
                 prefs.CreateEntry("noclipSprintMultiply", 2f, "Noclip sprint speed multiplier", false).disableWarning();
-            if (!prefs.HasEntry("chaosMode"))
-                prefs.CreateEntry("chaosMode", (bool)false, "\u00af\\_(ツ)_/\u00af", "The game takes longer to start with this! Don't freak out!",true);
-
         }
 
         private static bool throwErrors = false;
@@ -250,13 +246,13 @@ namespace SR2E
                     break;
                 case "MainMenuUI":
                     
-                    if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) SR2Console.ExecuteByString(onMainMenuLoadCommand);
+                    if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) SR2EConsole.ExecuteByString(onMainMenuLoadCommand);
                     SaveCountChanged = false;
                     Time.timeScale = 1f;
                     break;
                 case "LoadScene":
                     if (skipEngagementPrompt)
-                        SR2Console.transform.getObjRec<GameObject>("EngagementSkipMessage").SetActive(false);
+                        SR2EConsole.transform.getObjRec<GameObject>("EngagementSkipMessage").SetActive(false);
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
@@ -283,9 +279,9 @@ namespace SR2E
                         if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnGameCoreLoaded();
                     break;
                 case "UICore":
-                    if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2Console.ExecuteByString(onSaveLoadCommand);
-                    if(SceneContext.Instance.Player.GetComponent<SrDebugDirector>()==null)
-                        SceneContext.Instance.Player.AddComponent<SrDebugDirector>();
+                    if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2EConsole.ExecuteByString(onSaveLoadCommand);
+                    if(SceneContext.Instance.Player.GetComponent<SR2EDebugDirector>()==null)
+                        SceneContext.Instance.Player.AddComponent<SR2EDebugDirector>();
 
                     var obj2 = Object.Instantiate(bundle.LoadAsset("assets/SaveExplorer.prefab"));
                     obj2.Cast<GameObject>().AddComponent<SaveExplorerRoot>();
@@ -297,10 +293,10 @@ namespace SR2E
                         if (baseMelonBase is SR2EMod) (baseMelonBase as SR2EMod).OnZoneCoreLoaded();
                     break;
                 case "PlayerCore":
-                    NoclipComponent.playerSettings = Get<KCCSettings>("");
-                    NoclipComponent.player = SceneContext.Instance.player.transform;
-                    NoclipComponent.playerController = NoclipComponent.player.GetComponent<SRCharacterController>();
-                    NoclipComponent.playerMotor = NoclipComponent.player.GetComponent<KinematicCharacterMotor>();
+                    NoClipComponent.playerSettings = Get<KCCSettings>("");
+                    NoClipComponent.player = SceneContext.Instance.player.transform;
+                    NoClipComponent.playerController = NoClipComponent.player.GetComponent<SRCharacterController>();
+                    NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
                     player = Get<GameObject>("PlayerControllerKCC");
                     
                     foreach (MelonBase baseMelonBase in MelonBase.RegisteredMelons)
@@ -309,8 +305,7 @@ namespace SR2E
                 
             }
             
-            SR2Console.OnSceneWasLoaded(buildIndex, sceneName);
-            try { if (chaosMode) ChaosMode.OnSceneWasLoaded(buildIndex, sceneName); } catch { }
+            SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
         internal static TMP_FontAsset defaultFont;
@@ -320,23 +315,23 @@ namespace SR2E
                 SR2Font = Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
             
             if (consoleUsesSR2Font)
-                foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2EConsole.gameObject.getAllChildrenOfType<TMP_Text>())
                 {
                     if(defaultFont==null)
                         defaultFont= text.font;
                     text.font = SR2Font;
                 }
             else if(defaultFont!=null)
-                foreach (var text in SR2Console.gameObject.getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2EConsole.gameObject.getAllChildrenOfType<TMP_Text>())
                     text.font = defaultFont;
             foreach (var text in SR2ESaveEditor.instance.gameObject.getAllChildrenOfType<TMP_Text>())
             {
                 text.font = SR2Font;
                 MelonLogger.Msg("LOG");
             }
-            foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
+            foreach (var text in SR2EConsole.gameObject.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
-            foreach (var text in SR2Console.gameObject.getObjRec<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>()) 
+            foreach (var text in SR2EConsole.gameObject.getObjRec<GameObject>("EngagementSkipMessage").getAllChildrenOfType<TMP_Text>()) 
                 text.font = SR2Font;
             
         }
@@ -348,8 +343,8 @@ namespace SR2E
         internal static void SaveDirectorLoaded()
         {
             LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
-            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2ModMenu.Open(); }));
-            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2ModMenu.Open(); }));
+            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
+            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
             //new CustomPauseMenuButton(AddTranslation("Save Edit", "b.button_save_edit_sr2e", "UI"), 4, (System.Action)(() => { SR2ESaveEditor.Open(); }));
 
             if (devMode) new CustomPauseMenuButton( AddTranslation("Debug Player", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { LibraryDebug.TogglePlayerDebugUI();}));
@@ -375,7 +370,7 @@ namespace SR2E
                     mainMenuLoaded = false;
                     break;
                 case "LoadScene":
-                    SR2Warps.OnSceneLoaded(sceneName);
+                    SR2EWarps.OnSceneLoaded(sceneName);
                     break;
             }
         }
@@ -401,7 +396,7 @@ namespace SR2E
                         {
                             ScrollRect rect = scrollView.GetComponent<ScrollRect>();
                             rect.vertical = true;
-                            Scrollbar scrollBar = GameObject.Instantiate(SR2Console.transform.getObjRec<Scrollbar>("saveFilesSlider"), rect.transform);
+                            Scrollbar scrollBar = GameObject.Instantiate(SR2EConsole.transform.getObjRec<Scrollbar>("saveFilesSlider"), rect.transform);
                             rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
                             scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width/250f, 0, 0);
@@ -418,14 +413,14 @@ namespace SR2E
                 if (obj != null)
                 {
                     consoleFinishedCreating = true;
-                    SR2Console.gameObject = obj;
+                    SR2EConsole.gameObject = obj;
                     obj.name = "SR2Console";
                     GameObject.DontDestroyOnLoad(obj);
-                    SR2Console.transform = obj.transform;
-                    SR2Console.Start();
+                    SR2EConsole.transform = obj.transform;
+                    SR2EConsole.Start();
                 }
             }
-            SR2Console.Update();
+            SR2EConsole.Update();
             if(devMode)
                 LibraryDebug.Update();
         }

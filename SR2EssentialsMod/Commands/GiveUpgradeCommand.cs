@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace SR2E.Commands
 {
@@ -13,9 +12,8 @@ namespace SR2E.Commands
 
         public override bool Execute(string[] args)
         {
-            if (args == null) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-            if (args.Length != 1) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (args == null || args.Length != 1) return SendUsage();
+            if (!inGame) return SendLoadASaveFirstMessage();
 
             if (args[0] == "*")
             {
@@ -27,21 +25,21 @@ namespace SR2E.Commands
                         SceneContext.Instance.PlayerState._model.upgradeModel.IncrementUpgradeLevel(id);
                     }
                 }
-                SR2Console.SendMessage("Upgraded all upgrades!");
+                SR2EConsole.SendMessage("Upgraded all upgrades!");
                 return true;
             }
             else
             {
                 UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>().FirstOrDefault(x => x.ValidatableName.Equals(args[0]));
                 if (id == null)
-                { SR2Console.SendError(args[0] + " is not a valid Upgrade!"); return false; }
+                { SR2EConsole.SendError(args[0] + " is not a valid Upgrade!"); return false; }
 
                 SceneContext.Instance.PlayerState._model.upgradeModel.IncrementUpgradeLevel(id);
-                SR2Console.SendMessage($"{id.ValidatableName} is now on level {SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)}");
+                SR2EConsole.SendMessage($"{id.ValidatableName} is now on level {SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)}");
 
                 return true;
             }
-            SR2Console.SendError("An unknown error occured!");
+            SR2EConsole.SendError("An unknown error occured!");
             return false;
         }
 

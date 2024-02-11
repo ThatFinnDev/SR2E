@@ -38,13 +38,8 @@
         }
         public override bool Execute(string[] args)
         {
-            if (args == null)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
-            if (args.Length != 2&&args.Length != 1)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-            
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (args == null || args.Length > 2) return SendUsage();
+            if (!inGame) return SendLoadASaveFirstMessage();
             
             string itemName = "";
             string identifierTypeName = args[0];
@@ -54,29 +49,23 @@
             {
                 type = SR2EEntryPoint.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
                 if (type == null)
-                { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
+                { SR2EConsole.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
                 string name = type.LocalizedName.GetLocalizedString();
-                if (name.Contains(" "))
-                    itemName = "'" + name + "'";
-                else
-                    itemName = name;
+                if (name.Contains(" ")) itemName = "'" + name + "'";
+                else itemName = name;
             }
-            else
-                itemName=type.name;
+            else itemName=type.name;
             
             if(type.ReferenceId.StartsWith("GadgetDefinition"))
-            { SR2Console.SendError(args[0] + " is a gadget, not an item!"); return false; }
+            { SR2EConsole.SendError(args[0] + " is a gadget, not an item!"); return false; }
             
             int amount = 1;
             if (args.Length == 2)
             {
-                try
-                { amount = int.Parse(args[1]); }
-                catch
-                { SR2Console.SendError(args[1] + " is not a valid integer!"); return false; }
+                try { amount = int.Parse(args[1]); }
+                catch { SR2EConsole.SendError(args[1] + " is not a valid integer!"); return false; }
 
-                if (amount<=0)
-                { SR2Console.SendError(args[1] + " is not an integer above 0!"); return false; }
+                if (amount<=0) { SR2EConsole.SendError(args[1] + " is not an integer above 0!"); return false; }
             }
             
                 
@@ -84,8 +73,7 @@
                 SceneContext.Instance.PlayerState.Ammo.MaybeAddToSlot(type,null); 
             
             
-            SR2Console.SendMessage($"Successfully added {amount} {itemName}");
-            
+            SR2EConsole.SendMessage($"Successfully added {amount} {itemName}");
             return true;
         }
     }

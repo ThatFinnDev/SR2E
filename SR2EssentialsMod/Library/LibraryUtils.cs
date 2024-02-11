@@ -668,19 +668,28 @@ namespace SR2E.Library
         }
         public static GameObject SpawnGadget(this GameObject obj, Vector3 pos, Quaternion rot)
         {
-            return GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+            GameObject gadget = GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+            try { SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>()); }catch { }
+            return gadget;
         }
         public static GameObject SpawnGadget(this GameObject obj, Vector3 pos)
         {
-            return GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
+            GameObject gadget = GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
+            try { SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>()); }catch { }
+            return gadget;
+            
         }
         public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos, Quaternion rot)
         {
-            return GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+            GameObject gadget =  GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+            try { SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>()); }catch { }
+            return gadget;
         }
         public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos)
         {
-            return GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
+            GameObject gadget =  GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
+            try { SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>()); }catch { }
+            return gadget;
         }
         public static GameObject SpawnFX(this GameObject fx, Vector3 pos)
         {
@@ -1092,7 +1101,7 @@ namespace SR2E.Library
 
         public static GameObject GetConsoleObject()
         {
-            return SR2Console.transform.getObjRec<GameObject>("consoleMenu");
+            return SR2EConsole.transform.getObjRec<GameObject>("consoleMenu");
         }
 
         public static bool RemoveComponent<T>(this GameObject obj) where T : Component
