@@ -647,13 +647,20 @@ namespace SR2E
                         autoCompleteScrollView.SetActive(false);
                     }
                 }
+                MultiKey key = new MultiKey(new Key[]
+                {
+                    Key.LeftCtrl, Key.Tab
+                });
 
+                if(key.wasPressedThisFrame)
+                    Toggle();
+                /*
                 if (Keyboard.current.ctrlKey.wasPressedThisFrame)
                     if (Keyboard.current.tabKey.isPressed)
                         Toggle();
                 if (Keyboard.current.tabKey.wasPressedThisFrame)
                     if (Keyboard.current.ctrlKey.isPressed)
-                        Toggle();
+                        Toggle();*/
                 if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
                 {
                     if (Keyboard.current.downArrowKey.wasPressedThisFrame)
