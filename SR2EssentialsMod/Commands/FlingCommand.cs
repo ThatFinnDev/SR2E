@@ -1,4 +1,4 @@
-﻿amespace SR2E.Commands
+﻿namespace SR2E.Commands
 {
     internal class FlingCommand : SR2CCommand
     {
