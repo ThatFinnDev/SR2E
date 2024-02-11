@@ -5,6 +5,7 @@ using Il2CppInterop.Runtime.InteropTypes;
 using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -642,19 +643,8 @@ namespace SR2E.Library
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
         }
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
-        {
-            
-            return InstantiationHelpers.InstantiateActor(obj,
-                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
-                false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
-        }
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)
-        {
-            return InstantiationHelpers.InstantiateActor(obj,
-                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.Euler(rot),
-                false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
-        }
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos) => SpawnActor(obj, pos, Quaternion.identity);
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)=> SpawnActor(obj, pos, Quaternion.Euler(rot));
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Quaternion rot)
         {
             return InstantiationHelpers.InstantiateActor(obj,
@@ -668,32 +658,18 @@ namespace SR2E.Library
         public static GameObject SpawnGadget(this GameObject obj, Vector3 pos, Quaternion rot)
         {
             GameObject gadget = GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
-            try { SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>()); }catch { }
+            GameModel model = GameObject.FindObjectOfType<GameModel>();
+            GadgetModel gadgetModel = model.InstantiateGadgetModel(gadget.GetComponent<Gadget>().identType, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos);
+            gadgetModel.eulerRotation = rot.eulerAngles;
+            gadget.GetComponent<Gadget>()._model = gadgetModel;
+            SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>());
             return gadget;
         }
-        public static GameObject SpawnGadget(this GameObject obj, Vector3 pos)
-        {
-            GameObject gadget = GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
-            try { SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>()); }catch { }
-            return gadget;
-            
-        }
-        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos, Quaternion rot)
-        {
-            GameObject gadget =  GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
-            try { SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>()); }catch { }
-            return gadget;
-        }
-        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos)
-        {
-            GameObject gadget =  GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
-            try { SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>()); }catch { }
-            return gadget;
-        }
-        public static GameObject SpawnFX(this GameObject fx, Vector3 pos)
-        {
-            return FXHelpers.SpawnFX(fx, pos, Quaternion.identity);
-        }
+        public static GameObject SpawnGadget(this GameObject obj, Vector3 pos) => SpawnGadget(obj, pos, Quaternion.identity);
+        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos, Quaternion rot) => SpawnGadget(obj.prefab, pos, rot);
+        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos) => SpawnGadget(obj.prefab, pos, Quaternion.identity);
+        public static GameObject SpawnFX(this GameObject fx, Vector3 pos) => SpawnFX(fx, pos, Quaternion.identity);
+        
         public static GameObject SpawnFX(this GameObject fx, Vector3 pos, Quaternion rot)
         {
             return FXHelpers.SpawnFX(fx, pos, rot);

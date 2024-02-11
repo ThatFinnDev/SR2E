@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine.InputSystem;
+﻿using UnityEngine.InputSystem;
 
 namespace SR2E.Library.SaveExplorer
 {
@@ -12,6 +7,7 @@ namespace SR2E.Library.SaveExplorer
     {
         public void Update()
         {
+            return;
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 Ray ray = Camera.main.ScreenPointToRay(new Vector2(Mouse.current.position.x.magnitude, Mouse.current.position.y.magnitude));

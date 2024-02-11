@@ -591,6 +591,7 @@ namespace SR2E
             SR2EEntryPoint.SetupFonts();
         }
 
+        static MultiKey openKey = new MultiKey(new Key[] { Key.LeftCtrl, Key.Tab });
         static TMP_InputField commandInput;
         static GameObject autoCompleteEntryPrefab;
         static GameObject consoleBlock;
@@ -648,12 +649,15 @@ namespace SR2E
                     }
                 }
 
+                if(openKey.wasPressedThisFrame)
+                    Toggle();
+                /*
                 if (Keyboard.current.ctrlKey.wasPressedThisFrame)
                     if (Keyboard.current.tabKey.isPressed)
                         Toggle();
                 if (Keyboard.current.tabKey.wasPressedThisFrame)
                     if (Keyboard.current.ctrlKey.isPressed)
-                        Toggle();
+                        Toggle();*/
                 if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
                 {
                     if (Keyboard.current.downArrowKey.wasPressedThisFrame)
