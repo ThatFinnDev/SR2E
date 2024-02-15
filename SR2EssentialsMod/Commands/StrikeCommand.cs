@@ -36,6 +36,7 @@ namespace SR2E.Commands
 
         public override bool Execute(string[] args)
         {
+            if (args != null) return SendNoArguments();
             if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
             {
                 var newPrefab = Object.Instantiate(lightningPrefab);
@@ -48,11 +49,11 @@ namespace SR2E.Commands
                     }
                     catch
                     {
-                        SR2Console.SendError("Invalid number!");
+                        SR2EConsole.SendError("Invalid number!");
                         return false;
                     }
                 }
-                SR2Console.SendMessage("Summoned lightning!");
+                SR2EConsole.SendMessage("Summoned lightning!");
                 return true;
             }
             return false;

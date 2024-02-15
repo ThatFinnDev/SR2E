@@ -19,7 +19,7 @@ public class StopWeatherCommand : SR2CCommand
         if (dir == null) return false;
         if (!dir._runningStates.Contains(def.Cast<IWeatherState>()))
         {
-            SR2Console.SendError($"State \"{def.name}\" is not running");
+            SR2EConsole.SendError($"State \"{def.name}\" is not running");
             return false;
         }
         var param = new Il2CppMonomiPark.SlimeRancher.DataModel.WeatherModel.ZoneWeatherParameters()
@@ -27,7 +27,7 @@ public class StopWeatherCommand : SR2CCommand
             WindDirection = new Vector3(45f, 0, 30f)
         };
         dir.StopState(def.Cast<IWeatherState>(), param);
-        SR2Console.SendMessage($"Successfully stopped weather state \"{def.name.Replace(" ", "")}\"");
+        SR2EConsole.SendMessage($"Successfully stopped weather state \"{def.name.Replace(" ", "")}\"");
         return true;
     }
 

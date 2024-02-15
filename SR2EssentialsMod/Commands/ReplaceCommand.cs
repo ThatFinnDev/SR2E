@@ -1,5 +1,6 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Regions;
+using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands
 {
@@ -19,8 +20,7 @@ namespace SR2E.Commands
                 int i = -1;
                 foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                 {
-                    if(type.ReferenceId.StartsWith("GadgetDefinition"))
-                        continue;
+                    if(type.ReferenceId.StartsWith("GadgetDefinition")) continue;
                     if (i > 20)
                         break;
                     try
@@ -46,7 +46,7 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
 
             string objectName = "";
             string identifierTypeName = args[0];
@@ -56,7 +56,7 @@ namespace SR2E.Commands
             {
                 type = SR2EEntryPoint.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
                 if (type == null)
-                { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
+                { SR2EConsole.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
                 string name = type.LocalizedName.GetLocalizedString();
                 if (name.Contains(" "))
                     objectName = "'" + name + "'";
@@ -70,39 +70,56 @@ namespace SR2E.Commands
             if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
             {
                 var gameobject = hit.collider.gameObject;
+                string oldObjectName = "";
+                bool isValid = false;
                 if (gameobject.GetComponent<Identifiable>())
                 {
-                    string oldObjectName = "";
+                    isValid = true;
                     try
                     {
-                        string name = gameobject.GetComponent<Identifiable>().identType.LocalizedName
-                            .GetLocalizedString();
-                        if (name.Contains(" "))
-                            objectName = "'" + name + "'";
-                        else
-                            objectName = name;
+                        string name = gameobject.GetComponent<Identifiable>().identType.LocalizedName.GetLocalizedString();
+                        if (name.Contains(" ")) objectName = "'" + name + "'";
+                        else objectName = name;
                     }
                     catch 
                     { oldObjectName = gameobject.GetComponent<Identifiable>().identType.name;}
                     
+                    //Remove old one
+                    DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
+                    
+                }/*
+                else if (gameobject.GetComponentInParent<Gadget>())
+                {
+                    isValid = true;
+                    try
+                    {
+                        string name = gameobject.GetComponentInParent<Gadget>().identType.LocalizedName.GetLocalizedString();
+                        if (name.Contains(" ")) objectName = "'" + name + "'";
+                        else objectName = name;
+                    }
+                    catch 
+                    { oldObjectName = gameobject.GetComponentInParent<Gadget>().identType.name;}
+                    
+                    //Remove old one
+                    gameobject.GetComponentInParent<Gadget>().DestroyGadget();
+                }*/
+                if (isValid)
+                {
+                    //Add new one 
+                    GameObject spawned = null;
+                    //if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
+                    //else 
+                    spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
                     Vector3 position = gameobject.transform.position;
                     Quaternion rotation = gameobject.transform.rotation;
-                    //Remove old one
-                    Damage damage = new Damage { DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };;
-                    damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
-                    damage.Amount = 99999999;
-                    DeathHandler.Kill(gameobject, damage);
-                    
-                    //Add new one 
-                    var spawned = SRBehaviour.InstantiateActor(type.prefab, SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup, hit.point,Quaternion.identity,true, SlimeAppearance.AppearanceSaveSet.NONE,SlimeAppearance.AppearanceSaveSet.NONE);
                     spawned.transform.position = position;
                     spawned.transform.rotation = rotation;
-
-                    SR2Console.SendMessage($"Successfully replaced {oldObjectName} with {objectName}!");
+                    SR2EConsole.SendMessage($"Successfully replaced {oldObjectName} with {objectName}!");
                     return true;
                 }
+                
             }
-            SR2Console.SendError("Not looking at a valid object!");
+            SR2EConsole.SendError("Not looking at a valid object!");
             return false;
         }
     }

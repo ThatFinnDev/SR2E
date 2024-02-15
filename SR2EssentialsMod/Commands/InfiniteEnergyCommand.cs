@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.Abilities;
+﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController.Abilities;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.UnitPropertySystem;
 
@@ -34,11 +33,11 @@ namespace SR2E.Commands
             bool shouldDisableThrusterHeight = false;
             if (args != null)
                 if (args.Length != 1)
-                { if(!silent) SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+                { if(!silent) SR2EConsole.SendMessage($"Usage: {Usage}"); return false; }
                 else
                     shouldDisableThrusterHeight = (args[0].ToLower() == "true");
-                
-            if (!inGame) { if(!silent) SR2Console.SendError("Load a save first!"); return false; }
+
+            if (!inGame) return SendLoadASaveFirstMessage();
 
             if (infEnergy)
             {
@@ -55,7 +54,7 @@ namespace SR2E.Commands
 
                 energyMeter.maxEnergy = new NullableFloatProperty(normalEnergy);
                 SceneContext.Instance.PlayerState.SetEnergy(0);
-                if(!silent) SR2Console.SendMessage("Energy is no longer infinite");
+                if(!silent) SR2EConsole.SendMessage("Energy is no longer infinite");
             }
             else
             {
@@ -78,7 +77,7 @@ namespace SR2E.Commands
                 SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue); 
                 normalEnergy = energyMeter.maxEnergy;
                 energyMeter.maxEnergy = new NullableFloatProperty(2.14748365E+09f);
-                if(!silent) SR2Console.SendMessage("Energy is now infinite");
+                if(!silent) SR2EConsole.SendMessage("Energy is now infinite");
             }
 
            

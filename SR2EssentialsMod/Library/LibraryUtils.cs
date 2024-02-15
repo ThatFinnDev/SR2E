@@ -5,17 +5,19 @@ using Il2CppInterop.Runtime.InteropTypes;
 using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
+using Il2CppMonomiPark.SlimeRancher.World;
 using SR2E.Patches;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.Playables;
+using SR2E.Library.Storage;
 
 namespace SR2E.Library
 {
@@ -367,9 +369,9 @@ namespace SR2E.Library
             slimedef.SlimeModules = new[] { Get<GameObject>("moduleSlime" + slimeOne.name), Get<GameObject>("moduleSlime" + slimeTwo.name) };
 
 
-            slimedef.localizationSuffix = slimeOne.name.ToLower() + "_" + slimeTwo.name.ToLower() + "_largo";
+            slimedef._pediaPersistenceSuffix = slimeOne.name.ToLower() + "_" + slimeTwo.name.ToLower() + "_largo";
             slimedef.referenceId = "SlimeDefinition." + slimeOne.name + slimeTwo.name;
-            slimedef.localizedName = AddTranslation(slimeOne.name + " " + slimeTwo.name + " Largo", "l." + slimedef.localizationSuffix);
+            slimedef.localizedName = AddTranslation(slimeOne.name + " " + slimeTwo.name + " Largo", "l." + slimedef._pediaPersistenceSuffix);
 
             slimedef.FavoriteToyIdents = new Il2CppReferenceArray<ToyDefinition>(0);
 
@@ -537,6 +539,7 @@ namespace SR2E.Library
             StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
             return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
+        
 
         public static IdentifiableType GetIdentifiableType(this GameObject obj)
         {
@@ -640,17 +643,41 @@ namespace SR2E.Library
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
         }
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos) => SpawnActor(obj, pos, Quaternion.identity);
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)=> SpawnActor(obj, pos, Quaternion.Euler(rot));
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Quaternion rot)
         {
-            return SRBehaviour.InstantiateActor(obj,
-                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
+            return InstantiationHelpers.InstantiateActor(obj,
+                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, rot,
                 false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
         }
-        public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos)
+        public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos, Quaternion rot)
         {
-            return SRBehaviour.InstantiateDynamic(obj, pos, Quaternion.identity, false);
+            return InstantiationHelpers.InstantiateDynamic(obj, pos, rot);
         }
-        public static T? Get<T>(string name) where T : Object { return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); }
+        /* doesnt work correctly
+        public static GameObject SpawnGadget(this GameObject obj, Vector3 pos, Quaternion rot)
+        {
+            GameObject gadget = GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+            GameModel model = GameObject.FindObjectOfType<GameModel>();
+            GadgetModel gadgetModel = model.InstantiateGadgetModel(gadget.GetComponent<Gadget>().identType, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos);
+            gadgetModel.eulerRotation = rot.eulerAngles;
+            gadget.GetComponent<Gadget>()._model = gadgetModel;
+            //SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>());
+            return gadget;
+        }
+        public static GameObject SpawnGadget(this GameObject obj, Vector3 pos) => SpawnGadget(obj, pos, Quaternion.identity);
+        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos, Quaternion rot) => SpawnGadget(obj.prefab, pos, rot);
+        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos) => SpawnGadget(obj.prefab, pos, Quaternion.identity);
+        */
+        
+        public static GameObject SpawnFX(this GameObject fx, Vector3 pos) => SpawnFX(fx, pos, Quaternion.identity);
+        
+        public static GameObject SpawnFX(this GameObject fx, Vector3 pos, Quaternion rot)
+        {
+            return FXHelpers.SpawnFX(fx, pos, rot);
+        }
+        public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
         public static void AddToGroup(this IdentifiableType type, string groupName)
         {
             var group = Get<IdentifiableTypeGroup>(groupName);
@@ -951,7 +978,7 @@ namespace SR2E.Library
             UnityEngine.Object.DontDestroyOnLoad(obj);
             obj.transform.parent = rootOBJ.transform;
         }
-        public static GameV04? Save => gameContext.AutoSaveDirector.SavedGame.gameState;
+        public static GameV05? Save => gameContext.AutoSaveDirector.SavedGame.gameState;
         public static void SetSlimeMatTopColor(this Material mat, Color color) => mat.SetColor("_TopColor", color);
         public static void SetSlimeMatMiddleColor(this Material mat, Color color) => mat.SetColor("_MiddleColor", color);
 
@@ -1052,7 +1079,7 @@ namespace SR2E.Library
 
         public static GameObject GetConsoleObject()
         {
-            return SR2Console.transform.getObjRec<GameObject>("consoleMenu");
+            return SR2EConsole.transform.getObjRec<GameObject>("consoleMenu");
         }
 
         public static bool RemoveComponent<T>(this GameObject obj) where T : Component
@@ -1440,6 +1467,9 @@ namespace SR2E.Library
                 return null;
             }
         }
+
+        public static TripleDictionary<GameObject, ParticleSystemRenderer, string> FXLibrary = new TripleDictionary<GameObject, ParticleSystemRenderer, string>();
+        public static TripleDictionary<string, ParticleSystemRenderer, GameObject> FXLibraryReversable = new TripleDictionary<string, ParticleSystemRenderer, GameObject>();
 
     }
 }

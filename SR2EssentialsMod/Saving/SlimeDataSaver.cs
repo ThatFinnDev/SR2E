@@ -31,13 +31,13 @@ public class SR2ESlimeDataSaver : MonoBehaviour
     public void LoadData()
     {
         if (SR2EEntryPoint.debugLogging)
-            SR2Console.SendMessage($"load ident debug start: {gameObject.name}");
+            SR2EConsole.SendMessage($"load ident debug start: {gameObject.name}");
         var id = GetComponent<IdentifiableActor>().model.actorId;
         GetComponent<Rigidbody>().velocity = Vector3Data.ConvertBack(SR2ESavableData.Instance.slimeSavedData[id].velocity);
         transform.localScale = new Vector3(SR2ESavableData.Instance.slimeSavedData[id].scaleX, SR2ESavableData.Instance.slimeSavedData[id].scaleY, SR2ESavableData.Instance.slimeSavedData[id].scaleZ);
         GetComponent<Vacuumable>().ignoresGravity = SR2ESavableData.Instance.slimeSavedData[id].zeroGrav;
         if (SR2EEntryPoint.debugLogging)
-            SR2Console.SendMessage("loaded ident");
+            SR2EConsole.SendMessage("loaded ident");
     }
     public void Start()
     {

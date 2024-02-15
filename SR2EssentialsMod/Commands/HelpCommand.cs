@@ -9,9 +9,9 @@
         
         public string GetCommandDescription(string command)
         {
-            if (SR2Console.commands.ContainsKey(command))
+            if (SR2EConsole.commands.ContainsKey(command))
             {
-                var cmd = SR2Console.commands[command];
+                var cmd = SR2EConsole.commands[command];
                 if (!string.IsNullOrEmpty(cmd.ExtendedDescription))
                     return cmd.ExtendedDescription;
                 else
@@ -25,7 +25,7 @@
             if (argIndex==0)
             {
                 List<string> list = new List<string>();
-                foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
+                foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
                 {
                     if (!entry.Value.Hidden)
                         list.Add(entry.Key);
@@ -44,26 +44,26 @@
                 currText = $"{currText}\n";
 
 
-                foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
+                foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
                 {
                     if (!entry.Value.Hidden) currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
                 }
-                SR2Console.SendMessage(currText);
+                SR2EConsole.SendMessage(currText);
                 return true; 
             }
             if (args.Length == 1)
             {
                 var desc = GetCommandDescription(args[0]);
-                if (SR2Console.commands.ContainsKey(args[0]))
+                if (SR2EConsole.commands.ContainsKey(args[0]))
                 {
-                    SR2Console.SendMessage($"Usage: {SR2Console.commands[args[0]].Usage}\n Description: {desc}");
+                    SR2EConsole.SendMessage($"Usage: {SR2EConsole.commands[args[0]].Usage}\n Description: {desc}");
                     return true;
                 }
-                SR2Console.SendMessage($"The key '<color=white>{args[0]}</color>' is not a valid command");
+                SR2EConsole.SendMessage($"The key '<color=white>{args[0]}</color>' is not a valid command");
                 return false;
             }
             
-            SR2Console.SendMessage($"Usage: {Usage}");
+            SR2EConsole.SendMessage($"Usage: {Usage}");
             return false;
         }
     }

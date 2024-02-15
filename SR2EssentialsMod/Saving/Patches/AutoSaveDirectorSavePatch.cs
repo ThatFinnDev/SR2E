@@ -58,7 +58,7 @@ public static class AutoSaveDirectorSavePatch
             SR2ESavableData.Instance.idx = 0;
         }
         if (SR2EEntryPoint.debugLogging)
-            SR2Console.SendWarning(SR2ESavableData.currPath);
+            SR2EConsole.SendWarning(SR2ESavableData.currPath);
         SR2ESavableData.Instance.TrySave();
     }
 }

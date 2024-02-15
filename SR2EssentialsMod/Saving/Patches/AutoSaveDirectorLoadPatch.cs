@@ -21,8 +21,8 @@ public static class AutoSaveDirectorLoadPatch
             }
             catch (Exception ex)
             {
-                SR2Console.SendWarning("Failed to load SR2E save data, creating new");
-                SR2Console.SendWarning($"Developer error: {ex}");
+                SR2EConsole.SendWarning("Failed to load SR2E save data, creating new");
+                SR2EConsole.SendWarning($"Developer error: {ex}");
                 var stream = new FileStream(Path.Combine(loadPath, $"{saveName}.sr2e"), FileMode.OpenOrCreate);
                 new SR2ESavableData();
                 SR2ESavableData.currPath = Path.Combine(loadPath, $"{saveName}.sr2e");

@@ -37,7 +37,7 @@ namespace SR2E.Library
 
         internal static string INTERNAL_CreatePediaKey(string prefix, IdentifiableType identifiableType)
         {
-            return "m." + prefix + "." + identifiableType.localizationSuffix;
+            return "m." + prefix + "." + identifiableType._pediaPersistenceSuffix;
         }
 
         internal static string INTERNAL_CreatePediaKey(string prefix, string suffix)

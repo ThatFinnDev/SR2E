@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace SR2QuickButtons
 {
+    /*
     internal class MainMenuButtonCommand : SR2CCommand
     {
 
     }
+    */
 }
