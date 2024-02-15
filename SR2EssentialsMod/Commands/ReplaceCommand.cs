@@ -20,6 +20,7 @@ namespace SR2E.Commands
                 int i = -1;
                 foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                 {
+                    if(type.ReferenceId.StartsWith("GadgetDefinition")) continue;
                     if (i > 20)
                         break;
                     try
@@ -86,7 +87,7 @@ namespace SR2E.Commands
                     //Remove old one
                     DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
                     
-                }
+                }/*
                 else if (gameobject.GetComponentInParent<Gadget>())
                 {
                     isValid = true;
@@ -101,14 +102,15 @@ namespace SR2E.Commands
                     
                     //Remove old one
                     gameobject.GetComponentInParent<Gadget>().DestroyGadget();
-                }
+                }*/
                 if (isValid)
                 {
                     //Add new one 
                     GameObject spawned = null;
-                    if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
-                    else spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
-                     Vector3 position = gameobject.transform.position;
+                    //if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
+                    //else 
+                    spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
+                    Vector3 position = gameobject.transform.position;
                     Quaternion rotation = gameobject.transform.rotation;
                     spawned.transform.position = position;
                     spawned.transform.rotation = rotation;

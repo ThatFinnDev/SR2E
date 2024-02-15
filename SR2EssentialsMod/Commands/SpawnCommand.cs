@@ -14,6 +14,7 @@ namespace SR2E.Commands
         {
             if (argIndex == 0)
             {
+                
                 string firstArg = "";
                 if (args != null)
                     firstArg = args[0];
@@ -21,6 +22,8 @@ namespace SR2E.Commands
                 int i = -1;
                 foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                 {
+                    
+                    if(type.ReferenceId.StartsWith("GadgetDefinition")) continue;
                     if (i > 55)
                         break;
                     try
@@ -97,8 +100,8 @@ namespace SR2E.Commands
                 }
             }
 
-            //if(type.ReferenceId.StartsWith("GadgetDefinition"))
-            //{ SR2Console.SendError(args[0] + " is a gadget, not an item!"); return false; }
+            if(type.ReferenceId.StartsWith("GadgetDefinition"))
+            { SR2EConsole.SendError(args[0] + " is a gadget, not an item!"); return false; }
             
             for (int i = 0; i < amount; i++)
             {
@@ -107,8 +110,9 @@ namespace SR2E.Commands
                     try
                     {
                         GameObject spawned = null;
-                        if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
-                        else spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
+                        //if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
+                        //else 
+                        spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
                         
                         spawned.transform.position = hit.point+hit.normal*PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
                         var delta = -(hit.point - Camera.main.transform.position).normalized;

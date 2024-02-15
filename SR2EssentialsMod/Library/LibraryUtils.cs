@@ -655,6 +655,7 @@ namespace SR2E.Library
         {
             return InstantiationHelpers.InstantiateDynamic(obj, pos, rot);
         }
+        /* doesnt work correctly
         public static GameObject SpawnGadget(this GameObject obj, Vector3 pos, Quaternion rot)
         {
             GameObject gadget = GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
@@ -662,12 +663,14 @@ namespace SR2E.Library
             GadgetModel gadgetModel = model.InstantiateGadgetModel(gadget.GetComponent<Gadget>().identType, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos);
             gadgetModel.eulerRotation = rot.eulerAngles;
             gadget.GetComponent<Gadget>()._model = gadgetModel;
-            SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>());
+            //SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>());
             return gadget;
         }
         public static GameObject SpawnGadget(this GameObject obj, Vector3 pos) => SpawnGadget(obj, pos, Quaternion.identity);
         public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos, Quaternion rot) => SpawnGadget(obj.prefab, pos, rot);
         public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos) => SpawnGadget(obj.prefab, pos, Quaternion.identity);
+        */
+        
         public static GameObject SpawnFX(this GameObject fx, Vector3 pos) => SpawnFX(fx, pos, Quaternion.identity);
         
         public static GameObject SpawnFX(this GameObject fx, Vector3 pos, Quaternion rot)
