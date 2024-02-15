@@ -19,7 +19,7 @@ namespace VirtualSlime
         public static Texture2D LoadImage(string filename)
         {
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Stream manifestResourceStream = executingAssembly.GetManifestResourceStream($"VirtualSlime.{filename}.png");
+            Stream manifestResourceStream = executingAssembly.GetManifestResourceStream($"VirtualSlimes.{filename}.png");
             byte[] array = new byte[manifestResourceStream.Length];
             manifestResourceStream.Read(array, 0, array.Length);
             Texture2D texture2D = new Texture2D(1, 1);
@@ -161,24 +161,24 @@ namespace VirtualSlime
 
 
             slimeDefinition_null.localizedName = AddTranslation("Null Slime", "l.nullSlime");
-            slimeDefinition_null.localizationSuffix = "null_slime";
+            slimeDefinition_null._pediaPersistenceSuffix = "null_slime";
             plortDefinition_null.localizedName = AddTranslation("Null Plort", "l.nullPlort");
-            plortDefinition_null.localizationSuffix = "null_plort";
+            plortDefinition_null._pediaPersistenceSuffix = "null_plort";
 
             slimeDefinition_data.localizedName = AddTranslation("Data Slime", "l.dataSlime");
-            slimeDefinition_data.localizationSuffix = "data_slime";
+            slimeDefinition_data._pediaPersistenceSuffix = "data_slime";
             plortDefinition_data.localizedName = AddTranslation("Data Plort", "l.dataPlort");
-            plortDefinition_data.localizationSuffix = "data_plort";
+            plortDefinition_data._pediaPersistenceSuffix = "data_plort";
 
             slimeDefinition_byte.localizedName = AddTranslation("Byte Slime", "l.byteSlime");
-            slimeDefinition_byte.localizationSuffix = "byte_slime";
+            slimeDefinition_byte._pediaPersistenceSuffix = "byte_slime";
             plortDefinition_byte.localizedName = AddTranslation("Byte Plort", "l.bytePlort");
-            plortDefinition_byte.localizationSuffix = "byte_plort";
+            plortDefinition_byte._pediaPersistenceSuffix = "byte_plort";
 
             slimeDefinition_code.localizedName = AddTranslation("Code Slime", "l.codeSlime");
-            slimeDefinition_code.localizationSuffix = "code_slime";
+            slimeDefinition_code._pediaPersistenceSuffix = "code_slime";
             plortDefinition_code.localizedName = AddTranslation("Code Plort", "l.codePlort");
-            plortDefinition_code.localizationSuffix = "code_plort";
+            plortDefinition_code._pediaPersistenceSuffix = "code_plort";
         }
 
         public static void Coloring()

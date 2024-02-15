@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SR2E.Commands;
+﻿namespace SR2E.Commands;
 
 internal class KillAllCommand : SR2CCommand
 {
@@ -65,7 +59,7 @@ internal class KillAllCommand : SR2CCommand
             }
             return true;
         }
-        else if (args.Length == 1)
+        if (args.Length == 1)
         {
             foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
             {

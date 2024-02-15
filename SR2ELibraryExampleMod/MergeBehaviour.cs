@@ -4,6 +4,7 @@ using MelonLoader;
 using Il2Cpp;
 using SR2E.Library;
 using SR2E.Library.Storage;
+using Il2CppMonomiPark.SlimeRancher.Weather.Activity;
 
 namespace VirtualSlime
 {
@@ -30,7 +31,7 @@ namespace VirtualSlime
                     var pos = transform.position;
                     var rot = transform.rotation;
 
-                    SRBehaviour.InstantiateActor(mergeInto.prefab, systemContext.SceneLoader.CurrentSceneGroup, pos, rot);
+                    mergeInto.prefab.SpawnActor(pos, rot);
                     Destroyer.DestroyActor(collision.gameObject, "", true);
                     Destroyer.DestroyActor(gameObject, "", true);
                 }

@@ -3,8 +3,34 @@ using String = Il2CppSystem.String;
 
 namespace SR2E
 {
-    internal static class SR2CommandBindingManager
+    public static class SR2ECommandBindingManager
     {
+        /// <summary>
+        /// Adds a keybind
+        /// </summary>
+        public static void AddKeyBinding(Key key, string command)
+        {
+            if (keyCodeCommands.ContainsKey(key)) keyCodeCommands[key] += ";" + command;
+            else keyCodeCommands.Add(key, command);
+        }
+        
+        /// <summary>
+        /// Removes every bind from a key
+        /// </summary>
+        public static void UnbindKey(Key key)
+        {
+            if (keyCodeCommands.ContainsKey(key)) keyCodeCommands.Remove(key);
+        }
+        /// <summary>
+        /// Returns the execute string of the bind
+        /// </summary>
+        public static string GetBind(Key key)
+        {
+            if (keyCodeCommands.ContainsKey(key)) return keyCodeCommands[key];
+            return null;
+        }
+        
+        
         private static string path
         {
             get
@@ -66,8 +92,8 @@ namespace SR2E
         {
             foreach (KeyValuePair<Key,string> keyValuePair in keyCodeCommands)
                 if (Keyboard.current[keyValuePair.Key].wasPressedThisFrame)
-                    if(SR2Warps.warpTo==null)
-                        SR2Console.ExecuteByString(keyValuePair.Value,true);
+                    if(SR2EWarps.warpTo==null)
+                        SR2EConsole.ExecuteByString(keyValuePair.Value,true);
         }
     }
 }

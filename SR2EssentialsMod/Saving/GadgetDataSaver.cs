@@ -42,7 +42,7 @@ public class SR2EGadgetDataSaver : MonoBehaviour
     public void LoadData()
     {
         if (SR2EEntryPoint.debugLogging)
-            SR2Console.SendMessage($"load ident debug start: {gameObject.name}");
+            SR2EConsole.SendMessage($"load ident debug start: {gameObject.name}");
         
         
         GameModel gameModel = FindObjectOfType<GameModel>();
@@ -55,7 +55,7 @@ public class SR2EGadgetDataSaver : MonoBehaviour
         
         transform.localScale = new Vector3(SR2ESavableData.Instance.gadgetSavedData[id].scaleX, SR2ESavableData.Instance.gadgetSavedData[id].scaleY, SR2ESavableData.Instance.gadgetSavedData[id].scaleZ);
         if (SR2EEntryPoint.debugLogging)
-            SR2Console.SendMessage("loaded ident");
+            SR2EConsole.SendMessage("loaded ident");
     }
     public void Start()
     {

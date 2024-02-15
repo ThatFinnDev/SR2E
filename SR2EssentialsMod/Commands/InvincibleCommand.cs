@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Il2CppMonomiPark.SlimeRancher.UI;
+﻿using Il2CppMonomiPark.SlimeRancher.UI;
 
 namespace SR2E.Commands
 {
@@ -25,12 +24,8 @@ namespace SR2E.Commands
 
         public bool Code(string[] args, bool silent)
         {
-            if (args != null)
-            {
-                if(!silent) SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
-                return false;
-            }
-            if (!inGame) { if(!silent) SR2Console.SendError("Load a save first!"); return false; }
+            if (args != null) return SendUsage();
+            if (!inGame) return SendLoadASaveFirstMessage();
 
             if (infHealth)
             {
@@ -41,7 +36,7 @@ namespace SR2E.Commands
                 
                 SceneContext.Instance.PlayerState._model.maxHealth = normalHealth;
                 SceneContext.Instance.PlayerState.SetHealth(normalHealth); 
-                if(!silent) SR2Console.SendMessage("You're no longer invincible!");
+                if(!silent) SR2EConsole.SendMessage("You're no longer invincible!");
             }
             else
             {
@@ -55,7 +50,7 @@ namespace SR2E.Commands
                 
                 SceneContext.Instance.PlayerState.SetHealth(int.MaxValue); 
                 SceneContext.Instance.PlayerState._model.maxHealth = int.MaxValue;
-                if(!silent) SR2Console.SendMessage("You're now invincible!");
+                if(!silent) SR2EConsole.SendMessage("You're now invincible!");
             }
             return true;
         }

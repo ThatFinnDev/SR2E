@@ -14,7 +14,7 @@ public class ListWeathersCommand : SR2CCommand
         var stateNames = "";
         foreach (var state in states) stateNames += $"\n{state.GetName()}";
 
-        SR2Console.SendMessage($"Running States are:${stateNames}");
+        SR2EConsole.SendMessage($"Running States are:${stateNames}");
         return true;
     }
 }

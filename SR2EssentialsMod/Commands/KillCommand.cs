@@ -1,5 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Persist;
+using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
@@ -15,102 +17,66 @@ public class KillCommand : SR2CCommand
     }
     public override bool Execute(string[] args)
     {
-        if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+        if (args != null) { SendUsage(); return false; }
+        
+        if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
+        GameObject gameObject = ShootRaycast();
+        if (gameObject != null)
+            if (Kill(gameObject))
+            { SR2EConsole.SendMessage("Successfully killed the thing!"); return true; }
+        
+        SR2EConsole.SendError("Not looking at a valid object!");
+        return false;
+    }
 
+    GameObject ShootRaycast()
+    {
+        GameObject obj = null;
         if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+            obj = hit.collider.gameObject;
+        return obj;
+    }
+
+    bool Kill(GameObject gameObject)
+    {
+        bool didAThing = false;
+        if (gameObject.GetComponentInParent<Gadget>())
         {
-            bool didAThing = false;
-            var gameobject = hit.collider.gameObject;
-            if (gameobject.GetComponent<Identifiable>())
-            {
-                
-                DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
-                didAThing = true;
-            }
-            else if (gameobject.GetComponent<GordoEat>())
-            {
-                GordoEat gordoEat = hit.collider.gameObject.GetComponent<GordoEat>();
-                if (gordoEat.isActiveAndEnabled && gordoEat.CanEat())
-                    try
-                    { gordoEat.ImmediateReachedTarget(); didAThing = true; }
-                    catch{}
-                
-            }
-            else if (gameobject.GetComponentInParent<Gadget>())
-            {
-                GameObject gadgetObj = gameobject.GetComponentInParent<Gadget>().gameObject;
-                GameModel model = Object.FindObjectOfType<GameModel>();
-                foreach (var pair in model.identifiables)
+            gameObject.GetComponentInParent<Gadget>().DestroyGadget(null,null);;
+            didAThing = true;
+        }
+        else if (gameObject.GetComponent<Identifiable>())
+        {
+            DeathHandler.Kill(gameObject, SR2EEntryPoint.killDamage);
+            didAThing = true;
+        }
+        else if (gameObject.GetComponent<GordoEat>())
+        {
+            GordoEat gordoEat = gameObject.GetComponent<GordoEat>();
+            if (gordoEat.isActiveAndEnabled && gordoEat.CanEat())
+                try
                 {
-                    if (pair.Value.GetGameObject() == gadgetObj)
-                    {
-                        model.identifiables.Remove(pair.Key);
-                        break;
-                    }
+                    gordoEat.ImmediateReachedTarget();
+                    didAThing = true;
+                }
+                catch
+                {
                 }
 
-                gameobject.GetComponentInParent<Gadget>().gameObject.hideFlags |= HideFlags.HideAndDontSave;
-                gameobject.GetComponentInParent<Gadget>().hideFlags |= HideFlags.HideAndDontSave;
-                gameobject.GetComponentInParent<Gadget>().hasStarted = false;
-                gameobject.GetComponentInParent<Gadget>().RequestDestroy("ok");
-                didAThing = true;
-            }
-            else if (gameobject.GetComponentInParent<LandPlot>())
-            {
-                gameobject.GetComponentInParent<LandPlotLocation>().Replace(gameobject.GetComponentInParent<LandPlot>(),
-                    GameContext.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.EMPTY));
-                didAThing = true;
-            }
-
-            if (didAThing)
-            {
-                SR2Console.SendMessage("Successfully killed the thing!");
-                return true;
-            }
         }
-
-        SR2Console.SendError("Not looking at a valid object!");
-        return false;
+        else if (gameObject.GetComponentInParent<LandPlot>())
+        {
+            gameObject.GetComponentInParent<LandPlotLocation>().Replace(gameObject.GetComponentInParent<LandPlot>(), GameContext.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.EMPTY));
+            didAThing = true;
+        }
+        return didAThing;
     }
 
     public override bool SilentExecute(string[] args)
     {
         if (!inGame) return true;
-
-        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
-        {
-            var gameobject = hit.collider.gameObject;
-            if (gameobject.GetComponent<Identifiable>())
-            {
-                Damage damage = new Damage
-                    { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>() };
-                ;
-                damage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
-                damage.Amount = 99999999;
-                DeathHandler.Kill(gameobject, damage);
-            }
-            else if (gameobject.GetComponentInParent<Gadget>())
-            {
-                GameObject gadgetObj = gameobject.GetComponentInParent<Gadget>().gameObject;
-                GameModel model = Object.FindObjectOfType<GameModel>();
-                foreach (var pair in model.identifiables)
-                    if (pair.Value.GetGameObject() == gadgetObj)
-                    {
-                        model.identifiables.Remove(pair.Key);
-                        break;
-                    }
-
-                gameobject.GetComponentInParent<Gadget>().gameObject.hideFlags |= HideFlags.HideAndDontSave;
-                gameobject.GetComponentInParent<Gadget>().hideFlags |= HideFlags.HideAndDontSave;
-                gameobject.GetComponentInParent<Gadget>().hasStarted = false;
-                gameobject.GetComponentInParent<Gadget>().RequestDestroy("ok");
-            }
-            else if (gameobject.GetComponentInParent<LandPlot>())
-                gameobject.GetComponentInParent<LandPlotLocation>().Replace(gameobject.GetComponentInParent<LandPlot>(),
-                    GameContext.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.EMPTY));
-
-        }
-
+        GameObject gameObject = ShootRaycast();
+        if (gameObject != null) Kill(gameObject);
         return true;
     }
 }

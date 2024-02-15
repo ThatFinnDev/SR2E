@@ -95,7 +95,7 @@ internal class SR2ESavableData
         }
         catch (Exception error)
         {
-            SR2Console.SendError($"Saving error: {error}");
+            SR2EConsole.SendError($"Saving error: {error}");
         }
 
     }

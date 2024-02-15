@@ -17,7 +17,7 @@ namespace SR2E.Library
         {
             var player = LibraryUtils.player.transform;
             var playercontroller = player.GetComponent<SRCharacterController>();
-            SR2Console.SendMessage($"Player Position: {player.position.x} {player.position.y} {player.position.z}\nPlayer Rotation: {player.eulerAngles.y}\nPlayer velocity: {playercontroller.Velocity.x} {playercontroller.Velocity.y} {playercontroller.Velocity.z}");
+            SR2EConsole.SendMessage($"Player Position: {player.position.x} {player.position.y} {player.position.z}\nPlayer Rotation: {player.eulerAngles.y}\nPlayer velocity: {playercontroller.Velocity.x} {playercontroller.Velocity.y} {playercontroller.Velocity.z}");
         }
 
         internal static void TogglePlayerDebugUI()

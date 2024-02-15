@@ -44,13 +44,8 @@
         }
         public override bool Execute(string[] args)
         {
-            if (args == null)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
-            if (args.Length != 2&&args.Length!=1)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; } 
-            
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (args == null || args.Length > 2) return SendUsage();
+            if (!inGame) return SendLoadASaveFirstMessage();
 
 
             string itemName = "";
@@ -79,7 +74,7 @@
                     catch {}
             }
             if (foundType == null)
-            { SR2Console.SendError(args[0] + " is not a valid IdentifiableType/Gadget!"); return false; }
+            { SR2EConsole.SendError(args[0] + " is not a valid IdentifiableType/Gadget!"); return false; }
             
             try
             { itemName = foundType.LocalizedName.GetLocalizedString().Replace(" ", ""); }
@@ -91,19 +86,19 @@
             {
                 if (!int.TryParse(args[1], out amount))
                 {
-                    SR2Console.SendError(args[1] + " is not a valid integer!");
+                    SR2EConsole.SendError(args[1] + " is not a valid integer!");
                     return false;
                 }
 
                 if (amount <= 0)
                 {
-                    SR2Console.SendError(args[1] + " is not an integer above 0!");
+                    SR2EConsole.SendError(args[1] + " is not an integer above 0!");
                     return false;
                 }
             }
 
             SceneContext.Instance.GadgetDirector.AddItem(foundType, amount);
-            SR2Console.SendMessage($"Successfully added {amount} {itemName}");
+            SR2EConsole.SendMessage($"Successfully added {amount} {itemName}");
 
             return true;
         }
