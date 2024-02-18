@@ -3,9 +3,9 @@
 namespace SR2E;
 
 [RegisterTypeInIl2Cpp(false)]
-public class SrDebugDirector : MonoBehaviour
+internal class SR2EDebugDirector : MonoBehaviour
 {
-	public static bool isEnabled;
+	internal static bool isEnabled;
 	private Font _helpFont;
 	private void Awake()
 	{
@@ -17,21 +17,21 @@ public class SrDebugDirector : MonoBehaviour
 	{
 		if (!isEnabled) return;
 
-		if (SR2Console.isOpen) return;
-		if (SR2ModMenu.isOpen) return;
+		if (SR2EConsole.isOpen) return;
+		if (SR2EModMenu.isOpen) return;
 		if (Time.timeScale == 0)  return;
 		
-		if (Keyboard.current.digit0Key.wasPressedThisFrame) SR2Console.ExecuteByString("giveupgrades *", true);
-		if (Keyboard.current.digit7Key.wasPressedThisFrame) SR2Console.ExecuteByString("infenergy true", true);
-		if (Keyboard.current.digit8Key.wasPressedThisFrame) SR2Console.ExecuteByString("invincible", true);
+		if (Keyboard.current.digit0Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("giveupgrades *", true);
+		if (Keyboard.current.digit7Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("infenergy true", true);
+		if (Keyboard.current.digit8Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("invincible", true);
 		if (Keyboard.current.digit9Key.wasPressedThisFrame) GameContext.Instance.AutoSaveDirector.SaveGame();
-		if (Keyboard.current.kKey.wasPressedThisFrame) SR2Console.ExecuteByString("clearinv", true);
-		if (Keyboard.current.lKey.wasPressedThisFrame) SR2Console.ExecuteByString("refillslots", true);
-		if (Keyboard.current.nKey.wasPressedThisFrame) SR2Console.ExecuteByString("noclip", true);
-		if (Keyboard.current.numpadPlusKey.wasPressedThisFrame) SR2Console.ExecuteByString("newbucks 1000", true);
-		if (Keyboard.current.numpadMinusKey.wasPressedThisFrame) SR2Console.ExecuteByString("newbucks -1000", true);
-		if (Keyboard.current.leftBracketKey.wasPressedThisFrame) SR2Console.ExecuteByString("fastforward -1", true);
-		if (Keyboard.current.rightBracketKey.wasPressedThisFrame) SR2Console.ExecuteByString("fastforward 1", true);
+		if (Keyboard.current.kKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("clearinv", true);
+		if (Keyboard.current.lKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("refillslots", true);
+		if (Keyboard.current.nKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("noclip", true);
+		if (Keyboard.current.numpadPlusKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks 1000", true);
+		if (Keyboard.current.numpadMinusKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks -1000", true);
+		if (Keyboard.current.leftBracketKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("fastforward -1", true);
+		if (Keyboard.current.rightBracketKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("fastforward 1", true);
 
 	}
 

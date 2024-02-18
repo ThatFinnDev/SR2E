@@ -83,4 +83,31 @@ public abstract class SR2CCommand
     /// </summary>
     public virtual void OnMainMenuUILoad()
     { }
+
+    /// <summary>
+    /// Sends the usage of the command to the in game console 
+    /// </summary>
+    public bool SendUsage()
+    {
+        SR2EConsole.SendMessage($"Usage: {Usage}");
+        return false;
+    }
+    /// <summary>
+    /// Sends the no arguments message
+    /// </summary>
+    public bool SendNoArguments()
+    {
+        SR2EConsole.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
+        return false;
+    }
+    
+    /// <summary>
+    /// Sends the load a save first message
+    /// </summary>
+    public bool SendLoadASaveFirstMessage()
+    {
+        SR2EConsole.SendError("Load a save first!");
+        return false;
+    }
+    
 }

@@ -9,53 +9,34 @@ public class FastForwardCommand : SR2CCommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-        {
-            List<string> list = new List<string>();
-            list.Add("1");
-            list.Add("2");
-            list.Add("5");
-            list.Add("10");
-            return list;
-        }
-
+            return new List<string> { "1", "2", "5", "10", "12", "18" };
         return null;
     }
 
     public override bool Execute(string[] args)
     {
-        if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+        if (!inGame) return SendLoadASaveFirstMessage();
 
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
         if ((args?.Length ?? 0) == 1)
         {
-            if (float.TryParse(args[0], out var amount))
-            {
-                timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(amount);
-            }
-            else
-            {
-                SR2Console.SendError($"{args[0]} is not a valid floating point number!");
-                return false;
-            }
+            if (float.TryParse(args[0], out var amount)) timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(amount);
+            else { SR2EConsole.SendError($"{args[0]} is not a valid floating point number!"); return false; }
         }
 
         SceneContext.Instance.TimeDirector.FastForwardTo(timeToFastForwardTo);
-        SR2Console.SendMessage($"Successfully fastforwarded {timeToFastForwardTo} hours");
+        SR2EConsole.SendMessage($"Successfully fastforwarded {timeToFastForwardTo} hours");
         return true;
     }
 
     public override bool SilentExecute(string[] args)
     {
         if (!inGame) return true;
-
-
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
         if ((args?.Length ?? 0) == 1)
         {
-            if (float.TryParse(args[0], out var amount))
-                timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(amount);
-            else
-                return true;
+            if (float.TryParse(args[0], out var amount)) timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(amount);
+            else return true;
         }
 
         SceneContext.Instance.TimeDirector.FastForwardTo(timeToFastForwardTo);

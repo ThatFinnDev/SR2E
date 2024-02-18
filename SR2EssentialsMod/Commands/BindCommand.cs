@@ -29,14 +29,14 @@ namespace SR2E.Commands
             if (argIndex == 1)
             {
                 List<string> list = new List<string>();
-                foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
+                foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
                 {
                     list.Add(entry.Key);
                 }
                 return list;
             }
             string secondArg = args[1];
-            foreach (KeyValuePair<string, SR2CCommand> entry in SR2Console.commands)
+            foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
             {
                 if (entry.Key == secondArg)
                     return entry.Value.GetAutoComplete(argIndex-2,args);
@@ -45,11 +45,7 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
-            if (args == null)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-
-            if (args.Length < 1)
-            { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
+            if (args == null || args.Length < 1) return SendUsage();
 
             int e;
             string keyToParse = args[0];
@@ -66,17 +62,17 @@ namespace SR2E.Commands
                 { builder.Append(args[i]+" "); }
                 string executeString = builder.ToString();
                 
-                if (SR2CommandBindingManager.keyCodeCommands.ContainsKey(key))
-                    SR2CommandBindingManager.keyCodeCommands[key] += ";" + executeString;
+                if (SR2ECommandBindingManager.keyCodeCommands.ContainsKey(key))
+                    SR2ECommandBindingManager.keyCodeCommands[key] += ";" + executeString;
                 else
-                    SR2CommandBindingManager.keyCodeCommands.Add(key, executeString);
+                    SR2ECommandBindingManager.keyCodeCommands.Add(key, executeString);
                 
-                SR2CommandBindingManager.SaveKeyBinds();
-                SR2Console.SendMessage($"Successfully bound command '{executeString}' to key {key}");
+                SR2ECommandBindingManager.SaveKeyBinds();
+                SR2EConsole.SendMessage($"Successfully bound command '{executeString}' to key {key}");
                 return true;
             }
             
-            SR2Console.SendMessage($"{args[0]} is not a valid KeyCode!");
+            SR2EConsole.SendMessage($"{args[0]} is not a valid KeyCode!");
             return false;
         }
     }

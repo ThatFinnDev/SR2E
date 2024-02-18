@@ -16,7 +16,7 @@ namespace SR2E.Commands
             if (argIndex == 0)
             {
                 List<string> warps = new List<string>();
-                foreach (KeyValuePair<string,Warp> pair in SR2Warps.warps)
+                foreach (KeyValuePair<string,Warp> pair in SR2EWarps.warps)
                 { warps.Add(pair.Key); }
                 return warps;
             }
@@ -25,18 +25,17 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
-            if (args == null) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-            if (args.Length != 1) { SR2Console.SendMessage($"Usage: {Usage}"); return false; }
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (args == null || args.Length != 1) return SendUsage();
+            if (!inGame) return SendLoadASaveFirstMessage();
             
             string name = args[0];
-            if (!SR2Warps.warps.ContainsKey(name))
-            { SR2Console.SendError($"There is no warp with the name: {name}"); return false; }
+            if (!SR2EWarps.warps.ContainsKey(name))
+            { SR2EConsole.SendError($"There is no warp with the name: {name}"); return false; }
 
-            Warp warp = SR2Warps.warps[name];
+            Warp warp = SR2EWarps.warps[name];
             TeleportablePlayer p = SceneContext.Instance.Player.GetComponent<TeleportablePlayer>();
             if(p==null)
-            { SR2Console.SendError($"TeleportablePlayer is null!"); return false; }
+            { SR2EConsole.SendError($"TeleportablePlayer is null!"); return false; }
 
             SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
             foreach (SceneGroup group in SystemContext.Instance.SceneLoader.SceneGroupList.items)
@@ -57,15 +56,15 @@ namespace SR2E.Commands
                                 switch (warp.sceneGroup)
                                 {
                                     case "SceneGroup.ConservatoryFields":
-                                        SR2Warps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterHomeBlue").prefab; break;
+                                        SR2EWarps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterHomeBlue").prefab; break;
                                     case "SceneGroup.RumblingGorge":
-                                        SR2Warps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneGorge").prefab; break;
+                                        SR2EWarps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneGorge").prefab; break;
                                     case "SceneGroup.LuminousStrand":
-                                        SR2Warps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneStrand").prefab; break;
+                                        SR2EWarps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneStrand").prefab; break;
                                     case "SceneGroup.PowderfallBluffs":
-                                        SR2Warps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab; break;
+                                        SR2EWarps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab; break;
                                     default:
-                                        SR2Console.SendError($"There place {warp.sceneGroup} does not exist!"); return false;
+                                        SR2EConsole.SendError($"There place {warp.sceneGroup} does not exist!"); return false;
 
                                 }
 
@@ -78,18 +77,18 @@ namespace SR2E.Commands
                                     obj.GetComponent<StaticTeleporterNode>().UpdateFX();
                                 }
                                 else
-                                { SR2Console.SendError("An unknown error occured!"); return false; }
+                                { SR2EConsole.SendError("An unknown error occured!"); return false; }
                             }
                             catch { }
                         }
-                        if(SR2Console.isOpen)
-                            SR2Console.Close();
-                        SR2Console.SendMessage($"Successfully warped to the warp {name}!"); 
+                        if(SR2EConsole.isOpen)
+                            SR2EConsole.Close();
+                        SR2EConsole.SendMessage($"Successfully warped to the warp {name}!"); 
                         return true;
                     }
                 
             
-            SR2Console.SendError("An unknown error occured!");
+            SR2EConsole.SendError("An unknown error occured!");
             return false;
 
         }

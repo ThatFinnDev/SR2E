@@ -19,7 +19,7 @@ namespace VirtualSlime
         public static Texture2D LoadImage(string filename)
         {
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            Stream manifestResourceStream = executingAssembly.GetManifestResourceStream($"VirtualSlime.{filename}.png");
+            Stream manifestResourceStream = executingAssembly.GetManifestResourceStream($"VirtualSlimes.{filename}.png");
             byte[] array = new byte[manifestResourceStream.Length];
             manifestResourceStream.Read(array, 0, array.Length);
             Texture2D texture2D = new Texture2D(1, 1);

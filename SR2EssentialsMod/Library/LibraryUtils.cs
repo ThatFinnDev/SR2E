@@ -5,10 +5,10 @@ using Il2CppInterop.Runtime.InteropTypes;
 using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
@@ -643,19 +643,8 @@ namespace SR2E.Library
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
             def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.Add(FG);
         }
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos)
-        {
-            
-            return InstantiationHelpers.InstantiateActor(obj,
-                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.identity,
-                false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
-        }
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)
-        {
-            return InstantiationHelpers.InstantiateActor(obj,
-                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, Quaternion.Euler(rot),
-                false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
-        }
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos) => SpawnActor(obj, pos, Quaternion.identity);
+        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)=> SpawnActor(obj, pos, Quaternion.Euler(rot));
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Quaternion rot)
         {
             return InstantiationHelpers.InstantiateActor(obj,
@@ -666,31 +655,29 @@ namespace SR2E.Library
         {
             return InstantiationHelpers.InstantiateDynamic(obj, pos, rot);
         }
+        /* doesnt work correctly
         public static GameObject SpawnGadget(this GameObject obj, Vector3 pos, Quaternion rot)
         {
-            return GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+            GameObject gadget = GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
+            GameModel model = GameObject.FindObjectOfType<GameModel>();
+            GadgetModel gadgetModel = model.InstantiateGadgetModel(gadget.GetComponent<Gadget>().identType, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos);
+            gadgetModel.eulerRotation = rot.eulerAngles;
+            gadget.GetComponent<Gadget>()._model = gadgetModel;
+            //SceneContext.Instance.ActorRegistry.Register(gadget.GetComponent<Gadget>());
+            return gadget;
         }
-        public static GameObject SpawnGadget(this GameObject obj, Vector3 pos)
-        {
-            return GadgetDirector.InstantiateGadget(obj, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
-        }
-        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos, Quaternion rot)
-        {
-            return GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, rot);
-        }
-        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos)
-        {
-            return GadgetDirector.InstantiateGadget(obj.prefab, SystemContext.Instance.SceneLoader.CurrentSceneGroup, pos, Quaternion.identity);
-        }
-        public static GameObject SpawnFX(this GameObject fx, Vector3 pos)
-        {
-            return FXHelpers.SpawnFX(fx, pos, Quaternion.identity);
-        }
+        public static GameObject SpawnGadget(this GameObject obj, Vector3 pos) => SpawnGadget(obj, pos, Quaternion.identity);
+        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos, Quaternion rot) => SpawnGadget(obj.prefab, pos, rot);
+        public static GameObject SpawnGadget(this GadgetDefinition obj, Vector3 pos) => SpawnGadget(obj.prefab, pos, Quaternion.identity);
+        */
+        
+        public static GameObject SpawnFX(this GameObject fx, Vector3 pos) => SpawnFX(fx, pos, Quaternion.identity);
+        
         public static GameObject SpawnFX(this GameObject fx, Vector3 pos, Quaternion rot)
         {
             return FXHelpers.SpawnFX(fx, pos, rot);
         }
-        public static T? Get<T>(string name) where T : Object { return Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name); }
+        public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
         public static void AddToGroup(this IdentifiableType type, string groupName)
         {
             var group = Get<IdentifiableTypeGroup>(groupName);
@@ -1092,7 +1079,7 @@ namespace SR2E.Library
 
         public static GameObject GetConsoleObject()
         {
-            return SR2Console.transform.getObjRec<GameObject>("consoleMenu");
+            return SR2EConsole.transform.getObjRec<GameObject>("consoleMenu");
         }
 
         public static bool RemoveComponent<T>(this GameObject obj) where T : Component

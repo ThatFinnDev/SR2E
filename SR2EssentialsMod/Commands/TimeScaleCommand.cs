@@ -18,6 +18,8 @@ namespace SR2E.Commands
         {
             try
             {
+                
+                SceneContext.Instance.TimeDirector._timeFactor = float.Parse(args[0]);
                 Time.timeScale = float.Parse(args[0]);
                 return true;
             }
