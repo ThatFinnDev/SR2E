@@ -15,7 +15,7 @@ public class PartyCommand : SR2CCommand
     public override bool Execute(string[] args)
     {
         if (args != null)
-        { SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
+        { SR2EConsole.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
         if (defaultVolume != null)
         {
             if (myAdjustments != null)
@@ -23,7 +23,7 @@ public class PartyCommand : SR2CCommand
                 myAdjustments.hueShift.value = 0;
                 myAdjustments.hueShift.overrideState = false;
                 defaultVolume = null;
-                SR2Console.SendMessage("Successfully disabled party mode!"); 
+                SR2EConsole.SendMessage("Successfully disabled party mode!"); 
                 return true;
             }
         }
@@ -33,11 +33,11 @@ public class PartyCommand : SR2CCommand
             if (volume.isGlobal)
             {
                 defaultVolume = volume;
-                SR2Console.SendMessage("Successfully enabled party mode!");
+                SR2EConsole.SendMessage("Successfully enabled party mode!");
                 return true;
             }
 
-        SR2Console.SendError("An unknown error occured!");
+        SR2EConsole.SendError("An unknown error occured!");
         return false;
     }
 

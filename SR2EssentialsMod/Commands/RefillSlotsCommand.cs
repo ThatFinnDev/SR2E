@@ -15,11 +15,11 @@ public class RefillSlotsCommand : SR2CCommand
     {
         if (args != null)
         {
-            SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
+            SR2EConsole.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
             return false;
         }
 
-        if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+        if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
 
         for (int i = 0; i < SceneContext.Instance.PlayerState.Ammo.Slots.Count; i++)
         {
@@ -29,7 +29,7 @@ public class RefillSlotsCommand : SR2CCommand
                     slot.Count = SceneContext.Instance.PlayerState.Ammo._ammoModel.GetSlotMaxCount(slot.Id, i);
         }
 
-        SR2Console.SendMessage("Successfully refilled your slots");
+        SR2EConsole.SendMessage("Successfully refilled your slots");
 
         return true;
     }

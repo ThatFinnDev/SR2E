@@ -11,17 +11,13 @@
         }
         public override bool Execute(string[] args)
         {
-            if (args != null)
-            {
-                SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
-                return false;
-            }
+            if (args != null) return SendUsage();
 
-            SR2Console.SendMessage("<color=blue>List of Mods Loaded:</color>");
+            SR2EConsole.SendMessage("<color=blue>List of Mods Loaded:</color>");
 
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
-                SR2Console.SendMessage(melonBase.Info.Name+" by:"+melonBase.Info.Author);
+                SR2EConsole.SendMessage(melonBase.Info.Name+" by: "+melonBase.Info.Author);
             }
 
             return true;

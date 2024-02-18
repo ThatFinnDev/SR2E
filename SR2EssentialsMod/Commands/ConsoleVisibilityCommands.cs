@@ -14,14 +14,13 @@ public class ConsoleVisibilityCommands
         }
         public override bool Execute(string[] args)
         {
-            if (args != null)
-            { SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
+            if (args != null) return SendNoArguments();
             return SilentExecute(args);
         }
         public override bool SilentExecute(string[] args)
         {
-            if(!SR2Console.isOpen)
-                SR2Console.Open();
+            if(!SR2EConsole.isOpen)
+                SR2EConsole.Open();
             return true;
         }
     }
@@ -37,14 +36,13 @@ public class ConsoleVisibilityCommands
         }
         public override bool Execute(string[] args)
         {
-            if (args != null)
-            { SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
+            if (args != null) return SendNoArguments();
             return SilentExecute(args);
         }
         public override bool SilentExecute(string[] args)
         {
-            if(SR2Console.isOpen)
-                SR2Console.Close();
+            if(SR2EConsole.isOpen)
+                SR2EConsole.Close();
             return true;
         }
     }
@@ -54,19 +52,14 @@ public class ConsoleVisibilityCommands
         public override string Usage => "toggleconsole";
         public override string Description => "Toggles the console";
         public override bool executeWhenConsoleIsOpen => true;
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
-        {
-            return null;
-        }
         public override bool Execute(string[] args)
         {
-            if (args != null)
-            { SR2Console.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
+            if (args != null) return SendNoArguments();
             return SilentExecute(args);
         }
         public override bool SilentExecute(string[] args)
         {
-            SR2Console.Toggle();
+            SR2EConsole.Toggle();
             return true;
         }
     }

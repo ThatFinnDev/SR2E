@@ -1,6 +1,4 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Regions;
-using Il2CppMonomiPark.SlimeRancher.World;
-using UnityEngine.InputSystem;
+﻿using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
@@ -16,36 +14,14 @@ namespace SR2E.Commands
             if (argIndex == 0)
             {
                 List<string> list = new List<string>();
-
                 foreach (var p in FXLibrary)
-                {
                     list.Add(p.Value.Item2);
-                }
-
                 return list;
             }
-            else if (argIndex == 1)
-            {
-                return new List<string>()
-                {
-                    "0.25",
-                    "0.5",
-                    "0.75",
-                    "1",
-                    "1.25",
-                    "1.5",
-                    "2",
-                };
-            }
-            else if (argIndex == 2)
-            {
-                return new List<string>()
-                {
-                    "true",
-                    "false",
-                };
-            }
-
+            if (argIndex == 1)
+                return new List<string>() { "0.25", "0.5", "0.75", "1", "1.25", "1.5", "2", };
+            if (argIndex == 2)
+                return new List<string>() { "true", "false", };
             return null;
         }
         public ParticleSystem currFX;
@@ -73,14 +49,9 @@ namespace SR2E.Commands
             {
                 GameObject fxobj;
                 try
-                {
-                    fxobj = FXLibraryReversable[args[0]].Item2;
-                }
+                { fxobj = FXLibraryReversable[args[0]].Item2; }
                 catch
-                {
-                    SR2Console.SendError("Invalid FX Name!");
-                    return false;
-                }
+                { SR2EConsole.SendError("Invalid FX Name!"); return false; }
                 fxobj.SpawnFX(Camera.main.transform.position + (Camera.main.transform.forward * 3));
                 if (args.Length >= 2)
                 {
@@ -108,10 +79,8 @@ namespace SR2E.Commands
         {
             if (Keyboard.current.pKey.wasPressedThisFrame)
             {
-                if (sys.isPlaying)
-                    sys.Pause();
-                else 
-                    sys.Play();
+                if (sys.isPlaying) sys.Pause();
+                else sys.Play();
             }
         }
     }

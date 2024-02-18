@@ -24,10 +24,10 @@ namespace SR2E.Library.SaveExplorer
             inspectorEntry = transform.GetChild(0).GetChild(1).GetChild(0).GetChild(0).gameObject;
 
             inspectorEntry.AddComponent<SaveExplorerTabEntry>();
-            inspectorEntry.transform.GetChild(2).gameObject.AddComponent<InspectorEntryInteract>();
+            inspectorEntry.getObjRec<GameObject>("Button").AddComponent<InspectorEntryInteract>();
 
             saveRootEntry.AddComponent<SaveExplorerTabEntry>();
-            saveRootEntry.transform.GetChild(2).gameObject.AddComponent<SaveExplorerEntryInteract>();
+            saveRootEntry.getObjRec<GameObject>("Button").AddComponent<SaveExplorerEntryInteract>();
 
             gameObject.AddComponent<PropertyStealer>();
             gameObject.AddComponent<SaveExplorerRaycaster>();
@@ -44,6 +44,7 @@ namespace SR2E.Library.SaveExplorer
             return;
             if (Keyboard.current.f10Key.wasPressedThisFrame)
             {
+                GetComponent<PropertyStealer>().Refresh();
                 transform.GetChild(0).gameObject.SetActive(!transform.GetChild(0).gameObject.active);
             }
             if (Keyboard.current.f9Key.wasPressedThisFrame)

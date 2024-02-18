@@ -14,6 +14,7 @@ namespace SR2E.Commands
         {
             if (argIndex == 0)
             {
+                
                 string firstArg = "";
                 if (args != null)
                     firstArg = args[0];
@@ -21,6 +22,8 @@ namespace SR2E.Commands
                 int i = -1;
                 foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
                 {
+                    
+                    if(type.ReferenceId.StartsWith("GadgetDefinition")) continue;
                     if (i > 55)
                         break;
                     try
@@ -50,18 +53,18 @@ namespace SR2E.Commands
         {
             if (args == null)
             {
-                SR2Console.SendMessage($"Usage: {Usage}");
+                SR2EConsole.SendMessage($"Usage: {Usage}");
                 return false;
             }
 
             if (args.Length != 2&&args.Length != 1)
             {
-                SR2Console.SendMessage($"Usage: {Usage}");
+                SR2EConsole.SendMessage($"Usage: {Usage}");
                 return false;
             }
 
             
-            if (!inGame) { SR2Console.SendError("Load a save first!"); return false; }
+            if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
 
 
             string itemName = "";
@@ -72,7 +75,7 @@ namespace SR2E.Commands
             {
                 type = SR2EEntryPoint.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
                 if (type == null)
-                { SR2Console.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
+                { SR2EConsole.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
                 string name = type.LocalizedName.GetLocalizedString();
                 if (name.Contains(" "))
                     itemName = "'" + name + "'";
@@ -86,19 +89,19 @@ namespace SR2E.Commands
             {
                 if (!int.TryParse(args[1], out amount))
                 {
-                    SR2Console.SendError(args[1] + " is not a valid integer!");
+                    SR2EConsole.SendError(args[1] + " is not a valid integer!");
                     return false;
                 }
 
                 if (amount <= 0)
                 {
-                    SR2Console.SendError(args[1] + " is not an integer above 0!");
+                    SR2EConsole.SendError(args[1] + " is not an integer above 0!");
                     return false;
                 }
             }
 
-            //if(type.ReferenceId.StartsWith("GadgetDefinition"))
-            //{ SR2Console.SendError(args[0] + " is a gadget, not an item!"); return false; }
+            if(type.ReferenceId.StartsWith("GadgetDefinition"))
+            { SR2EConsole.SendError(args[0] + " is a gadget, not an item!"); return false; }
             
             for (int i = 0; i < amount; i++)
             {
@@ -107,15 +110,13 @@ namespace SR2E.Commands
                     try
                     {
                         GameObject spawned = null;
-                        if (type is GadgetDefinition)
-                            spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
-                        else
-                            spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
+                        //if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
+                        //else 
+                        spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
+                        
                         spawned.transform.position = hit.point+hit.normal*PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
                         var delta = -(hit.point - Camera.main.transform.position).normalized;
                         spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
-                        if (type is GadgetDefinition) 
-                            SceneContext.Instance.ActorRegistry.Register(spawned.GetComponent<Gadget>());
                     }
                     catch 
                     { }
@@ -123,7 +124,7 @@ namespace SR2E.Commands
             }
             
             
-            SR2Console.SendMessage($"Successfully spawned {amount} {itemName}");
+            SR2EConsole.SendMessage($"Successfully spawned {amount} {itemName}");
             
             return true;
         }

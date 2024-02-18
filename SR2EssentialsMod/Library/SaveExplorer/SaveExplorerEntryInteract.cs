@@ -24,7 +24,7 @@ namespace SR2E.Library.SaveExplorer
         internal int IDX;
         public void OnMouseDown()
         {
-            PropertyStealer.Instance.selected = PropertyStealer.Instance.defaultProperties[IDX].GetValue(PropertyStealer.Instance.selected);
+            PropertyStealer.Instance.selected = PropertyStealer.Instance.selectedProperties[IDX].GetValue(PropertyStealer.Instance.selected);
             PropertyStealer.Instance.Refresh();
         }
     }

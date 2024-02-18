@@ -5,7 +5,7 @@ using Il2CppSystem;
 
 namespace SR2E
 {
-    public static class SR2Warps
+    public static class SR2EWarps
     {
         internal static Dictionary<string, Warp> warps = new Dictionary<string, Warp>();
         internal static Warp warpTo = null;
@@ -28,11 +28,9 @@ namespace SR2E
                 foreach (SceneGroup group in SystemContext.Instance.SceneLoader.SceneGroupList.items)
                     if (group.IsGameplay)
                         if (group.ReferenceId == warpTo.sceneGroup)
-                            if (warpTo.sceneGroup == SceneContext.Instance.Player.GetComponent<RegionMember>()
-                                    .SceneGroup.ReferenceId)
+                            if (warpTo.sceneGroup == SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId)
                             {
-                                SRCharacterController cc = SceneContext.Instance.Player
-                                    .GetComponent<SRCharacterController>();
+                                SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
                                 cc.Position = warpTo.position;
                                 cc.Rotation = warpTo.rotation;
                                 cc.Velocity = Vector3.zero;
@@ -76,9 +74,7 @@ namespace SR2E
                 if(String.IsNullOrEmpty(line))
                     continue;
                 if (name=="")
-                {
                     name = line;
-                }
                 else
                 {
                     string[] split = line.Split('|');

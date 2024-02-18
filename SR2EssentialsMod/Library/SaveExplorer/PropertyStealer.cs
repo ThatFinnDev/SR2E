@@ -38,7 +38,7 @@ namespace SR2E.Library.SaveExplorer
                     var obj2 = Instantiate(root.saveRootEntry).GetComponent<SaveExplorerTabEntry>();
 
                     obj2.Awake();
-                    obj2.value.m_text = Stringify.ToString(Field1.GetValue(selected));
+                    obj2.value.m_text = Field1.GetValue(selected).DataToString();
                     obj2.gameObject.SetActive(true);
                     obj2.label.m_text = Field1.Name;
                     obj2.transform.parent = root.inspector.transform.GetChild(0);

@@ -24,11 +24,11 @@ public class FlingMode : MonoBehaviour
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            SR2Console.ExecuteByString("fling 100");
+            SR2EConsole.ExecuteByString("fling 100");
         }
         else if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            SR2Console.ExecuteByString("fling -100");
+            SR2EConsole.ExecuteByString("fling -100");
         }
     }
 }
@@ -112,7 +112,7 @@ public class IdentifiableObjectDragger : MonoBehaviour
     }
 }
 [RegisterTypeInIl2Cpp(false)]
-public class NoclipComponent : MonoBehaviour
+public class NoClipComponent : MonoBehaviour
 {
     public float baseSpeed = 15f;
     public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
