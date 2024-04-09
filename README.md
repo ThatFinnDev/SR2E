@@ -3,20 +3,12 @@
 
  # Installation:
   1. Install MelonLoader 0.6.2 https://github.com/LavaGang/MelonLoader/releases/tag/v0.6.2
-  2. Download the SR2Essentials.dll in the releases Tab.
-  3. Put the SR2Essentials.dll in your Mods Folder
-  4. If you have the old ModMenu.dll, then remove it.
+  2. Download the SR2E.dll in the releases Tab.
+  3. Put the SR2E.dll in your Mods Folder
 
 # Usage:
  Open the console wih Ctrl+Tab
 
-# API
- https://github.com/ThatFinnDev/SR2Essentials/wiki
-
-# Known bugs:
- Sometimes the consoles doesn't recognize keyboard or mouse scroll input, this is due to the input I had to disable for the game. This is done very crudely at moment and I had to write my own workaround which causes this behaviour sometimes. It's easily fixable by closing and reopening the console
-
- Sometimes the opening/closing of the console can freeze the game. This also fixable by closing and reoping the console.
 
 # Special thanks
  Special thanks to SlimeRancherModding for SRML
