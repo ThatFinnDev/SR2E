@@ -104,7 +104,7 @@ public abstract class SR2CCommand
     /// <summary>
     /// Sends the load a save first message
     /// </summary>
-    public bool SendLoadASaveFirstMessage()
+    public bool SendLoadASaveFirst()
     {
         SR2EConsole.SendError("Load a save first!");
         return false;

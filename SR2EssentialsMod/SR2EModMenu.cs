@@ -112,14 +112,13 @@ namespace SR2E
         /// </summary>
         public static void Toggle()
         {
+            
             if (isOpen) Close();
             else Open();
         }
 
         internal static bool isOpen
-        {
-            get { return gameObject.activeSelf; }
-        }
+        { get { return gameObject == null ? false : gameObject.activeSelf; } }
 
         static GameObject entryTemplate;
         static GameObject headerTemplate;

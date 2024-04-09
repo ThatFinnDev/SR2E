@@ -3,6 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using System;
 using SR2E.Saving;
 using System.Linq;
+using Il2CppMonomiPark.SlimeRancher.World;
 using SR2E.Library;
 
 namespace SR2E.Commands
@@ -17,21 +18,36 @@ namespace SR2E.Commands
         public const float playerColliderHeightBase = 2f;
         public const float playerColliderRadBase = 0.6f;
 
-        public readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER", "GADGET" };
-        public readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
-        public readonly List<string> GameParam = new List<string>() { "DISABLE_ACTOR_TYPE", "FAST_QUIT" };
-        public readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR", "ZERO_GRAV", "CUSTOM_SCALE_XYZ" };
-        public readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
-        public readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION", "SCALE" };
+        readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER", "GADGET" };
+        readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
+        readonly List<string> GameParam = new List<string>() { "DISABLE_ACTOR_TYPE", "FAST_QUIT" }; 
+        readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR", "ZERO_GRAV", "CUSTOM_SCALE_XYZ" };
+        readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
+        readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION", "SCALE" };
 
-        public readonly List<string> ParamPlaceholder = new List<string>()
+
+        internal static Gadget RaycastForGadget()
         {
-            "PLACEHOLDER",
-            "TEST",
-            "1_2_3"
-        };
+            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+            {
+                Transform currentParent = hit.collider.transform.parent;
 
-        
+                for (int i = 0; i < 10 && currentParent != null; i++)
+                {
+                    Gadget gadgetComponent = currentParent.GetComponent<Gadget>();
+
+                    if (gadgetComponent != null)
+                    {
+                        return gadgetComponent;
+                    }
+
+                    currentParent = currentParent.parent;
+                }
+
+                return null;
+            }
+            return null;
+        }
         public void SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, float val = 1f)
         {
             if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
@@ -446,6 +462,7 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
+            if (!inGame) return SendLoadASaveFirst();
             switch (args[0])
             {
                 case "GORDO": return ExcGordo(args);

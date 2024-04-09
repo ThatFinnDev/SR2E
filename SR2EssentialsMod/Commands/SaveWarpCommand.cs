@@ -13,27 +13,18 @@ namespace SR2E.Commands
         }
         public override bool Execute(string[] args)
         {
-            if (args == null)
-            {
-                SR2EConsole.SendError($"Usage: {Usage}");
-                return false;
-            }
-
-            if (args.Length != 1)
-            { SR2EConsole.SendMessage($"Usage: {Usage}"); return false; }
-            
-            if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
+            if (args == null || args.Length != 1) return SendUsage();
+            if (!inGame) { return SendLoadASaveFirst(); }
 
             string name = args[0];
-            if (SR2EWarps.warps.ContainsKey(name))
-            { SR2EConsole.SendError($"There is already a warp with the name: {name}"); return false; }
 
             Vector3 pos = SceneContext.Instance.Player.transform.position;
             Quaternion rotation = SceneContext.Instance.Player.transform.rotation;
             string sceneGroup = SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId;
-            
-            SR2EWarps.warps.Add(name,new Warp(sceneGroup,pos,rotation));
-            SR2EWarps.SaveWarps();
+
+            SR2EError error = SR2ESaveManager.WarpManager.AddWarp(name, new SR2ESaveManager.Warp(sceneGroup, pos, rotation));
+            if(error==SR2EError.DoesntExist)
+            { SR2EConsole.SendError($"There is already a warp with the name: {name}"); return false; }
             
             SR2EConsole.SendMessage($"Successfully added the Warp: {name}");
             return true;
