@@ -29,19 +29,19 @@ namespace SR2E.Commands
         {
             if (args == null)
             {
-                SR2Console.SendMessage($"Usage: {Usage}");
+                SR2EConsole.SendMessage($"Usage: {Usage}");
                 return false;
             }
 
             if (!(args.Length <= 3))
             {
-                SR2Console.SendMessage($"Usage: {Usage}");
+                SR2EConsole.SendMessage($"Usage: {Usage}");
                 return false;
             }
 
             if (currFX != null && !currFX.isStopped)
             {
-                SR2Console.SendError("Please wait for the current FX to stop.");
+                SR2EConsole.SendError("Please wait for the current FX to stop.");
                 return false;
             }
             

@@ -13,11 +13,11 @@
         {
             if (args != null) return SendNoArguments();
 
-            if (SR2EWarps.warps.Count == 0)
+            if (SR2ESaveManager.data.warps.Count == 0)
             { SR2EConsole.SendError("There aren't warps yet!"); return false; }
             
             SR2EConsole.SendMessage("<color=blue>List of all Warps:</color>");
-            foreach (KeyValuePair<string, Warp> pair in SR2EWarps.warps)
+            foreach (KeyValuePair<string, SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps)
                 SR2EConsole.SendMessage($"'{pair.Key}' in '{pair.Value.sceneGroup}' at '{pair.Value.x} {pair.Value.y} {pair.Value.z}'");
 
             return true;

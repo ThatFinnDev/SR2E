@@ -37,7 +37,7 @@ namespace SR2E.Commands
                 else
                     shouldDisableThrusterHeight = (args[0].ToLower() == "true");
 
-            if (!inGame) return SendLoadASaveFirstMessage();
+            if (!inGame) return SendLoadASaveFirst();
 
             if (infEnergy)
             {

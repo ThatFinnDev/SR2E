@@ -3,6 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using System;
 using SR2E.Saving;
 using System.Linq;
+using Il2CppMonomiPark.SlimeRancher.World;
 using SR2E.Library;
 
 namespace SR2E.Commands
@@ -31,7 +32,28 @@ namespace SR2E.Commands
             "1_2_3"
         };
 
-        
+        internal static Gadget RaycastForGadget()
+        {
+            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+            {
+                Transform currentParent = hit.collider.transform.parent;
+
+                for (int i = 0; i < 10 && currentParent != null; i++)
+                {
+                    Gadget gadgetComponent = currentParent.GetComponent<Gadget>();
+
+                    if (gadgetComponent != null)
+                    {
+                        return gadgetComponent;
+                    }
+
+                    currentParent = currentParent.parent;
+                }
+
+                return null;
+            }
+            return null;
+        }
         public void SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, float val = 1f)
         {
             if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))

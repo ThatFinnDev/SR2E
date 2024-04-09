@@ -29,17 +29,13 @@ namespace SR2E.Commands
             if (argIndex == 1)
             {
                 List<string> list = new List<string>();
-                foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
-                {
-                    list.Add(entry.Key);
-                }
+                foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands) list.Add(entry.Key);
                 return list;
             }
             string secondArg = args[1];
             foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
             {
-                if (entry.Key == secondArg)
-                    return entry.Value.GetAutoComplete(argIndex-2,args);
+                if (entry.Key == secondArg) return entry.Value.GetAutoComplete(argIndex-2,args);
             }
             return null;
         }
@@ -62,12 +58,7 @@ namespace SR2E.Commands
                 { builder.Append(args[i]+" "); }
                 string executeString = builder.ToString();
                 
-                if (SR2ECommandBindingManager.keyCodeCommands.ContainsKey(key))
-                    SR2ECommandBindingManager.keyCodeCommands[key] += ";" + executeString;
-                else
-                    SR2ECommandBindingManager.keyCodeCommands.Add(key, executeString);
-                
-                SR2ECommandBindingManager.SaveKeyBinds();
+                SR2ESaveManager.BindingManger.BindKey(key,executeString);
                 SR2EConsole.SendMessage($"Successfully bound command '{executeString}' to key {key}");
                 return true;
             }

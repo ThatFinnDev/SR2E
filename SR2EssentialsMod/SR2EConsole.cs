@@ -2,7 +2,6 @@
 using System.Linq;
 using Il2CppTMPro;
 using SR2E.Commands;
-using SR2E.Commands.Library;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
@@ -213,10 +212,8 @@ namespace SR2E
         public static void Open()
         {
             if (SR2EEntryPoint._mSRMLIsInstalled) return;
-            if (SR2EModMenu.isOpen)
-                return;
-            if (SR2EWarps.warpTo != null)
-                return;
+            if (SR2EModMenu.isOpen) return;
+            if (SR2ESaveManager.WarpManager.warpTo != null) return;
 
             consoleBlock.SetActive(true);
             consoleMenu.SetActive(true);
@@ -461,13 +458,6 @@ namespace SR2E
 
         }
 
-        //Warps & Keybinding loading
-        static void SetupData()
-        {
-            if (!SR2EEntryPoint._mSRMLIsInstalled)
-                SR2ECommandBindingManager.Start();
-            SR2EWarps.Start();
-        }
         //Setup ModMenu
         static void SetupModMenu()
         {
@@ -514,7 +504,6 @@ namespace SR2E
             RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
-            if (SR2EEntryPoint.devMode) RegisterCommands(new SR2CCommand[] { new AddToGroupCommand(), new RemoveFromGroupCommand() , new RefreshEatmapCommand(), });
             if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InvincibleCommand());
             if (!SR2EEntryPoint.infEnergyInstalled) RegisterCommand(new InfiniteEnergyCommand());
         }
@@ -585,7 +574,7 @@ namespace SR2E
                 commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); })); 
             }
             SetupCommands();
-            SetupData();
+            SR2ESaveManager.Start();
 
             SetupModMenu();
             SR2EEntryPoint.SetupFonts();
@@ -703,15 +692,12 @@ namespace SR2E
                 {
                 }
 
-                SR2ECommandBindingManager.Update();
 
             }
 
             //Console Commands Update
             foreach (KeyValuePair<string, SR2CCommand> pair in commands)
                 pair.Value.Update();
-            //Modmenu
-            try { SR2EModMenu.Update(); } catch{ }
         }
         
 
