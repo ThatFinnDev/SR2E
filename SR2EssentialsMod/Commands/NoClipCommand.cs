@@ -25,6 +25,7 @@ namespace SR2E.Commands
                 if (!SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>())
                 {
                     SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
+                    SR2EConsole.SendMessage("FYI: Controller input for noclip doesn't work yet!");
                     SR2ESavableData.Instance.playerSavedData.noclipState = true;
                 }
                 else

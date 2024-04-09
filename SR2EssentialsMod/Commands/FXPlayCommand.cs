@@ -24,11 +24,26 @@ namespace SR2E.Commands
                 return new List<string>() { "true", "false", };
             return null;
         }
+        public ParticleSystem currFX;
         public override bool Execute(string[] args)
         {
-            if (args == null || args.Length <= 3) return SendUsage();
-            
-            if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
+            if (args == null)
+            {
+                SR2EConsole.SendMessage($"Usage: {Usage}");
+                return false;
+            }
+
+            if (!(args.Length <= 3))
+            {
+                SR2EConsole.SendMessage($"Usage: {Usage}");
+                return false;
+            }
+
+            if (currFX != null && !currFX.isStopped)
+            {
+                SR2EConsole.SendError("Please wait for the current FX to stop.");
+                return false;
+            }
             
             if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
             {
@@ -47,6 +62,7 @@ namespace SR2E.Commands
                             fxobj.AddComponent<FXPlayPauseFunction>();
                     }
                 }
+                currFX = fxobj.GetComponent<ParticleSystem>();
             }
             return true;
         }

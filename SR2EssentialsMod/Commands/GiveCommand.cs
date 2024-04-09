@@ -39,7 +39,7 @@
         public override bool Execute(string[] args)
         {
             if (args == null || args.Length > 2) return SendUsage();
-            if (!inGame) return SendLoadASaveFirstMessage();
+            if (!inGame) return SendLoadASaveFirst();
             
             string itemName = "";
             string identifierTypeName = args[0];

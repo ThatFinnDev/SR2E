@@ -11,7 +11,7 @@ public class MoveCommand: SR2CCommand
     public override bool Execute(string[] args)
     {
         if (args == null || args.Length != 3) return SendUsage();
-        if (!inGame) return SendLoadASaveFirstMessage();
+        if (!inGame) return SendLoadASaveFirst();
 
         Vector3 move;
         try

@@ -40,13 +40,12 @@ namespace SR2E.Commands
             Key key;
             if (Key.TryParse(keyToParse,true,out key))
             {
-                if (!SR2ECommandBindingManager.keyCodeCommands.ContainsKey(key))
+                if (!SR2ESaveManager.BindingManger.isKeyBound(key))
                 {
                     SR2EConsole.SendMessage($"{args[0]} is not bound to anything!");
                     return false;
                 }
-                SR2ECommandBindingManager.keyCodeCommands.Remove(key);
-                SR2ECommandBindingManager.SaveKeyBinds();
+                SR2ESaveManager.BindingManger.UnbindKey(key);
                 SR2EConsole.SendMessage($"Successfully unbound key {key}");
                 return true;
             }

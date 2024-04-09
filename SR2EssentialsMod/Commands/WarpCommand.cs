@@ -16,78 +16,35 @@ namespace SR2E.Commands
             if (argIndex == 0)
             {
                 List<string> warps = new List<string>();
-                foreach (KeyValuePair<string,Warp> pair in SR2EWarps.warps)
-                { warps.Add(pair.Key); }
+                foreach (KeyValuePair<string,SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key); 
                 return warps;
             }
-
             return null;
         }
         public override bool Execute(string[] args)
         {
             if (args == null || args.Length != 1) return SendUsage();
-            if (!inGame) return SendLoadASaveFirstMessage();
-            
+            if (!inGame) return SendLoadASaveFirst();
             string name = args[0];
-            if (!SR2EWarps.warps.ContainsKey(name))
+            SR2ESaveManager.Warp warp = SR2ESaveManager.WarpManager.GetWarp(name);
+            if (warp==null)
             { SR2EConsole.SendError($"There is no warp with the name: {name}"); return false; }
 
-            Warp warp = SR2EWarps.warps[name];
+            SR2EError error = warp.WarpPlayerThere();
+            switch (error)
+            {
+                case SR2EError.NoError: SR2EConsole.SendMessage($"Successfully warped to the warp {name}!"); return true;
+                case SR2EError.NotInGame: return SendLoadASaveFirst();
+                case SR2EError.PlayerNull: return SendLoadASaveFirst();
+                case SR2EError.TeleportablePlayerNull: SR2EConsole.SendError($"TeleportablePlayer is null!"); return false;
+                case SR2EError.SRCharacterControllerNull: SR2EConsole.SendError($"SRCharacterController is null!"); return false;
+                case SR2EError.SceneGroupNotSupported: SR2EConsole.SendError($"There sceneGroup {warp.sceneGroup} is not supported!"); return false;
+                case SR2EError.DoesntExist: SR2EConsole.SendError($"There place {warp.sceneGroup} does not exist!"); return false;
+            }
             TeleportablePlayer p = SceneContext.Instance.Player.GetComponent<TeleportablePlayer>();
             if(p==null)
             { SR2EConsole.SendError($"TeleportablePlayer is null!"); return false; }
 
-            SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
-            foreach (SceneGroup group in SystemContext.Instance.SceneLoader.SceneGroupList.items)
-                if (group.IsGameplay)
-                    if (group.ReferenceId == warp.sceneGroup)
-                    {
-                        if (warp.sceneGroup == p.SceneGroup.ReferenceId)
-                        {
-                            cc.Position = warp.position;
-                            cc.Rotation = warp.rotation;
-                            cc.Velocity = Vector3.zero;
-                        }
-                        else
-                        {
-                            try
-                            {
-                                GameObject prefab = null;
-                                switch (warp.sceneGroup)
-                                {
-                                    case "SceneGroup.ConservatoryFields":
-                                        SR2EWarps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterHomeBlue").prefab; break;
-                                    case "SceneGroup.RumblingGorge":
-                                        SR2EWarps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneGorge").prefab; break;
-                                    case "SceneGroup.LuminousStrand":
-                                        SR2EWarps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneStrand").prefab; break;
-                                    case "SceneGroup.PowderfallBluffs":
-                                        SR2EWarps.warpTo = warp; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab; break;
-                                    default:
-                                        SR2EConsole.SendError($"There place {warp.sceneGroup} does not exist!"); return false;
-
-                                }
-
-                                if (prefab != null)
-                                {
-                                    GameObject teleporterCollider = prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject;
-                                    GameObject obj = GameObject.Instantiate(teleporterCollider, SceneContext.Instance.Player.transform.position, Quaternion.identity);
-                                    obj.SetActive(true);
-                                    obj.GetComponent<StaticTeleporterNode>()._hasDestination = true;
-                                    obj.GetComponent<StaticTeleporterNode>().UpdateFX();
-                                }
-                                else
-                                { SR2EConsole.SendError("An unknown error occured!"); return false; }
-                            }
-                            catch { }
-                        }
-                        if(SR2EConsole.isOpen)
-                            SR2EConsole.Close();
-                        SR2EConsole.SendMessage($"Successfully warped to the warp {name}!"); 
-                        return true;
-                    }
-                
-            
             SR2EConsole.SendError("An unknown error occured!");
             return false;
 
