@@ -23,7 +23,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.0"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.4.1"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -32,6 +32,7 @@ namespace SR2E
         internal static bool _mSRMLIsInstalled = false;
         internal static SR2EEntryPoint instance;
         internal static TMP_FontAsset SR2Font;
+        internal static TMP_FontAsset normalFont;
         internal static bool infEnergyInstalled = false;
         internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
@@ -60,7 +61,7 @@ namespace SR2E
         internal static bool syncConsole { get { return prefs.GetEntry<bool>("doesConsoleSync").Value; } }
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
-        internal static bool devMode { get { return prefs.GetEntry<bool>("experimentalStuff").Value; } }
+        internal static bool devMode { get { return prefs.GetEntry<bool>("devMode").Value; } }
         internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
@@ -95,12 +96,11 @@ namespace SR2E
                             if(SR2EConsole.syncedSetuped) SR2EConsole.SetupConsoleSync();
                             else SR2EConsole.UnSetupConsoleSync();
                         }
-                        SetupFonts();
                     }));
             if (!prefs.HasEntry("debugLogging"))
                 prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
-            if (!prefs.HasEntry("experimentalStuff"))
-                prefs.CreateEntry("experimentalStuff", (bool)false, "Enable experimental stuff", true);
+            if (!prefs.HasEntry("devMode"))
+                prefs.CreateEntry("devMode", (bool)false, "Enable Dev Mode", true);
             if (!prefs.HasEntry("onSaveLoadCommand"))
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
@@ -199,11 +199,18 @@ namespace SR2E
 
                     bundle = AssetBundle.LoadFromMemory(ms.ToArray());
                     foreach (var obj in bundle.LoadAllAssets())
+                    {
                         if (obj != null)
-                            if (obj.name == "AllMightyMenus")
+                            switch (obj.name)
                             {
-                                Object.Instantiate(obj);
+                                case "SR2EFallbackFont":
+                                    normalFont = obj.Cast<TMP_FontAsset>();
+                                    break;
+                                case "AllMightyMenus":
+                                    Object.Instantiate(obj);
+                                    break;
                             }
+                    }
                     
                     break;
                 case "MainMenuUI":
@@ -252,25 +259,27 @@ namespace SR2E
             SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
-        internal static TMP_FontAsset defaultFont;
         internal static void SetupFonts()
         {
-            if(SR2Font==null)
-                SR2Font = Get<AssetBundle>("bee043ef39f15a1d9a10a5982c708714.bundle").LoadAsset("Assets/UI/Font/HemispheresCaps2/Runsell Type - HemispheresCaps2 (Latin).asset").Cast<TMP_FontAsset>();
-            
+            try
+            {
+                if(normalFont==null) normalFont = Get<TMP_FontAsset>("Lexend-Regular (Latin)");
+            }
+            catch
+            {
+                MelonLogger.Error("The normal font couldn't be loaded!");
+                MelonLogger.Error("This happens on some platforms and I (the dev) haven't found a fix yet!");
+            }
             if (consoleUsesSR2Font)
                 foreach (var text in SR2EConsole.gameObject.getAllChildrenOfType<TMP_Text>())
-                {
-                    if(defaultFont==null)
-                        defaultFont= text.font;
                     text.font = SR2Font;
-                }
-            else if(defaultFont!=null)
+            else if(normalFont!=null)
                 foreach (var text in SR2EConsole.gameObject.getAllChildrenOfType<TMP_Text>())
-                    text.font = defaultFont;
-            foreach (var text in SR2EConsole.gameObject.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
+                    text.font = normalFont==null?SR2Font:normalFont;
+            foreach (var text in SR2EConsole.gameObject.getObjRec<GameObject>("modMenu")
+                         .getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
-            
+
         }
 
         internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)

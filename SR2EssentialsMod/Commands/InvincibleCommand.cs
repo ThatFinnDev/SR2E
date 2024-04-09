@@ -68,9 +68,21 @@ namespace SR2E.Commands
                         SceneContext.Instance.PlayerState.SetHealth(int.MaxValue);
         }
 
-        static int normalHealth = 100;
+        public static int normalHealth = 100;
         static bool infHealth = false;
         static HealthMeter healthMeter;
         
+        [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.SaveGameAndFlush))]
+        public static class InvincibleCorrectionPatch
+        {
+            public static void Prefix(AutoSaveDirector __instance)
+            {
+                if(infHealth)
+                    if (SceneContext.Instance != null)
+                        if (SceneContext.Instance.PlayerState != null)
+                            SceneContext.Instance.PlayerState.SetHealth(normalHealth);
+            }
+        }
     }
+
 }

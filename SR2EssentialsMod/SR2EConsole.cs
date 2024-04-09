@@ -577,7 +577,6 @@ namespace SR2E
             SR2ESaveManager.Start();
 
             SetupModMenu();
-            SR2EEntryPoint.SetupFonts();
         }
 
         static MultiKey openKey = new MultiKey(new Key[] { Key.LeftCtrl, Key.Tab });
