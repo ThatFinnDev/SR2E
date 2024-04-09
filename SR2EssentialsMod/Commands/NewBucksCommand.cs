@@ -16,11 +16,11 @@ public class NewBucksCommand : SR2CCommand
     public override bool Execute(string[] args)
     {
         if (args == null || args.Length != 1) return SendUsage();
-        if (!inGame) return SendLoadASaveFirstMessage();
+        if (!inGame) return SendLoadASaveFirst();
 
         int amount = 0;
         if (!int.TryParse(args[0], out amount))
-        { SR2EConsole.SendError(args[1] + " is not a valid integer!"); return false; }
+        { SR2EConsole.SendError(args[0] + " is not a valid integer!"); return false; }
 
 
         int newNewBuckAmount = Mathf.Clamp(amount + SceneContext.Instance.PlayerState._model.currency, 0, int.MaxValue);

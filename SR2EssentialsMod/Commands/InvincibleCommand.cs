@@ -25,7 +25,7 @@ namespace SR2E.Commands
         public bool Code(string[] args, bool silent)
         {
             if (args != null) return SendUsage();
-            if (!inGame) return SendLoadASaveFirstMessage();
+            if (!inGame) return SendLoadASaveFirst();
 
             if (infHealth)
             {

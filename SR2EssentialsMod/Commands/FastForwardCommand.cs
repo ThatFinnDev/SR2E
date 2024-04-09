@@ -15,7 +15,7 @@ public class FastForwardCommand : SR2CCommand
 
     public override bool Execute(string[] args)
     {
-        if (!inGame) return SendLoadASaveFirstMessage();
+        if (!inGame) return SendLoadASaveFirst();
 
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
         if ((args?.Length ?? 0) == 1)

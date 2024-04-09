@@ -5,7 +5,7 @@ global using System.Collections.Generic;
 global using HarmonyLib;
 global using SR2E.Library;
 global using SR2E;
-global using static SR2E.Library.LibraryUtils;
+global using static SR2E.Library.SR2EUtils;
 global using Console = System.Console;
 global using Exception = System.Exception;
 global using Object = UnityEngine.Object;

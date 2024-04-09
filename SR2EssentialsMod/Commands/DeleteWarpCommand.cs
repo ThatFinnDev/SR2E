@@ -8,20 +8,22 @@
         public override string ExtendedDescription => "Deletes a warp from the <u>warp</u> command.";
         public override List<string> GetAutoComplete(int argIndex, string[] args)
         {
-            if (argIndex != 0) return null;
-            List<string> warps = new List<string>();
-            foreach (KeyValuePair<string,Warp> pair in SR2EWarps.warps) warps.Add(pair.Key); 
-            return warps;
+            if (argIndex == 0)
+            {
+                List<string> warps = new List<string>();
+                foreach (KeyValuePair<string,SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key); 
+                return warps;
+            }
+            return null;
         }
         public override bool Execute(string[] args)
         {
             if (args == null || args.Length != 1) return SendUsage();
             
             string name = args[0];
-            if (SR2EWarps.warps.ContainsKey(name))
+            if (SR2ESaveManager.WarpManager.GetWarp(name)!=null)
             {
-                SR2EWarps.warps.Remove(name);
-                SR2EWarps.SaveWarps();
+                SR2ESaveManager.WarpManager.RemoveWarp(name);
                 SR2EConsole.SendMessage($"Successfully deleted the Warp: {name}");
                 return true;
             }
