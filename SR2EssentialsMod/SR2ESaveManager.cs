@@ -26,7 +26,7 @@ public static class SR2ESaveManager
     }
     internal static void Load() { if (File.Exists(path)) data = JsonConvert.DeserializeObject<SR2ESaveData>(File.ReadAllText(path));else data = new SR2ESaveData(); }
     internal static void Save() { File.WriteAllText(path,JsonConvert.SerializeObject(data, Formatting.Indented)); }
-    static string path { get { FileStorageProvider provider = SystemContext.Instance.GetStorageProvider().TryCast<FileStorageProvider>(); if (provider==null) return Application.persistentDataPath + "/SR2E.data"; return provider.savePath + "SR2E.data"; } }
+    static string path { get { FileStorageProvider provider = SystemContext.Instance.GetStorageProvider().TryCast<FileStorageProvider>(); if (provider==null) return Application.persistentDataPath + "/SR2E.data"; return provider.savePath + "/SR2E.data"; } }
    
     public class SR2ESaveData
     {
@@ -129,20 +129,20 @@ public static class SR2ESaveManager
             }
             return SR2EError.NoError;
         }
-        internal string sceneGroup;
-        internal float x;
-        internal float y;
-        internal float z;
+        public string sceneGroup;
+        public float x;
+        public float y;
+        public float z;
 
         internal Vector3 position
         {
             get { return new Vector3(x, y, z); }
         }
 
-        internal float rotX;
-        internal float rotY;
-        internal float rotZ;
-        internal float rotW;
+        public float rotX;
+        public float rotY;
+        public float rotZ;
+        public float rotW;
 
         internal Quaternion rotation
         {
