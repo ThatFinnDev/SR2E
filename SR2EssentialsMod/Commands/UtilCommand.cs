@@ -3,6 +3,8 @@ using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using System;
 using SR2E.Saving;
 using System.Linq;
+using Il2CppMonomiPark.SlimeRancher;
+using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
 using Il2CppMonomiPark.SlimeRancher.World;
 using SR2E.Library;
 
@@ -251,7 +253,7 @@ namespace SR2E.Commands
                 var KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>();
                 KCC.CapsuleHeight = playerColliderHeightBase * size;
                 KCC.CapsuleRadius = playerColliderRadBase * size;
-                SR2ESavableData.Instance.playerSavedData.size = size;
+                SR2ESavableDataV2.Instance.playerSavedData.size = size;
                 SR2EConsole.SendMessage($"The new size of the player is {size}");
 
             }
@@ -272,7 +274,7 @@ namespace SR2E.Commands
             else
             {
                 SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(level);
-                SR2ESavableData.Instance.playerSavedData.gravityLevel = level;
+                SR2ESavableDataV2.Instance.playerSavedData.gravityLevel = level;
                 SR2EConsole.SendMessage($"The new gravity level of the player is {level}");
 
             }
@@ -435,7 +437,7 @@ namespace SR2E.Commands
                 SceneContext.Instance.Camera.AddComponent<FlingMode>();
                 SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
             }
-            SR2ESavableData.Instance.playerSavedData.vacMode = mode;
+            SR2ESavableDataV2.Instance.playerSavedData.vacMode = mode;
         }
 
         static System.Collections.IEnumerator waitForSeconds(float seconds)

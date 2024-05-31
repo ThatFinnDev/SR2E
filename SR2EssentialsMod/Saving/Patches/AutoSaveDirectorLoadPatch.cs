@@ -1,5 +1,4 @@
 ﻿using SR2E.Saving;
-using SR2E;
 using System.IO;
 
 [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.BeginLoad))]
@@ -9,36 +8,36 @@ public static class AutoSaveDirectorLoadPatch
 
     public static void Postfix(AutoSaveDirector __instance, string gameName, string saveName, Il2CppSystem.Action onError)
     {
-        if (File.Exists(Path.Combine(loadPath, $"{saveName}.sr2e")))
+        string[] split = saveName.Split("_");
+        string path = Path.Combine(loadPath, split[0] + "_" + split[1] + ".sr2ev2");
+        if (File.Exists(path))
         {
             try
             {
-                SR2ESavableData.LoadFromStream(new FileStream(Path.Combine(loadPath, $"{saveName}.sr2e"), FileMode.Open));
-                SR2ESavableData.currPath = Path.Combine(loadPath, $"{saveName}.sr2e");
-                SR2ESavableData.Instance.dir = $"{loadPath}\\";
-                SR2ESavableData.Instance.gameName = gameName;
-                SR2ESavableData.Instance.idx = int.Parse(saveName.Split('_')[2]);
+                SR2ESavableDataV2.LoadFromStream(new FileStream(path, FileMode.Open));
+                SR2ESavableDataV2.currPath = path;
+                SR2ESavableDataV2.Instance.dir = $"{loadPath}\\";
+                SR2ESavableDataV2.Instance.gameName = gameName;
             }
             catch (Exception ex)
             {
                 SR2EConsole.SendWarning("Failed to load SR2E save data, creating new");
                 SR2EConsole.SendWarning($"Developer error: {ex}");
-                var stream = new FileStream(Path.Combine(loadPath, $"{saveName}.sr2e"), FileMode.OpenOrCreate);
-                new SR2ESavableData();
-                SR2ESavableData.currPath = Path.Combine(loadPath, $"{saveName}.sr2e");
-                SR2ESavableData.Instance.dir = $"{loadPath}\\";
-                SR2ESavableData.Instance.gameName = gameName;
-                SR2ESavableData.Instance.idx = int.Parse(saveName.Split('_')[2]);
+                
+                //File.Create(path);
+                new SR2ESavableDataV2();
+                SR2ESavableDataV2.currPath = path;
+                SR2ESavableDataV2.Instance.dir = $"{loadPath}\\";
+                SR2ESavableDataV2.Instance.gameName = gameName;
             }
         }
         else
         {
-            var stream = new FileStream(Path.Combine(loadPath, $"{saveName}.sr2e"), FileMode.CreateNew);
-            new SR2ESavableData();
-            SR2ESavableData.currPath = Path.Combine(loadPath, $"{saveName}.sr2e");
-            SR2ESavableData.Instance.dir = $"{loadPath}\\";
-            SR2ESavableData.Instance.gameName = gameName;
-            SR2ESavableData.Instance.idx = int.Parse(saveName.Split('_')[2]);
+            //File.Create(path);
+            new SR2ESavableDataV2();
+            SR2ESavableDataV2.currPath = path;
+            SR2ESavableDataV2.Instance.dir = $"{loadPath}\\";
+            SR2ESavableDataV2.Instance.gameName = gameName;
         }
 
 

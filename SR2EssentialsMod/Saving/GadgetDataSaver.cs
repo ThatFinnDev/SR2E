@@ -10,12 +10,16 @@ public class SR2EGadgetDataSaver : MonoBehaviour
         try
         {
             GameModel gameModel = FindObjectOfType<GameModel>();
-            long actorID = 0;
+            ActorId actorID = new ActorId();
+            bool gotActor = false;
             foreach (var pair in gameModel.identifiables)
                 if (pair.Value.GetGameObject() == gameObject)
-                { actorID = pair.Key; break; }
+                {
+                    gotActor = true; 
+                    actorID = pair.Key; break; 
+                }
             
-            if(actorID==0) return;
+            if(!gotActor) return;
             
             var data = new SR2EGadgetData()
             {
@@ -23,13 +27,13 @@ public class SR2EGadgetDataSaver : MonoBehaviour
                 scaleY = transform.localScale.y,
                 scaleZ = transform.localScale.z,
             }; 
-            if (SR2ESavableData.Instance.gadgetSavedData.ContainsKey(actorID))
+            if (SR2ESavableDataV2.Instance.gadgetSavedData.ContainsKey(actorID.Value))
             {
-                SR2ESavableData.Instance.gadgetSavedData[actorID] = data;
+                SR2ESavableDataV2.Instance.gadgetSavedData[actorID.Value] = data;
             }
             else
             {
-                SR2ESavableData.Instance.gadgetSavedData.Add(actorID, data);
+                SR2ESavableDataV2.Instance.gadgetSavedData.Add(actorID.Value, data);
             }
         }
         catch (Exception e)
@@ -46,14 +50,18 @@ public class SR2EGadgetDataSaver : MonoBehaviour
         
         
         GameModel gameModel = FindObjectOfType<GameModel>();
-        long id = 0;
+        ActorId id = new ActorId();
+        bool gotActor = false;
         foreach (var pair in gameModel.identifiables)
             if (pair.Value.GetGameObject() == gameObject)
-            { id = pair.Key; break; }
+            {
+                gotActor = true; 
+                id = pair.Key; break; 
+            }
             
-        if(id==0) return;
+        if(!gotActor) return;
         
-        transform.localScale = new Vector3(SR2ESavableData.Instance.gadgetSavedData[id].scaleX, SR2ESavableData.Instance.gadgetSavedData[id].scaleY, SR2ESavableData.Instance.gadgetSavedData[id].scaleZ);
+        transform.localScale = new Vector3(SR2ESavableDataV2.Instance.gadgetSavedData[id.Value].scaleX, SR2ESavableDataV2.Instance.gadgetSavedData[id.Value].scaleY, SR2ESavableDataV2.Instance.gadgetSavedData[id.Value].scaleZ);
         if (SR2EEntryPoint.debugLogging)
             SR2EConsole.SendMessage("loaded ident");
     }

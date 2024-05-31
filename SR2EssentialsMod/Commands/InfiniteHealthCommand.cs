@@ -2,10 +2,10 @@
 
 namespace SR2E.Commands
 {
-    public class InvincibleCommand : SR2CCommand
+    public class InfiniteHealthCommand : SR2CCommand
     {
-        public override string ID => "invincible";
-        public override string Usage => "invincible";
+        public override string ID => "infhealth";
+        public override string Usage => "infhealth";
         public override string Description => "Makes you invincible";
         
         public override List<string> GetAutoComplete(int argIndex, string[] args)
@@ -80,7 +80,16 @@ namespace SR2E.Commands
                 if(infHealth)
                     if (SceneContext.Instance != null)
                         if (SceneContext.Instance.PlayerState != null)
-                            SceneContext.Instance.PlayerState.SetHealth(normalHealth);
+                        {
+                            
+                            infHealth = false;
+                            if (healthMeter == null)
+                                healthMeter = Get<HealthMeter>("Health Meter");
+                            healthMeter.gameObject.active = true;
+                
+                            SceneContext.Instance.PlayerState._model.maxHealth = normalHealth;
+                            SceneContext.Instance.PlayerState.SetHealth(normalHealth); 
+                        }
             }
         }
     }

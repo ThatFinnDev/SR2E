@@ -1,7 +1,7 @@
 using System.Linq;
 using UnityEngine.InputSystem;
 
-namespace SR2E.Library;
+namespace SR2E.Storage;
 
 public class MultiKey
 {
