@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SR2E.Library.Buttons;
+namespace SR2E.Buttons;
 
 [RegisterTypeInIl2Cpp(false)]
 public class CustomPauseItemModel : ResumePauseItemModel

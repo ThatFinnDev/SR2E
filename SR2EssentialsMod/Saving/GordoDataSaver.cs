@@ -12,14 +12,11 @@ public class SR2EGordoDataSaver : MonoBehaviour
             baseSize = model._initScale
         };
 
-        if (SR2ESavableData.Instance.gordoSavedData.ContainsKey(model.Id))
-        {
-            SR2ESavableData.Instance.gordoSavedData[model.Id] = data;
-        }
+        if (SR2ESavableDataV2.Instance.gordoSavedData.ContainsKey(model.Id))
+            SR2ESavableDataV2.Instance.gordoSavedData[model.Id] = data;
         else
-        {
-            SR2ESavableData.Instance.gordoSavedData.Add(model.Id, data);
-        }
+            SR2ESavableDataV2.Instance.gordoSavedData.Add(model.Id, data);
+        
     }
 
     public void LoadData()
@@ -27,7 +24,7 @@ public class SR2EGordoDataSaver : MonoBehaviour
         if (SR2EEntryPoint.debugLogging)
             SR2EConsole.SendMessage($"load ident debug start: {gameObject.name}");
         var id = GetComponent<GordoEat>().Id;
-        GetComponent<GordoEat>()._initScale = SR2ESavableData.Instance.gordoSavedData[id].baseSize;
+        GetComponent<GordoEat>()._initScale = SR2ESavableDataV2.Instance.gordoSavedData[id].baseSize;
         if (SR2EEntryPoint.debugLogging)
             SR2EConsole.SendMessage("loaded ident");
     }

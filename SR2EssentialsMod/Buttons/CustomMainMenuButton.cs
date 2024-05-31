@@ -1,14 +1,9 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using SR2E.Patches;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine.Localization;
 
-namespace SR2E.Library.Buttons;
+namespace SR2E.Buttons;
 
 public class CustomMainMenuButton
 {

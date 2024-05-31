@@ -1,23 +1,13 @@
 ﻿using System;
-using Il2CppSystem.IO;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppInterop.Runtime.InteropTypes;
 using System.Linq;
 using System.Reflection;
-using Il2CppMonomiPark.SlimeRancher.Damage;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
-using Il2CppMonomiPark.SlimeRancher.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
-using Il2CppMonomiPark.SlimeRancher.World;
-using SR2E.Patches;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
-using UnityEngine.Playables;
-using SR2E.Library.Storage;
+using SR2E.Storage;
 
 namespace SR2E.Library
 {
@@ -53,7 +43,7 @@ namespace SR2E.Library
 
         public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
 
-        public static LocalizedString AddTranslation(string localized, string key = "l.SR2ELibraryTest", string table = "Actor")
+        public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
         {
             StringTable table2 = LocalizationUtil.GetTable(table);
 

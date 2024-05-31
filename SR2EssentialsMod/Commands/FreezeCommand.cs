@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands
+﻿using Il2CppMonomiPark.SlimeRancher;
+
+namespace SR2E.Commands
 {
     internal class FreezeCommand : SR2CCommand
     {

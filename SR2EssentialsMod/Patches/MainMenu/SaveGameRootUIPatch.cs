@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SR2E.Patches;
 
-[HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.Awake))]
+[HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.Init))]
 public static class SaveGameRootUIPatch
 {
     public static void Prefix()

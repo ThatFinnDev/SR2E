@@ -1,4 +1,4 @@
-# SR2Essentials
+# SR2E
  A mod for SlimeRancher 2 that adds a ModMenu to the Main Menu and a InGameConsole with commands (expandable by other mods).
 
  # Installation:

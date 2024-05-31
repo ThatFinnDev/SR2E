@@ -11,7 +11,7 @@ namespace SR2E.Commands
         {
             if (n)
             {
-                SR2ESavableData.Instance.playerSavedData.noclipState = true;
+                SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
                 //var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
                 SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
             }
@@ -26,10 +26,10 @@ namespace SR2E.Commands
                 {
                     SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
                     SR2EConsole.SendMessage("FYI: Controller input for noclip doesn't work yet!");
-                    SR2ESavableData.Instance.playerSavedData.noclipState = true;
+                    SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
                 }
                 else
-                    SR2ESavableData.Instance.playerSavedData.noclipState = false;
+                    SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
                 return true;
             }
             catch { return false; }
