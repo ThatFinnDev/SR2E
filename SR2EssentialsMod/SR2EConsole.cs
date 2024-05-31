@@ -2,6 +2,7 @@
 using System.Linq;
 using Il2CppTMPro;
 using SR2E.Commands;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
@@ -504,7 +505,7 @@ namespace SR2E
             RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
-            if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InvincibleCommand());
+            if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InfiniteHealthCommand());
             if (!SR2EEntryPoint.infEnergyInstalled) RegisterCommand(new InfiniteEnergyCommand());
         }
 

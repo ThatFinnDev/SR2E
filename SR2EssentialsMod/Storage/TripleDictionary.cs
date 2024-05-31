@@ -1,4 +1,4 @@
-﻿namespace SR2E.Library.Storage
+﻿namespace SR2E.Storage
 {
 
 

@@ -1,7 +1,7 @@
 ﻿
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
-using SR2E.Library.Buttons;
+using SR2E.Buttons;
 
 namespace SR2E.Patches;
 
