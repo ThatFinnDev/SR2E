@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
 
 namespace SR2E.Patches;
 

@@ -40,7 +40,7 @@ namespace SR2E.Commands
                 parameters._maxAirMoveSpeed = speedValue * baseMaxAirSpeed;
                 parameters._airAccelerationSpeed = speedValue * baseAccAirSpeed;
 
-                SR2ESavableData.Instance.playerSavedData.speed = speedValue;
+                SR2ESavableDataV2.Instance.playerSavedData.speed = speedValue;
 
                 SR2EConsole.SendMessage($"Speed set to {args[0]}");
                 return true;
