@@ -2,7 +2,7 @@
 
 namespace SR2E.Commands;
 
-public class MoveCommand: SR2CCommand
+public class MoveCommand: SR2Command
 {
     public override string ID => "move";
     public override string Usage => "move <x> <y> <z>";
@@ -17,9 +17,15 @@ public class MoveCommand: SR2CCommand
         try
         { move = new Vector3(float.Parse(args[0]), float.Parse(args[1]), float.Parse(args[2])); }
         catch 
-        { SR2EConsole.SendError($"The vector {args[0]} {args[1]} {args[2]} is invalid!"); return false; }
+        { SendError($"The vector {args[0]} {args[1]} {args[2]} is invalid!"); return false; }
         
-        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+        Camera cam = Camera.main;
+        if (cam == null)
+        {
+            SendError("Couldn't find player camera!");
+            return false;
+        }
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
             bool didAThing = false;
             var gameobject = hit.collider.gameObject;
@@ -40,11 +46,11 @@ public class MoveCommand: SR2CCommand
             }
             if (didAThing)
             {
-                SR2EConsole.SendMessage("Successfully moved the thing!");
+                SendMessage("Successfully moved the thing!");
                 return true;
             }
         }
-        SR2EConsole.SendError("Not looking at a valid object!");
+        SendError("Not looking at a valid object!");
         return false;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SR2E;
 
-public abstract class SR2CCommand
+public abstract class SR2Command
 {
     /// <summary>
     /// The ID of this command (Always lowercase)
@@ -51,14 +51,6 @@ public abstract class SR2CCommand
 
 
     /// <summary>
-    /// Executes the command silently (for keybinds)
-    /// </summary>
-    /// <param name="args">The arguments passed in the console (null if no arguments are provided)</param>
-    /// <returns>Return True at the end, if the normal execute should not be executed</returns>
-    public virtual bool SilentExecute(string[] args)
-    { return false; }
-
-    /// <summary>
     /// Gets called every frame
     /// </summary>
     public virtual void Update()
@@ -89,7 +81,7 @@ public abstract class SR2CCommand
     /// </summary>
     public bool SendUsage()
     {
-        SR2EConsole.SendMessage($"Usage: {Usage}");
+        if(!silent) SR2EConsole.SendMessage($"Usage: {Usage}");
         return false;
     }
     /// <summary>
@@ -97,7 +89,7 @@ public abstract class SR2CCommand
     /// </summary>
     public bool SendNoArguments()
     {
-        SR2EConsole.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
+        if(!silent) SR2EConsole.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
         return false;
     }
     
@@ -106,8 +98,36 @@ public abstract class SR2CCommand
     /// </summary>
     public bool SendLoadASaveFirst()
     {
-        SR2EConsole.SendError("Load a save first!");
+        if(!silent) SR2EConsole.SendError("Load a save first!");
         return false;
     }
+    /// <summary>
+    /// Display a message in the console
+    /// </summary>
+
+    public void SendMessage(string message)
+    {
+        if (silent) return;
+        SR2EConsole.SendMessage(message, SR2EEntryPoint.syncConsole);
+    }
     
+    /// <summary>
+    /// Display an error in the console
+    /// </summary>
+    public void SendError(string message)
+    {
+        if (silent) return;
+        SR2EConsole.SendError(message, SR2EEntryPoint.syncConsole);
+    }
+
+    /// <summary>
+    /// Display an error in the console
+    /// </summary>
+    public void SendWarning(string message)
+    {
+        if (silent) return;
+        SR2EConsole.SendWarning(message, SR2EEntryPoint.syncConsole);
+    }
+
+    public bool silent = false;
 }

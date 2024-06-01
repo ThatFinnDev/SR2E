@@ -2,11 +2,11 @@ using System.Collections;
 
 namespace SR2E.Commands;
 
-public class FloatCommand : SR2CCommand
+public class FloatCommand : SR2Command
 {
     public override string ID => "floaty";
     public override string Usage => "floaty <duration>";
-    public override string Description => "Temporarily disables gravity for the selected object for the specified duration.";
+    public override string Description => "Temporarily disables gravity for the selected object for the specified duration in seconds.";
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -17,21 +17,37 @@ public class FloatCommand : SR2CCommand
 
     public override bool Execute(string[] args)
     {
-        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+        if (!inGame) return SendLoadASaveFirst();
+        if (args == null || args.Length != 1) return SendUsage();
+        
+        Camera cam = Camera.main;
+        if (cam == null)
+        {
+            SendError("Couldn't find player camera!");
+            return false;
+        }
+        
+        float duration = 0;
+        try { duration = float.Parse(args[0]); }
+        catch { SendError(args[0] + " is not a valid float!"); return false; }
+        if (duration<=0) { SendError(args[0] + " is not a float above 0!"); return false; }
+        
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
             if (hit.rigidbody == null)
-            { SR2EConsole.SendError($"Object {hit} has no rigidbody"); return false; }
-            MelonCoroutines.Start(TimeGravity(hit, args[0]));
+            { SendError("You're not looking at a valid object!"); return false; }
+            MelonCoroutines.Start(TimeGravity(hit, duration));
+            SendMessage($"The object will float for {duration} seconds!");
         }
         else
-        { SR2EConsole.SendWarning("Not looking at a valid object!"); return false; }
+        { SendWarning("You're not looking at a valid object!"); return false; }
         return true;
     }
 
-    private IEnumerator TimeGravity(RaycastHit hit, string duration)
+    private IEnumerator TimeGravity(RaycastHit hit, float duration)
     {
         hit.rigidbody.useGravity = false;
-        yield return new WaitForSecondsRealtime(float.Parse(duration));
+        yield return new WaitForSecondsRealtime(duration);
         hit.rigidbody.useGravity = true;
     }
 }

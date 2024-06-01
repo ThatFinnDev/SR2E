@@ -1,12 +1,12 @@
 ﻿namespace SR2E.Commands;
 
-internal class KillAllCommand : SR2CCommand
+public class KillAllCommand : SR2Command
 {
     public override string ID => "killall";
 
     public override string Usage => "killall [id]";
 
-    public override string Description => "Kills everything";
+    public override string Description => "Kills everything or only everything with a specified id.";
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
@@ -43,6 +43,9 @@ internal class KillAllCommand : SR2CCommand
     }
     public override bool Execute(string[] args)
     {
+        if (args != null && args.Length != 1) return SendUsage();
+        if (!inGame) return SendLoadASaveFirst();
+        
         if (args == null)
         {
             foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
@@ -57,21 +60,20 @@ internal class KillAllCommand : SR2CCommand
                     }
                 }
             }
+            SendMessage("Successfully killed all actors!");
             return true;
         }
         if (args.Length == 1)
         {
+            IdentifiableType type = SR2EEntryPoint.getIdentifiableByLocalizedName(args[0]);
+            if (type == null) type = SR2EEntryPoint.getIdentifiableByName(args[0]);
+            if (type == null) { SendError(args[0]+" is not a valid ID!"); return false; }
+            
             foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
             {
                 if (ident.hasStarted)
                 {
-                    if (ident.identType == SR2EEntryPoint.getIdentifiableByLocalizedName(args[0]))
-                    {
-                        var id = ident.model.actorId;
-                        Object.Destroy(ident.gameObject);
-                        SceneContext.Instance.GameModel.identifiables.Remove(id);
-                    }
-                    else if (ident.identType == SR2EEntryPoint.getIdentifiableByName(args[0]))
+                    if (ident.identType == type)
                     {
                         var id = ident.model.actorId;
                         Object.Destroy(ident.gameObject);
@@ -79,6 +81,7 @@ internal class KillAllCommand : SR2CCommand
                     }
                 }
             }
+            SendMessage($"Successfully killed all actors with type {type.name}!");
             return true;
         }
         return false;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 namespace SR2E.Commands;
-public class PartyCommand : SR2CCommand
+public class PartyCommand : SR2Command
 {
     public override string ID => "party";
     public override string Usage => "party";
@@ -14,8 +14,7 @@ public class PartyCommand : SR2CCommand
     internal static ColorAdjustments myAdjustments = null;
     public override bool Execute(string[] args)
     {
-        if (args != null)
-        { SR2EConsole.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
+        if (args != null) return SendNoArguments();
         if (defaultVolume != null)
         {
             if (myAdjustments != null)

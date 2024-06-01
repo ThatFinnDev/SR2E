@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands
 {
-    public class WarpListCommand: SR2CCommand
+    public class WarpListCommand: SR2Command
     {
         public override string ID => "warplist";
         public override string Usage => "warplist";
@@ -14,11 +14,11 @@
             if (args != null) return SendNoArguments();
 
             if (SR2ESaveManager.data.warps.Count == 0)
-            { SR2EConsole.SendError("There aren't warps yet!"); return false; }
+            { SendError("There aren't warps yet!"); return false; }
             
-            SR2EConsole.SendMessage("<color=blue>List of all Warps:</color>");
+            SendMessage("<color=blue>List of all Warps:</color>");
             foreach (KeyValuePair<string, SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps)
-                SR2EConsole.SendMessage($"'{pair.Key}' in '{pair.Value.sceneGroup}' at '{pair.Value.x} {pair.Value.y} {pair.Value.z}'");
+                SendMessage($"'{pair.Key}' in '{pair.Value.sceneGroup}' at '{pair.Value.x} {pair.Value.y} {pair.Value.z}'");
 
             return true;
         }

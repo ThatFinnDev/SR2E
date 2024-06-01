@@ -1,11 +1,9 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
-public class KillCommand : SR2CCommand
+public class KillCommand : SR2Command
 {
     public override string ID => "kill";
     public override string Usage => "kill";
@@ -17,15 +15,15 @@ public class KillCommand : SR2CCommand
     }
     public override bool Execute(string[] args)
     {
-        if (args != null) { SendUsage(); return false; }
+        if (args != null) return SendUsage();
+        if (!inGame) return SendLoadASaveFirst();
         
-        if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
         GameObject gameObject = ShootRaycast();
         if (gameObject != null)
             if (Kill(gameObject))
-            { SR2EConsole.SendMessage("Successfully killed the thing!"); return true; }
+            { SendMessage("Successfully killed the thing!"); return true; }
         
-        SR2EConsole.SendError("Not looking at a valid object!");
+        SendError("Not looking at a valid object!");
         return false;
     }
 
@@ -72,11 +70,4 @@ public class KillCommand : SR2CCommand
         return didAThing;
     }
 
-    public override bool SilentExecute(string[] args)
-    {
-        if (!inGame) return true;
-        GameObject gameObject = ShootRaycast();
-        if (gameObject != null) Kill(gameObject);
-        return true;
-    }
 }

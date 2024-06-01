@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
-    public class BindCommand : SR2CCommand
+    public class BindCommand : SR2Command
     {
         public override string ID => "bind";
         public override string Usage => "bind <key> <command>";
@@ -29,11 +29,11 @@ namespace SR2E.Commands
             if (argIndex == 1)
             {
                 List<string> list = new List<string>();
-                foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands) list.Add(entry.Key);
+                foreach (KeyValuePair<string, SR2Command> entry in SR2EConsole.commands) list.Add(entry.Key);
                 return list;
             }
             string secondArg = args[1];
-            foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
+            foreach (KeyValuePair<string, SR2Command> entry in SR2EConsole.commands)
             {
                 if (entry.Key == secondArg) return entry.Value.GetAutoComplete(argIndex-2,args);
             }
@@ -59,11 +59,11 @@ namespace SR2E.Commands
                 string executeString = builder.ToString();
                 
                 SR2ESaveManager.BindingManger.BindKey(key,executeString);
-                SR2EConsole.SendMessage($"Successfully bound command '{executeString}' to key {key}");
+                SendMessage($"Successfully bound command '{executeString}' to key {key}");
                 return true;
             }
             
-            SR2EConsole.SendMessage($"{args[0]} is not a valid KeyCode!");
+            SendMessage($"{args[0]} is not a valid KeyCode!");
             return false;
         }
     }

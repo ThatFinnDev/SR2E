@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class NewBucksCommand : SR2CCommand
+public class NewBucksCommand : SR2Command
 {
     public override string ID => "newbucks";
     public override string Usage => "newbucks <amount>";
@@ -20,13 +20,13 @@ public class NewBucksCommand : SR2CCommand
 
         int amount = 0;
         if (!int.TryParse(args[0], out amount))
-        { SR2EConsole.SendError(args[0] + " is not a valid integer!"); return false; }
+        { SendError(args[0] + " is not a valid integer!"); return false; }
 
 
         int newNewBuckAmount = Mathf.Clamp(amount + SceneContext.Instance.PlayerState._model.currency, 0, int.MaxValue);
         SceneContext.Instance.PlayerState._model.SetCurrency(newNewBuckAmount);
         SceneContext.Instance.PlayerState._model.SetCurrencyEverCollected(newNewBuckAmount);
-        SR2EConsole.SendMessage($"Successfully addded {amount} newbucks");
+        SendMessage($"Successfully addded {amount} newbucks");
         return true;
     }
 

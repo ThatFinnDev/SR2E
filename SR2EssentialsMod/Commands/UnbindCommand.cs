@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
-    public class UnbindCommand : SR2CCommand
+    public class UnbindCommand : SR2Command
     {
         public override string ID => "unbind";
         public override string Usage => "unbind <key>";
@@ -42,15 +42,15 @@ namespace SR2E.Commands
             {
                 if (!SR2ESaveManager.BindingManger.isKeyBound(key))
                 {
-                    SR2EConsole.SendMessage($"{args[0]} is not bound to anything!");
+                    SendMessage($"{args[0]} is not bound to anything!");
                     return false;
                 }
                 SR2ESaveManager.BindingManger.UnbindKey(key);
-                SR2EConsole.SendMessage($"Successfully unbound key {key}");
+                SendMessage($"Successfully unbound key {key}");
                 return true;
             }
             
-            SR2EConsole.SendMessage($"{args[0]} is not a valid KeyCode!");
+            SendMessage($"{args[0]} is not a valid KeyCode!");
             return false;
         }
     }
