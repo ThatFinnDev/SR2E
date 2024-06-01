@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -14,6 +15,7 @@ using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using UnityEngine.Localization;
 using SR2E.Buttons;
+using UnityEngine.Networking;
 
 namespace SR2E
 {
@@ -23,7 +25,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.2"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.4.3"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -70,6 +72,8 @@ namespace SR2E
         {
             prefs.DeleteEntry("noclipFlySpeed");
             prefs.DeleteEntry("noclipFlySprintSpeed");
+            prefs.DeleteEntry("experimentalStuff");
+            prefs.DeleteEntry("skipEngagementPrompt");
 
             if (!prefs.HasEntry("noclipAdjustSpeed"))
                 prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
@@ -120,7 +124,21 @@ namespace SR2E
                 rootOBJ.name = "SR2ELibraryROOT";
                 Object.DontDestroyOnLoad(rootOBJ);
             }
+
+            MelonCoroutines.Start(CheckForNewVersion());
         }
+        public static string newVersion = null;
+        IEnumerator CheckForNewVersion()
+        {
+            UnityWebRequest uwr = UnityWebRequest.Get("https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt");
+            yield return uwr.SendWebRequest();
+
+            if (!uwr.isNetworkError)
+                newVersion = uwr.downloadHandler.text.Replace(" ","").Replace("\n","");
+            
+        }
+
+        
         //Logging code from KomiksPL
         private static void AppLogUnity(string message, string trace, LogType type)
         {

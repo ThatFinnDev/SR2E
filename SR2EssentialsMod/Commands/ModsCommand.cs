@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands
 {
-    public class ModsCommand : SR2CCommand
+    public class ModsCommand : SR2Command
     {
         public override string ID => "mods";
         public override string Usage => "mods";
@@ -11,13 +11,13 @@
         }
         public override bool Execute(string[] args)
         {
-            if (args != null) return SendUsage();
+            if (args != null) return SendNoArguments();
 
-            SR2EConsole.SendMessage("<color=blue>List of Mods Loaded:</color>");
+            SendMessage("<color=blue>List of Mods Loaded:</color>");
 
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
-                SR2EConsole.SendMessage(melonBase.Info.Name+" by: "+melonBase.Info.Author);
+                SendMessage(melonBase.Info.Name+" by: "+melonBase.Info.Author);
             }
 
             return true;

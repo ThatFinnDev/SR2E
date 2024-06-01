@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Rendering;
 
 namespace SR2E.Commands;
 
-public class GraphicsCommand : SR2CCommand
+public class GraphicsCommand : SR2Command
 {
     public override string ID => "graphics";
     public override string Usage => "graphics <mode>";
@@ -39,7 +39,7 @@ public class GraphicsCommand : SR2CCommand
 
 
         if (rangeLightInstance == null)
-        { SR2EConsole.SendError("An unknown error occured!"); return false; }
+        { SendError("An unknown error occured!"); return false; }
 
 
         rangeLightInstance.transform.GetChild(0).gameObject.SetActive(false);
@@ -53,26 +53,26 @@ public class GraphicsCommand : SR2CCommand
         switch (args[0])
         {
             default:
-                SR2EConsole.SendMessage("Successfully set graphics to normal!");
+                SendMessage("Successfully set graphics to normal!");
                 return true;
             case "POTATO":
                 rangeLightInstance.transform.GetChild(2).gameObject.SetActive(true);
-                SR2EConsole.SendMessage("Successfully set graphics to potato!");
+                SendMessage("Successfully set graphics to potato!");
                 return true;
             case "SHINY":
                 rangeLightInstance.transform.GetChild(0).gameObject.SetActive(true);
-                SR2EConsole.SendMessage("Successfully set graphics to shiny!");
+                SendMessage("Successfully set graphics to shiny!");
                 return true;
             case "FAKEDAY":
                 rangeLightInstance.transform.GetChild(1).gameObject.SetActive(true);
-                SR2EConsole.SendMessage("Successfully set graphics to fakeday!");
+                SendMessage("Successfully set graphics to fakeday!");
                 return true;
             case "ORANGE":
                 rangeLightInstance.transform.GetChild(1).gameObject.SetActive(true);
                 rangeLightInstance.GetComponent<SunAndMoonVector>().enabled = true;
                 for (int i = 0; i < vectorUpdaters.Length; i++)
                     vectorUpdaters[i].enabled = true;
-                SR2EConsole.SendMessage("Successfully set graphics to orange!");
+                SendMessage("Successfully set graphics to orange!");
                 return true;
         }
     }

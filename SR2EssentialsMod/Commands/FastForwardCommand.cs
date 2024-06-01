@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class FastForwardCommand : SR2CCommand
+public class FastForwardCommand : SR2Command
 {
     public override string ID => "fastforward";
     public override string Usage => "fastforward [hour amount]";
@@ -16,30 +16,21 @@ public class FastForwardCommand : SR2CCommand
     public override bool Execute(string[] args)
     {
         if (!inGame) return SendLoadASaveFirst();
-
+        if (args != null && args.Length != 1) return SendUsage();
+         
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
-        if ((args?.Length ?? 0) == 1)
+        float duration = float.Parse(args[0]);
+        if (args.Length == 1)
         {
-            if (float.TryParse(args[0], out var amount)) timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(amount);
-            else { SR2EConsole.SendError($"{args[0]} is not a valid floating point number!"); return false; }
+            try { duration = float.Parse(args[0]); }
+            catch { SendError(args[0] + " is not a valid float!"); return false; }
+            if (duration<=0) { SendError(args[0] + " is not a float above 0!"); return false; }
+            timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(duration);
         }
 
         SceneContext.Instance.TimeDirector.FastForwardTo(timeToFastForwardTo);
-        SR2EConsole.SendMessage($"Successfully fastforwarded {timeToFastForwardTo} hours");
+        SendMessage($"Successfully fastforwarded {timeToFastForwardTo} hours!");
         return true;
     }
 
-    public override bool SilentExecute(string[] args)
-    {
-        if (!inGame) return true;
-        double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
-        if ((args?.Length ?? 0) == 1)
-        {
-            if (float.TryParse(args[0], out var amount)) timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(amount);
-            else return true;
-        }
-
-        SceneContext.Instance.TimeDirector.FastForwardTo(timeToFastForwardTo);
-        return true;
-    }
 }

@@ -10,7 +10,7 @@ using SR2E.Library;
 
 namespace SR2E.Commands
 {
-    internal class UtilCommand : SR2CCommand
+    internal class UtilCommand : SR2Command
     {
         public override string ID => "util";
         public override string Usage => "util <args>";

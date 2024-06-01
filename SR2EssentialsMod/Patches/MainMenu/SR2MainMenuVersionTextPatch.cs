@@ -12,7 +12,11 @@ public static class SR2LocalizedVersionTextPatch
         try
         {
             TextMeshProUGUI versionLabel = __instance.GetComponent<TextMeshProUGUI>();
+            if (SR2EEntryPoint.newVersion != null)
+                if(SR2EEntryPoint.newVersion!=BuildInfo.Version)
+                    versionLabel.text = $"New SR2E version available: {SR2EEntryPoint.newVersion}\n{versionLabel.text}";
             versionLabel.text = "Melonloader 0.6.2\n" + versionLabel.text+"\n\n\n";
+                
         }
         catch { }
 
