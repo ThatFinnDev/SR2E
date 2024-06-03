@@ -5,28 +5,21 @@ namespace SR2E.Commands;
 public class GiveUpgradeCommand : SR2Command
 {
     public override string ID => "giveupgrade";
-
     public override string Usage => "giveupgrade <id>";
-
-    public override string Description => "Gives an upgrade";
-
+    
     public override bool Execute(string[] args)
     {
-        if (args == null || args.Length != 1) return SendUsage();
+        if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
         if (args[0] == "*")
         {
             UpgradeDefinition[] ids = Resources.FindObjectsOfTypeAll<UpgradeDefinition>();
-            foreach (UpgradeDefinition id in ids)
-            {
+            foreach (UpgradeDefinition id in ids) 
                 for (var i = 0; i < 10; i++)
-                {
                     SceneContext.Instance.PlayerState._model.upgradeModel.IncrementUpgradeLevel(id);
-                }
-            }
 
-            SendMessage("Successfully upgraded all upgrades!");
+            SendMessage(translation("cmd.giveupgrade.successall"));
             return true;
         }
         else
@@ -34,20 +27,14 @@ public class GiveUpgradeCommand : SR2Command
             UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>()
                 .FirstOrDefault(x => x.ValidatableName.Equals(args[0]));
             if (id == null)
-            {
-                SendError(args[0] + " is not a valid Upgrade!");
-                return false;
-            }
+                return SendError(translation("cmd.error.notvalidupgrade",args[0]));
+               
 
             SceneContext.Instance.PlayerState._model.upgradeModel.IncrementUpgradeLevel(id);
-            SendMessage(
-                $"{id.ValidatableName} is now on level {SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)}");
-
+            SendMessage(translation("cmd.giveupgrade.success",
+                id.ValidatableName,SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)));
             return true;
         }
-
-        SendError("An unknown error occured!");
-        return false;
     }
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)

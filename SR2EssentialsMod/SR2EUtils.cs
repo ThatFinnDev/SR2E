@@ -6,10 +6,11 @@ using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
+using Il2CppSystem.IO;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
 
-namespace SR2E.Library
+namespace SR2E
 {
     public static class SR2EUtils
     {
@@ -483,7 +484,107 @@ namespace SR2E.Library
             }
         }
 
+        internal const int MAX_AUTOCOMPLETE = 55;
+        internal const int MAX_CONSOLELINES = 150;
+        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
+        internal static IdentifiableType getIdentByName(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name)) return null;
+            if (name.ToLower() == "none" || name.ToLower() == "player") return null;
+            foreach (IdentifiableType type in identifiableTypes)
+                if (type.name.ToUpper() == name.ToUpper()) return type;
+            foreach (IdentifiableType type in identifiableTypes) 
+                try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","").Replace("_","") == name.Replace("_","").ToUpper()) return type; }catch {}
+            return null;
+        }
+        internal static GadgetDefinition getGadgetDefByName(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name)) return null;
+            if (name.ToLower() == "none" || name.ToLower() == "player") return null;
+            GadgetDefinition[] ids = Resources.FindObjectsOfTypeAll<GadgetDefinition>();
+            foreach (GadgetDefinition type in ids)
+                if (type.name.ToUpper() == name.ToUpper()) return type;
+            foreach (GadgetDefinition type in ids) 
+                try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","").Replace("_","") == name.Replace("_","").ToUpper()) return type; }catch {}
+            return null;
+        }
+        internal static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget)
+        {
+            if (String.IsNullOrWhiteSpace(input)) return new List<string>();
+            if (!includeGadget && !includeNormal) return new List<string>();
+            
+            List<string> list = new List<string>();
+            int i = -1;
+            foreach (IdentifiableType type in identifiableTypes)
+            {
+                bool isGadget = type.ReferenceId.StartsWith("GadgetDefinition");
+                if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") return null;
+                if (!includeGadget && isGadget) continue;
+                if (!includeNormal && !isGadget) continue;
+                
+                if (i > MAX_AUTOCOMPLETE) break;
+                try
+                {
+                    if (type.LocalizedName != null)
+                    {
+                        string localizedString = type.LocalizedName.GetLocalizedString();
+                        if (localizedString.ToLower().Replace(" ", "").StartsWith(input.ToLower()))
+                        {
+                            i++;
+                            list.Add(localizedString.Replace(" ", ""));
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
 
+            return list;
+        }
+
+        internal static List<string> getKeyListByPartialName(string input)
+        {
+            if (String.IsNullOrWhiteSpace(input)) return new List<string>();
+            
+            List<string> list = new List<string>();
+            foreach (string key in System.Enum.GetNames(typeof(Key)))
+                if (!String.IsNullOrEmpty(key))
+                    if (key != "None")
+                        if (key.ToLower().Replace(" ", "").StartsWith(input.ToLower()))
+                            list.Add(key.Replace(" ", ""));
+            return list;
+        }
+        internal static bool IsBetween(this string[] list, uint min, int max)
+        {
+            if (list == null)
+            {
+                if (min > 0) return false;
+            }
+            else 
+            {
+                if (list.Length < min) return false;
+                if(max!=-1) if (list.Length > max) return false;
+            }
+
+            return true;
+        }
+        public static bool isGadget(this IdentifiableType type) => type.ReferenceId.StartsWith("GadgetDefinition");
+
+        public static string getName(this IdentifiableType type)
+        {
+            try
+            {
+                string itemName = "";
+                string name = type.LocalizedName.GetLocalizedString();
+                if (name.Contains(" ")) itemName = "'" + name + "'";
+                else itemName = name;
+                return itemName;
+            }
+            catch
+            { return type.name; }
+        }
+        
         public static TripleDictionary<GameObject, ParticleSystemRenderer, string> FXLibrary = new TripleDictionary<GameObject, ParticleSystemRenderer, string>();
         public static TripleDictionary<string, ParticleSystemRenderer, GameObject> FXLibraryReversable = new TripleDictionary<string, ParticleSystemRenderer, GameObject>();
 

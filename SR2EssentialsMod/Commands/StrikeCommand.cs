@@ -6,11 +6,7 @@ namespace SR2E.Commands;
 internal class StrikeCommand : SR2Command
 {
     public override string ID => "strike";
-
     public override string Usage => "strike [power]";
-
-    public override string Description => "Spawns a lightning strike";
-
     public static bool setup = false;
 
     public static GameObject lightningPrefab;
@@ -33,11 +29,21 @@ internal class StrikeCommand : SR2Command
 
         }
     }
-
+    public override List<string> GetAutoComplete(int argIndex, string[] args)
+    {
+        if (argIndex == 0)
+            return new List<string> { "1", "1.5", "2" };
+        return null;
+    }
     public override bool Execute(string[] args)
     {
-        if (args != null) return SendNoArguments();
-        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+        if (!args.IsBetween(0,1)) return SendUsage();
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+             
+        
+
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
             var newPrefab = Object.Instantiate(lightningPrefab);
             newPrefab.transform.position = hit.point;
@@ -48,17 +54,13 @@ internal class StrikeCommand : SR2Command
                     newPrefab.GetComponent<LightningStrike>().BlastPower = float.Parse(args[0]) * 2750f;
                 }
                 catch
-                {
-                    SendError("Invalid number!");
-                    return false;
-                }
+                { return SendError(translation("cmd.error.notvalidint",args[0])); }
             }
 
-            SendMessage("Summoned lightning!");
+            SendMessage(translation("cmd.strike.success"));
             return true;
         }
-
-        return false;
+        return SendError("cmd.error.notlookingatanything");
     }
 }
 

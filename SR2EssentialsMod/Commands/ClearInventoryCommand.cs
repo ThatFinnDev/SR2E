@@ -4,8 +4,6 @@ public class ClearInventoryCommand : SR2Command
 {
     public override string ID => "clearinv";
     public override string Usage => "clearinv [slot]";
-    public override string Description => "Clears your inventory";
-    public override string ExtendedDescription => "Clears your inventory, careful not to use this by mistake!";
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
@@ -14,7 +12,7 @@ public class ClearInventoryCommand : SR2Command
     }
     public override bool Execute(string[] args)
     {
-        if (args != null && args.Length != 1) return SendUsage();
+        if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
         int numberOfSlots = SceneContext.Instance.PlayerState.Ammo.Slots.Length - 1;
@@ -22,28 +20,31 @@ public class ClearInventoryCommand : SR2Command
         if (args != null && args.Length == 1)
         {
             try { slotToClear = int.Parse(args[0]); }
-            catch { SendError(args[0] + " is not a valid integer!"); return false; }
+            catch { SendError(translation("cmd.error.notvalidint",args[0])); return false; }
 
-            if (slotToClear<=0) { SendError(args[0] + " is not an integer above 0!"); return false; }
-            if(slotToClear>numberOfSlots) { SendError($"There are only {numberOfSlots} slots !"); return false; } }
+            if (slotToClear<=0) return SendError(translation("cmd.error.notintabove",args[0])); 
+            if(slotToClear>numberOfSlots) return SendError(translation("cmd.clearinv.error.slotdoesntexist",numberOfSlots));
+            
+        }
 
         slotToClear -= 1;
         if(slotToClear==-1)
         {
             foreach (Ammo.Slot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
                 slot.Clear();
-            SendMessage("Successfully cleared your inventory");
+            SendMessage(translation("cmd.clearinv.success"));
             return true;
         }
 
         bool isUnlocked = SceneContext.Instance.PlayerState.Ammo.Slots[slotToClear].IsUnlocked;
         if (!isUnlocked)
         {
-            SendMessage($"Slot {slotToClear+1} hasn't been unlocked!");
+            
+            SendMessage(translation("cmd.clearinv.error.slotnotunlocked",slotToClear+1));
             return false;
         }
         SceneContext.Instance.PlayerState.Ammo.Slots[slotToClear].Clear();
-        SendMessage($"Successfully cleared slot number {slotToClear+1}!");
+        SendMessage(translation("cmd.clearinv.successsingle",slotToClear+1));
         return true;
     }
 }

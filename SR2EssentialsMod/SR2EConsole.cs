@@ -29,24 +29,10 @@ namespace SR2E
                 return;
             try
             {
-                if (message.Contains("[SR2E]:"))
-                {
-                    return;
-                }
-
-                if (message.StartsWith("[UnityExplorer]"))
-                {
-                    return;
-                }
-                if (message.StartsWith("[]:"))
-                {
-                    return;
-                }
-
-                if (!SR2EEntryPoint.consoleFinishedCreating)
-                    return;
-                if (consoleContent.childCount >= maxMessages)
-                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("[SR2E]:")) return;
+                if (message.StartsWith("[UnityExplorer]")) return;
+                if (message.StartsWith("[]:")) return;
+                if (!SR2EEntryPoint.consoleFinishedCreating) return;
                 if (message.Contains("\n"))
                 {
                     if (doMLLog) mlog.Msg(message);
@@ -86,25 +72,10 @@ namespace SR2E
                 return;
             try
             {
-                if (message.Contains("[SR2E]:"))
-                {
-                    return;
-                }
-
-                if (message.StartsWith("[UnityExplorer]"))
-                {
-                    return;
-                }
-                
-                if (message.StartsWith("[]:"))
-                {
-                    return;
-                }
-
-                if (!SR2EEntryPoint.consoleFinishedCreating)
-                    return;
-                if (consoleContent.childCount >= maxMessages)
-                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("[SR2E]:")) return;
+                if (message.StartsWith("[UnityExplorer]")) return;
+                if (message.StartsWith("[]:")) return;
+                if (!SR2EEntryPoint.consoleFinishedCreating) return;
                 if (message.Contains("\n"))
                 {
                     if (doMLLog) mlog.Error(message);
@@ -145,25 +116,10 @@ namespace SR2E
                 return;
             try
             {
-                if (message.Contains("[SR2E]:"))
-                {
-                    return;
-                }
-
-                if (message.StartsWith("[UnityExplorer]"))
-                {
-                    return;
-                }
-
-                if (message.StartsWith("[]:"))
-                {
-                    return;
-                }
-
-                if (!SR2EEntryPoint.consoleFinishedCreating)
-                    return;
-                if (consoleContent.childCount >= maxMessages)
-                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("[SR2E]:")) return;
+                if (message.StartsWith("[UnityExplorer]")) return;
+                if (message.StartsWith("[]:")) return;
+                if (!SR2EEntryPoint.consoleFinishedCreating) return;
                 if (message.Contains("\n"))
                 {
                     if (doMLLog) mlog.Msg(message, new Color32(255, 155, 0, 255));
@@ -369,7 +325,6 @@ namespace SR2E
         static MelonLogger.Instance mlog;
         static Scrollbar _scrollbar;
         static bool shouldResetTime = false;
-        const int maxMessages = 100;
         private static bool scrollCompletlyDown = false;
 
         static void RefreshAutoComplete(string text)
@@ -378,12 +333,10 @@ namespace SR2E
             
             // autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, ((744f/1080f)*Screen.height), autoCompleteContent.position.z);
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
-            {
                 selectedAutoComplete = 0;
-            }
             for (int i = 0; i < autoCompleteContent.childCount; i++)
                 Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
-            if (String.IsNullOrEmpty(text))
+            if (String.IsNullOrWhiteSpace(text))
             { autoCompleteScrollView.SetActive(false); return; }
             if (text.Contains(" "))
             {
@@ -400,7 +353,7 @@ namespace SR2E
                     List<string> possibleAutoCompletes = (commands[cmd].GetAutoComplete(argIndex, args));
                     if (possibleAutoCompletes != null)
                     {
-                        int maxPredictions = 50; //This is to reduce lag
+                        int maxPredictions = MAX_AUTOCOMPLETE; 
                         int predicted = 0;
                         foreach (string argument in possibleAutoCompletes)
                         {
@@ -471,7 +424,7 @@ namespace SR2E
             RegisterCommand(new ClearInventoryCommand());
             RegisterCommand(new ModsCommand());
             RegisterCommand(new HelpCommand());
-            RegisterCommand(new RefillSlotsCommand());
+            RegisterCommand(new RefillInvCommand());
             RegisterCommand(new NewBucksCommand());
             RegisterCommand(new KillCommand());
             RegisterCommand(new KillAllCommand());
@@ -491,22 +444,17 @@ namespace SR2E
             RegisterCommand(new NoClipCommand());
             RegisterCommand(new StrikeCommand());
             RegisterCommand(new FXPlayCommand());
-            RegisterCommands(new SR2Command[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
+            RegisterCommand(new TimeScaleCommand());
+            RegisterCommand(new InfiniteHealthCommand());
+            RegisterCommand(new InfiniteEnergyCommand());
+            RegisterCommands(new SR2Command[]{new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
-            if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InfiniteHealthCommand());
-            if (!SR2EEntryPoint.infEnergyInstalled) RegisterCommand(new InfiniteEnergyCommand());
         }
 
         internal static bool syncedSetuped = false;
-        internal static void UnSetupConsoleSync()
-        {
-            syncedSetuped = false;
-            MelonLogger.MsgDrawingCallbackHandler -= (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
-            MelonLogger.ErrorCallbackHandler -= (s, s1) => SendError($"[{s}]: {s1}", false);
-            MelonLogger.WarningCallbackHandler -= (s, s1) => SendWarning($"[{s}]: {s}", false);
-        }
-        internal static void SetupConsoleSync()
+        
+        static void SetupConsoleSync()
         {
             syncedSetuped = true;
             MelonLogger.MsgDrawingCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
@@ -567,6 +515,7 @@ namespace SR2E
             SR2ESaveManager.Start();
 
             SetupModMenu();
+            if(syncedSetuped) SetupConsoleSync();
         }
 
         static MultiKey openKey = new MultiKey(new Key[] { Key.LeftCtrl, Key.Tab });
@@ -677,10 +626,13 @@ namespace SR2E
                                 autoCompleteContent.position.z);
                     }
                 }
-                catch
-                {
-                }
+                catch { }
 
+                try
+                {
+                    if (consoleContent.childCount >= MAX_CONSOLELINES) GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                }
+                catch  { }
 
             }
 

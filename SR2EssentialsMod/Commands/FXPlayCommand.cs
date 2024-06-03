@@ -6,7 +6,6 @@ public class FXPlayCommand : SR2Command
 {
     public override string ID => "fxplayer";
     public override string Usage => "fxplayer <FX> [speed] [playandpause]";
-    public override string Description => "Plays a effect in front of you.";
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -29,63 +28,33 @@ public class FXPlayCommand : SR2Command
 
     public override bool Execute(string[] args)
     {
-        if (args == null)
-        {
-            SendMessage($"Usage: {Usage}");
-            return false;
-        }
-
-        if (!(args.Length <= 3))
-        {
-            SendMessage($"Usage: {Usage}");
-            return false;
-        }
-
+        if (!args.IsBetween(1,3)) return SendUsage();
         if (!inGame) SendLoadASaveFirst();
 
-        if (currFX != null && !currFX.isStopped)
-        {
-            SendError("Please wait for the current FX to stop.");
-            return false;
-        }
+        if (currFX != null && !currFX.isStopped) return SendError(translation("cmd.fxplayer.waitforstop"));
+           
+        
 
         Camera cam = Camera.main;
-        if (cam == null)
-        {
-            SendError("Couldn't find player camera!");
-            return false;
-        }
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+            
 
         float playbackSpeed = 0;
         bool playAndPause = false;
         if (args.Length >= 2)
         {
-            try
-            {
-                playbackSpeed = float.Parse(args[1]);
-            }
-            catch
-            {
-                SendError(args[1] + " is not a valid float!");
-                return false;
-            }
+            try { playbackSpeed = float.Parse(args[1]); }
+            catch { return SendError(translation("cmd.error.notvalidfloat",args[1])); }
 
-            if (playbackSpeed <= 0)
-            {
-                SendError(args[1] + " is not a float above 0!");
-                return false;
-            }
+            if (playbackSpeed <= 0) return SendError(translation("cmd.error.notfloatabove",args[1],0));
+            
 
 
             if (args.Length == 3)
             {
                 string boolToParse = args[2].ToLower();
-                if (boolToParse != "true" && boolToParse != "false")
-                {
-                    SendError(args[2] + " is not a valid bool!");
-                    return false;
-                }
-
+                if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",args[2]));
+                
                 if (boolToParse == "true") playAndPause = true;
             }
         }
@@ -98,11 +67,7 @@ public class FXPlayCommand : SR2Command
             {
                 fxobj = FXLibraryReversable[args[0]].Item2;
             }
-            catch
-            {
-                SendError("Invalid FX Name!");
-                return false;
-            }
+            catch { return SendError(translation("cmd.fxplayer.invalidfxname")); }
 
             fxobj.SpawnFX(cam.transform.position + hit.transform.position);
 
@@ -117,12 +82,10 @@ public class FXPlayCommand : SR2Command
             }
 
             currFX = fxobj.GetComponent<ParticleSystem>();
-            SendMessage("Successfully playing FX!");
+            SendMessage(translation("cmd.fxplayer.success"));
         }
 
-        SendWarning("You're not looking at anything!");
-        return false;
-
+        return SendError(translation( "cmd.error.notlookingatanything"));
     }
 }
 

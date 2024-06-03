@@ -8,7 +8,6 @@ public class InfiniteEnergyCommand : SR2Command
 {
     public override string ID => "infenergy";
     public override string Usage => "infenergy [should disable height limit(true/false)]";
-    public override string Description => "Removes energy from the game";
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -19,19 +18,21 @@ public class InfiniteEnergyCommand : SR2Command
 
     public override bool Execute(string[] args)
     {
-        if (args != null && args.Length != 1) return SendNoArguments();
+        if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
+        
+        if (SR2EEntryPoint.infEnergyInstalled) { SR2EConsole.SendError(translation("cmd.infenergy.dedicatedmodinstalled")); return false; }
         
         bool shouldDisableThrusterHeight = false;
         if (args != null)
             if (args.Length != 1)
-            {
-                SendMessage($"Usage: {Usage}");
-                return false;
-            }
+                return SendUsage();
             else
-                shouldDisableThrusterHeight = (args[0].ToLower() == "true");
-
+            {
+                string boolToParse = args[0].ToLower();
+                if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",args[0]));
+                if (boolToParse == "true")  shouldDisableThrusterHeight = true;
+            }
 
         if (infEnergy)
         {
@@ -48,7 +49,7 @@ public class InfiniteEnergyCommand : SR2Command
 
             energyMeter.maxEnergy = new NullableFloatProperty(normalEnergy);
             SceneContext.Instance.PlayerState.SetEnergy(0);
-            SendMessage("Energy is no longer infinite");
+            SendMessage(translation("cmd.infenergy.successnolonger"));
         }
         else
         {
@@ -72,7 +73,7 @@ public class InfiniteEnergyCommand : SR2Command
             SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
             normalEnergy = energyMeter.maxEnergy;
             energyMeter.maxEnergy = new NullableFloatProperty(2.14748365E+09f);
-            SendMessage("Energy is now infinite");
+            SendMessage(translation("cmd.infenergy.success"));
         }
 
 
