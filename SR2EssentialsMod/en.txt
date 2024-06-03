@@ -42,8 +42,11 @@ cmd.error.nocamera=Couldn't find player camera!
 cmd.error.notlookingatvalidobject=You're not looking at a valid object!
 cmd.error.notlookingatanything=You're not looking at anything!
 
+
+
 cmd.bind.success=Successfully bound command '$1' to key $2!
 cmd.bind.description=Binds a key to a specific command
+cmd.bind.extendeddescription=Binds a key to a specific command, you can even bind multiple.To remove the binding, use the "unbind" command
 
 cmd.clear.success=Successfully cleared the console!
 cmd.clear.description=Clears the console
@@ -53,11 +56,11 @@ cmd.clearinv.successsingle=Successfully cleared slot number $1!
 cmd.clearinv.error.slotdoesntexist=There are only $1 number of slots!
 cmd.clearinv.error.slotnotunlocked=Slot $1 hasn't been unlocked!
 cmd.clearinv.description=Clears your inventory
-cmd.clearinv.extendeddescription=Clears your inventory or if just a single slot
+cmd.clearinv.extendeddescription=Clears your inventory or if you want to, just a single slot
 
 cmd.openconsole.description=Opens the console
 cmd.closeconsole.description=Closes the console
-cmd.toggleconsole.description=Toggles the console
+cmd.toggleconsole.description=Closes or opens the console
 
 cmd.warpstuff.nowarpwithname=There is no warp with the name: $1!
 cmd.warpstuff.alreadywarpwithname=There is already warp with the name: $1!
@@ -73,28 +76,29 @@ cmd.fling.success=Successfully flinged the object with a string of $1!
 cmd.fling.description=Flings any object you are looking at
 
 cmd.floaty.success=The object will float for $1 seconds!
-cmd.floaty.description=Temporarily disables gravity for the selected object for the specified duration in seconds
+cmd.floaty.description=Temporarily disables gravity for the object you're looking at
+cmd.floaty.extendeddescription=Temporarily disables gravity for the object you're looking at for the specified duration in seconds
 
 cmd.freeze.successunfroze=Successfully unfroze the actor!
 cmd.freeze.successfroze=Successfully froze the actor!
-cmd.freeze.description=Freezes a object in time
-cmd.freeze.extendeddescription=Freezes a identifiable in time, cannot be moved
+cmd.freeze.description=Freezes an object in time
+cmd.freeze.extendeddescription=Freezes an object in time. It cannot move or fall until you unfreeze it
 
 cmd.fxplayer.success=Successfully playing FX!
 cmd.fxplayer.waitforstop=Please wait for the current FX to stop!
 cmd.fxplayer.invalidfxname=Invalid FX Name!
-cmd.fxplayer.description=Plays a effect in front of you
+cmd.fxplayer.description=Plays an effect in front of you
 
 cmd.giveblueprint.success=Sucessfully added $1!
 cmd.giveblueprint.description=Gives you a blueprint
-cmd.giveblueprint.alreadyowned="You already have the $1 blueprint!"
+cmd.giveblueprint.alreadyowned=You already have the $1 blueprint!
 
 cmd.give.success=Successfully gave $1 $2!
 cmd.give.description=Gives you items
 cmd.give.isgadgetnotitem=$1 is a gadget, not an item!
 
 cmd.givegadget.success=Successfully gave $1 $2!
-cmd.givegadget.description=Gives you gadgest
+cmd.givegadget.description=Gives you gadgets
 
 cmd.giveupgrade.success=$1 is now on level $2!
 cmd.giveupgrade.successall=Successfully upgraded all upgrades!
@@ -102,13 +106,15 @@ cmd.giveupgrade.description=Gives an upgrade
 
 cmd.graphics.success=Successfully set graphics to $1!
 cmd.graphics.description=Makes your game look cool, or worse
-cmd.graphics.norangelights=An unknown error occured!
+cmd.graphics.extendeddescription=Changes the look of your game. It may make your experience better or worse
+cmd.graphics.norangelights=An error occured, rangelights couldn't be found!
 
 cmd.gravity.success=Successfully changed the gravity to $1 $2 $3!
-cmd.gravity.description=Sets the gravity!
+cmd.gravity.description=Changes the gravity!
+cmd.gravity.description=It changes the gravity for every single physics object (except player, use the util command for that)
 
 cmd.help.success=<color=#45d192>List of all currently registered commands:</color>\n<color=#45d192><> is a required argument; [] is an optional argument</color>
-cmd.help.successspecific=Usage: $1\n Description: $
+cmd.help.successspecific=Usage: $1\nDescription: $2
 cmd.help.description=Displays all commands available and their usage
 cmd.help.extendeddescription=Displays all commands available and their usage, can also take a command as a input to display it by itself
 cmd.help.notvalidcommand=The key '<color=white>$1</color>' is not a valid command!
@@ -116,11 +122,13 @@ cmd.help.notvalidcommand=The key '<color=white>$1</color>' is not a valid comman
 cmd.infenergy.success=Energy is now infinite
 cmd.infenergy.successnolonger=Energy is no longer infinite
 cmd.infenergy.description=Removes energy from the game
+cmd.infenergy.extendeddescription=Gives you infinite energy. It can also remove it of course
 cmd.infenergy.dedicatedmodinstalled=You cannot toggle infinite energy while having the infinite energy mod installed!
 
 cmd.infhealth.success=You're invincible now!
 cmd.infhealth.successnolonger=You're no longer invincible!
 cmd.infhealth.description=Makes you invincible
+cmd.infhealth.extendeddescription=Gives you infinite health. It can also remove it of course
 cmd.infhealth.dedicatedmodinstalled=You cannot toggle infinite health while having the infinite health mod installed!
 
 cmd.killall.success=Successfully killed all actors!
@@ -135,19 +143,22 @@ cmd.mods.successdesc=$1 by $2
 cmd.mods.description=Displays all mods loaded
 
 cmd.move.success=Successfully moved the thing!
-cmd.move.description=Moves a thing
+cmd.move.description=Moves a gadget/slime/largo/fruit/ etc.
+
+cmd.scale.success=Succesfully changed the scale of the thing!
+cmd.scale.description=Changes the scale of a gadget/slime/largo/fruit etc.
 
 cmd.newbucks.success=Successfully added $1 newbucks!
 cmd.newbucks.description=Adds or removes newbucks
 
 cmd.noclip.success=Sucessfully activated noclip!
 cmd.noclip.success2=Sucessfully deactivated noclip!
-cmd.noclip.description=Toggles noclip
+cmd.noclip.description=Activates or deactivates noclip
 cmd.noclip.info=FYI: Controller input for noclip doesn't work yet!
 
 cmd.party.success=Successfully enabled party mode!
 cmd.party.success2=Successfully disabled party mode!
-cmd.party.description=Toggles Party Mode
+cmd.party.description=Enables or disables party mode
 cmd.party.novolume=An error occured, couldn't find volume!
 
 cmd.refillinv.success=Successfully refilled your inventory!
@@ -156,13 +167,13 @@ cmd.refillinv.error.slotdoesntexist=There are only $1 number of slots!
 cmd.refillinv.error.slotempty=Slot $1 is empty!
 cmd.refillinv.error.slotnotunlocked=Slot $1 hasn't been unlocked!
 cmd.refillinv.description=Refills your inventory
-cmd.refillinv.extendeddescription=Refills your inventory or just a single slot
+cmd.refillinv.extendeddescription=Refills your inventory or if you want, just a single slot
 
 cmd.replace.success=Successfully replaced $1 with $2!
 cmd.replace.description=Replaces the thing you're looking at
 
 cmd.rotate.success=Successfully rotated the thing!
-cmd.rotate.description=Rotates a thing
+cmd.rotate.description=Rotates a gadget/slime/largo/fruit/ etc.
 
 cmd.setwarp.success=Successfully added the Warp: $1!
 cmd.setwarp.description=Saves your location, so you can teleport to it later!
@@ -172,15 +183,15 @@ cmd.spawn.description=Spawns something in front of your face
 cmd.spawn.isgadgetnotitem=$1 is a gadget, not an item!
 
 cmd.speed.success=Speed set to $1!
-cmd.speed.description=Sets the player speed
+cmd.speed.description=Changes the player speed
 cmd.speed.unknownerror=An unknown error occured!
 
 cmd.strike.success=Summoned lightning!
-cmd.strike.description=Spawns a lightning strike!
+cmd.strike.description=Spawns a lightning strike
 
 cmd.unbind.success=Successfully unbound key $1!
 cmd.unbind.notbound=$1 is not bound to anything!
-cmd.unbind.description=Unbinds a key that was previously bound to a command
+cmd.unbind.description=Unbinds a key that was previously bound to a command/multiple commands
 
 cmd.warp.success=Successfully warped to the warp $1!
 cmd.warp.description=Warps you to a saved warping point
@@ -207,7 +218,7 @@ cmd.weather.description=Manage the weather
 cmd.weather.extendeddescription=Allows you to start/stop weathers as well as to view every weather
 cmd.weather.nodirector=An error occured, cannot find WeatherDirector!
 
-cmd.timescale.success=
+cmd.timescale.success=Timescale is now: $1!
 cmd.timescale.description=Modifies game speed
 cmd.timescale.between=The scale has to be between $1 and $2!
 
