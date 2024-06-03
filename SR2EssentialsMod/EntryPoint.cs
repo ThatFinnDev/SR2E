@@ -42,20 +42,7 @@ namespace SR2E
 
         static AssetBundle bundle;
 
-        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
-        internal static IdentifiableType getIdentifiableByName(string name)
-        {
-            foreach (IdentifiableType type in identifiableTypes)
-                if (type.name.ToUpper() == name.ToUpper()) return type;
-            return null;
-        }
-        internal static IdentifiableType getIdentifiableByLocalizedName(string name)
-        {
-            foreach (IdentifiableType type in identifiableTypes) 
-                try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == name.ToUpper()) return type; }
-                catch {}
-            return null;
-        }
+
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed { get { return prefs.GetEntry<float>("noclipAdjustSpeed").Value; } }
         static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
@@ -90,17 +77,9 @@ namespace SR2E
             if (!prefs.HasEntry("enableDebugDirector"))
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable Debug Menu", false).disableWarning((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
-            
+
             if (!prefs.HasEntry("doesConsoleSync"))
-                prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false).disableWarning((System.Action)(
-                    () =>
-                    {
-                        if (consoleUsesSR2Font != SR2EConsole.syncedSetuped)
-                        {
-                            if(SR2EConsole.syncedSetuped) SR2EConsole.SetupConsoleSync();
-                            else SR2EConsole.UnSetupConsoleSync();
-                        }
-                    }));
+                prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
             if (!prefs.HasEntry("debugLogging"))
                 prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
             if (!prefs.HasEntry("devMode"))
@@ -176,7 +155,10 @@ namespace SR2E
             RefreshPrefs();
             if (showUnityErrors)
                 Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
-            
+            try
+            {
+                SR2ELanguageManger.LoadLanguage(); }
+            catch (Exception e) { Console.WriteLine(e); }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)
                 {
@@ -219,14 +201,10 @@ namespace SR2E
                     foreach (var obj in bundle.LoadAllAssets())
                     {
                         if (obj != null)
-                            switch (obj.name)
+                            if(obj.name=="AllMightyMenus")
                             {
-                                case "SR2EFallbackFont":
-                                    normalFont = obj.Cast<TMP_FontAsset>();
-                                    break;
-                                case "AllMightyMenus":
-                                    Object.Instantiate(obj);
-                                    break;
+                                Object.Instantiate(obj);
+                                break;
                             }
                     }
                     

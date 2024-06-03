@@ -15,12 +15,20 @@ public abstract class SR2Command
     /// <summary>
     /// The description of this command
     /// </summary>
-    public abstract string Description { get; }
+    public virtual string Description => translation($"cmd.{ID.ToLower()}.description");
 
     /// <summary>
     /// The full description of this command
     /// </summary>
-    public virtual string ExtendedDescription { get; }
+    public virtual string ExtendedDescription
+    {
+        get
+        {
+            string key = $"cmd.{ID.ToLower()}.extendeddescription";
+            string translation = SR2ELanguageManger.translation(key);
+            return key == translation ? Description : translation;
+        }
+    }
 
 
     public virtual bool Hidden { get; }
@@ -81,7 +89,7 @@ public abstract class SR2Command
     /// </summary>
     public bool SendUsage()
     {
-        if(!silent) SR2EConsole.SendMessage($"Usage: {Usage}");
+        if(!silent) SR2EConsole.SendMessage(translation("cmd.cmdusage", Usage));
         return false;
     }
     /// <summary>
@@ -89,7 +97,7 @@ public abstract class SR2Command
     /// </summary>
     public bool SendNoArguments()
     {
-        if(!silent) SR2EConsole.SendError($"The '<color=white>{ID}</color>' command takes no arguments");
+        if(!silent) SR2EConsole.SendError(translation("cmd.noarguments", Usage));
         return false;
     }
     
@@ -98,7 +106,7 @@ public abstract class SR2Command
     /// </summary>
     public bool SendLoadASaveFirst()
     {
-        if(!silent) SR2EConsole.SendError("Load a save first!");
+        if(!silent) SR2EConsole.SendError(translation("cmd.loadasavefirst", Usage));
         return false;
     }
     /// <summary>
@@ -114,10 +122,11 @@ public abstract class SR2Command
     /// <summary>
     /// Display an error in the console
     /// </summary>
-    public void SendError(string message)
+    public bool SendError(string message)
     {
-        if (silent) return;
+        if (silent) return false;
         SR2EConsole.SendError(message, SR2EEntryPoint.syncConsole);
+        return false;
     }
 
     /// <summary>

@@ -1,54 +1,47 @@
-﻿using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using Il2CppMonomiPark.SlimeRancher.SceneManagement;
-using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
+﻿namespace SR2E.Commands;
 
-namespace SR2E.Commands
+public class WarpCommand : SR2Command
 {
-    public class WarpCommand : SR2Command
+    public override string ID => "warp";
+    public override string Usage => "warp <location>";
+
+    public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        public override string ID => "warp";
-        public override string Usage => "warp <location>";
-        public override string Description => "Warps you to a saved warping point";
-        public override string ExtendedDescription => "Warps you to a saved warping point, use <u>setwarp</u> to create more.";
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        if (argIndex == 0)
         {
-            if (argIndex == 0)
-            {
-                List<string> warps = new List<string>();
-                foreach (KeyValuePair<string,SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key); 
-                return warps;
-            }
-            return null;
+            List<string> warps = new List<string>();
+            foreach (KeyValuePair<string, SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key);
+            return warps;
         }
-        public override bool Execute(string[] args)
-        {
-            if (args == null || args.Length != 1) return SendUsage();
-            if (!inGame) return SendLoadASaveFirst();
-            string name = args[0];
-            SR2ESaveManager.Warp warp = SR2ESaveManager.WarpManager.GetWarp(name);
-            if (warp==null)
-            { SendError($"There is no warp with the name: {name}"); return false; }
 
-            SR2EError error = warp.WarpPlayerThere();
-            switch (error)
-            {
-                case SR2EError.NoError: SendMessage($"Successfully warped to the warp {name}!"); return true;
-                case SR2EError.NotInGame: return SendLoadASaveFirst();
-                case SR2EError.PlayerNull: return SendLoadASaveFirst();
-                case SR2EError.TeleportablePlayerNull: SendError($"TeleportablePlayer is null!"); return false;
-                case SR2EError.SRCharacterControllerNull: SendError($"SRCharacterController is null!"); return false;
-                case SR2EError.SceneGroupNotSupported: SendError($"There sceneGroup {warp.sceneGroup} is not supported!"); return false;
-                case SR2EError.DoesntExist: SendError($"There place {warp.sceneGroup} does not exist!"); return false;
-            }
-            TeleportablePlayer p = SceneContext.Instance.Player.GetComponent<TeleportablePlayer>();
-            if(p==null)
-            { SendError($"TeleportablePlayer is null!"); return false; }
-
-            SendError("An unknown error occured!");
-            return false;
-
-        }
-        
+        return null;
     }
+
+    public override bool Execute(string[] args)
+    {
+        if (!args.IsBetween(1,1)) return SendUsage();
+        if (!inGame) return SendLoadASaveFirst();
+        string name = args[0];
+        SR2ESaveManager.Warp warp = SR2ESaveManager.WarpManager.GetWarp(name);
+        if (warp == null) return SendError(translation("cmd.warpstuff.nowarpwithname",name));
+
+        SR2EError error = warp.WarpPlayerThere();
+        switch (error)
+        {
+            case SR2EError.NoError:
+                SendMessage(translation("cmd.warp.success",name));
+                return true;
+            case SR2EError.NotInGame: return SendLoadASaveFirst();
+            case SR2EError.PlayerNull: return SendLoadASaveFirst();
+            case SR2EError.TeleportablePlayerNull: return SendError(translation("cmd.error.teleportableplayernull"));
+            case SR2EError.SRCharacterControllerNull: return SendError(translation("cmd.error.srccnull"));
+            case SR2EError.SceneGroupNotSupported: return SendError(translation("cmd.error.scenegroupnotsupported",warp.sceneGroup));
+            case SR2EError.DoesntExist: return SendError(translation("cmd.warpstuff.nowarpwithname",name));
+        }
+
+        SendError(translation("cmd.warp.unknownerror"));
+        return false;
+
+    }
+
 }

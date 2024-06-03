@@ -8,79 +8,31 @@ public class ReplaceCommand : SR2Command
 {
     public override string ID => "replace";
     public override string Usage => "replace <object>";
-    public override string Description => "Replaces the thing you're looking at";
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-        {
-            string firstArg = "";
-            if (args != null)
-                firstArg = args[0];
-            List<string> list = new List<string>();
-            int i = -1;
-            foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
-            {
-                if (type.ReferenceId.StartsWith("GadgetDefinition")) continue;
-                if (i > 20)
-                    break;
-                try
-                {
-                    if (type.LocalizedName != null)
-                    {
-                        string localizedString = type.LocalizedName.GetLocalizedString();
-                        if (localizedString.ToLower().Replace(" ", "").StartsWith(firstArg.ToLower()))
-                        {
-                            i++;
-                            list.Add(localizedString.Replace(" ", ""));
-                        }
-                    }
-                }
-                catch
-                {
-                }
-
-            }
-
-            return list;
-        }
+            return getIdentListByPartialName(args == null ? null : args[0], true, false);
 
         return null;
     }
 
     public override bool Execute(string[] args)
     {
-        if (args == null || args.Length != 1) return SendUsage();
+        if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
-        string objectName = "";
+        
         string identifierTypeName = args[0];
-        IdentifiableType type = SR2EEntryPoint.getIdentifiableByName(identifierTypeName);
+        IdentifiableType type = getIdentByName(identifierTypeName);
+        if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
 
-        if (type == null)
-        {
-            type = SR2EEntryPoint.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
-            if (type == null)
-            {
-                SendError(args[0] + " is not a valid IdentifiableType!");
-                return false;
-            }
-
-            string name = type.LocalizedName.GetLocalizedString();
-            if (name.Contains(" "))
-                objectName = "'" + name + "'";
-            else
-                objectName = name;
-        }
-        else
-            objectName = type.name;
-
+        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",args[0]));
+        
         Camera cam = Camera.main;
-        if (cam == null)
-        {
-            SendError("Couldn't find player camera!");
-            return false;
-        }
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        
+        
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
@@ -93,8 +45,8 @@ public class ReplaceCommand : SR2Command
                 try
                 {
                     string name = gameobject.GetComponent<Identifiable>().identType.LocalizedName.GetLocalizedString();
-                    if (name.Contains(" ")) objectName = "'" + name + "'";
-                    else objectName = name;
+                    if (name.Contains(" ")) oldObjectName = "'" + name + "'";
+                    else oldObjectName = name;
                 }
                 catch
                 {
@@ -132,13 +84,12 @@ public class ReplaceCommand : SR2Command
                 Quaternion rotation = gameobject.transform.rotation;
                 spawned.transform.position = position;
                 spawned.transform.rotation = rotation;
-                SendMessage($"Successfully replaced {oldObjectName} with {objectName}!");
+                SendMessage(translation("cmd.replace.success",oldObjectName,type.getName()));
                 return true;
             }
 
         }
 
-        SendError("Not looking at a valid object!");
-        return false;
+        return SendError(translation("cmd.error.notlookingatanything"));
     }
 }

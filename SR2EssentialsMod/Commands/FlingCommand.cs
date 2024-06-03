@@ -4,31 +4,31 @@ public class FlingCommand : SR2Command
 {
     public override string ID => "fling";
     public override string Usage => "fling <strength>";
-    public override string Description => "Flings any object you are looking at.";
 
     public override bool Execute(string[] args)
     {
         if (!inGame) return SendLoadASaveFirst();
-        if (args == null || args.Length != 1) return SendUsage();
+        if (!args.IsBetween(1,1)) return SendUsage();
         
-        Camera cam = Camera.main; if (cam == null) { SendError("Couldn't find player camera!"); return false; }
+        Camera cam = Camera.main; if (cam == null) return SendError(translation("cmd.error.nocamera")); 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
-            Transform transform = hit.transform;
             Rigidbody rb = hit.rigidbody;
+            if (rb == null) return SendError(translation("cmd.error.notlookingatvalidobject")); 
+            Transform transform = hit.transform;
             
             float strength = 0;
             try { strength = float.Parse(args[0]); }
-            catch { SendError(args[0] + " is not a valid float!"); return false; }
+            catch { return SendError(translation("cmd.error.notvalidfloat",args[0]));  }
 
             Vector3 cameraPosition = cam.transform.position;
             Vector3 moveDirection = transform.position - cameraPosition;
             moveDirection.Normalize();
             rb.velocity += (moveDirection * strength) + Vector3.up;
-            SendMessage($"Successfully flinged the object with a string of {strength}!");
+            SendMessage(translation("cmd.fling.success",strength));
             return true;
         }
-        SendError("You're not looking at a valid object!");
+        SendError(translation("cmd.error.notlookingatvalidobject"));
         return false;
     }
 }

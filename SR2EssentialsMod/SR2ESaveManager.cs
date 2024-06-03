@@ -109,10 +109,10 @@ public static class SR2ESaveManager
                             GameObject prefab = null;
                             switch (sceneGroup)
                             {
-                                case "SceneGroup.ConservatoryFields": WarpManager.warpTo = this; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterHomeBlue").prefab; break;
-                                case "SceneGroup.RumblingGorge": WarpManager.warpTo = this; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneGorge").prefab; break;
-                                case "SceneGroup.LuminousStrand": WarpManager.warpTo = this; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneStrand").prefab; break;
-                                case "SceneGroup.PowderfallBluffs": WarpManager.warpTo = this; prefab = SR2EEntryPoint.getIdentifiableByName("TeleporterZoneBluffs").prefab; break;
+                                case "SceneGroup.ConservatoryFields": WarpManager.warpTo = this; prefab = getGadgetDefByName("TeleporterHomeBlue").prefab; break;
+                                case "SceneGroup.RumblingGorge": WarpManager.warpTo = this; prefab = getGadgetDefByName("TeleporterZoneGorge").prefab; break;
+                                case "SceneGroup.LuminousStrand": WarpManager.warpTo = this; prefab = getGadgetDefByName("TeleporterZoneStrand").prefab; break;
+                                case "SceneGroup.PowderfallBluffs": WarpManager.warpTo = this; prefab = getGadgetDefByName("TeleporterZoneBluffs").prefab; break;
                                 default: return SR2EError.SceneGroupNotSupported;
                             }
 

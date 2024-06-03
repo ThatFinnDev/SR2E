@@ -4,22 +4,12 @@ public class HelpCommand : SR2Command
 {
     public override string ID => "help";
     public override string Usage => "help [cmdName]";
-    public override string Description => "Displays all commands available and their usage";
-
-    public override string ExtendedDescription =>
-        "Displays all commands available and their usage, can also take a command as a input to display it by itself.";
 
     public string GetCommandDescription(string command)
     {
         if (SR2EConsole.commands.ContainsKey(command))
-        {
-            var cmd = SR2EConsole.commands[command];
-            if (!string.IsNullOrEmpty(cmd.ExtendedDescription))
-                return cmd.ExtendedDescription;
-            else
-                return cmd.Description;
-        }
-        else return string.Empty;
+            return SR2EConsole.commands[command].ExtendedDescription;
+        return string.Empty;
     }
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
@@ -41,13 +31,10 @@ public class HelpCommand : SR2Command
 
     public override bool Execute(string[] args)
     {
-        if (args != null && args.Length != 1) return SendUsage();
+        if (!args.IsBetween(0,1)) return SendUsage();
         if (args == null)
         {
-            string currText = null;
-            currText = $"<color=#45d192>List of all currently registered commands:</color>";
-            currText = $"{currText}\n<color=#45d192><> is a required argument; [] is an optional argument</color>";
-            currText = $"{currText}\n";
+            string currText = translation("cmd.help.success")+"\n";
 
 
             foreach (KeyValuePair<string, SR2Command> entry in SR2EConsole.commands)
@@ -60,20 +47,15 @@ public class HelpCommand : SR2Command
             return true;
         }
 
-        if (args.Length == 1)
+        var desc = GetCommandDescription(args[0]);
+        if (SR2EConsole.commands.ContainsKey(args[0]))
         {
-            var desc = GetCommandDescription(args[0]);
-            if (SR2EConsole.commands.ContainsKey(args[0]))
-            {
-                SendMessage($"Usage: {SR2EConsole.commands[args[0]].Usage}\n Description: {desc}");
-                return true;
-            }
-
-            SendMessage($"The key '<color=white>{args[0]}</color>' is not a valid command");
-            return false;
+            SendMessage(translation("cmd.help.successspecific",SR2EConsole.commands[args[0]].Usage,desc));
+            return true;
         }
 
-        SendMessage($"Usage: {Usage}");
+        SendError(translation("cmd.help.notvalidcommand",args[0]));
         return false;
+        
     }
 }

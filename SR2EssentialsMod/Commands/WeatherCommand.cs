@@ -7,9 +7,6 @@ public class WeatherCommand : SR2Command
 {
     public override string ID => "weather";
     public override string Usage => "weather <action> <action> <action>";
-    public override string Description => "Manage the weather.";
-    public override string ExtendedDescription =>
-        "Allows you to start/stop weathers as well as to view every weather.";
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -33,11 +30,11 @@ public class WeatherCommand : SR2Command
     
     public override bool Execute(string[] args)
     {
-        if (args == null) return SendUsage();
+        if (!args.IsBetween(0,3)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         
         WeatherDirector weatherDirector = Get<WeatherDirector>("WeatherVFX");
-        if (weatherDirector == null) { SendError("An error occured, cannot find WeatherDirector!"); return false; }
+        if (weatherDirector == null) return SendError(translation("cmd.weather.nodirector")); 
 
         switch (args.Length)
         {
@@ -46,17 +43,13 @@ public class WeatherCommand : SR2Command
                 {
                     var stateNames = "";
                     foreach (var state in weatherStateDefinitions) stateNames += $"\n{state.GetName()}";
-                    SendMessage($"All weathers are:${stateNames}");
+                    SendMessage(translation("cmd.weather.successlist",stateNames));
                     return true;
                 }
 
-                if (args[0] == "modify")
-                {
-                    SendError("'modify' requires more arguments!");
-                    return false;
-                }
-                SendError(args[0] +" is not a valid argument!");
-                return false;
+                if (args[0] == "modify") return SendError(translation("cmd.weather.requiresmore",args[0]));
+                
+                return SendError(translation("cmd.weather.notvalidargument",args[0]));
             case 2:
                 if (args[0] == "list")
                 {
@@ -66,44 +59,38 @@ public class WeatherCommand : SR2Command
                         var states = weatherDirector._runningStates;
                         var stateNames = "";
                         foreach (var state in states) stateNames += $"\n{state.GetName()}";
-                        SendMessage($"Running weathers are:${stateNames}");
+                        SendMessage(translation("cmd.weather.successlistrunning",stateNames));
                         return true;
                     }
                     if (args[1] == "change")
                     {
                         var stateNames = "";
                         foreach (var state in weatherStateDefinitions) stateNames += $"\n{state.GetName()}";
-                        SendMessage($"All weathers are:${stateNames}");
+                        SendMessage(translation("cmd.weather.successlist",stateNames));
                         return true;
                     }
-                    SendError(args[1] +" is not a valid argument!");
-                    return false;
+                    return SendError(translation("cmd.weather.notvalidargument",args[1]));
                 }
                 if (args[0] == "modify")
                 {
                     
                     WeatherStateDefinition def = getWeatherStateByName(args[1]);
-                    if (def == null) { SendError($"The weather {args[1]} doesn't exist!"); return false; }
+                    if (def == null) return SendError(translation("cmd.error.notvalidweather",args[1])); 
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
-                    if(isRunning) SendMessage($"The weather \"{def.name.Replace(" ", "")}\" is currently running!");
-                    else SendMessage($"The weather \"{def.name.Replace(" ", "")}\" is currently not running!");
+                    if(isRunning) SendMessage( translation("cmd.weather.currentlyrunning",$"\"{def.name.Replace(" ", "")}\""));
+                    else SendMessage( translation("cmd.weather.currentlynotrunning",$"\"{def.name.Replace(" ", "")}\""));
                     
                     return true;
                 }
-                SendError(args[0] +" is not a valid argument!");
-                return false;
+                return SendError(translation("cmd.weather.notvalidargument",args[0]));
             case 3:
-                if (args[0] == "list")
-                {
-                    SendError("'list' requires less arguments!");
-                    return false;
-                }
+                if (args[0] == "list") return SendError(translation("cmd.weather.requiresless",args[0]));
                 if (args[0] == "modify")
                 {
                     
                     WeatherStateDefinition def = getWeatherStateByName(args[1]);
-                    if (def == null) { SendError($"The weather {args[1]} doesn't exist!"); return false; }
+                    if (def == null) return SendError(translation("cmd.error.notvalidweather", args[1]));
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
                     
@@ -111,25 +98,25 @@ public class WeatherCommand : SR2Command
                     {
                         if (isRunning)
                         {
-                            SendMessage($"The weather \"{def.name.Replace(" ", "")}\" is already running!");
+                            SendMessage( translation("cmd.weather.alreadyrunning",$"\"{def.name.Replace(" ", "")}\""));
                             return true;
                         }
                         
                         var param = new WeatherModel.ZoneWeatherParameters() { WindDirection = new Vector3(45f, 0, 30f) };
                         weatherDirector.RunState(def.Cast<IWeatherState>(), param);
-                        SendMessage($"Successfully started weather \"{def.name.Replace(" ", "")}\"");
+                        SendMessage( translation("cmd.weather.successstart",$"\"{def.name.Replace(" ", "")}\""));
                         return true;
                     }
                     if (args[2] == "stop")
                     {
                         if (!isRunning)
                         {
-                            SendMessage($"The weather \"{def.name.Replace(" ", "")}\" is not running!");
+                            SendMessage( translation("cmd.weather.alreadynotrunning",$"\"{def.name.Replace(" ", "")}\""));
                             return true;
                         }
                         var param = new WeatherModel.ZoneWeatherParameters() { WindDirection = new Vector3(45f, 0, 30f) };
                         weatherDirector.StopState(def.Cast<IWeatherState>(), param);
-                        SendMessage($"Successfully stopped weather \"{def.name.Replace(" ", "")}\"");
+                        SendMessage( translation("cmd.weather.successstop",$"\"{def.name.Replace(" ", "")}\""));
                         return true;
                     }
                     if (args[2] == "toggle")
@@ -138,21 +125,19 @@ public class WeatherCommand : SR2Command
                         if (isRunning)
                         {
                             weatherDirector.StopState(def.Cast<IWeatherState>(), param);
-                            SendMessage($"Successfully stopped weather \"{def.name.Replace(" ", "")}\"");
+                            SendMessage( translation("cmd.weather.successstop",$"\"{def.name.Replace(" ", "")}\""));
                         }
                         else
                         {
                             weatherDirector.RunState(def.Cast<IWeatherState>(), param);
-                            SendMessage($"Successfully started weather \"{def.name.Replace(" ", "")}\"");
+                            SendMessage( translation("cmd.weather.successstart",$"\"{def.name.Replace(" ", "")}\""));
                         }
                         return true;
                     }
                     
-                    SendError(args[2] +" is not a valid argument!");
-                    return false;
+                    return SendError(translation("cmd.weather.notvalidargument",args[2]));
                 }
-                SendError(args[0] +" is not a valid argument!");
-                return false;
+                return SendError(translation("cmd.weather.notvalidargument",args[0]));
             default:
                 return SendUsage();
         }

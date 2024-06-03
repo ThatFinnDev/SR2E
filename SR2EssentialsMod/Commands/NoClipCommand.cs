@@ -6,7 +6,6 @@ namespace SR2E.Commands
     {
         public override string ID => "noclip";
         public override string Usage => "noclip";
-        public override string Description => "Toggles noclip";
         public static void RemoteExc(bool n)
         {
             if (n)
@@ -19,17 +18,22 @@ namespace SR2E.Commands
 
         public override bool Execute(string[] args)
         {
-            if (args != null) return SendUsage();
+            if (!args.IsBetween(0,0)) return SendNoArguments();
             try
             {
                 if (!SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>())
                 {
                     SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
-                    SR2EConsole.SendMessage("FYI: Controller input for noclip doesn't work yet!");
                     SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
+                    SR2EConsole.SendWarning(translation("cmd.noclip.info"));
+                    SendMessage(translation("cmd.noclip.success"));
                 }
                 else
+                {
+                    
                     SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
+                    SendMessage(translation("cmd.noclip.success2"));
+                }
                 return true;
             }
             catch { return false; }

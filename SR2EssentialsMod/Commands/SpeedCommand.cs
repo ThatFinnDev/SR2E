@@ -8,7 +8,6 @@ public class SpeedCommand : SR2Command
 {
     public override string ID { get; } = "speed";
     public override string Usage { get; } = "speed <speed>";
-    public override string Description { get; } = "Sets the player speed";
 
     private static float baseMaxAirSpeed = 10;
     private static float baseAccAirSpeed = 60;
@@ -19,7 +18,7 @@ public class SpeedCommand : SR2Command
     {
         if (parameters == null)
             parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
-
+        if (parameters == null) return;
         parameters._maxGroundedMoveSpeed = val * baseMaxGroundSpeed;
         parameters._maxAirMoveSpeed = val * baseMaxAirSpeed;
         parameters._airAccelerationSpeed = val * baseAccAirSpeed;
@@ -27,18 +26,15 @@ public class SpeedCommand : SR2Command
 
     public override bool Execute(string[] args)
     {
-        if (args == null || args.Length != 1) return SendUsage();
+        if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
         if (parameters == null)
             parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+        if (parameters == null)
+            return SendError("cmd.error.srccnull");
         float speedValue = 0;
-        if (!float.TryParse(args[0], out speedValue))
-        {
-            SendError(args[1] + " is not a valid float!");
-            return false;
-        }
-
+        if (!float.TryParse(args[0], out speedValue)) return SendError(translation("cmd.error.notvalidfloat",args[0]));
         try
         {
 
@@ -48,13 +44,12 @@ public class SpeedCommand : SR2Command
 
             SR2ESavableDataV2.Instance.playerSavedData.speed = speedValue;
 
-            SendMessage($"Speed set to {args[0]}");
+            SendMessage(translation("cmd.speed.success",args[0]));
             return true;
         }
         catch
         {
-            SendError("An unknown error occured!");
-            return false;
+            return SendError(translation("cmd.speed.unknownerror"));
         }
     }
 }
