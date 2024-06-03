@@ -82,10 +82,10 @@ internal class SR2EDebugDirector : MonoBehaviour
 		
 		if (Keyboard.current.digit0Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("giveupgrades *", true);
 		if (Keyboard.current.digit7Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("infenergy true", true);
-		if (Keyboard.current.digit8Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("invincible", true);
+		if (Keyboard.current.digit8Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("infhealth", true);
 		if (Keyboard.current.digit9Key.wasPressedThisFrame) GameContext.Instance.AutoSaveDirector.SaveGame();
 		if (Keyboard.current.kKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("clearinv", true);
-		if (Keyboard.current.lKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("refillslots", true);
+		if (Keyboard.current.lKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("refillinv", true);
 		if (Keyboard.current.nKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("noclip", true);
 		if (Keyboard.current.numpadPlusKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks 1000", true);
 		if (Keyboard.current.numpadMinusKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks -1000", true);
