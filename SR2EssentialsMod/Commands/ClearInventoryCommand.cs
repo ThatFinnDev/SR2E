@@ -37,12 +37,9 @@ public class ClearInventoryCommand : SR2Command
         }
 
         bool isUnlocked = SceneContext.Instance.PlayerState.Ammo.Slots[slotToClear].IsUnlocked;
-        if (!isUnlocked)
-        {
-            
-            SendMessage(translation("cmd.clearinv.error.slotnotunlocked",slotToClear+1));
-            return false;
-        }
+        if (!isUnlocked) return SendError(translation("cmd.clearinv.error.slotnotunlocked",slotToClear+1));
+           
+        
         SceneContext.Instance.PlayerState.Ammo.Slots[slotToClear].Clear();
         SendMessage(translation("cmd.clearinv.successsingle",slotToClear+1));
         return true;
