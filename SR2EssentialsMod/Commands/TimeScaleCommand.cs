@@ -24,7 +24,7 @@ internal class TimeScaleCommand : SR2Command
 
         SceneContext.Instance.TimeDirector._timeFactor = speed;
         Time.timeScale = speed;
-        SendMessage($"Timescale is now: {speed}");
+        SendMessage(translation("cmd.timescale.sucess",speed));
         return true;
     }
 }

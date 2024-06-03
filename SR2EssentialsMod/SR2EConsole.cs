@@ -447,6 +447,7 @@ namespace SR2E
             RegisterCommand(new TimeScaleCommand());
             RegisterCommand(new InfiniteHealthCommand());
             RegisterCommand(new InfiniteEnergyCommand());
+            RegisterCommand(new ScaleCommand());
             RegisterCommands(new SR2Command[]{new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
