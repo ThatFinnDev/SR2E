@@ -284,11 +284,11 @@ namespace SR2E
 
         internal static void SaveDirectorLoaded()
         {
-            LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
+            LocalizedString label = AddTranslation(translation("buttons.mods.label"), "b.button_mods_sr2e", "UI");
             new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
             new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
             
-            if (devMode) new CustomPauseMenuButton( AddTranslation("Debug Player", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
+            if (devMode) new CustomPauseMenuButton( AddTranslation(translation("buttons.debugplayer.label"), "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
 
         }
         public override void OnSceneWasInitialized(int buildindex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = true; }
