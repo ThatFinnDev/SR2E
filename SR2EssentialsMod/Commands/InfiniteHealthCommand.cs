@@ -18,12 +18,16 @@ public class InfiniteHealthCommand : SR2Command
         if (infHealth)
         {
             infHealth = false;
+            if (healthMeter == null)
+                healthMeter = Get<HealthMeter>("Health Meter");
             healthMeter.gameObject.active = true;
             SendMessage(translation("cmd.infhealth.successnolonger"));
         }
         else
         {
-            infHealth = true;
+            infHealth = true;;
+            if (healthMeter == null)
+                healthMeter = Get<HealthMeter>("Health Meter");
             healthMeter.gameObject.active = false;
             SendMessage(translation("cmd.infhealth.success"));
         }
@@ -37,17 +41,12 @@ public class InfiniteHealthCommand : SR2Command
     }
 
     static bool infHealth = false;
-    static HealthMeter _healthMeter;
 
-    static HealthMeter healthMeter
+    private static HealthMeter healthMeter;
+    public override void OnUICoreLoad()
     {
-        get
-        {
-            if (_healthMeter == null) _healthMeter = Get<HealthMeter>("Health Meter");
-            return _healthMeter;
-        }
+        healthMeter = Get<HealthMeter>("Health Meter");
     }
-
     [HarmonyPatch(typeof(PlayerModel), nameof(PlayerModel.LoseHealth))]
     public class PlayerModelLoseHealthPatch
     {
