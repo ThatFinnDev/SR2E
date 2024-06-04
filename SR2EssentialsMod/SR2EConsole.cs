@@ -202,7 +202,7 @@ namespace SR2E
         {
             if (commands.ContainsKey(cmd.ID.ToLowerInvariant()))
             {
-                SendMessage($"Trying to register command with id '<color=white>{cmd.ID.ToLowerInvariant()}</color>' but the ID is already registered!");
+                SendMessage(translation("cmd.alreadyregistered",cmd.ID.ToLowerInvariant()));
                 return false;
             }
             commands.Add(cmd.ID.ToLowerInvariant(), cmd);
@@ -243,7 +243,7 @@ namespace SR2E
                 commands.Remove(cmd.ToLowerInvariant());
                 return true;
             }
-            SendMessage($"Trying to unregister command with id '<color=white>{cmd.ToLowerInvariant()}</color>' but the ID is not registered!");
+            SendMessage(translation("cmd.notregistered",cmd.ToLowerInvariant()));
             return false;
         }
         /// <summary>
@@ -307,7 +307,7 @@ namespace SR2E
                     else
                         if (isOpen)
                             if (!SR2EModMenu.isOpen)
-                                SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
+                                SendError(translation("cmd.unknowncommand"));
                 }
             }
                 

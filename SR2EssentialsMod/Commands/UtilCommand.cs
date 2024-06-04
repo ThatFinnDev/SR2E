@@ -6,515 +6,670 @@ using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
 using Il2CppMonomiPark.SlimeRancher.World;
-namespace SR2E.Commands
+namespace SR2E.Commands;
+
+public class UtilCommand : SR2Command
 {
-    internal class UtilCommand : SR2Command
+    public override string ID => "util";
+    public override string Usage => "util <type> <parameter [value] [value2]";
+
+    public const float playerColliderHeightBase = 2f;
+    public const float playerColliderRadBase = 0.6f;
+
+    readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER", "GADGET" };
+    readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
+    readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR", "USE_GRAVITY" };
+    readonly List<string> GameParam = new List<string>() { "ACTOR_TYPE" };
+    readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
+    readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION", "SCALE" };
+    public override bool Execute(string[] args)
     {
-        public override string ID => "util";
-        public override string Usage => "util <args>";
-
-        public const float playerColliderHeightBase = 2f;
-        public const float playerColliderRadBase = 0.6f;
-
-        readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER", "GADGET" };
-        readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
-        readonly List<string> GameParam = new List<string>() { "DISABLE_ACTOR_TYPE", "FAST_QUIT" }; 
-        readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR", "ZERO_GRAV", "CUSTOM_SCALE_XYZ" };
-        readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
-        readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION", "SCALE" };
-
-
-        internal static Gadget RaycastForGadget()
+        if (!args.IsBetween(2, 4)) return SendUsage();
+        if (!inGame) return SendLoadASaveFirst();
+        switch (args[0])
         {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+            case "GORDO": return ExcGordo(args);
+            case "SLIME": return ExcSlime(args);
+            case "GAME": return ExcGame(args);
+            case "PLAYER": return ExcPlayer(args);
+            case "GADGET": return ExcGadget(args);
+            default: return SendError(translation("cmd.util.invalidtype",args[0]));
+        }
+    }
+
+    public bool ExcGordo(string[] cmd)
+    {
+        switch (cmd[1])
+        {
+            case "BASE_SIZE":
+                if (cmd.Length == 2) return GordoSize(true);
+                return GordoSize(false, cmd[2]);
+            case "EATEN_COUNT":
+                if (cmd.Length == 2) return GordoEatenAmount(true);
+                return GordoEatenAmount(false, cmd[2]);
+            case "PRINT_ID":
+                return PrintGordoID();
+            default: return SendError(translation("cmd.util.invalidparameter",cmd[1]));
+        }
+    }
+    public bool ExcSlime(string[] cmd)
+    {
+        switch (cmd[1])
+        {
+            case "SLIME_HUNGER":
+                if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.HUNGER);
+                return SlimeEmotion(false, SlimeEmotions.Emotion.HUNGER, cmd[2]);
+            case "SLIME_AGI":
+                if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.AGITATION);
+                return SlimeEmotion(false, SlimeEmotions.Emotion.AGITATION, cmd[2]);
+            case "SLIME_FEAR":
+                if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.FEAR);
+                return SlimeEmotion(false, SlimeEmotions.Emotion.FEAR, cmd[2]);
+            case "USE_GRAVITY":
+                if (cmd.Length == 2) return ToggleActorZeroGrav(true);
+                return ToggleActorZeroGrav(false,cmd[2]);
+        }
+
+        return false;
+    }
+    public bool ExcGame(string[] cmd)
+    {
+        switch (cmd[1])
+        {
+            case "ACTOR_TYPE":
+                if (cmd.Length == 2) return SendError(translation("cmd.weather.requiresmore", "ACTOR_TYPE"));
+                if (cmd.Length == 3) return ToggleActorType(true,cmd[2]);
+                return ToggleActorType(false,cmd[2],cmd[3]);
+            default: return false;
+        }
+    }
+    public bool ExcPlayer(string[] cmd)
+    {
+        switch (cmd[1])
+        {
+            case "CUSTOM_SIZE":
+                if (cmd.Length > 2) return PlayerSize(false, cmd[2]);
+                return PlayerSize(true);
+            case "GRAVITY_LEVEL":
+                if (cmd.Length > 2) return PlayerGravity(false, cmd[2]);
+                return PlayerGravity(true);
+            case "VAC_MODE":
+                if (cmd.Length > 2) return PlayerVacModeSet(false,silent,cmd[2]);
+                return PlayerVacModeSet(true,silent);
+            default: return false;
+        }
+    }
+    internal static Gadget RaycastForGadget()
+    {
+        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+        {
+            Transform currentParent = hit.collider.transform.parent;
+
+            for (int i = 0; i < 10 && currentParent != null; i++)
             {
-                Transform currentParent = hit.collider.transform.parent;
+                Gadget gadgetComponent = currentParent.GetComponent<Gadget>();
 
-                for (int i = 0; i < 10 && currentParent != null; i++)
+                if (gadgetComponent != null)
                 {
-                    Gadget gadgetComponent = currentParent.GetComponent<Gadget>();
-
-                    if (gadgetComponent != null)
-                    {
-                        return gadgetComponent;
-                    }
-
-                    currentParent = currentParent.parent;
+                    return gadgetComponent;
                 }
 
-                return null;
+                currentParent = currentParent.parent;
             }
+
             return null;
         }
-        public void SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, float val = 1f)
+
+        return null;
+    }
+
+    public bool SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, string valString = "1f")
+    {
+        float val = -1;
+        try { val = float.Parse(valString); }
+        catch { return SendError(translation("cmd.error.notvalidfloat",valString)); }
+        if (val <= 0) return SendError(translation("cmd.error.notfloatabove",valString,0));
+        
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+            var slime = hit.collider.gameObject.GetComponent<SlimeEmotions>();
+            if (slime != null)
             {
-                var slime = hit.collider.gameObject.GetComponent<SlimeEmotions>();
-                if (slime != null)
+                var emotions = new Dictionary<SlimeEmotions.Emotion, float>()
                 {
-                    var emotions = new Dictionary<SlimeEmotions.Emotion, float>()
+                    { SlimeEmotions.Emotion.HUNGER, slime._model.emotionHunger.CurrVal },
+                    { SlimeEmotions.Emotion.AGITATION, slime._model.emotionAgitation.CurrVal },
+                    { SlimeEmotions.Emotion.FEAR, slime._model.emotionFear.CurrVal }
+                };
+                if (isGet)
+                {
+                    switch (emotion)
                     {
-                        { SlimeEmotions.Emotion.HUNGER, slime._model.emotionHunger.CurrVal },
-                        { SlimeEmotions.Emotion.AGITATION, slime._model.emotionAgitation.CurrVal },
-                        { SlimeEmotions.Emotion.FEAR, slime._model.emotionFear.CurrVal }
-                    };
-                    if (isGet)
-                    {
-                        SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is {emotions[emotion]}");
-                        return;
+                        case SlimeEmotions.Emotion.FEAR: SendMessage(translation("cmd.util.emotion.fear.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
+                        case SlimeEmotions.Emotion.HUNGER: SendMessage(translation("cmd.util.emotion.hunger.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
+                        case SlimeEmotions.Emotion.AGITATION: SendMessage(translation("cmd.util.emotion.agitation.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
                     }
-                    else
-                    {
-                        if (emotion == SlimeEmotions.Emotion.HUNGER)
-                        {
-                            slime._model.emotionHunger.CurrVal = val;
-                            SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
-                        }
-                        if (emotion == SlimeEmotions.Emotion.AGITATION)
-                        {
-                            slime._model.emotionAgitation.CurrVal = val;
-                            SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
-                        }
-                        if (emotion == SlimeEmotions.Emotion.FEAR)
-                        {
-                            slime._model.emotionFear.CurrVal = val;
-                            SendMessage($"The {slime.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s {emotion.ToString().ToLower()} is now {val}");
-                        }
-
-                    }
+                    return true;
                 }
-            }
-        }
-        public void ToggleActorZeroGrav()
-        {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
-            {
-                var actor = hit.collider.gameObject.GetComponent<Vacuumable>();
-                if (actor != null)
+               
+                if (emotion == SlimeEmotions.Emotion.HUNGER) 
                 {
-                    actor.ignoresGravity = !actor.ignoresGravity;
-                    var logString = "NULL";
-                    if (actor.ignoresGravity) logString = "deactivated";
-                    else logString = "activated";
-                    SendMessage($"The {actor.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s gravity is now {logString}");
+                    slime._model.emotionHunger.CurrVal = val;
+                    SendMessage(translation("cmd.util.emotion.hunger.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
+                    return true;
                 }
-            }
-        }
-
-        public void SetActorScale(float x, float y, float z)
-        {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
-            {
-                var actor = hit.collider.gameObject.GetComponent<Vacuumable>();
-                if (actor != null)
+                if (emotion == SlimeEmotions.Emotion.AGITATION)
                 {
-                    actor.transform.localScale = new Vector3(x, y, z);
-
-                    SendMessage($"The {actor.gameObject.GetComponent<Identifiable>().identType.localizedName.GetLocalizedString().ToLower()}\'s scale vector is now {x}, {y}, {z}");
+                    slime._model.emotionAgitation.CurrVal = val;
+                    SendMessage(translation("cmd.util.emotion.agitation.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
+                    return true;
+                    
                 }
-            }
-        }
 
-        public bool ExcSlime(string[] cmd)
-        {
-            switch (cmd[1])
-            {
-                case"SLIME_HUNGER":
-                    if (cmd.Length == 2) SlimeEmotion(true, SlimeEmotions.Emotion.HUNGER);
-                    else SlimeEmotion(false, SlimeEmotions.Emotion.HUNGER, float.Parse(cmd[2]));
-                    return true;
-                case"SLIME_AGI":
-                    if (cmd.Length == 2) SlimeEmotion(true, SlimeEmotions.Emotion.AGITATION);
-                    else SlimeEmotion(false, SlimeEmotions.Emotion.AGITATION, float.Parse(cmd[2]));
-                    return true;
-                case"SLIME_FEAR":
-                    if (cmd.Length == 2) SlimeEmotion(true, SlimeEmotions.Emotion.FEAR);
-                    else SlimeEmotion(false, SlimeEmotions.Emotion.FEAR, float.Parse(cmd[2]));
-                    return true;
-                case"ZERO_GRAV":
-                    ToggleActorZeroGrav();
-                    return true;
-                case"CUSTOM_SCALE_XYZ":
-                    SetActorScale(float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
-                    return true;
-            }
-            return false;
-        }
+                slime._model.emotionFear.CurrVal = val; 
+                SendMessage(translation("cmd.util.emotion.fear.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
+                return true;
 
-        public void GordoSize(bool isGet, float size = 4)
+
+            }
+            return SendError(translation("cmd.error.notlookingatvalidobject"));
+        }
+        return SendError(translation("cmd.error.notlookingatanything"));
+        
+    }
+
+    public bool ToggleActorZeroGrav(bool isGet, string gravity = "true")
+    {
+        bool newGravityState = false;
+        string boolToParse = gravity.ToLower();
+        if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",gravity));
+        if (boolToParse == "true")  newGravityState = true;
+        Camera cam = Camera.main;
+        if (cam == null)  return SendError(translation("cmd.error.nocamera"));
+        
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+            var actor = hit.collider.gameObject.GetComponent<Vacuumable>();
+            if (actor != null)
             {
-                var gordo = hit.collider.gameObject.GetComponent<GordoEat>();
-                if (gordo != null)
+                if (isGet)
                 {
-                    if (isGet)
-                    {
-                        SendMessage($"The {gordo.SlimeDefinition.name.ToLower()} gordo\'s base size is {gordo._initScale}");
-                        return;
-                    }
-                    else
-                    {
-                        gordo._initScale = size;
-                        SendMessage($"The {gordo.SlimeDefinition.name} Gordo\'s size is now {size}");
-                    }
-                }
-            }
-        }
-        public void GordoEatenAmount(bool isGet, int amount = 49)
-        {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
-            {
-                var gordo = hit.collider.gameObject.GetComponent<GordoEat>();
-                if (gordo != null)
-                {
-                    if (isGet)
-                    {
-                        SendMessage($"The amount of food the {gordo.SlimeDefinition.name.ToLower()} gordo ate is {gordo.GetEatenCount()}");
-                        return;
-                    }
-                    else
-                    {
-                        gordo.SetEatenCount(amount);
-                        SendMessage($"The {gordo.SlimeDefinition.name} Gordo\'s eaten count is now {amount}");
-                    }
-                }
-            }
-        }
-        public void PrintGordoID()
-        {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
-            {
-                var gordo = hit.collider.gameObject.GetComponent<GordoEat>();
-                if (gordo != null)
-                {
-                    SendMessage($"This {gordo.SlimeDefinition.name.ToLower()} gordo\'s ID is {gordo._id}");
-                }
-            }
-        }
-        public bool ExcGordo(string[] cmd)
-        {
-            switch (cmd[1])
-            {
-                case"BASE_SIZE":
-                    if (cmd.Length == 2) GordoSize(true);
-                    else GordoSize(false, float.Parse(cmd[2]));
+                    if(actor.ignoresGravity) SendMessage(translation("cmd.util.actorgravity.showenable",actor.identifiable.identType.getName()));
+                    else SendMessage(translation("cmd.util.actorgravity.showdisable",actor.identifiable.identType.getName()));
                     return true;
-                case"EATEN_COUNT":
-                    if (cmd.Length == 2) GordoEatenAmount(true);
-                    else GordoEatenAmount(false, int.Parse(cmd[2]));
-                    return true;
-                case"PRINT_ID":
-                    PrintGordoID();
-                    return true;
-                default: return false;
-            }
-        }
-
-        public void DisableIdent(string identName)
-        {
-            var type = getGadgetDefByName(identName);
-            MelonLogger.Warning(type.ToString() + "DEBUG LOG");
-            foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
-            {
-                if (actor.identType == type)
-                {
-                    MelonLogger.Msg("DEBUG");
-                    actor.gameObject.AddComponent<ObjectBlocker>();
                 }
+                actor.ignoresGravity = !newGravityState;
+                if(actor.ignoresGravity) SendMessage(translation("cmd.util.actorgravity.editenable",actor.identifiable.identType.getName()));
+                else SendMessage(translation("cmd.util.actorgravity.editdisable",actor.identifiable.identType.getName()));
+                return true;
             }
+            return SendError(translation("cmd.error.notlookingatvalidobject"));
+        }
+        return SendError(translation("cmd.error.notlookingatanything"));
+    }
 
+
+    public static LayerMask maskForGordo
+    {
+        get
+        {
+            LayerMask mask = ~0;
+            mask &= ~(1 << Layers.GadgetPlacement);
+            return mask;
+        }
+    }
+
+    public bool GordoSize(bool isGet, string sizeString = "1f")
+    {
+        
+        float size = -1;
+        try { size = float.Parse(sizeString); }
+        catch { return SendError(translation("cmd.error.notvalidfloat",sizeString)); }
+        if (size <= 0) return SendError(translation("cmd.error.notfloatabove",sizeString,0));
+        
+        Camera cam = Camera.main;
+        if (cam == null)  return SendError(translation("cmd.error.nocamera"));
+
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,maskForGordo))
+        {
+            GordoIdentifiable gordo = hit.collider.gameObject.GetComponent<GordoIdentifiable>();
+            GordoEat eat = hit.collider.gameObject.GetComponent<GordoEat>();
+            if (gordo != null)
+            {
+                if (isGet)
+                {
+                    SendMessage(translation("com.util.gordosize.show",gordo.identType.getName(),eat._initScale/4));
+                    return true;
+                }
+                eat._initScale = size*4;
+                SendMessage(translation("com.util.gordosize.edit",gordo.identType.getName(),size));
+                return true;
+                
+            }
+            return SendError(translation("cmd.error.notlookingatvalidobject"));
+        }
+        return SendError(translation("cmd.error.notlookingatanything"));
+    }
+
+    public bool GordoEatenAmount(bool isGet, string amountString = "49")
+    {
+        int amount = -1;
+        try { amount = int.Parse(amountString); }
+        catch { return SendError(translation("cmd.error.notvalidint",amountString)); }
+        if (amount <= 0) return SendError(translation("cmd.error.notintabove",amountString,0));
+        
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,maskForGordo))
+        {
+            GordoIdentifiable gordo = hit.collider.gameObject.GetComponent<GordoIdentifiable>();
+            GordoEat eat = hit.collider.gameObject.GetComponent<GordoEat>();
+            if (gordo != null)
+            {
+                if (isGet)
+                {
+                    SendMessage(translation("com.util.gordosize.show",gordo.identType.getName(),eat.GetEatenCount()));
+                    return true;
+                }
+                eat.SetEatenCount(amount); 
+                SendMessage(translation("com.util.gordosize.edit",gordo.identType.getName(),amount));
+
+                return true;
+            }
+            return SendError(translation("cmd.error.notlookingatvalidobject"));
+        }
+        return SendError(translation("cmd.error.notlookingatanything"));
+    }
+
+    public bool PrintGordoID()
+    {
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+        {
+            var gordo = hit.collider.gameObject.GetComponent<GordoEat>();
+            if (gordo != null)
+            {
+                SendMessage($"This {gordo.SlimeDefinition.name.ToLower()} gordo\'s ID is {gordo._id}");
+                return true;
+            }
+            return SendError(translation("cmd.error.notlookingatvalidobject"));
+        }
+        return SendError(translation("cmd.error.notlookingatanything"));
+    }
+
+    public List<string> disabledActors = new List<string>();
+    public bool ToggleActorType(bool isGet, string identName, string action = ".") 
+    {
+        IdentifiableType type = getIdentByName(identName);
+        if (type == null) return SendError(translation("cmd.error.notvalididenttype", identName));
+        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));
+        bool enabled = !disabledActors.Contains(type.ReferenceId);
+        if (isGet)
+        {
+            if(enabled) SendMessage(translation("cmd.util.actor.showenable",type.getName()));
+            else SendMessage(translation("cmd.util.actor.showdisable",type.getName()));
+            return true;
         }
 
-        public bool ExcGame(string[] cmd)
+        Trool trool = Trool.False;
+        string boolToParse = action.ToLower();
+        if (boolToParse != "true" && boolToParse != "false" && boolToParse != "toggle") return SendError(translation("cmd.error.notvalidtrool",action));
+        if (boolToParse == "true") trool = Trool.True;
+        if (boolToParse == "toggle") trool = Trool.Toggle;
+        switch (trool)
         {
-            switch (cmd[1])
-            {
-                case"DISABLE_ACTOR_TYPE": DisableIdent(cmd[2]); return true;
-                case"FAST_QUIT": Application.Quit(); return true;
-                default: return false;
-            }
+            case Trool.False:
+                if (!enabled) return SendError(translation("cmd.util.actor.alreadydisabled", type.getName()));
+                disabledActors.Add(type.ReferenceId);
+                foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
+                    if (actor.identType == type) actor.gameObject.AddComponent<ObjectBlocker>();
+                SendMessage(translation("cmd.util.actor.editdisable",type.getName()));
+                return true;
+            case Trool.True:
+                if (enabled) return SendError(translation("cmd.util.actor.alreadyenabled", type.getName()));
+                disabledActors.Remove(type.ReferenceId);
+                foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
+                    if (actor.identType == type) actor.gameObject.RemoveComponent<ObjectBlocker>();
+                SendMessage(translation("cmd.util.actor.editenable",type.getName()));
+                return true;
+            case Trool.Toggle:
+                if (enabled)
+                {
+                    disabledActors.Add(type.ReferenceId);
+                    foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
+                        if (actor.identType == type) actor.gameObject.AddComponent<ObjectBlocker>();
+                    SendMessage(translation("cmd.util.actor.editdisable",type.getName()));
+                    return true;
+                }
+                disabledActors.Remove(type.ReferenceId);
+                foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
+                    if (actor.identType == type) actor.gameObject.RemoveComponent<ObjectBlocker>();
+                SendMessage(translation("cmd.util.actor.editenable",type.getName()));
+                return true;
+        }
+        return false;
+
+    }
+
+
+    public bool PlayerSize(bool isGet, string sizeString = "1")
+    {
+        if (isGet)
+        {
+            SendMessage(translation("cmd.util.player.size.show",SceneContext.Instance.player.transform.localScale.x));
+            return true;
         }
 
-        public void PlayerSize(bool isGet, float size = 1)
-        {
-            if (isGet)
-            {
-                SendMessage($"The current size of the player is {SceneContext.Instance.player.transform.localScale.x}");
-            }
-            else
-            {
-                SceneContext.Instance.player.transform.localScale = Vector3.one * size;
-                var KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>();
-                KCC.CapsuleHeight = playerColliderHeightBase * size;
-                KCC.CapsuleRadius = playerColliderRadBase * size;
-                SR2ESavableDataV2.Instance.playerSavedData.size = size;
-                SendMessage($"The new size of the player is {size}");
+        int size = -1;
+        try { size = int.Parse(sizeString); }
+        catch { return SendError(translation("cmd.error.notvalidint",sizeString)); }
+        if (size <= 0) return SendError(translation("cmd.error.notintabove",sizeString,0));
+        
+        
+        KinematicCharacterMotor KCC = null;
+        
+        try { KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>(); }
+        catch { return SendError(translation("cmd.error.kinematiccharactermotornull"));}
+        
+        SceneContext.Instance.player.transform.localScale = Vector3.one * size;
+        KCC.CapsuleHeight = playerColliderHeightBase * size;
+        KCC.CapsuleRadius = playerColliderRadBase * size;
+        SR2ESavableDataV2.Instance.playerSavedData.size = size;
+        SendMessage(translation("cmd.util.player.size.edit",size));
+        return true;
 
-            }
-        }
-        public static void RemoteExc_PlayerSize(float size)
+    }
+
+    public static void RemoteExc_PlayerSize(float size)
+    {
+        try
         {
+
             SceneContext.Instance.player.transform.localScale = Vector3.one * size;
             var KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>();
             KCC.CapsuleHeight = playerColliderHeightBase * size;
             KCC.CapsuleRadius = playerColliderRadBase * size;
         }
-        public void PlayerGravity(bool isGet, float level = 1)
+        catch { }
+    }
+
+    public bool PlayerGravity(bool isGet, string levelString = "1")
+    {
+        
+        SRCharacterController SRCC = null;
+        
+        try { SRCC = SceneContext.Instance.player.GetComponent<SRCharacterController>(); }
+        catch { return SendError(translation("cmd.error.srccnull"));}
+        if (isGet)
+        {
+            SendMessage(translation("cmd.util.player.gravity.show",SRCC._gravityMagnitude));
+            return true;
+        }
+        
+        float level = -1;
+        try { level = float.Parse(levelString); }
+        catch { return SendError(translation("cmd.error.notvalidfloat",levelString)); }
+        
+        SRCC._gravityMagnitude = new Il2CppSystem.Nullable<float>(level);
+        SR2ESavableDataV2.Instance.playerSavedData.gravityLevel = level;
+        SendMessage(translation("cmd.util.player.gravity.edit",level));
+        return true;
+
+    }
+
+    public void GadgetPos(bool isGet, float posX = 0, float posY = 0, float posZ = 0)
+    {
+        try
         {
             if (isGet)
             {
-                SendMessage($"The current gravity level of the player is {SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude}");
+                var gadget = RaycastForGadget();
+                if (gadget != null)
+                {
+                    var pos = gadget.transform.position;
+                    SendMessage(
+                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {pos.x}, {pos.y}, {pos.z}");
+                }
             }
             else
             {
-                SceneContext.Instance.player.GetComponent<SRCharacterController>()._gravityMagnitude = new Il2CppSystem.Nullable<float>(level);
-                SR2ESavableDataV2.Instance.playerSavedData.gravityLevel = level;
-                SendMessage($"The new gravity level of the player is {level}");
-
-            }
-        }
-
-        public void GadgetPos(bool isGet, float posX = 0, float posY = 0, float posZ = 0)
-        {
-            try
-            {
-                if (isGet)
+                var gadget = RaycastForGadget();
+                if (gadget != null)
                 {
-                    var gadget = RaycastForGadget();
-                    if (gadget != null)
-                    {
-                        var pos = gadget.transform.position;
-                        SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {pos.x}, {pos.y}, {pos.z}");
-                    }
-                }
-                else
-                {
-                    var gadget = RaycastForGadget();
-                    if (gadget != null)
-                    {
-                        var pos = new Vector3(posX, posY, posZ);
-                        gadget.transform.position = pos;
-                        gadget._model.lastPosition = pos;
-                        SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {posX}, {posY}, {posZ}");
-                    }
+                    var pos = new Vector3(posX, posY, posZ);
+                    gadget.transform.position = pos;
+                    gadget._model.lastPosition = pos;
+                    SendMessage(
+                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {posX}, {posY}, {posZ}");
                 }
             }
-            catch { }
-            
         }
-        public void GadgetScale(bool isGet, float scaleX = 0, float scaleY = 0, float scaleZ = 0)
+        catch
         {
-            try
+        }
+
+    }
+
+    public void GadgetScale(bool isGet, float scaleX = 0, float scaleY = 0, float scaleZ = 0)
+    {
+        try
+        {
+            if (isGet)
             {
-                if (isGet)
+                var gadget = RaycastForGadget();
+                if (gadget != null)
                 {
-                    var gadget = RaycastForGadget();
-                    if (gadget != null)
-                    {
-                        var scale = gadget.transform.localScale;
-                        SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {scale.x}, {scale.y}, {scale.z}");
-                    }
-                }
-                else
-                {
-                    var gadget = RaycastForGadget();
-                    if (gadget != null)
-                    {
-                        var scale = new Vector3(scaleX, scaleY, scaleZ);
-                        gadget.transform.localScale = scale;
-                        SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {scaleX}, {scaleY}, {scaleZ}");
-                    }
+                    var scale = gadget.transform.localScale;
+                    SendMessage(
+                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {scale.x}, {scale.y}, {scale.z}");
                 }
             }
-            catch { }
-            
-        }
-        public void GadgetRot(bool isGet, float rot = 0f)
-        {
-            try
+            else
             {
-                if (isGet)
+                var gadget = RaycastForGadget();
+                if (gadget != null)
                 {
-                    var gadget = RaycastForGadget();
-                    if (gadget != null)
-                    {
-                        var gadgetRot = gadget.transform.eulerAngles.y;
-                        SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is {gadgetRot}");
-                    }
-                }
-                else
-                {
-                    var gadget = RaycastForGadget();
-                    if (gadget != null)
-                    {
-                            gadget._model.eulerRotation = new Vector3(0, rot, 0);
-                            gadget.transform.rotation = Quaternion.EulerRotation(new Vector3(0, rot, 0));
-                            SendMessage($"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
-                    }
+                    var scale = new Vector3(scaleX, scaleY, scaleZ);
+                    gadget.transform.localScale = scale;
+                    SendMessage(
+                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {scaleX}, {scaleY}, {scaleZ}");
                 }
             }
-            catch { }
-            
         }
-        public bool ExcGadget(string[] cmd)
+        catch
         {
-            switch (cmd[1])
-            {
-                case"POSITION":
-                    if (cmd.Length > 2) GadgetPos(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
-                    else GadgetPos(true);
-                    return true;
-                case"SCALE":
-                    if (cmd.Length > 2) GadgetScale(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
-                    else GadgetScale(true);
-                    return true;
-                case"ROTATION":
-                    if (cmd.Length > 2) GadgetRot(false, float.Parse(cmd[2]));
-                    else GadgetRot(true);
-                    return true;
-                default: return false;
-            }
         }
 
-        
+    }
 
-        public static void PlayerVacModeSet(VacModes mode)
+    public void GadgetRot(bool isGet, float rot = 0f)
+    {
+        try
         {
-            if (mode == VacModes.NORMAL)
+            if (isGet)
             {
-                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
-                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
-                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-            }
-            else if (mode == VacModes.AUTO_VAC)
-            {
-                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
-                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.VAC;
-                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-            }
-            else if (mode == VacModes.AUTO_SHOOT)
-            {
-                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
-                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.SHOOT;
-                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-            }
-            else if (mode == VacModes.NONE)
-            {
-                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
-
-                MelonCoroutines.Start(waitForSeconds(1.5f));
-
-                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
-            }
-            else if (mode == VacModes.DRAG)
-            {
-                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
-
-                MelonCoroutines.Start(waitForSeconds(1.5f));
-
-                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
-                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-                SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>();
-            }
-            else if (mode == VacModes.LAUNCH)
-            {
-                SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
-
-                MelonCoroutines.Start(waitForSeconds(1.5f));
-
-                SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
-                SceneContext.Instance.Camera.AddComponent<FlingMode>();
-                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-            }
-            SR2ESavableDataV2.Instance.playerSavedData.vacMode = mode;
-        }
-
-        static System.Collections.IEnumerator waitForSeconds(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-        }
-
-        public bool ExcPlayer(string[] cmd)
-        {
-            switch (cmd[1])
-            {
-                case"CUSTOM_SIZE":
-                    if (cmd.Length > 2) PlayerSize(false, float.Parse(cmd[2]));
-                    else PlayerSize(true);
-                    return true;
-                case"GRAVITY_LEVEL":
-                    if (cmd.Length > 2) PlayerGravity(false, float.Parse(cmd[2]));
-                    else PlayerGravity(true);
-                    return true;
-                case"VAC_MODE":
-                    try { PlayerVacModeSet(Enum.Parse<VacModes>(cmd[2])); }catch { return false; } return true;
-                default: return false;
-            }
-        }
-        public override bool Execute(string[] args)
-        {
-            if (!inGame) return SendLoadASaveFirst();
-            switch (args[0])
-            {
-                case "GORDO": return ExcGordo(args);
-                case "SLIME": return ExcSlime(args);
-                case "GAME": return ExcGame(args);
-                case "PLAYER": return ExcPlayer(args);
-                case "GADGET": return ExcGadget(args);
-                default: return false;
-            }
-        }
-
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
-        {
-            if (argIndex == 0)
-                return TypeParam;
-            if (argIndex == 1)
-                switch (args[0])
+                var gadget = RaycastForGadget();
+                if (gadget != null)
                 {
-                    case "GORDO": return GordoParam;
-                    case "SLIME": return SlimeParam;
-                    case "GAME": return GameParam;
-                    case "PLAYER": return PlayerParam;
-                    case "GADGET": return GadgetParam;
-                    default: return null;
+                    var gadgetRot = gadget.transform.eulerAngles.y;
+                    SendMessage(
+                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is {gadgetRot}");
                 }
-            if (argIndex == 2)
-            {
-                if (args[0] == "PLAYER")
-                    if (args[1] == "VAC_MODE")
-                        return Enum.GetNames(typeof(VacModes)).ToList();
-                if (args[0] == "GAME")
-                    if (args[1] == "DISABLE_ACTOR_TYPE")
-                    {
-                        List<string> list = new List<string>();
-                        foreach (IdentifiableType type in identifiableTypes)
-                        {
-                            try
-                            {
-                                if (type.LocalizedName != null)
-                                {
-                                    string localizedString = type.LocalizedName.GetLocalizedString();
-                                    var s = localizedString.Replace(" ", "");
-                                    list.Add(s);
-                                }
-                            }
-                            catch { }
-
-                        }
-                        return list;
-                    }
-                
             }
-            return null;
+            else
+            {
+                var gadget = RaycastForGadget();
+                if (gadget != null)
+                {
+                    gadget._model.eulerRotation = new Vector3(0, rot, 0);
+                    gadget.transform.rotation = Quaternion.EulerRotation(new Vector3(0, rot, 0));
+                    SendMessage(
+                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
+                }
+            }
+        }
+        catch
+        {
+        }
+
+    }
+
+    public bool ExcGadget(string[] cmd)
+    {
+        switch (cmd[1])
+        {
+            case "POSITION":
+                if (cmd.Length > 2) GadgetPos(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
+                else GadgetPos(true);
+                return true;
+            case "SCALE":
+                if (cmd.Length > 2) GadgetScale(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
+                else GadgetScale(true);
+                return true;
+            case "ROTATION":
+                if (cmd.Length > 2) GadgetRot(false, float.Parse(cmd[2]));
+                else GadgetRot(true);
+                return true;
+            default: return false;
         }
     }
+
+
+    public static bool PlayerVacModeSet(bool isGet,bool silent,string modeString = ".")
+    {
+        if (isGet)
+        {
+            if(!silent) SR2EConsole.SendMessage(translation("cmd.util.vacmode.show",SR2ESavableDataV2.Instance.playerSavedData.vacMode.ToString().Replace("VacModes","")));
+            return true;
+        }
+        VacModes mode;
+        try { mode = Enum.Parse<VacModes>(modeString); }
+        catch { if (!silent) SR2EConsole.SendError(translation("cmd.error.notvalidvacmode", modeString)); return false; }
+        
+        
+        if (mode == VacModes.NORMAL)
+        {
+            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
+            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
+            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
+            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+        }
+        else if (mode == VacModes.AUTO_VAC)
+        {
+            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
+            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.VAC;
+            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
+            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+        }
+        else if (mode == VacModes.AUTO_SHOOT)
+        {
+            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
+            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.SHOOT;
+            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
+            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+        }
+        else if (mode == VacModes.NONE)
+        {
+            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
+
+            MelonCoroutines.Start(waitForSeconds(1.5f));
+
+            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
+            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
+        }
+        else if (mode == VacModes.DRAG)
+        {
+            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
+
+            MelonCoroutines.Start(waitForSeconds(1.5f));
+
+            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
+            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
+            SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>();
+        }
+        else if (mode == VacModes.LAUNCH)
+        {
+            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
+
+            MelonCoroutines.Start(waitForSeconds(1.5f));
+
+            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
+            SceneContext.Instance.Camera.AddComponent<FlingMode>();
+            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
+        }
+
+        SR2ESavableDataV2.Instance.playerSavedData.vacMode = mode;
+        if(!silent) SR2EConsole.SendMessage(translation("cmd.util.vacmode.success",mode.ToString().Replace("VacModes","")));
+        return true;
+    }
+
+    static System.Collections.IEnumerator waitForSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+    }
+
+
+
+
+    public override List<string> GetAutoComplete(int argIndex, string[] args)
+    {
+        if (argIndex == 0)
+            return TypeParam;
+        if (argIndex == 1)
+            switch (args[0])
+            {
+                case "GORDO": return GordoParam;
+                case "SLIME": return SlimeParam;
+                case "GAME": return GameParam;
+                case "PLAYER": return PlayerParam;
+                case "GADGET": return GadgetParam;
+                default: return null;
+            }
+
+        if (argIndex == 2)
+        {
+            if (args[0] == "PLAYER")
+                if (args[1] == "VAC_MODE")
+                    return Enum.GetNames(typeof(VacModes)).ToList();
+            if (args[0] == "GAME")
+                if (args[1] == "ACTOR_TYPE")
+                {
+                    List<string> list = new List<string>();
+                    foreach (IdentifiableType type in identifiableTypes)
+                    {
+                        try
+                        {
+                            if (type.LocalizedName != null)
+                            {
+                                string localizedString = type.LocalizedName.GetLocalizedString();
+                                var s = localizedString.Replace(" ", "");
+                                list.Add(s);
+                            }
+                        }
+                        catch
+                        {
+                        }
+
+                    }
+
+                    return list;
+                }
+
+        }
+        if (argIndex == 3)
+        {
+            if (args[0] == "GAME")
+                if (args[1] == "ACTOR_TYPE")
+                    return new List<string> { "true", "false", "toggle" };
+
+        }
+
+        return null;
+    }
 }
+
 
