@@ -12,7 +12,7 @@ public class BindCommand : SR2Command
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return getKeyListByPartialName(args[0]);
+            return getKeyListByPartialName(args[0],true);
         if (argIndex == 1)
         {
             List<string> list = new List<string>();

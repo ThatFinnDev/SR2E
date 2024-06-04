@@ -7,7 +7,7 @@ public class GiveGadgetCommand : SR2Command
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return getIdentListByPartialName(args == null ? null : args[0], false, true);
+            return getIdentListByPartialName(args == null ? null : args[0], false, true,true);
         if (argIndex == 1)
             return new List<string> { "1", "5", "10", "20", "30", "50" };
 

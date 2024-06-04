@@ -8,7 +8,7 @@ public class KillAllCommand : SR2Command
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return getIdentListByPartialName(args == null ? null : args[0], true, false);
+            return getIdentListByPartialName(args == null ? null : args[0], true, false,true);
         return null;
     }
     public override bool Execute(string[] args)
