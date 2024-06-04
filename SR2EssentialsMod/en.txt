@@ -229,6 +229,7 @@ cmd.timescale.description=Modifies game speed
 cmd.timescale.between=The scale has to be between $1 and $2!
 
 cmd.util.description=Utility Command
+cmd.util.requiresmore='$1' requires more arguments!
 cmd.util.invalidtype=$1 is not a valid type!
 cmd.util.invalidparameter=$1 is not a valid parameter!
 com.util.gordosize.edit=The $1 gordo's size is now $2!
@@ -259,3 +260,5 @@ cmd.util.player.gravity.show=The current gravity level of the player is $1
 cmd.util.player.gravity.edit=The new gravity level of the player is $1!
 cmd.util.vacmode.success=The vacmode is now $1!
 cmd.util.vacmode.show=The vacmode is currently $1
+cmd.util.gadget.pos.show=The gadget $1 is currently at $2 $3 $4
+cmd.util.gadget.pos.edit=The gadget $1 is now at $2 $3 $4!
