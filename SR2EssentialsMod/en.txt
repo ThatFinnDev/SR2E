@@ -23,6 +23,7 @@ cmd.unknowncommand=Unknown command. Please use '<color=white>help</color>' for a
 cmd.alreadyregistered=Trying to register command with id '<color=white>$1</color>' but the ID is already registered!
 cmd.notregistered=Trying to unregister command with id '<color=white>$1</color>' but the ID is not registered!
 
+
 cmd.error.notvalidvacmode=$1 is not a valid vacmode!
 cmd.error.notvalidweather=$1 is not a valid weather!
 cmd.error.notvalidkeycode=$1 is not a valid KeyCode!
@@ -38,6 +39,9 @@ cmd.error.notvalidupgrade=$1 is not a valid Upgrade!
 cmd.error.notintabove=$1 is not an integer above $2!
 cmd.error.notfloatabove=$1 is not a float above $2!
 cmd.error.notdoubleabove=$1 is not a double above $2!
+cmd.error.notintatleast=$1 is not a int with at least $2!
+cmd.error.notfloatatleast=$1 is not a float with at least $2!
+cmd.error.notdoubleatleast=$1 is not a double with at least above $2!
 
 cmd.error.srccnull=An error occured, SRCharacterController couldn't be found!
 cmd.error.teleportableplayernull=An error occured, TeleportablePlayer couldn't be found!

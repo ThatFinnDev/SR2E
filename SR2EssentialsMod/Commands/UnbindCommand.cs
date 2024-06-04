@@ -9,19 +9,7 @@ public class UnbindCommand : SR2Command
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-        {
-            string firstArg = "";
-            if (args != null)
-                firstArg = args[0];
-            List<string> list = new List<string>();
-            foreach (string key in System.Enum.GetNames(typeof(Key)))
-                if (!String.IsNullOrEmpty(key))
-                    if (key != "None")
-                        if (key.ToLower().Replace(" ", "").StartsWith(firstArg.ToLower()))
-                            list.Add(key.Replace(" ", ""));
-
-            return list;
-        }
+            return getKeyListByPartialName(args[0],true);
 
         return null;
     }

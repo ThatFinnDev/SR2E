@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Storage;
@@ -337,7 +338,7 @@ namespace SR2E
             for (int i = 0; i < autoCompleteContent.childCount; i++)
                 Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
             if (String.IsNullOrWhiteSpace(text))
-            { autoCompleteScrollView.SetActive(false); return; }
+            {  return; }
             if (text.Contains(" "))
             {
                 string cmd = text.Substring(0, text.IndexOf(' '));
@@ -351,6 +352,8 @@ namespace SR2E
                     if (split.Count != 0)
                         args = split.ToArray();
                     List<string> possibleAutoCompletes = (commands[cmd].GetAutoComplete(argIndex, args));
+                    if (possibleAutoCompletes != null) if (possibleAutoCompletes.Count == 0) possibleAutoCompletes = null;
+                    Color textColor = new Color(0.75f, 0.75f, 0.75f, 1f);
                     if (possibleAutoCompletes != null)
                     {
                         int maxPredictions = MAX_AUTOCOMPLETE; 
@@ -359,12 +362,18 @@ namespace SR2E
                         {
                             if (predicted > maxPredictions)
                                 return;
+                            string containing = "";
+                            if (args != null) containing = split[split.Count - 1];
                             if (args != null)
-                                if (!argument.ToLower().StartsWith(split[split.Count - 1].ToLower()))
+                                if (!argument.ToLower().Contains(containing.ToLower()))
                                     continue;
                             predicted++;
                             GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
-                            instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = argument;
+                            TextMeshProUGUI textMesh = instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                            textMesh.color = textColor;
+                            if (args == null) textMesh.text = "<color=white>"+argument+"</color>";
+                            else textMesh.text = new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(argument, "<color=white>" + argument.Substring(argument.ToLower().IndexOf(containing.ToLower()),containing.Length) + "</color>", 1);
+                            
                             instance.SetActive(true);
                             instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
                             {
@@ -572,6 +581,8 @@ namespace SR2E
                     if (Keyboard.current.upArrowKey.wasPressedThisFrame)
                     {
                         commandInput.text = commandHistory[commandHistoryIdx];
+                        commandInput.MoveToEndOfLine(false, false);
+                        RefreshAutoComplete(commandInput.text);
                         commandHistoryIdx -= 1;
                         autoCompleteScrollView.SetActive(false);
                     }

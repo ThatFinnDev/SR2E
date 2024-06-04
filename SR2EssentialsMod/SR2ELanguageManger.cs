@@ -9,7 +9,7 @@ public static class SR2ELanguageManger
     
     public static string translation(string key)
     {
-        if (String.IsNullOrEmpty(key) || loadedLanguage[key].Contains(key)) return key;
+        if (String.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
         return loadedLanguage[key];
     }
     public static string translation(string key, object replace1)

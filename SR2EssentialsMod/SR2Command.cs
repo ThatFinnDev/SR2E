@@ -97,7 +97,7 @@ public abstract class SR2Command
     /// </summary>
     public bool SendNoArguments()
     {
-        if(!silent) SR2EConsole.SendError(translation("cmd.noarguments", Usage));
+        if(!silent) SR2EConsole.SendError(translation("cmd.noarguments"));
         return false;
     }
     
@@ -106,7 +106,7 @@ public abstract class SR2Command
     /// </summary>
     public bool SendLoadASaveFirst()
     {
-        if(!silent) SR2EConsole.SendError(translation("cmd.loadasavefirst", Usage));
+        if(!silent) SR2EConsole.SendError(translation("cmd.loadasavefirst"));
         return false;
     }
     /// <summary>
@@ -115,8 +115,7 @@ public abstract class SR2Command
 
     public void SendMessage(string message)
     {
-        if (silent) return;
-        SR2EConsole.SendMessage(message, SR2EEntryPoint.syncConsole);
+        if (!silent) SR2EConsole.SendMessage(message, SR2EEntryPoint.syncConsole);
     }
     
     /// <summary>
@@ -124,8 +123,7 @@ public abstract class SR2Command
     /// </summary>
     public bool SendError(string message)
     {
-        if (silent) return false;
-        SR2EConsole.SendError(message, SR2EEntryPoint.syncConsole);
+        if (!silent) SR2EConsole.SendError(message, SR2EEntryPoint.syncConsole);
         return false;
     }
 
@@ -134,8 +132,7 @@ public abstract class SR2Command
     /// </summary>
     public void SendWarning(string message)
     {
-        if (silent) return;
-        SR2EConsole.SendWarning(message, SR2EEntryPoint.syncConsole);
+        if (!silent) SR2EConsole.SendWarning(message, SR2EEntryPoint.syncConsole);
     }
 
     public bool silent = false;

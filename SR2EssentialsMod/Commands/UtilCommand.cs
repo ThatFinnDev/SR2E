@@ -22,6 +22,87 @@ public class UtilCommand : SR2Command
     readonly List<string> GameParam = new List<string>() { "ACTOR_TYPE" };
     readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
     readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION" };
+    
+    public override List<string> GetAutoComplete(int argIndex, string[] args)
+    {
+        if (argIndex == 0) return TypeParam;
+        if (argIndex == 1)
+            switch (args[0])
+            {
+                case "GORDO": return GordoParam;
+                case "SLIME": return SlimeParam;
+                case "GAME": return GameParam;
+                case "PLAYER": return PlayerParam;
+                case "GADGET": return GadgetParam;
+                default: return null;
+            }
+        if (argIndex == 2)
+            switch (args[0])
+            {
+                case "GORDO": switch (args[1])
+                    {
+                        case "BASE_SIZE": return new List<string> { "0.25", "0.5", "1", "1.5", "2", "5" };
+                        case "EATEN_COUNT": return new List<string> { "1", "5", "10", "45" };
+                    }
+                    return null;
+                case "SLIME": switch (args[1])
+                    {
+                        case "SLIME_HUNGER": return new List<string> { "0", "0.25", "0.5", "1" };
+                        case "SLIME_AGI": return new List<string> { "0", "0.25", "0.5", "1" };
+                        case "SLIME_FEAR": return new List<string> { "0", "0.25", "0.5", "1" };
+                        case "USE_GRAVITY": return new List<string> { "false", "true" };
+                    }
+                    return null;
+                case "GAME": switch (args[1])
+                    {
+                        case "ACTOR_TYPE": return getIdentListByPartialName(args[2], true,true,true);
+                    }
+                    return null;
+                case "PLAYER": switch (args[1])
+                    {
+                        case "CUSTOM_SIZE": return new List<string> { "0.25", "0.5", "1", "1.5", "2", "5" };
+                        case "GRAVITY_LEVEL": return new List<string> { "-2", "-1", "1", "2", "5" };
+                        case "VAC_MODE": return Enum.GetNames(typeof(VacModes)).ToList();
+                    }
+                    return null;
+                case "GADGET": 
+                    switch (args[1])
+                    {
+                        case "POSITION": return new List<string> { "0", "1" };
+                        case "ROTATION": return new List<string> { "0", "90", "180", "270" };
+                    }
+                    return null;
+            }
+        
+        if (argIndex == 3)
+            switch (args[0])
+            {
+                case "GAME": switch (args[1])
+                    {
+                        case "ACTOR_TYPE": return new List<string> { "true", "false", "toggle" };
+                    }
+                    return null;
+                case "GADGET": 
+                    switch (args[1])
+                    {
+                        case "POSITION": return new List<string> { "0", "1" };
+                        case "ROTATION": return new List<string> { "0", "90", "180", "270" };
+                    }
+                    return null;
+            }
+        if (argIndex == 4)
+            switch (args[0])
+            {
+                case "GADGET": 
+                    switch (args[1])
+                    {
+                        case "POSITION": return new List<string> { "0", "1" };
+                        case "ROTATION": return new List<string> { "0", "90", "180", "270" };
+                    }
+                    return null;
+            }
+        return null;
+    }
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(2, 5)) return SendUsage();
@@ -146,7 +227,7 @@ public class UtilCommand : SR2Command
                 float val = -1;
                 try { val = float.Parse(valString); }
                 catch { return SendError(translation("cmd.error.notvalidfloat",valString)); }
-                if (val <= 0) return SendError(translation("cmd.error.notfloatabove",valString,0));
+                if (val < 0) return SendError(translation("cmd.error.notfloatatleast",valString,0));
                 if (emotion == SlimeEmotions.Emotion.HUNGER) 
                 {
                     slime._model.emotionHunger.CurrVal = val;
@@ -203,6 +284,10 @@ public class UtilCommand : SR2Command
         return SendError(translation("cmd.error.notlookingatanything"));
     }
 
+    public override void OnMainMenuUILoad()
+    {
+        disabledActors = new List<string>();
+    }
 
     public static LayerMask maskForGordo
     {
@@ -550,61 +635,6 @@ public class UtilCommand : SR2Command
 
 
 
-    public override List<string> GetAutoComplete(int argIndex, string[] args)
-    {
-        if (argIndex == 0)
-            return TypeParam;
-        if (argIndex == 1)
-            switch (args[0])
-            {
-                case "GORDO": return GordoParam;
-                case "SLIME": return SlimeParam;
-                case "GAME": return GameParam;
-                case "PLAYER": return PlayerParam;
-                case "GADGET": return GadgetParam;
-                default: return null;
-            }
-
-        if (argIndex == 2)
-        {
-            if (args[0] == "PLAYER")
-                if (args[1] == "VAC_MODE")
-                    return Enum.GetNames(typeof(VacModes)).ToList();
-            if (args[0] == "GAME")
-                if (args[1] == "ACTOR_TYPE")
-                {
-                    List<string> list = new List<string>();
-                    foreach (IdentifiableType type in identifiableTypes)
-                    {
-                        try
-                        {
-                            if (type.LocalizedName != null)
-                            {
-                                string localizedString = type.LocalizedName.GetLocalizedString();
-                                var s = localizedString.Replace(" ", "");
-                                list.Add(s);
-                            }
-                        }
-                        catch
-                        {
-                        }
-
-                    }
-
-                    return list;
-                }
-
-        }
-        if (argIndex == 3)
-        {
-            if (args[0] == "GAME")
-                if (args[1] == "ACTOR_TYPE")
-                    return new List<string> { "true", "false", "toggle" };
-
-        }
-
-        return null;
-    }
 }
 
 

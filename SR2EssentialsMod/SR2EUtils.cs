@@ -508,17 +508,46 @@ namespace SR2E
                 try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","").Replace("_","") == name.Replace("_","").ToUpper()) return type; }catch {}
             return null;
         }
-        internal static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget)
+
+        static bool StartsWithContain(this string input, string value, bool useContain)
         {
-            if (String.IsNullOrWhiteSpace(input)) return new List<string>();
+            if (useContain) return input.Contains(value);
+            return input.StartsWith(value);
+        }
+        internal static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain)
+        {
             if (!includeGadget && !includeNormal) return new List<string>();
+            if (String.IsNullOrWhiteSpace(input))
+            {
+                List<string> cleanList = new List<string>();
+                int j = 0;
+                foreach (IdentifiableType type in identifiableTypes)
+                {
+                    bool isGadget = type.ReferenceId.StartsWith("GadgetDefinition");
+                    if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
+                    if (!includeGadget && isGadget) continue;
+                    if (!includeNormal && !isGadget) continue;
+                    if (j > MAX_AUTOCOMPLETE) break;
+                    try
+                    {if (type.LocalizedName != null)
+                        {
+                            string localizedString = type.LocalizedName.GetLocalizedString();
+                            if(localizedString.StartsWith("!")) continue;
+                            j++;
+                            cleanList.Add(localizedString.Replace(" ", ""));
+                        }
+                    }catch { }
+                }
+                cleanList.Sort();
+                return cleanList;
+            }
             
             List<string> list = new List<string>();
-            int i = -1;
+            int i = 0;
             foreach (IdentifiableType type in identifiableTypes)
             {
                 bool isGadget = type.ReferenceId.StartsWith("GadgetDefinition");
-                if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") return null;
+                if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                 if (!includeGadget && isGadget) continue;
                 if (!includeNormal && !isGadget) continue;
                 
@@ -530,22 +559,53 @@ namespace SR2E
                         string localizedString = type.LocalizedName.GetLocalizedString();
                         if (localizedString.ToLower().Replace(" ", "").StartsWith(input.ToLower()))
                         {
+                            if(localizedString.StartsWith("!")) continue;
                             i++;
                             list.Add(localizedString.Replace(" ", ""));
                         }
                     }
-                }
-                catch
-                {
-                }
+                }catch { }
             }
-
+            if(useContain)
+                foreach (IdentifiableType type in identifiableTypes)
+                {
+                    bool isGadget = type.ReferenceId.StartsWith("GadgetDefinition");
+                    if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
+                    if (!includeGadget && isGadget) continue;
+                    if (!includeNormal && !isGadget) continue;
+                
+                    if (i > MAX_AUTOCOMPLETE) break;
+                    try
+                    {
+                        if (type.LocalizedName != null)
+                        {
+                            string localizedString = type.LocalizedName.GetLocalizedString();
+                            if (localizedString.ToLower().Replace(" ", "").Contains(input.ToLower()))
+                                if(!list.Contains(localizedString.Replace(" ", "")))
+                                {
+                                    if(localizedString.StartsWith("!")) continue;
+                                    i++;
+                                    list.Add(localizedString.Replace(" ", ""));
+                                }
+                        }
+                    }catch { }
+                }
+            list.Sort();
             return list;
         }
 
-        internal static List<string> getKeyListByPartialName(string input)
+        internal static List<string> getKeyListByPartialName(string input, bool useContain)
         {
-            if (String.IsNullOrWhiteSpace(input)) return new List<string>();
+            if (String.IsNullOrWhiteSpace(input))
+            {
+                List<string> nullList = new List<string>();
+                foreach (string key in System.Enum.GetNames(typeof(Key)))
+                    if (!String.IsNullOrEmpty(key))
+                        if (key != "None")
+                            nullList.Add(key.Replace(" ", ""));
+                nullList.Sort();
+                return nullList;
+            }
             
             List<string> list = new List<string>();
             foreach (string key in System.Enum.GetNames(typeof(Key)))
@@ -553,6 +613,14 @@ namespace SR2E
                     if (key != "None")
                         if (key.ToLower().Replace(" ", "").StartsWith(input.ToLower()))
                             list.Add(key.Replace(" ", ""));
+            if(useContain)
+                foreach (string key in System.Enum.GetNames(typeof(Key)))
+                    if (!String.IsNullOrEmpty(key))
+                        if (key != "None")
+                            if (key.ToLower().Replace(" ", "").Contains(input.ToLower()))
+                                if(!list.Contains(key.Replace(" ", "")))
+                                    list.Add(key.Replace(" ", ""));
+            list.Sort();
             return list;
         }
         internal static bool IsBetween(this string[] list, uint min, int max)
