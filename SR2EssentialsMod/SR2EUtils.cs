@@ -523,7 +523,7 @@ namespace SR2E
                 int j = 0;
                 foreach (IdentifiableType type in identifiableTypes)
                 {
-                    bool isGadget = type.ReferenceId.StartsWith("GadgetDefinition");
+                    bool isGadget = type.isGadget();
                     if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                     if (!includeGadget && isGadget) continue;
                     if (!includeNormal && !isGadget) continue;
@@ -546,7 +546,7 @@ namespace SR2E
             int i = 0;
             foreach (IdentifiableType type in identifiableTypes)
             {
-                bool isGadget = type.ReferenceId.StartsWith("GadgetDefinition");
+                bool isGadget = type.isGadget();
                 if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                 if (!includeGadget && isGadget) continue;
                 if (!includeNormal && !isGadget) continue;
@@ -569,7 +569,7 @@ namespace SR2E
             if(useContain)
                 foreach (IdentifiableType type in identifiableTypes)
                 {
-                    bool isGadget = type.ReferenceId.StartsWith("GadgetDefinition");
+                    bool isGadget = type.isGadget();
                     if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                     if (!includeGadget && isGadget) continue;
                     if (!includeNormal && !isGadget) continue;
