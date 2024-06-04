@@ -11,7 +11,7 @@ namespace SR2E.Commands;
 public class UtilCommand : SR2Command
 {
     public override string ID => "util";
-    public override string Usage => "util <type> <parameter [value] [value2]";
+    public override string Usage => "util <type> <parameter [value] [value2] [value3]";
 
     public const float playerColliderHeightBase = 2f;
     public const float playerColliderRadBase = 0.6f;
@@ -21,10 +21,10 @@ public class UtilCommand : SR2Command
     readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR", "USE_GRAVITY" };
     readonly List<string> GameParam = new List<string>() { "ACTOR_TYPE" };
     readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
-    readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION", "SCALE" };
+    readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION" };
     public override bool Execute(string[] args)
     {
-        if (!args.IsBetween(2, 4)) return SendUsage();
+        if (!args.IsBetween(2, 5)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         switch (args[0])
         {
@@ -77,7 +77,7 @@ public class UtilCommand : SR2Command
         switch (cmd[1])
         {
             case "ACTOR_TYPE":
-                if (cmd.Length == 2) return SendError(translation("cmd.weather.requiresmore", "ACTOR_TYPE"));
+                if (cmd.Length == 2) return SendError(translation("cmd.util.requiresmore", cmd[1]));
                 if (cmd.Length == 3) return ToggleActorType(true,cmd[2]);
                 return ToggleActorType(false,cmd[2],cmd[3]);
             default: return false;
@@ -99,36 +99,25 @@ public class UtilCommand : SR2Command
             default: return false;
         }
     }
-    internal static Gadget RaycastForGadget()
+
+    public bool ExcGadget(string[] cmd)
     {
-        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+        switch (cmd[1])
         {
-            Transform currentParent = hit.collider.transform.parent;
-
-            for (int i = 0; i < 10 && currentParent != null; i++)
-            {
-                Gadget gadgetComponent = currentParent.GetComponent<Gadget>();
-
-                if (gadgetComponent != null)
-                {
-                    return gadgetComponent;
-                }
-
-                currentParent = currentParent.parent;
-            }
-
-            return null;
+            case "POSITION":
+                if (cmd.Length == 1) return GadgetPos(true);
+                if (cmd.Length == 5) return GadgetPos(false, cmd[2], cmd[3], cmd[4]);
+                return SendError(translation("cmd.util.requiresmore", cmd[1]));
+            case "ROTATION":
+                if (cmd.Length == 1) return GadgetRot(true);
+                if (cmd.Length == 5) return GadgetRot(false, cmd[2], cmd[3], cmd[4]);
+                return SendError(translation("cmd.util.requiresmore", cmd[1]));
+            default: return false;
         }
-
-        return null;
     }
 
     public bool SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, string valString = "1f")
     {
-        float val = -1;
-        try { val = float.Parse(valString); }
-        catch { return SendError(translation("cmd.error.notvalidfloat",valString)); }
-        if (val <= 0) return SendError(translation("cmd.error.notfloatabove",valString,0));
         
         Camera cam = Camera.main;
         if (cam == null) return SendError(translation("cmd.error.nocamera"));
@@ -154,6 +143,10 @@ public class UtilCommand : SR2Command
                     return true;
                 }
                
+                float val = -1;
+                try { val = float.Parse(valString); }
+                catch { return SendError(translation("cmd.error.notvalidfloat",valString)); }
+                if (val <= 0) return SendError(translation("cmd.error.notfloatabove",valString,0));
                 if (emotion == SlimeEmotions.Emotion.HUNGER) 
                 {
                     slime._model.emotionHunger.CurrVal = val;
@@ -223,12 +216,6 @@ public class UtilCommand : SR2Command
 
     public bool GordoSize(bool isGet, string sizeString = "1f")
     {
-        
-        float size = -1;
-        try { size = float.Parse(sizeString); }
-        catch { return SendError(translation("cmd.error.notvalidfloat",sizeString)); }
-        if (size <= 0) return SendError(translation("cmd.error.notfloatabove",sizeString,0));
-        
         Camera cam = Camera.main;
         if (cam == null)  return SendError(translation("cmd.error.nocamera"));
 
@@ -243,6 +230,10 @@ public class UtilCommand : SR2Command
                     SendMessage(translation("com.util.gordosize.show",gordo.identType.getName(),eat._initScale/4));
                     return true;
                 }
+                float size = -1;
+                try { size = float.Parse(sizeString); }
+                catch { return SendError(translation("cmd.error.notvalidfloat",sizeString)); }
+                if (size <= 0) return SendError(translation("cmd.error.notfloatabove",sizeString,0));
                 eat._initScale = size*4;
                 SendMessage(translation("com.util.gordosize.edit",gordo.identType.getName(),size));
                 return true;
@@ -255,10 +246,6 @@ public class UtilCommand : SR2Command
 
     public bool GordoEatenAmount(bool isGet, string amountString = "49")
     {
-        int amount = -1;
-        try { amount = int.Parse(amountString); }
-        catch { return SendError(translation("cmd.error.notvalidint",amountString)); }
-        if (amount <= 0) return SendError(translation("cmd.error.notintabove",amountString,0));
         
         Camera cam = Camera.main;
         if (cam == null) return SendError(translation("cmd.error.nocamera"));
@@ -273,6 +260,10 @@ public class UtilCommand : SR2Command
                     SendMessage(translation("com.util.gordosize.show",gordo.identType.getName(),eat.GetEatenCount()));
                     return true;
                 }
+                int amount = -1;
+                try { amount = int.Parse(amountString); }
+                catch { return SendError(translation("cmd.error.notvalidint",amountString)); }
+                if (amount <= 0) return SendError(translation("cmd.error.notintabove",amountString,0));
                 eat.SetEatenCount(amount); 
                 SendMessage(translation("com.util.gordosize.edit",gordo.identType.getName(),amount));
 
@@ -419,123 +410,67 @@ public class UtilCommand : SR2Command
         return true;
 
     }
-
-    public void GadgetPos(bool isGet, float posX = 0, float posY = 0, float posZ = 0)
+    
+    public bool GadgetPos(bool isGet, string xString = "0", string yString = "0", string zString = "0")
     {
-        try
+        Camera cam = Camera.main;
+        if (cam == null)  return SendError(translation("cmd.error.nocamera"));
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,maskForGordo))
         {
-            if (isGet)
+            Gadget gadget = hit.collider.gameObject.GetComponentInParent<Gadget>();
+            if (gadget != null)
             {
-                var gadget = RaycastForGadget();
-                if (gadget != null)
+                if (isGet)
                 {
                     var pos = gadget.transform.position;
-                    SendMessage(
-                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {pos.x}, {pos.y}, {pos.z}");
+                    SendMessage(translation("cmd.util.gadget.pos.show",gadget.identType.getName(),pos.x,pos.y,pos.z));
+                    return true;
                 }
-            }
-            else
-            {
-                var gadget = RaycastForGadget();
-                if (gadget != null)
-                {
-                    var pos = new Vector3(posX, posY, posZ);
-                    gadget.transform.position = pos;
-                    gadget._model.lastPosition = pos;
-                    SendMessage(
-                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {posX}, {posY}, {posZ}");
-                }
-            }
-        }
-        catch
-        {
-        }
-
-    }
-
-    public void GadgetScale(bool isGet, float scaleX = 0, float scaleY = 0, float scaleZ = 0)
-    {
-        try
-        {
-            if (isGet)
-            {
-                var gadget = RaycastForGadget();
-                if (gadget != null)
-                {
-                    var scale = gadget.transform.localScale;
-                    SendMessage(
-                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is {scale.x}, {scale.y}, {scale.z}");
-                }
-            }
-            else
-            {
-                var gadget = RaycastForGadget();
-                if (gadget != null)
-                {
-                    var scale = new Vector3(scaleX, scaleY, scaleZ);
-                    gadget.transform.localScale = scale;
-                    SendMessage(
-                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s position is now {scaleX}, {scaleY}, {scaleZ}");
-                }
-            }
-        }
-        catch
-        {
-        }
-
-    }
-
-    public void GadgetRot(bool isGet, float rot = 0f)
-    {
-        try
-        {
-            if (isGet)
-            {
-                var gadget = RaycastForGadget();
-                if (gadget != null)
-                {
-                    var gadgetRot = gadget.transform.eulerAngles.y;
-                    SendMessage(
-                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is {gadgetRot}");
-                }
-            }
-            else
-            {
-                var gadget = RaycastForGadget();
-                if (gadget != null)
-                {
-                    gadget._model.eulerRotation = new Vector3(0, rot, 0);
-                    gadget.transform.rotation = Quaternion.EulerRotation(new Vector3(0, rot, 0));
-                    SendMessage(
-                        $"This {gadget.identType.LocalizedName.GetLocalizedString().ToLower()}\'s rotation is now {rot}");
-                }
-            }
-        }
-        catch
-        {
-        }
-
-    }
-
-    public bool ExcGadget(string[] cmd)
-    {
-        switch (cmd[1])
-        {
-            case "POSITION":
-                if (cmd.Length > 2) GadgetPos(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
-                else GadgetPos(true);
+                Vector3 vector3;
+                try { vector3 = new Vector3(-float.Parse(xString), -float.Parse(yString), -float.Parse(zString)); }
+                catch { return SendError(translation("cmd.error.notvalidvector3",xString,yString,zString)); }
+                
+                gadget.transform.position = vector3;
+                gadget._model.lastPosition = vector3;
+                SendMessage(translation("cmd.util.gadget.pos.edit",gadget.identType.getName(),vector3.x,vector3.y,vector3.z));
                 return true;
-            case "SCALE":
-                if (cmd.Length > 2) GadgetScale(false, float.Parse(cmd[2]), float.Parse(cmd[3]), float.Parse(cmd[4]));
-                else GadgetScale(true);
-                return true;
-            case "ROTATION":
-                if (cmd.Length > 2) GadgetRot(false, float.Parse(cmd[2]));
-                else GadgetRot(true);
-                return true;
-            default: return false;
+                
+            }
+            return SendError(translation("cmd.error.notlookingatvalidobject"));
         }
+        return SendError(translation("cmd.error.notlookingatanything"));
     }
+
+    public bool GadgetRot(bool isGet, string xString = "0", string yString = "0", string zString = "0")
+    {
+        Camera cam = Camera.main;
+        if (cam == null)  return SendError(translation("cmd.error.nocamera"));
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,maskForGordo))
+        {
+            Gadget gadget = hit.collider.gameObject.GetComponentInParent<Gadget>();
+            if (gadget != null)
+            {
+                if (isGet)
+                {
+                    var pos = gadget.transform.rotation.eulerAngles;
+                    SendMessage(translation("cmd.util.gadget.rot.show",gadget.identType.getName(),pos.x,pos.y,pos.z));
+                    return true;
+                }
+                Vector3 vector3;
+                try { vector3 = new Vector3(-float.Parse(xString), -float.Parse(yString), -float.Parse(zString)); }
+                catch { return SendError(translation("cmd.error.notvalidvector3",xString,yString,zString)); }
+                
+                gadget.transform.rotation = Quaternion.Euler(vector3);
+                gadget._model.eulerRotation = vector3;
+                SendMessage(translation("cmd.util.gadget.rot.edit",gadget.identType.getName(),vector3.x,vector3.y,vector3.z));
+                return true;
+                
+            }
+            return SendError(translation("cmd.error.notlookingatvalidobject"));
+        }
+        return SendError(translation("cmd.error.notlookingatanything"));
+    }
+
 
 
     public static bool PlayerVacModeSet(bool isGet,bool silent,string modeString = ".")
