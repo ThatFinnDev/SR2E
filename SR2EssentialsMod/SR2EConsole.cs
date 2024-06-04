@@ -253,31 +253,32 @@ namespace SR2E
         public static void ExecuteByString(string input, bool silent = false)
         {
             string[] cmds = input.Split(';');
-            foreach (string c in cmds)
+            foreach (string cc in cmds)
             {
-
-                if (!String.IsNullOrEmpty(c))
+                string c = cc.TrimStart(' ');
+                if (!String.IsNullOrWhiteSpace(c))
                 {
                     bool spaces = c.Contains(" ");
                     string cmd = spaces ? c.Substring(0, c.IndexOf(' ')) : c;
 
                     if (commands.ContainsKey(cmd))
                     {
+                        bool canPlay = false;
+                        if (!SR2EConsole.isOpen)
+                            if (!SR2EModMenu.isOpen)
+                                if (Time.timeScale != 0)
+                                    canPlay = true;
+
+                        if (!canPlay && commands[cmd].executeWhenConsoleIsOpen) canPlay = true;
+                        if (!silent) canPlay = true;
                         bool successful;
                         if (spaces)
                         {
+                            
                             var argString = c.TrimEnd(' ') + " ";
                             List<string> split = argString.Split(' ').ToList();
                             split.RemoveAt(0);
                             split.RemoveAt(split.Count - 1);
-                            bool canPlay = false;
-                            if (!SR2EConsole.isOpen)
-                                if (!SR2EModMenu.isOpen)
-                                    if (Time.timeScale != 0)
-                                        canPlay = true;
-
-                            if (!canPlay && commands[cmd].executeWhenConsoleIsOpen) canPlay = true;
-                            if (!silent) canPlay = true;
                             if (canPlay)
                             {
                                 if (split.Count != 0)
@@ -297,7 +298,7 @@ namespace SR2E
                                 }
                             }
                         }
-                        else
+                        else if(canPlay)
                         {
                             SR2Command command = commands[cmd];
                             command.silent = silent;

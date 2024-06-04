@@ -1,6 +1,6 @@
-﻿using System;
-using UnityEngine.InputSystem;
+﻿using UnityEngine.InputSystem;
 
+namespace SR2E.Commands;
 public class UnbindCommand : SR2Command
 {
     public override string ID => "unbind";
