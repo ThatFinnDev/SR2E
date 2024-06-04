@@ -19,13 +19,18 @@ modmenu.modconfig.keylistening=Listening
 cmd.loadasavefirst=Load a save first!
 cmd.usage=Usage: $1
 cmd.noarguments=The '<color=white>$1</color>' command takes no arguments
+cmd.unknowncommand=Unknown command. Please use '<color=white>help</color>' for available commands
+cmd.alreadyregistered=Trying to register command with id '<color=white>$1</color>' but the ID is already registered!
+cmd.notregistered=Trying to unregister command with id '<color=white>$1</color>' but the ID is not registered!
 
+cmd.error.notvalidvacmode=$1 is not a valid vacmode!
 cmd.error.notvalidweather=$1 is not a valid weather!
 cmd.error.notvalidkeycode=$1 is not a valid KeyCode!
 cmd.error.notvalidint=$1 is not a valid integer!
 cmd.error.notvalidfloat=$1 is not a valid float!
 cmd.error.notvaliddouble=$1 is not a valid double!
 cmd.error.notvalidbool=$1 is not a valid bool!
+cmd.error.notvalidtrool=$1 has to be true,false or toggle!
 cmd.error.notvalidvector3=$1 $2 $3 is not a valid Vector3!
 cmd.error.notvalididenttype=$1 is not a valid IdentifiableType!
 cmd.error.notvalidgadget=$1 is not a valid Gadget!
@@ -36,6 +41,7 @@ cmd.error.notdoubleabove=$1 is not a double above $2!
 
 cmd.error.srccnull=An error occured, SRCharacterController couldn't be found!
 cmd.error.teleportableplayernull=An error occured, TeleportablePlayer couldn't be found!
+cmd.error.kinematiccharactermotornull=An error occured, KinematicCharacterMotor couldn't be found!
 cmd.error.scenegroupnotsupported=There SceneGroup $1 is not supported!
 
 cmd.error.nocamera=Couldn't find player camera!
@@ -223,3 +229,33 @@ cmd.timescale.description=Modifies game speed
 cmd.timescale.between=The scale has to be between $1 and $2!
 
 cmd.util.description=Utility Command
+cmd.util.invalidtype=$1 is not a valid type!
+cmd.util.invalidparameter=$1 is not a valid parameter!
+com.util.gordosize.edit=The $1 gordo's size is now $2!
+com.util.gordosize.show=The $1 gordo's size is currently $2
+com.util.gordoeat.edit=The $1 gordo's eating count is now $2!
+com.util.gordoeat.show=The $1 gordo's size is currently $2
+cmd.util.actorgravity.editenable=Gravity for the actor $1 is now enabled!
+cmd.util.actorgravity.showenable=Gravity for the actor $1 is enabled
+cmd.util.actorgravity.editdisable=Gravity for the actor $1 is now disabled!
+cmd.util.actorgravity.showdisable=Gravity for the actor $1 is disabled
+cmd.util.emotion.fear.show=The fear of $1 is currently $2
+cmd.util.emotion.fear.edit=The fear of $1 is now $2!
+cmd.util.emotion.hunger.show=The hunger of $1 is currently $2
+cmd.util.emotion.hunger.edit=The hunger of $1 is now $2!
+cmd.util.emotion.agitation.show=The agitation of $1 is currently $2
+cmd.util.emotion.agitation.edit=The agitation of $1 is now $2!
+cmd.util.actor.enabled=The actor $1 is currently now enabled!
+cmd.util.actor.disabled=The actor $1 is currently now disabled!
+cmd.util.actor.showenable=The actor type $1 is currently enabled
+cmd.util.actor.showdisable=The actor type $1 is currently disabled
+cmd.util.actor.editenable=The actor type $1 is now enabled!
+cmd.util.actor.editdisable=The actor type $1 is now disabled!
+cmd.util.actor.alreadyenabled=The actor type $1 is already enabled!
+cmd.util.actor.alreadydisabled=The actor type $1 is already enabled!
+cmd.util.player.size.show=The current size of the player is $1
+cmd.util.player.size.edit=The new size of the player is $1!
+cmd.util.player.gravity.show=The current gravity level of the player is $1
+cmd.util.player.gravity.edit=The new gravity level of the player is $1!
+cmd.util.vacmode.success=The vacmode is now $1!
+cmd.util.vacmode.show=The vacmode is currently $1

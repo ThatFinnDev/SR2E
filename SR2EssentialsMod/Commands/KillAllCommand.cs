@@ -39,8 +39,8 @@ public class KillAllCommand : SR2Command
             string identifierTypeName = args[0];
             IdentifiableType type = getIdentByName(identifierTypeName);
             if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
-
-            if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem", args[0]));
+    
+            if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));
                 
             foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                 if (ident.hasStarted)

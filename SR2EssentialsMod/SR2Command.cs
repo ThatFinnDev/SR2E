@@ -89,7 +89,7 @@ public abstract class SR2Command
     /// </summary>
     public bool SendUsage()
     {
-        if(!silent) SR2EConsole.SendMessage(translation("cmd.cmdusage", Usage));
+        if(!silent) SR2EConsole.SendMessage(translation("cmd.usage", Usage));
         return false;
     }
     /// <summary>

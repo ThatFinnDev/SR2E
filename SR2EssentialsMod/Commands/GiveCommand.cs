@@ -24,8 +24,7 @@ public class GiveCommand : SR2Command
         IdentifiableType type = getIdentByName(identifierTypeName);
         if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
         string itemName = type.getName();
-
-        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",args[0]));
+        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",itemName));
         
 
         int amount = 1;

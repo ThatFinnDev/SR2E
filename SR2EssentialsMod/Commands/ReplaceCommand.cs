@@ -27,7 +27,7 @@ public class ReplaceCommand : SR2Command
         IdentifiableType type = getIdentByName(identifierTypeName);
         if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
 
-        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",args[0]));
+        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));
         
         Camera cam = Camera.main;
         if (cam == null) return SendError(translation("cmd.error.nocamera"));
