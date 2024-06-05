@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SR2E.Patches;
+namespace SR2E.Patches.MainMenu;
 
 [HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.Init))]
 public static class SaveGameRootUIPatch

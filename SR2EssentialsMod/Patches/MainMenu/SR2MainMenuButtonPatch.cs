@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using SR2E.Buttons;
 
-namespace SR2E.Patches;
+namespace SR2E.Patches.MainMenu;
 
 
 [HarmonyPatch(typeof(MainMenuLandingRootUI), nameof(MainMenuLandingRootUI.CreateModels))]

@@ -1,10 +1,9 @@
 ﻿namespace SR2E.Commands;
 
-public class NewBucksCommand : SR2CCommand
+public class NewBucksCommand : SR2Command
 {
     public override string ID => "newbucks";
     public override string Usage => "newbucks <amount>";
-    public override string Description => "Adds or removes newbucks";
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -15,18 +14,18 @@ public class NewBucksCommand : SR2CCommand
 
     public override bool Execute(string[] args)
     {
-        if (args == null || args.Length != 1) return SendUsage();
+        if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
         int amount = 0;
         if (!int.TryParse(args[0], out amount))
-        { SR2EConsole.SendError(args[0] + " is not a valid integer!"); return false; }
+        { return SendError(translation("cmd.error.notvalidint",args[0])); }
 
 
         int newNewBuckAmount = Mathf.Clamp(amount + SceneContext.Instance.PlayerState._model.currency, 0, int.MaxValue);
         SceneContext.Instance.PlayerState._model.SetCurrency(newNewBuckAmount);
         SceneContext.Instance.PlayerState._model.SetCurrencyEverCollected(newNewBuckAmount);
-        SR2EConsole.SendMessage($"Successfully addded {amount} newbucks");
+        SendMessage(translation("cmd.newbucks.success",amount));
         return true;
     }
 

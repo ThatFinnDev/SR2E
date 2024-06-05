@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SR2E.Patches;
+namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(TeleporterNode), nameof(TeleporterNode.OnTriggerEnter))]
 internal class TeleporterUsePatch

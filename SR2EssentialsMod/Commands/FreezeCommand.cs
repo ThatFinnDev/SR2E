@@ -1,41 +1,47 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
 
-namespace SR2E.Commands
+namespace SR2E.Commands;
+
+public class FreezeCommand : SR2Command
 {
-    internal class FreezeCommand : SR2CCommand
+    public override string ID => "freeze";
+    public override string Usage => "freeze";
+
+    public override bool Execute(string[] args)
     {
-        public override string ID => "freeze";
+        if (!args.IsBetween(0,0)) return SendNoArguments();
+        if (!inGame) return SendLoadASaveFirst();
 
-        public override string Usage => "freeze";
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+            
 
-        public override string Description => "Freezes a object in time";
-
-        public override string ExtendedDescription => "Freezes a identifiable in time, cannot be moved";
-
-        public override bool Execute(string[] args)
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+            var ident = hit.transform.GetComponent<IdentifiableActor>();
+            if (ident)
             {
-                var ident = hit.transform.GetComponent<IdentifiableActor>();
-                if (ident)
+                if (ident.GetComponent<Rigidbody>().constraints != RigidbodyConstraints.FreezeAll)
                 {
-                    if (ident.GetComponent<Rigidbody>().constraints != RigidbodyConstraints.FreezeAll)
-                    {
-                        ident.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-                        ident.GetComponent<Vacuumable>().enabled = false;
-                        if (ident.transform.getObjRec<Animator>("Appearance"))
-                            ident.transform.getObjRec<Animator>("Appearance").enabled = false;
-                    }
-                    else
-                    {
-                        ident.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                        ident.GetComponent<Vacuumable>().enabled = true;
-                        if (ident.transform.getObjRec<Animator>("Appearance"))
-                            ident.transform.getObjRec<Animator>("Appearance").enabled = true;
-                    }
+                    ident.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+                    ident.GetComponent<Vacuumable>().enabled = false;
+                    if (ident.transform.getObjRec<Animator>("Appearance"))
+                        ident.transform.getObjRec<Animator>("Appearance").enabled = false;
+                    SendMessage(translation("cmd.freeze.successfroze"));
+                }
+                else
+                {
+                    ident.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+                    ident.GetComponent<Vacuumable>().enabled = true;
+                    if (ident.transform.getObjRec<Animator>("Appearance"))
+                        ident.transform.getObjRec<Animator>("Appearance").enabled = true;
+                    SendMessage(translation("cmd.freeze.successunfroze"));
+                    return true;
                 }
             }
-            return true;
         }
+
+        return SendError(translation("cmd.error.notlookingatvalidobject"));
     }
 }
+

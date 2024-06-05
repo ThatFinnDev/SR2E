@@ -1,34 +1,35 @@
-﻿namespace SR2E.Commands
+﻿namespace SR2E.Commands;
+
+public class DeleteWarpCommand : SR2Command
 {
-    public class DeleteWarpCommand : SR2CCommand
+    public override string ID => "delwarp";
+    public override string Usage => "delwarp <name>";
+
+    public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        public override string ID => "delwarp";
-        public override string Usage => "delwarp <name>";
-        public override string Description => "Deletes a warp";
-        public override string ExtendedDescription => "Deletes a warp from the <u>warp</u> command.";
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        if (argIndex == 0)
         {
-            if (argIndex == 0)
-            {
-                List<string> warps = new List<string>();
-                foreach (KeyValuePair<string,SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key); 
-                return warps;
-            }
-            return null;
+            List<string> warps = new List<string>();
+            foreach (KeyValuePair<string, SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key);
+            return warps;
         }
-        public override bool Execute(string[] args)
+
+        return null;
+    }
+
+    public override bool Execute(string[] args)
+    {
+        if (!args.IsBetween(1,1)) return SendUsage();
+
+        string name = args[0];
+        if (SR2ESaveManager.WarpManager.GetWarp(name) != null)
         {
-            if (args == null || args.Length != 1) return SendUsage();
-            
-            string name = args[0];
-            if (SR2ESaveManager.WarpManager.GetWarp(name)!=null)
-            {
-                SR2ESaveManager.WarpManager.RemoveWarp(name);
-                SR2EConsole.SendMessage($"Successfully deleted the Warp: {name}");
-                return true;
-            }
-            SR2EConsole.SendError($"There is no warp with the name: {name}"); 
-            return false;
+            SR2ESaveManager.WarpManager.RemoveWarp(name);
+            SendMessage(translation("cmd.delwarp.success",name));
+            return true;
         }
+
+        SendError(translation("cmd.warpstuff.nowarpwithname",name));
+        return false;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using SR2E.Buttons;
 
-namespace SR2E.Patches;
+namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(PauseMenuDirector), nameof(PauseMenuDirector.Awake))]
 public static class SR2PauseMenuButtonPatch

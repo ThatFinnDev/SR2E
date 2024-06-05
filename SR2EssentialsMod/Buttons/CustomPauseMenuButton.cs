@@ -1,4 +1,4 @@
-﻿using SR2E.Patches;
+﻿using SR2E.Patches.InGame;
 using UnityEngine.Localization;
 
 namespace SR2E.Buttons;

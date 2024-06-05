@@ -1,15 +1,12 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
-public class KillCommand : SR2CCommand
+public class KillCommand : SR2Command
 {
     public override string ID => "kill";
     public override string Usage => "kill";
-    public override string Description => "Kills what you're looking at";
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -17,24 +14,22 @@ public class KillCommand : SR2CCommand
     }
     public override bool Execute(string[] args)
     {
-        if (args != null) { SendUsage(); return false; }
+        if (!args.IsBetween(0,0)) return SendNoArguments();
+        if (!inGame) return SendLoadASaveFirst();
         
-        if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
-        GameObject gameObject = ShootRaycast();
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        GameObject gameObject = null;
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+            gameObject = hit.collider.gameObject;
+        else
+            return SendError(translation("cmd.error.notlookingatanything"));
         if (gameObject != null)
             if (Kill(gameObject))
-            { SR2EConsole.SendMessage("Successfully killed the thing!"); return true; }
+            { SendMessage(translation("cmd.kill.success")); return true; }
         
-        SR2EConsole.SendError("Not looking at a valid object!");
-        return false;
-    }
-
-    GameObject ShootRaycast()
-    {
-        GameObject obj = null;
-        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
-            obj = hit.collider.gameObject;
-        return obj;
+        return SendError(translation("cmd.error.notlookingatvalidobject"));
+        
     }
 
     bool Kill(GameObject gameObject)
@@ -72,11 +67,4 @@ public class KillCommand : SR2CCommand
         return didAThing;
     }
 
-    public override bool SilentExecute(string[] args)
-    {
-        if (!inGame) return true;
-        GameObject gameObject = ShootRaycast();
-        if (gameObject != null) Kill(gameObject);
-        return true;
-    }
 }

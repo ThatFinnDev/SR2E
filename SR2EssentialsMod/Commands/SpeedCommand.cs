@@ -2,50 +2,54 @@
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Saving;
 
-namespace SR2E.Commands
+namespace SR2E.Commands;
+
+public class SpeedCommand : SR2Command
 {
-    public class SpeedCommand : SR2CCommand
+    public override string ID { get; } = "speed";
+    public override string Usage { get; } = "speed <speed>";
+
+    private static float baseMaxAirSpeed = 10;
+    private static float baseAccAirSpeed = 60;
+    private static float baseMaxGroundSpeed = 10;
+    private static CharacterControllerParameters parameters;
+
+    public static void RemoteExc(float val)
     {
-        public override string ID { get; } = "speed";
-        public override string Usage { get; } = "speed <speed>";
-        public override string Description { get; } = "Sets the player speed";
+        if (parameters == null)
+            parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+        if (parameters == null) return;
+        parameters._maxGroundedMoveSpeed = val * baseMaxGroundSpeed;
+        parameters._maxAirMoveSpeed = val * baseMaxAirSpeed;
+        parameters._airAccelerationSpeed = val * baseAccAirSpeed;
+    }
 
-        private static float baseMaxAirSpeed = 10;
-        private static float baseAccAirSpeed = 60;
-        private static float baseMaxGroundSpeed = 10;
-        private static CharacterControllerParameters parameters;
-        public static void RemoteExc(float val)
+    public override bool Execute(string[] args)
+    {
+        if (!args.IsBetween(1,1)) return SendUsage();
+        if (!inGame) return SendLoadASaveFirst();
+
+        if (parameters == null)
+            parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+        if (parameters == null)
+            return SendError("cmd.error.srccnull");
+        float speedValue = 0;
+        if (!float.TryParse(args[0], out speedValue)) return SendError(translation("cmd.error.notvalidfloat",args[0]));
+        try
         {
-            if(parameters==null)
-                parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
 
-            parameters._maxGroundedMoveSpeed = val * baseMaxGroundSpeed;
-            parameters._maxAirMoveSpeed = val * baseMaxAirSpeed;
-            parameters._airAccelerationSpeed = val * baseAccAirSpeed;
+            parameters._maxGroundedMoveSpeed = speedValue * baseMaxGroundSpeed;
+            parameters._maxAirMoveSpeed = speedValue * baseMaxAirSpeed;
+            parameters._airAccelerationSpeed = speedValue * baseAccAirSpeed;
+
+            SR2ESavableDataV2.Instance.playerSavedData.speed = speedValue;
+
+            SendMessage(translation("cmd.speed.success",args[0]));
+            return true;
         }
-        public override bool Execute(string[] args)
+        catch
         {
-            if (args == null || args.Length != 1) return SendUsage();
-            if (!inGame) return SendLoadASaveFirst();
-
-            if(parameters==null)
-                parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
-            float speedValue = 0;
-            if (!float.TryParse(args[0], out speedValue))
-            { SR2EConsole.SendError(args[1] + " is not a valid float!"); return false; }
-            try
-            {
-                
-                parameters._maxGroundedMoveSpeed = speedValue * baseMaxGroundSpeed;
-                parameters._maxAirMoveSpeed = speedValue * baseMaxAirSpeed;
-                parameters._airAccelerationSpeed = speedValue * baseAccAirSpeed;
-
-                SR2ESavableDataV2.Instance.playerSavedData.speed = speedValue;
-
-                SR2EConsole.SendMessage($"Speed set to {args[0]}");
-                return true;
-            }
-            catch { SR2EConsole.SendError("An unknown error occured!"); return false; }
+            return SendError(translation("cmd.speed.unknownerror"));
         }
     }
 }

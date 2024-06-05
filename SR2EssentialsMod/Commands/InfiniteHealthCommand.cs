@@ -1,97 +1,60 @@
-﻿using Il2CppMonomiPark.SlimeRancher.UI;
+﻿using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.UI;
 
-namespace SR2E.Commands
+namespace SR2E.Commands;
+
+public class InfiniteHealthCommand : SR2Command
 {
-    public class InfiniteHealthCommand : SR2CCommand
+    public override string ID => "infhealth";
+    public override string Usage => "infhealth";
+
+    public override bool Execute(string[] args)
     {
-        public override string ID => "infhealth";
-        public override string Usage => "infhealth";
-        public override string Description => "Makes you invincible";
-        
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
-        {
-            return null;
-        }
-        public override bool Execute(string[] args)
-        { 
-            return Code(args, false);
-        }
-        public override bool SilentExecute(string[] args)
-        {
-            Code(args, true);
-            return true;
-        }
+        if (!args.IsBetween(0,0)) return SendNoArguments();
+        if (!inGame) return SendLoadASaveFirst();
 
-        public bool Code(string[] args, bool silent)
-        {
-            if (args != null) return SendUsage();
-            if (!inGame) return SendLoadASaveFirst();
+        if (SR2EEntryPoint.infHealthInstalled) { SR2EConsole.SendError(translation("cmd.infhealth.dedicatedmodinstalled")); return false; }
 
-            if (infHealth)
-            {
-                infHealth = false;
-                if (healthMeter == null)
-                    healthMeter = Get<HealthMeter>("Health Meter");
-                healthMeter.gameObject.active = true;
-                
-                SceneContext.Instance.PlayerState._model.maxHealth = normalHealth;
-                SceneContext.Instance.PlayerState.SetHealth(normalHealth); 
-                if(!silent) SR2EConsole.SendMessage("You're no longer invincible!");
-            }
-            else
-            {
-                infHealth = true;
-                if (healthMeter == null)
-                    healthMeter = Get<HealthMeter>("Health Meter");
-                healthMeter.gameObject.active = false;
-                
-                
-                normalHealth = SceneContext.Instance.PlayerState._model.maxHealth;
-                
-                SceneContext.Instance.PlayerState.SetHealth(int.MaxValue); 
-                SceneContext.Instance.PlayerState._model.maxHealth = int.MaxValue;
-                if(!silent) SR2EConsole.SendMessage("You're now invincible!");
-            }
-            return true;
-        }
-
-        public override void OnMainMenuUILoad()
+        if (infHealth)
         {
             infHealth = false;
+            if (healthMeter == null)
+                healthMeter = Get<HealthMeter>("Health Meter");
+            healthMeter.gameObject.active = true;
+            SendMessage(translation("cmd.infhealth.successnolonger"));
+        }
+        else
+        {
+            infHealth = true;;
+            if (healthMeter == null)
+                healthMeter = Get<HealthMeter>("Health Meter");
+            healthMeter.gameObject.active = false;
+            SendMessage(translation("cmd.infhealth.success"));
         }
 
-        public override void Update()
-        {
-            if(infHealth)
-                if (SceneContext.Instance != null)
-                    if (SceneContext.Instance.PlayerState != null)
-                        SceneContext.Instance.PlayerState.SetHealth(int.MaxValue);
-        }
+        return true;
+    }
 
-        public static int normalHealth = 100;
-        static bool infHealth = false;
-        static HealthMeter healthMeter;
-        
-        [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.SaveGameAndFlush))]
-        public static class InvincibleCorrectionPatch
+    public override void OnMainMenuUILoad()
+    {
+        infHealth = false;
+    }
+
+    static bool infHealth = false;
+
+    private static HealthMeter healthMeter;
+    public override void OnUICoreLoad()
+    {
+        healthMeter = Get<HealthMeter>("Health Meter");
+    }
+    [HarmonyPatch(typeof(PlayerModel), nameof(PlayerModel.LoseHealth))]
+    public class PlayerModelLoseHealthPatch
+    {
+        public static bool Prefix(PlayerState __instance, float health)
         {
-            public static void Prefix(AutoSaveDirector __instance)
-            {
-                if(infHealth)
-                    if (SceneContext.Instance != null)
-                        if (SceneContext.Instance.PlayerState != null)
-                        {
-                            
-                            infHealth = false;
-                            if (healthMeter == null)
-                                healthMeter = Get<HealthMeter>("Health Meter");
-                            healthMeter.gameObject.active = true;
-                
-                            SceneContext.Instance.PlayerState._model.maxHealth = normalHealth;
-                            SceneContext.Instance.PlayerState.SetHealth(normalHealth); 
-                        }
-            }
+            return !infHealth;
         }
     }
 
 }
+
