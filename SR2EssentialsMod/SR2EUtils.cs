@@ -9,6 +9,7 @@ using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppSystem.IO;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
+using UnityEngine.InputSystem.Controls;
 
 namespace SR2E
 {
@@ -524,6 +525,7 @@ namespace SR2E
                 foreach (IdentifiableType type in identifiableTypes)
                 {
                     bool isGadget = type.isGadget();
+                    if(type.ReferenceId.ToLower().Contains("Gordo")) continue;
                     if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                     if (!includeGadget && isGadget) continue;
                     if (!includeNormal && !isGadget) continue;
@@ -543,10 +545,12 @@ namespace SR2E
             }
             
             List<string> list = new List<string>();
+            List<string> listTwo = new List<string>();
             int i = 0;
             foreach (IdentifiableType type in identifiableTypes)
             {
                 bool isGadget = type.isGadget();
+                if(type.ReferenceId.ToLower().Contains("Gordo")) continue;
                 if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                 if (!includeGadget && isGadget) continue;
                 if (!includeNormal && !isGadget) continue;
@@ -570,6 +574,7 @@ namespace SR2E
                 foreach (IdentifiableType type in identifiableTypes)
                 {
                     bool isGadget = type.isGadget();
+                    if(type.ReferenceId.ToLower().Contains("Gordo")) continue;
                     if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                     if (!includeGadget && isGadget) continue;
                     if (!includeNormal && !isGadget) continue;
@@ -585,42 +590,44 @@ namespace SR2E
                                 {
                                     if(localizedString.StartsWith("!")) continue;
                                     i++;
-                                    list.Add(localizedString.Replace(" ", ""));
+                                    listTwo.Add(localizedString.Replace(" ", ""));
                                 }
                         }
                     }catch { }
                 }
             list.Sort();
+            listTwo.Sort();
+            list.AddRange(listTwo);
             return list;
         }
-
         internal static List<string> getKeyListByPartialName(string input, bool useContain)
         {
             if (String.IsNullOrWhiteSpace(input))
             {
                 List<string> nullList = new List<string>();
-                foreach (string key in System.Enum.GetNames(typeof(Key)))
-                    if (!String.IsNullOrEmpty(key))
-                        if (key != "None")
-                            nullList.Add(key.Replace(" ", ""));
+                foreach (Key key in System.Enum.GetValues<Key>())
+                    if (key != Key.None)
+                        if (key.ToString().ToLower().StartsWith(input.ToLower()))
+                            nullList.Add(key.ToString());
                 nullList.Sort();
                 return nullList;
             }
             
             List<string> list = new List<string>();
-            foreach (string key in System.Enum.GetNames(typeof(Key)))
-                if (!String.IsNullOrEmpty(key))
-                    if (key != "None")
-                        if (key.ToLower().Replace(" ", "").StartsWith(input.ToLower()))
-                            list.Add(key.Replace(" ", ""));
+            List<string> listTwo = new List<string>();
+            foreach (Key key in System.Enum.GetValues<Key>())
+                if (key != Key.None && key != Key.IMESelected)
+                    if (key.ToString().ToLower().StartsWith(input.ToLower()))
+                        list.Add(key.ToString());
             if(useContain)
-                foreach (string key in System.Enum.GetNames(typeof(Key)))
-                    if (!String.IsNullOrEmpty(key))
-                        if (key != "None")
-                            if (key.ToLower().Replace(" ", "").Contains(input.ToLower()))
-                                if(!list.Contains(key.Replace(" ", "")))
-                                    list.Add(key.Replace(" ", ""));
+                foreach (Key key in System.Enum.GetValues<Key>())
+                    if (key != Key.None && key != Key.IMESelected)
+                        if (key.ToString().ToLower().Contains(input.ToLower()))
+                            if(!list.Contains(key.ToString()))
+                                listTwo.Add(key.ToString());
             list.Sort();
+            listTwo.Sort();
+            list.AddRange(listTwo);
             return list;
         }
         internal static bool IsBetween(this string[] list, uint min, int max)
@@ -654,6 +661,16 @@ namespace SR2E
         }
         public static TripleDictionary<GameObject, ParticleSystemRenderer, string> FXLibrary = new TripleDictionary<GameObject, ParticleSystemRenderer, string>();
         public static TripleDictionary<string, ParticleSystemRenderer, GameObject> FXLibraryReversable = new TripleDictionary<string, ParticleSystemRenderer, GameObject>();
+
+        
+        static Dictionary<KeyCode, Key> lookup;
+
+        public static KeyControl kc(this Key key)
+        {
+            KeyControl kc = Keyboard.current[key];
+            if (kc != null) return kc;
+            return Keyboard.current[key];
+        }
 
     }
 }

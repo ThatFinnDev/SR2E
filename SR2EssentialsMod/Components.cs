@@ -1,9 +1,8 @@
 ﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Buttons;
-using SR2E.Patches;
+using SR2E.Patches.MainMenu;
 using UnityEngine.InputSystem;
-
 
 namespace SR2E;
 
@@ -69,11 +68,11 @@ public class IdentifiableObjectDragger : MonoBehaviour
     }
     public void Update()
     {
-        if (Keyboard.current.qKey.isPressed)
+        if (Key.Q.kc().isPressed)
         {
             distanceFromCamera -= Time.deltaTime * distanceChangeSpeed;
         }
-        if (Keyboard.current.eKey.isPressed)
+        if (Key.E.kc().isPressed)
         {
             distanceFromCamera += Time.deltaTime * distanceChangeSpeed;
         }
@@ -124,7 +123,7 @@ public class NoClipComponent : MonoBehaviour
             return baseSpeed;
         }
     }
-    bool isSprint => Keyboard.current.shiftKey.isPressed;
+    bool isSprint => Key.LeftShift.kc().isPressed;
     public static Transform player;
     public static SRCharacterController playerController;
     public static KinematicCharacterMotor playerMotor;
@@ -157,22 +156,22 @@ public class NoClipComponent : MonoBehaviour
 
     public void Update()
     {
-        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+        if (Key.A.kc().isPressed || Key.LeftArrow.kc().isPressed)
         {
             player.position += -transform.right * (speed * Time.deltaTime);
         }
 
-        if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+        if (Key.D.kc().isPressed || Key.RightArrow.kc().isPressed)
         {
             player.position += transform.right * (speed * Time.deltaTime);
         }
 
-        if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
+        if (Key.W.kc().isPressed || Key.UpArrow.kc().isPressed)
         {
             player.position += transform.forward * (speed * Time.deltaTime);
         }
 
-        if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)
+        if (Key.S.kc().isPressed || Key.DownArrow.kc().isPressed)
         {
             player.position += -transform.forward * (speed * Time.deltaTime);
         }

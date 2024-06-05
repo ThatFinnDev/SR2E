@@ -2,7 +2,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppTMPro;
 using UnityEngine.Localization;
 
-namespace SR2E.Patches;
+namespace SR2E.Patches.MainMenu;
 
 [HarmonyPatch(typeof(LocalizedVersionText), nameof(LocalizedVersionText.OnEnable))]
 public static class SR2LocalizedVersionTextPatch

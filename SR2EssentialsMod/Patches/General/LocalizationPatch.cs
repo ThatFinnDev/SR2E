@@ -1,7 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.UI.Localization;
 using System.Collections;
 
-namespace SR2E.Library.Patches;
+namespace SR2E.Patches.General;
 
 [HarmonyPatch(typeof(LocalizationDirector), "LoadTables")]
 public static class LocalizationDirectorLoadTablePatch

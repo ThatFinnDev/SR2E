@@ -191,7 +191,7 @@ public static class SR2ESaveManager
         internal static void Update()
         {
             foreach (KeyValuePair<Key,string> keyValuePair in data.keyBinds)
-                if (Keyboard.current[keyValuePair.Key].wasPressedThisFrame)
+                if (keyValuePair.Key.kc().wasPressedThisFrame)
                     if(WarpManager.warpTo==null)
                         SR2EConsole.ExecuteByString(keyValuePair.Value,true);
         }

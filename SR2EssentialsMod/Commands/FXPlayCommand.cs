@@ -101,7 +101,7 @@ public class FXPlayPauseFunction : MonoBehaviour
 
     public void Update()
     {
-        if (Keyboard.current.pKey.wasPressedThisFrame)
+        if (Key.P.kc().wasPressedThisFrame)
         {
             if (sys.isPlaying) sys.Pause();
             else sys.Play();

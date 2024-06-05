@@ -412,7 +412,7 @@ public static class SR2EModMenu
         if (isOpen)
         {
             if (listeninAction == null)
-                if (Keyboard.current.escapeKey.wasPressedThisFrame)
+                if (Key.Escape.kc().wasPressedThisFrame)
                     Close();
 
 
@@ -420,7 +420,7 @@ public static class SR2EModMenu
             {
                 try
                 {
-                    if (Keyboard.current[key].wasPressedThisFrame)
+                    if(key.kc().wasPressedThisFrame)
                     {
                         keyWasPressed(key);
                     }

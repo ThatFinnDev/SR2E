@@ -557,7 +557,7 @@ namespace SR2E
                             scrollCompletlyDown = false;
                         }
 
-                    if (Keyboard.current.tabKey.wasPressedThisFrame)
+                    if (Key.Tab.kc().wasPressedThisFrame)
                     {
                         if (autoCompleteContent.childCount != 0)
                             try
@@ -573,13 +573,13 @@ namespace SR2E
                     }
                 }
 
-                if (Keyboard.current.enterKey.wasPressedThisFrame)
+                if (Key.Enter.kc().wasPressedThisFrame)
                     if (commandInput.text != "")
                         Execute();
 
                 if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
                 {
-                    if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                    if (Key.UpArrow.kc().wasPressedThisFrame)
                     {
                         commandInput.text = commandHistory[commandHistoryIdx];
                         commandInput.MoveToEndOfLine(false, false);
@@ -600,10 +600,10 @@ namespace SR2E
                         Toggle();*/
                 if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
                 {
-                    if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+                    if (Key.DownArrow.kc().wasPressedThisFrame)
                         NextAutoComplete();
 
-                    if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                    if (Key.UpArrow.kc().wasPressedThisFrame)
                         PrevAutoComplete();
                 }
 
