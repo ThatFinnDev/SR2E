@@ -24,7 +24,12 @@ public static class SR2ESaveManager
     {
         BindingManger.Update();
     }
-    internal static void Load() { if (File.Exists(path)) data = JsonConvert.DeserializeObject<SR2ESaveData>(File.ReadAllText(path));else data = new SR2ESaveData(); }
+    internal static void Load()
+    {
+            if (File.Exists(path)) data = JsonConvert.DeserializeObject<SR2ESaveData>(File.ReadAllText(path));
+            else data = new SR2ESaveData();
+        
+    }
     internal static void Save() { File.WriteAllText(path,JsonConvert.SerializeObject(data, Formatting.Indented)); }
     static string path { get { FileStorageProvider provider = SystemContext.Instance.GetStorageProvider().TryCast<FileStorageProvider>(); if (provider==null) return Application.persistentDataPath + "/SR2E.data"; return provider.savePath + "/SR2E.data"; } }
    
@@ -129,7 +134,9 @@ public static class SR2ESaveManager
             }
             return SR2EError.NoError;
         }
-        public string sceneGroup;
+        
+        
+        public string sceneGroup = "Empty";
         public float x;
         public float y;
         public float z;
@@ -149,6 +156,7 @@ public static class SR2ESaveManager
             get { return new Quaternion(rotX, rotY, rotZ, rotW); }
         }
 
+        [JsonConstructor]
         internal Warp(string sceneGroup, Vector3 position, Quaternion rotation)
         {
             this.sceneGroup = sceneGroup;
@@ -190,10 +198,16 @@ public static class SR2ESaveManager
         
         internal static void Update()
         {
-            foreach (KeyValuePair<Key,string> keyValuePair in data.keyBinds)
-                if (keyValuePair.Key.kc().wasPressedThisFrame)
-                    if(WarpManager.warpTo==null)
-                        SR2EConsole.ExecuteByString(keyValuePair.Value,true);
+            try
+            {
+                foreach (KeyValuePair<Key,string> keyValuePair in data.keyBinds)
+                    if (keyValuePair.Key.kc().wasPressedThisFrame)
+                        if(WarpManager.warpTo==null)
+                            SR2EConsole.ExecuteByString(keyValuePair.Value,true);
+            }
+            catch 
+            {
+            }
         }
     }
     
