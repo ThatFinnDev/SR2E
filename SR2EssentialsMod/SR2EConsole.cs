@@ -454,7 +454,7 @@ namespace SR2E
             RegisterCommand(new NoClipCommand());
             RegisterCommand(new StrikeCommand());
             RegisterCommand(new FXPlayCommand());
-            RegisterCommand(new TimeScaleCommand());
+            //RegisterCommand(new TimeScaleCommand());
             RegisterCommand(new InfiniteHealthCommand());
             RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new ScaleCommand());
