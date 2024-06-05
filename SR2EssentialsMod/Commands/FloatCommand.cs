@@ -2,11 +2,10 @@ using System.Collections;
 
 namespace SR2E.Commands;
 
-public class FloatCommand : SR2CCommand
+public class FloatCommand : SR2Command
 {
     public override string ID => "floaty";
     public override string Usage => "floaty <duration>";
-    public override string Description => "Temporarily disables gravity for the selected object for the specified duration.";
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -17,21 +16,32 @@ public class FloatCommand : SR2CCommand
 
     public override bool Execute(string[] args)
     {
-        if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+        if (!args.IsBetween(1,1)) return SendUsage();
+        if (!inGame) return SendLoadASaveFirst();
+        
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        
+        float duration = 0;
+        try { duration = float.Parse(args[0]); }
+        catch { return SendError(translation("cmd.error.notvalidfloat",args[0])); }
+        if (duration<=0)  return SendError(translation("cmd.error.notfloatabove",args[0],0));
+        
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
             if (hit.rigidbody == null)
-            { SR2EConsole.SendError($"Object {hit} has no rigidbody"); return false; }
-            MelonCoroutines.Start(TimeGravity(hit, args[0]));
+            { SendError(translation("cmd.error.notlookingatvalidobject")); return false; }
+            MelonCoroutines.Start(TimeGravity(hit, duration));
+            SendMessage(translation("cmd.float.success",duration));
         }
-        else
-        { SR2EConsole.SendWarning("Not looking at a valid object!"); return false; }
+        else return SendError(translation("cmd.error.notlookingatanything")); 
         return true;
     }
 
-    private IEnumerator TimeGravity(RaycastHit hit, string duration)
+    private IEnumerator TimeGravity(RaycastHit hit, float duration)
     {
         hit.rigidbody.useGravity = false;
-        yield return new WaitForSecondsRealtime(float.Parse(duration));
+        yield return new WaitForSecondsRealtime(duration);
         hit.rigidbody.useGravity = true;
     }
 }

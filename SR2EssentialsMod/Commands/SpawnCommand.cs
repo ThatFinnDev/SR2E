@@ -1,134 +1,72 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Regions;
-using Il2CppMonomiPark.SlimeRancher.World;
+﻿
+namespace SR2E.Commands;
 
-namespace SR2E.Commands
+public class SpawnCommand : SR2Command
 {
-    public class SpawnCommand: SR2CCommand
+
+    public override string ID => "spawn";
+    public override string Usage => "spawn <object> [amount]";
+
+    public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-    
-        public override string ID => "spawn";
-        public override string Usage => "spawn <object> [amount]";
-        public override string Description => "Spawns something in front of your face";
-        
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
-        {
-            if (argIndex == 0)
-            {
-                
-                string firstArg = "";
-                if (args != null)
-                    firstArg = args[0];
-                List<string> list = new List<string>();
-                int i = -1;
-                foreach (IdentifiableType type in SR2EEntryPoint.identifiableTypes)
-                {
-                    
-                    if(type.ReferenceId.StartsWith("GadgetDefinition")) continue;
-                    if (i > 55)
-                        break;
-                    try
-                    {
-                        if (type.LocalizedName != null)
-                        {
-                            string localizedString = type.LocalizedName.GetLocalizedString();
-                            if (localizedString.ToLower().Replace(" ", "").StartsWith(firstArg.ToLower()))
-                            {
-                                i++;
-                                list.Add(localizedString.Replace(" ", ""));
-                            }
-                        }
-                    }
-                    catch  { }
+        if (argIndex == 0)
+            return getIdentListByPartialName(args == null ? null : args[0], true, false,true);
+        if (argIndex == 1)
+            return new List<string> { "1", "5", "10", "20", "30", "50" };
 
-                }
-
-                return list;
-            }
-            if (argIndex == 1)
-                return new List<string> {"1","5","10","20","30","50"};
-
-            return null;
-        }
-        public override bool Execute(string[] args)
-        {
-            if (args == null)
-            {
-                SR2EConsole.SendMessage($"Usage: {Usage}");
-                return false;
-            }
-
-            if (args.Length != 2&&args.Length != 1)
-            {
-                SR2EConsole.SendMessage($"Usage: {Usage}");
-                return false;
-            }
-
-            
-            if (!inGame) { SR2EConsole.SendError("Load a save first!"); return false; }
-
-
-            string itemName = "";
-            string identifierTypeName = args[0];
-            IdentifiableType type = SR2EEntryPoint.getIdentifiableByName(identifierTypeName);
-
-            if (type == null)
-            {
-                type = SR2EEntryPoint.getIdentifiableByLocalizedName(identifierTypeName.Replace("_", ""));
-                if (type == null)
-                { SR2EConsole.SendError(args[0] + " is not a valid IdentifiableType!"); return false; }
-                string name = type.LocalizedName.GetLocalizedString();
-                if (name.Contains(" "))
-                    itemName = "'" + name + "'";
-                else
-                    itemName = name;
-            }
-            else
-                itemName=type.name;
-            int amount = 1;
-            if (args.Length == 2)
-            {
-                if (!int.TryParse(args[1], out amount))
-                {
-                    SR2EConsole.SendError(args[1] + " is not a valid integer!");
-                    return false;
-                }
-
-                if (amount <= 0)
-                {
-                    SR2EConsole.SendError(args[1] + " is not an integer above 0!");
-                    return false;
-                }
-            }
-
-            if(type.ReferenceId.StartsWith("GadgetDefinition"))
-            { SR2EConsole.SendError(args[0] + " is a gadget, not an item!"); return false; }
-            
-            for (int i = 0; i < amount; i++)
-            {
-                if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
-                {
-                    try
-                    {
-                        GameObject spawned = null;
-                        //if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
-                        //else 
-                        spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
-                        
-                        spawned.transform.position = hit.point+hit.normal*PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
-                        var delta = -(hit.point - Camera.main.transform.position).normalized;
-                        spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
-                    }
-                    catch 
-                    { }
-                }
-            }
-            
-            
-            SR2EConsole.SendMessage($"Successfully spawned {amount} {itemName}");
-            
-            return true;
-        }
+        return null;
     }
 
-    
+    public override bool Execute(string[] args)
+    {
+        if (!args.IsBetween(1,2)) return SendUsage();
+        if (!inGame) return SendLoadASaveFirst();
+
+
+        string identifierTypeName = args[0];
+        IdentifiableType type = getIdentByName(identifierTypeName);
+        if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
+
+        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));
+        
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        
+        int amount = 1;
+        if (args.Length == 2)
+        {
+            if (!int.TryParse(args[1], out amount)) return SendError(translation("cmd.error.notvalidint",args[1]));
+
+            if (amount <= 0) return SendError(translation("cmd.error.notintabove",args[1],0));
+            
+        }
+
+
+        for (int i = 0; i < amount; i++)
+        {
+            if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+            {
+                try
+                {
+                    GameObject spawned = null;
+                    //if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
+                    //else 
+                    spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
+
+                    spawned.transform.position =
+                        hit.point + hit.normal * PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
+                    var delta = -(hit.point - Camera.main.transform.position).normalized;
+                    spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+
+        SendMessage(translation("cmd.spawn.success",amount,type.getName()));
+
+        return true;
+    }
 }

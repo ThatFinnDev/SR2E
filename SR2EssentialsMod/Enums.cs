@@ -12,3 +12,9 @@ public enum VacModes
     NONE,
     LAUNCH,
 }
+
+[Serializable]
+public enum Trool
+{
+    False, True, Toggle
+}

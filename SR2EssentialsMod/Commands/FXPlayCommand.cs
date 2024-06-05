@@ -1,87 +1,110 @@
 ﻿using UnityEngine.InputSystem;
 
-namespace SR2E.Commands
+namespace SR2E.Commands;
+
+public class FXPlayCommand : SR2Command
 {
-    public class FXPlayCommand: SR2CCommand
+    public override string ID => "fxplayer";
+    public override string Usage => "fxplayer <FX> [speed] [playandpause]";
+
+    public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-    
-        public override string ID => "fxplayer";
-        public override string Usage => "fxplayer <FX> [speed] [playandpause]";
-        public override string Description => "Plays a effect in front of you.";
-        
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
+        if (argIndex == 0)
         {
-            if (argIndex == 0)
-            {
-                List<string> list = new List<string>();
-                foreach (var p in FXLibrary)
-                    list.Add(p.Value.Item2);
-                return list;
-            }
-            if (argIndex == 1)
-                return new List<string>() { "0.25", "0.5", "0.75", "1", "1.25", "1.5", "2", };
-            if (argIndex == 2)
-                return new List<string>() { "true", "false", };
-            return null;
+            List<string> list = new List<string>();
+            foreach (var p in FXLibrary)
+                list.Add(p.Value.Item2);
+            return list;
         }
-        public ParticleSystem currFX;
-        public override bool Execute(string[] args)
-        {
-            if (args == null)
-            {
-                SR2EConsole.SendMessage($"Usage: {Usage}");
-                return false;
-            }
 
-            if (!(args.Length <= 3))
-            {
-                SR2EConsole.SendMessage($"Usage: {Usage}");
-                return false;
-            }
-
-            if (currFX != null && !currFX.isStopped)
-            {
-                SR2EConsole.SendError("Please wait for the current FX to stop.");
-                return false;
-            }
-            
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
-            {
-                GameObject fxobj;
-                try
-                { fxobj = FXLibraryReversable[args[0]].Item2; }
-                catch
-                { SR2EConsole.SendError("Invalid FX Name!"); return false; }
-                fxobj.SpawnFX(Camera.main.transform.position + (Camera.main.transform.forward * 3));
-                if (args.Length >= 2)
-                {
-                    fxobj.GetComponent<ParticleSystem>().playbackSpeed = float.Parse(args[1]);
-                    if (args.Length == 3)
-                    {
-                        if (bool.Parse(args[2]))
-                            fxobj.AddComponent<FXPlayPauseFunction>();
-                    }
-                }
-                currFX = fxobj.GetComponent<ParticleSystem>();
-            }
-            return true;
-        }
+        if (argIndex == 1)
+            return new List<string>() { "0.25", "0.5", "0.75", "1", "1.25", "1.5", "2", };
+        if (argIndex == 2)
+            return new List<string>() { "true", "false", };
+        return null;
     }
-    [RegisterTypeInIl2Cpp(false)]
-    public class FXPlayPauseFunction : MonoBehaviour
+
+    public ParticleSystem currFX;
+
+    public override bool Execute(string[] args)
     {
-        public ParticleSystem sys;
-        public void Awake()
+        if (!args.IsBetween(1,3)) return SendUsage();
+        if (!inGame) SendLoadASaveFirst();
+
+        if (currFX != null && !currFX.isStopped) return SendError(translation("cmd.fxplayer.waitforstop"));
+           
+        
+
+        Camera cam = Camera.main;
+        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+            
+
+        float playbackSpeed = 0;
+        bool playAndPause = false;
+        if (args.Length >= 2)
         {
-            sys = GetComponent<ParticleSystem>();
-        }
-        public void Update()
-        {
-            if (Keyboard.current.pKey.wasPressedThisFrame)
+            try { playbackSpeed = float.Parse(args[1]); }
+            catch { return SendError(translation("cmd.error.notvalidfloat",args[1])); }
+
+            if (playbackSpeed <= 0) return SendError(translation("cmd.error.notfloatabove",args[1],0));
+            
+
+
+            if (args.Length == 3)
             {
-                if (sys.isPlaying) sys.Pause();
-                else sys.Play();
+                string boolToParse = args[2].ToLower();
+                if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",args[2]));
+                
+                if (boolToParse == "true") playAndPause = true;
             }
+        }
+
+
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+        {
+            GameObject fxobj;
+            try
+            {
+                fxobj = FXLibraryReversable[args[0]].Item2;
+            }
+            catch { return SendError(translation("cmd.fxplayer.invalidfxname")); }
+
+            fxobj.SpawnFX(cam.transform.position + hit.transform.position);
+
+            if (args.Length >= 2)
+            {
+                fxobj.GetComponent<ParticleSystem>().playbackSpeed = playbackSpeed;
+                if (args.Length == 3)
+                {
+                    if (playAndPause)
+                        fxobj.AddComponent<FXPlayPauseFunction>();
+                }
+            }
+
+            currFX = fxobj.GetComponent<ParticleSystem>();
+            SendMessage(translation("cmd.fxplayer.success"));
+        }
+
+        return SendError(translation( "cmd.error.notlookingatanything"));
+    }
+}
+
+[RegisterTypeInIl2Cpp(false)]
+public class FXPlayPauseFunction : MonoBehaviour
+{
+    public ParticleSystem sys;
+
+    public void Awake()
+    {
+        sys = GetComponent<ParticleSystem>();
+    }
+
+    public void Update()
+    {
+        if (Key.P.kc().wasPressedThisFrame)
+        {
+            if (sys.isPlaying) sys.Pause();
+            else sys.Play();
         }
     }
 }

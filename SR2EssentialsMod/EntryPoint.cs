@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -14,6 +15,7 @@ using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using UnityEngine.Localization;
 using SR2E.Buttons;
+using UnityEngine.Networking;
 
 namespace SR2E
 {
@@ -23,7 +25,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.2"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.4.3"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -40,20 +42,7 @@ namespace SR2E
 
         static AssetBundle bundle;
 
-        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
-        internal static IdentifiableType getIdentifiableByName(string name)
-        {
-            foreach (IdentifiableType type in identifiableTypes)
-                if (type.name.ToUpper() == name.ToUpper()) return type;
-            return null;
-        }
-        internal static IdentifiableType getIdentifiableByLocalizedName(string name)
-        {
-            foreach (IdentifiableType type in identifiableTypes) 
-                try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","") == name.ToUpper()) return type; }
-                catch {}
-            return null;
-        }
+
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed { get { return prefs.GetEntry<float>("noclipAdjustSpeed").Value; } }
         static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
@@ -70,6 +59,8 @@ namespace SR2E
         {
             prefs.DeleteEntry("noclipFlySpeed");
             prefs.DeleteEntry("noclipFlySprintSpeed");
+            prefs.DeleteEntry("experimentalStuff");
+            prefs.DeleteEntry("skipEngagementPrompt");
 
             if (!prefs.HasEntry("noclipAdjustSpeed"))
                 prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
@@ -86,17 +77,9 @@ namespace SR2E
             if (!prefs.HasEntry("enableDebugDirector"))
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable Debug Menu", false).disableWarning((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
-            
+
             if (!prefs.HasEntry("doesConsoleSync"))
-                prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false).disableWarning((System.Action)(
-                    () =>
-                    {
-                        if (consoleUsesSR2Font != SR2EConsole.syncedSetuped)
-                        {
-                            if(SR2EConsole.syncedSetuped) SR2EConsole.SetupConsoleSync();
-                            else SR2EConsole.UnSetupConsoleSync();
-                        }
-                    }));
+                prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
             if (!prefs.HasEntry("debugLogging"))
                 prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
             if (!prefs.HasEntry("devMode"))
@@ -120,7 +103,21 @@ namespace SR2E
                 rootOBJ.name = "SR2ELibraryROOT";
                 Object.DontDestroyOnLoad(rootOBJ);
             }
+
+            MelonCoroutines.Start(CheckForNewVersion());
         }
+        public static string newVersion = null;
+        IEnumerator CheckForNewVersion()
+        {
+            UnityWebRequest uwr = UnityWebRequest.Get("https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt");
+            yield return uwr.SendWebRequest();
+
+            if (!uwr.isNetworkError)
+                newVersion = uwr.downloadHandler.text.Replace(" ","").Replace("\n","");
+            
+        }
+
+        
         //Logging code from KomiksPL
         private static void AppLogUnity(string message, string trace, LogType type)
         {
@@ -158,7 +155,10 @@ namespace SR2E
             RefreshPrefs();
             if (showUnityErrors)
                 Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
-            
+            try
+            {
+                SR2ELanguageManger.LoadLanguage(); }
+            catch (Exception e) { Console.WriteLine(e); }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)
                 {
@@ -182,7 +182,6 @@ namespace SR2E
             }
         }
 
-        public static Damage KillDamage => killDamage;
         internal static Damage killDamage;
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
@@ -201,14 +200,10 @@ namespace SR2E
                     foreach (var obj in bundle.LoadAllAssets())
                     {
                         if (obj != null)
-                            switch (obj.name)
+                            if(obj.name=="AllMightyMenus")
                             {
-                                case "SR2EFallbackFont":
-                                    normalFont = obj.Cast<TMP_FontAsset>();
-                                    break;
-                                case "AllMightyMenus":
-                                    Object.Instantiate(obj);
-                                    break;
+                                Object.Instantiate(obj);
+                                break;
                             }
                     }
                     
@@ -288,11 +283,11 @@ namespace SR2E
 
         internal static void SaveDirectorLoaded()
         {
-            LocalizedString label = AddTranslation("Mods", "b.button_mods_sr2e", "UI");
+            LocalizedString label = AddTranslation(translation("buttons.mods.label"), "b.button_mods_sr2e", "UI");
             new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
             new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
             
-            if (devMode) new CustomPauseMenuButton( AddTranslation("Debug Player", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
+            if (devMode) new CustomPauseMenuButton( AddTranslation(translation("buttons.debugplayer.label"), "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
 
         }
         public override void OnSceneWasInitialized(int buildindex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = true; }

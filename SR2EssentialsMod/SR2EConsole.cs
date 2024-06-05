@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Storage;
@@ -29,24 +30,10 @@ namespace SR2E
                 return;
             try
             {
-                if (message.Contains("[SR2E]:"))
-                {
-                    return;
-                }
-
-                if (message.StartsWith("[UnityExplorer]"))
-                {
-                    return;
-                }
-                if (message.StartsWith("[]:"))
-                {
-                    return;
-                }
-
-                if (!SR2EEntryPoint.consoleFinishedCreating)
-                    return;
-                if (consoleContent.childCount >= maxMessages)
-                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("[SR2E]:")) return;
+                if (message.StartsWith("[UnityExplorer]")) return;
+                if (message.StartsWith("[]:")) return;
+                if (!SR2EEntryPoint.consoleFinishedCreating) return;
                 if (message.Contains("\n"))
                 {
                     if (doMLLog) mlog.Msg(message);
@@ -86,25 +73,10 @@ namespace SR2E
                 return;
             try
             {
-                if (message.Contains("[SR2E]:"))
-                {
-                    return;
-                }
-
-                if (message.StartsWith("[UnityExplorer]"))
-                {
-                    return;
-                }
-                
-                if (message.StartsWith("[]:"))
-                {
-                    return;
-                }
-
-                if (!SR2EEntryPoint.consoleFinishedCreating)
-                    return;
-                if (consoleContent.childCount >= maxMessages)
-                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("[SR2E]:")) return;
+                if (message.StartsWith("[UnityExplorer]")) return;
+                if (message.StartsWith("[]:")) return;
+                if (!SR2EEntryPoint.consoleFinishedCreating) return;
                 if (message.Contains("\n"))
                 {
                     if (doMLLog) mlog.Error(message);
@@ -145,25 +117,10 @@ namespace SR2E
                 return;
             try
             {
-                if (message.Contains("[SR2E]:"))
-                {
-                    return;
-                }
-
-                if (message.StartsWith("[UnityExplorer]"))
-                {
-                    return;
-                }
-
-                if (message.StartsWith("[]:"))
-                {
-                    return;
-                }
-
-                if (!SR2EEntryPoint.consoleFinishedCreating)
-                    return;
-                if (consoleContent.childCount >= maxMessages)
-                    GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                if (message.Contains("[SR2E]:")) return;
+                if (message.StartsWith("[UnityExplorer]")) return;
+                if (message.StartsWith("[]:")) return;
+                if (!SR2EEntryPoint.consoleFinishedCreating) return;
                 if (message.Contains("\n"))
                 {
                     if (doMLLog) mlog.Msg(message, new Color32(255, 155, 0, 255));
@@ -242,24 +199,24 @@ namespace SR2E
         /// Registers a command to be used in the console
         /// </summary>
         
-        public static bool RegisterCommand(SR2CCommand cmd)
+        public static bool RegisterCommand(SR2Command cmd)
         {
             if (commands.ContainsKey(cmd.ID.ToLowerInvariant()))
             {
-                SendMessage($"Trying to register command with id '<color=white>{cmd.ID.ToLowerInvariant()}</color>' but the ID is already registered!");
+                SendMessage(translation("cmd.alreadyregistered",cmd.ID.ToLowerInvariant()));
                 return false;
             }
             commands.Add(cmd.ID.ToLowerInvariant(), cmd);
-            List<KeyValuePair<string, SR2CCommand>> myList = commands.ToList();
+            List<KeyValuePair<string, SR2Command>> myList = commands.ToList();
 
-            myList.Sort(delegate (KeyValuePair<string, SR2CCommand> pair1, KeyValuePair<string, SR2CCommand> pair2) { return pair1.Key.CompareTo(pair2.Key); });
+            myList.Sort(delegate (KeyValuePair<string, SR2Command> pair1, KeyValuePair<string, SR2Command> pair2) { return pair1.Key.CompareTo(pair2.Key); });
             commands = myList.ToDictionary(x => x.Key, x => x.Value);
             return true;
         }
         /// <summary>
         /// Registers multiple commands to be used in the console
         /// </summary>
-        public static bool RegisterCommands(SR2CCommand[] cmds)
+        public static bool RegisterCommands(SR2Command[] cmds)
         {
             bool successful = true;
             for (int i = 0; i < cmds.Length; i++)
@@ -273,7 +230,7 @@ namespace SR2E
         /// <summary>
         /// Unregisters a command
         /// </summary>
-        public static bool UnRegisterCommand(SR2CCommand cmd)
+        public static bool UnRegisterCommand(SR2Command cmd)
         {
             return UnRegisterCommand(cmd.ID);
         }
@@ -287,7 +244,7 @@ namespace SR2E
                 commands.Remove(cmd.ToLowerInvariant());
                 return true;
             }
-            SendMessage($"Trying to unregister command with id '<color=white>{cmd.ToLowerInvariant()}</color>' but the ID is not registered!");
+            SendMessage(translation("cmd.notregistered",cmd.ToLowerInvariant()));
             return false;
         }
         /// <summary>
@@ -296,71 +253,63 @@ namespace SR2E
         public static void ExecuteByString(string input, bool silent = false)
         {
             string[] cmds = input.Split(';');
-            foreach (string c in cmds)
+            foreach (string cc in cmds)
             {
-
-                if (!String.IsNullOrEmpty(c))
+                string c = cc.TrimStart(' ');
+                if (!String.IsNullOrWhiteSpace(c))
                 {
                     bool spaces = c.Contains(" ");
                     string cmd = spaces ? c.Substring(0, c.IndexOf(' ')) : c;
 
                     if (commands.ContainsKey(cmd))
                     {
+                        bool canPlay = false;
+                        if (!SR2EConsole.isOpen)
+                            if (!SR2EModMenu.isOpen)
+                                if (Time.timeScale != 0)
+                                    canPlay = true;
+
+                        if (!canPlay && commands[cmd].executeWhenConsoleIsOpen) canPlay = true;
+                        if (!silent) canPlay = true;
                         bool successful;
                         if (spaces)
                         {
+                            
                             var argString = c.TrimEnd(' ') + " ";
                             List<string> split = argString.Split(' ').ToList();
                             split.RemoveAt(0);
                             split.RemoveAt(split.Count - 1);
-                            bool shouldRunNormalExecute = true;
-                            bool canPlay = false;
-                            if (!SR2EConsole.isOpen)
-                                if (!SR2EModMenu.isOpen)
-                                    if (Time.timeScale != 0)
-                                        canPlay = true;
-
-                            if (!canPlay && commands[cmd].executeWhenConsoleIsOpen)
-                                canPlay = true;
-                            if (!silent)
-                                canPlay = true;
                             if (canPlay)
                             {
                                 if (split.Count != 0)
                                 {
                                     string[] stringArray = split.ToArray();
-                                    if (silent)
-                                    {
-                                        shouldRunNormalExecute = !commands[cmd].SilentExecute(stringArray);
-                                    }
-
-                                    if (shouldRunNormalExecute)
-                                        successful = commands[cmd].Execute(stringArray);
+                                    SR2Command command = commands[cmd];
+                                    command.silent = silent;
+                                    successful = command.Execute(stringArray);
+                                    command.silent = false;
                                 }
                                 else
                                 {
-                                    if (silent)
-                                    { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
-
-                                    if (shouldRunNormalExecute)
-                                        successful = commands[cmd].Execute(null);
-
+                                    SR2Command command = commands[cmd];
+                                    command.silent = silent;
+                                    successful = command.Execute(null);
+                                    command.silent = false;
                                 }
                             }
                         }
-                        else
+                        else if(canPlay)
                         {
-                            bool shouldRunNormalExecute = true;
-                            if (silent)
-                            { shouldRunNormalExecute = !commands[cmd].SilentExecute(null); }
-                            if (shouldRunNormalExecute)
-                                successful = commands[cmd].Execute(null);
+                            SR2Command command = commands[cmd];
+                            command.silent = silent;
+                            successful = command.Execute(null);
+                            command.silent = false;
                         }
                     }
                     else
                         if (isOpen)
                             if (!SR2EModMenu.isOpen)
-                                SendError("Unknown command. Please use '<color=white>help</color>' for available commands");
+                                SendError(translation("cmd.unknowncommand"));
                 }
             }
                 
@@ -370,7 +319,7 @@ namespace SR2E
 
         internal static Transform transform;
         internal static GameObject gameObject;
-        internal static Dictionary<string, SR2CCommand> commands = new Dictionary<string, SR2CCommand>();
+        internal static Dictionary<string, SR2Command> commands = new Dictionary<string, SR2Command>();
 
         static List<string> commandHistory;
         static int commandHistoryIdx = -1;
@@ -378,7 +327,6 @@ namespace SR2E
         static MelonLogger.Instance mlog;
         static Scrollbar _scrollbar;
         static bool shouldResetTime = false;
-        const int maxMessages = 100;
         private static bool scrollCompletlyDown = false;
 
         static void RefreshAutoComplete(string text)
@@ -387,13 +335,11 @@ namespace SR2E
             
             // autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, ((744f/1080f)*Screen.height), autoCompleteContent.position.z);
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
-            {
                 selectedAutoComplete = 0;
-            }
             for (int i = 0; i < autoCompleteContent.childCount; i++)
                 Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
-            if (String.IsNullOrEmpty(text))
-            { autoCompleteScrollView.SetActive(false); return; }
+            if (String.IsNullOrWhiteSpace(text))
+            {  return; }
             if (text.Contains(" "))
             {
                 string cmd = text.Substring(0, text.IndexOf(' '));
@@ -407,20 +353,28 @@ namespace SR2E
                     if (split.Count != 0)
                         args = split.ToArray();
                     List<string> possibleAutoCompletes = (commands[cmd].GetAutoComplete(argIndex, args));
+                    if (possibleAutoCompletes != null) if (possibleAutoCompletes.Count == 0) possibleAutoCompletes = null;
+                    Color textColor = new Color(0.75f, 0.75f, 0.75f, 1f);
                     if (possibleAutoCompletes != null)
                     {
-                        int maxPredictions = 50; //This is to reduce lag
+                        int maxPredictions = MAX_AUTOCOMPLETE; 
                         int predicted = 0;
                         foreach (string argument in possibleAutoCompletes)
                         {
                             if (predicted > maxPredictions)
                                 return;
+                            string containing = "";
+                            if (args != null) containing = split[split.Count - 1];
                             if (args != null)
-                                if (!argument.ToLower().StartsWith(split[split.Count - 1].ToLower()))
+                                if (!argument.ToLower().Contains(containing.ToLower()))
                                     continue;
                             predicted++;
                             GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
-                            instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = argument;
+                            TextMeshProUGUI textMesh = instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                            textMesh.color = textColor;
+                            if (args == null) textMesh.text = "<color=white>"+argument+"</color>";
+                            else textMesh.text = new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(argument, "<color=white>" + argument.Substring(argument.ToLower().IndexOf(containing.ToLower()),containing.Length) + "</color>", 1);
+                            
                             instance.SetActive(true);
                             instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
                             {
@@ -443,7 +397,7 @@ namespace SR2E
                 }
             }
             else
-                foreach (KeyValuePair<string, SR2CCommand> valuePair in commands)
+                foreach (KeyValuePair<string, SR2Command> valuePair in commands)
                     if (valuePair.Key.StartsWith(text) && !valuePair.Value.Hidden)
                     {
                         GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
@@ -470,8 +424,6 @@ namespace SR2E
         static void SetupCommands()
         {
             RegisterCommand(new FloatCommand());
-            RegisterCommand(new StopWeatherCommand());
-            RegisterCommand(new ListWeathersCommand());
             RegisterCommand(new GiveCommand());
             RegisterCommand(new UtilCommand());;
             RegisterCommand(new BindCommand());
@@ -482,7 +434,7 @@ namespace SR2E
             RegisterCommand(new ClearInventoryCommand());
             RegisterCommand(new ModsCommand());
             RegisterCommand(new HelpCommand());
-            RegisterCommand(new RefillSlotsCommand());
+            RegisterCommand(new RefillInvCommand());
             RegisterCommand(new NewBucksCommand());
             RegisterCommand(new KillCommand());
             RegisterCommand(new KillAllCommand());
@@ -502,22 +454,18 @@ namespace SR2E
             RegisterCommand(new NoClipCommand());
             RegisterCommand(new StrikeCommand());
             RegisterCommand(new FXPlayCommand());
-            RegisterCommands(new SR2CCommand[]{new WarpCommand(), new SaveWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
-            RegisterCommands(new SR2CCommand[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
+            //RegisterCommand(new TimeScaleCommand());
+            RegisterCommand(new InfiniteHealthCommand());
+            RegisterCommand(new InfiniteEnergyCommand());
+            RegisterCommand(new ScaleCommand());
+            RegisterCommands(new SR2Command[]{new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
+            RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
 
-            if (!SR2EEntryPoint.infHealthInstalled) RegisterCommand(new InfiniteHealthCommand());
-            if (!SR2EEntryPoint.infEnergyInstalled) RegisterCommand(new InfiniteEnergyCommand());
         }
 
         internal static bool syncedSetuped = false;
-        internal static void UnSetupConsoleSync()
-        {
-            syncedSetuped = false;
-            MelonLogger.MsgDrawingCallbackHandler -= (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
-            MelonLogger.ErrorCallbackHandler -= (s, s1) => SendError($"[{s}]: {s1}", false);
-            MelonLogger.WarningCallbackHandler -= (s, s1) => SendWarning($"[{s}]: {s}", false);
-        }
-        internal static void SetupConsoleSync()
+        
+        static void SetupConsoleSync()
         {
             syncedSetuped = true;
             MelonLogger.MsgDrawingCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
@@ -530,19 +478,19 @@ namespace SR2E
             switch (sceneName)
             {
                 case "GameCore":
-                    foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                    foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnGameCoreLoad();
                     break;
                 case "PlayerCore":
-                    foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                    foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnPlayerCoreLoad();
                     break;
                 case "UICore":
-                    foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                    foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnUICoreLoad();
                     break;
                 case "MainMenuUI":
-                    foreach (KeyValuePair<string,SR2CCommand> pair in commands)
+                    foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnMainMenuUILoad();
                     break;
             }
@@ -555,7 +503,7 @@ namespace SR2E
                     SetupConsoleSync();
 
             mlog = new MelonLogger.Instance("SR2E");
-
+            
             consoleBlock = transform.getObjRec<GameObject>("consoleBlock");
             consoleMenu = transform.getObjRec<GameObject>("consoleMenu");
             consoleContent = transform.getObjRec<Transform>("ConsoleContent"); 
@@ -578,6 +526,7 @@ namespace SR2E
             SR2ESaveManager.Start();
 
             SetupModMenu();
+            if(syncedSetuped) SetupConsoleSync();
         }
 
         static MultiKey openKey = new MultiKey(new Key[] { Key.LeftCtrl, Key.Tab });
@@ -585,7 +534,7 @@ namespace SR2E
         static GameObject autoCompleteEntryPrefab;
         static GameObject consoleBlock;
         static GameObject consoleMenu;
-        static Transform consoleContent;
+        internal static Transform consoleContent;
         static Transform autoCompleteContent;
         static GameObject autoCompleteScrollView;
         static GameObject messagePrefab;
@@ -608,7 +557,7 @@ namespace SR2E
                             scrollCompletlyDown = false;
                         }
 
-                    if (Keyboard.current.tabKey.wasPressedThisFrame)
+                    if (Key.Tab.kc().wasPressedThisFrame)
                     {
                         if (autoCompleteContent.childCount != 0)
                             try
@@ -624,15 +573,17 @@ namespace SR2E
                     }
                 }
 
-                if (Keyboard.current.enterKey.wasPressedThisFrame)
+                if (Key.Enter.kc().wasPressedThisFrame)
                     if (commandInput.text != "")
                         Execute();
 
                 if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
                 {
-                    if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                    if (Key.UpArrow.kc().wasPressedThisFrame)
                     {
                         commandInput.text = commandHistory[commandHistoryIdx];
+                        commandInput.MoveToEndOfLine(false, false);
+                        RefreshAutoComplete(commandInput.text);
                         commandHistoryIdx -= 1;
                         autoCompleteScrollView.SetActive(false);
                     }
@@ -649,10 +600,10 @@ namespace SR2E
                         Toggle();*/
                 if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
                 {
-                    if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+                    if (Key.DownArrow.kc().wasPressedThisFrame)
                         NextAutoComplete();
 
-                    if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                    if (Key.UpArrow.kc().wasPressedThisFrame)
                         PrevAutoComplete();
                 }
 
@@ -688,15 +639,18 @@ namespace SR2E
                                 autoCompleteContent.position.z);
                     }
                 }
-                catch
-                {
-                }
+                catch { }
 
+                try
+                {
+                    if (consoleContent.childCount >= MAX_CONSOLELINES) GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                }
+                catch  { }
 
             }
 
             //Console Commands Update
-            foreach (KeyValuePair<string, SR2CCommand> pair in commands)
+            foreach (KeyValuePair<string, SR2Command> pair in commands)
                 pair.Value.Update();
         }
         

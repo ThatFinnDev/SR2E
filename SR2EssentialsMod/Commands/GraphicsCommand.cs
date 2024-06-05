@@ -3,11 +3,10 @@ using Il2CppMonomiPark.SlimeRancher.Rendering;
 
 namespace SR2E.Commands;
 
-public class GraphicsCommand : SR2CCommand
+public class GraphicsCommand : SR2Command
 {
     public override string ID => "graphics";
     public override string Usage => "graphics <mode>";
-    public override string Description => "Makes your game look cool, or worse";
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     { 
         if (argIndex == 0)
@@ -35,11 +34,11 @@ public class GraphicsCommand : SR2CCommand
     internal static bool activated = false;
     public override bool Execute(string[] args)
     {
-        if (args == null || args.Length != 1) return SendUsage();
+        if (!args.IsBetween(1,1)) return SendUsage();
 
 
         if (rangeLightInstance == null)
-        { SR2EConsole.SendError("An unknown error occured!"); return false; }
+        { SendError(translation("cmd.graphics.norangelights")); return false; }
 
 
         rangeLightInstance.transform.GetChild(0).gameObject.SetActive(false);
@@ -53,26 +52,26 @@ public class GraphicsCommand : SR2CCommand
         switch (args[0])
         {
             default:
-                SR2EConsole.SendMessage("Successfully set graphics to normal!");
+                SendMessage(translation("cmd.graphics.success","normal"));
                 return true;
             case "POTATO":
                 rangeLightInstance.transform.GetChild(2).gameObject.SetActive(true);
-                SR2EConsole.SendMessage("Successfully set graphics to potato!");
+                SendMessage(translation("cmd.graphics.success","potato"));
                 return true;
             case "SHINY":
                 rangeLightInstance.transform.GetChild(0).gameObject.SetActive(true);
-                SR2EConsole.SendMessage("Successfully set graphics to shiny!");
+                SendMessage(translation("cmd.graphics.success","shiny"));
                 return true;
             case "FAKEDAY":
                 rangeLightInstance.transform.GetChild(1).gameObject.SetActive(true);
-                SR2EConsole.SendMessage("Successfully set graphics to fakeday!");
+                SendMessage(translation("cmd.graphics.success","fakeday"));
                 return true;
             case "ORANGE":
                 rangeLightInstance.transform.GetChild(1).gameObject.SetActive(true);
                 rangeLightInstance.GetComponent<SunAndMoonVector>().enabled = true;
                 for (int i = 0; i < vectorUpdaters.Length; i++)
                     vectorUpdaters[i].enabled = true;
-                SR2EConsole.SendMessage("Successfully set graphics to orange!");
+                SendMessage(translation("cmd.graphics.success","orange"));
                 return true;
         }
     }

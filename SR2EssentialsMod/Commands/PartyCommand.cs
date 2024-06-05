@@ -1,11 +1,10 @@
 ﻿using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 namespace SR2E.Commands;
-public class PartyCommand : SR2CCommand
+public class PartyCommand : SR2Command
 {
     public override string ID => "party";
     public override string Usage => "party";
-    public override string Description => "Enable Party Mode";
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         return null;
@@ -14,8 +13,7 @@ public class PartyCommand : SR2CCommand
     internal static ColorAdjustments myAdjustments = null;
     public override bool Execute(string[] args)
     {
-        if (args != null)
-        { SR2EConsole.SendError($"The '<color=white>{ID}</color>' command takes no arguments"); return false; }
+        if (!args.IsBetween(0,0)) return SendNoArguments();
         if (defaultVolume != null)
         {
             if (myAdjustments != null)
@@ -23,7 +21,7 @@ public class PartyCommand : SR2CCommand
                 myAdjustments.hueShift.value = 0;
                 myAdjustments.hueShift.overrideState = false;
                 defaultVolume = null;
-                SR2EConsole.SendMessage("Successfully disabled party mode!"); 
+                SendMessage(translation("cmd.party.success2")); 
                 return true;
             }
         }
@@ -33,11 +31,11 @@ public class PartyCommand : SR2CCommand
             if (volume.isGlobal)
             {
                 defaultVolume = volume;
-                SR2EConsole.SendMessage("Successfully enabled party mode!");
+                SendMessage(translation("cmd.party.success"));
                 return true;
             }
 
-        SR2EConsole.SendError("An unknown error occured!");
+        SendError(translation("cmd.party.novolume"));
         return false;
     }
 

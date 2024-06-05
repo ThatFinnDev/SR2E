@@ -1,70 +1,61 @@
-﻿namespace SR2E.Commands
+﻿namespace SR2E.Commands;
+
+public class HelpCommand : SR2Command
 {
-    public class HelpCommand : SR2CCommand
+    public override string ID => "help";
+    public override string Usage => "help [cmdName]";
+
+    public string GetCommandDescription(string command)
     {
-        public override string ID => "help";
-        public override string Usage => "help [cmdName]";
-        public override string Description => "Displays all commands available and their usage";
-        public override string ExtendedDescription => "Displays all commands available and their usage, can also take a command as a input to display it by itself.";
-        
-        public string GetCommandDescription(string command)
+        if (SR2EConsole.commands.ContainsKey(command))
+            return SR2EConsole.commands[command].ExtendedDescription;
+        return string.Empty;
+    }
+
+    public override List<string> GetAutoComplete(int argIndex, string[] args)
+    {
+        if (argIndex == 0)
         {
-            if (SR2EConsole.commands.ContainsKey(command))
+            List<string> list = new List<string>();
+            foreach (KeyValuePair<string, SR2Command> entry in SR2EConsole.commands)
             {
-                var cmd = SR2EConsole.commands[command];
-                if (!string.IsNullOrEmpty(cmd.ExtendedDescription))
-                    return cmd.ExtendedDescription;
-                else
-                    return cmd.Description;
+                if (!entry.Value.Hidden)
+                    list.Add(entry.Key);
             }
-            else return string.Empty;
+
+            return list;
         }
-        
-        public override List<string> GetAutoComplete(int argIndex, string[] args)
+
+        return null;
+    }
+
+    public override bool Execute(string[] args)
+    {
+        if (!args.IsBetween(0,1)) return SendUsage();
+        if (args == null)
         {
-            if (argIndex==0)
-            {
-                List<string> list = new List<string>();
-                foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
-                {
-                    if (!entry.Value.Hidden)
-                        list.Add(entry.Key);
-                }
-                return list;
-            }
-            return null;
-        }
-        public override bool Execute(string[] args)
-        {
-            if (args == null)
-            {
-                string currText = null;
-                currText = $"<color=#45d192>List of all currently registered commands:</color>";
-                currText = $"{currText}\n<color=#45d192><> is a required argument; [] is an optional argument</color>";
-                currText = $"{currText}\n";
+            string currText = translation("cmd.help.success")+"\n";
 
 
-                foreach (KeyValuePair<string, SR2CCommand> entry in SR2EConsole.commands)
-                {
-                    if (!entry.Value.Hidden) currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
-                }
-                SR2EConsole.SendMessage(currText);
-                return true; 
-            }
-            if (args.Length == 1)
+            foreach (KeyValuePair<string, SR2Command> entry in SR2EConsole.commands)
             {
-                var desc = GetCommandDescription(args[0]);
-                if (SR2EConsole.commands.ContainsKey(args[0]))
-                {
-                    SR2EConsole.SendMessage($"Usage: {SR2EConsole.commands[args[0]].Usage}\n Description: {desc}");
-                    return true;
-                }
-                SR2EConsole.SendMessage($"The key '<color=white>{args[0]}</color>' is not a valid command");
-                return false;
+                if (!entry.Value.Hidden)
+                    currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
             }
-            
-            SR2EConsole.SendMessage($"Usage: {Usage}");
-            return false;
+
+            SendMessage(currText);
+            return true;
         }
+
+        var desc = GetCommandDescription(args[0]);
+        if (SR2EConsole.commands.ContainsKey(args[0]))
+        {
+            SendMessage(translation("cmd.help.successspecific",SR2EConsole.commands[args[0]].Usage,desc));
+            return true;
+        }
+
+        SendError(translation("cmd.help.notvalidcommand",args[0]));
+        return false;
+        
     }
 }

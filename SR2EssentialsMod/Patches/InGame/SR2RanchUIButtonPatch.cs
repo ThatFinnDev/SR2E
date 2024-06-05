@@ -1,7 +1,7 @@
 ﻿using SR2E.Buttons;
 using Il2CppMonomiPark.SlimeRancher.UI.RanchHouse;
 
-namespace SR2E.Patches;
+namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(RanchHouseMenuRoot), nameof(RanchHouseMenuRoot.Awake))]
 public static class SR2RanchUIButtonPatch

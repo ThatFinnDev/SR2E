@@ -1,7 +1,7 @@
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppTMPro;
 
-namespace SR2E.Library.Patches;
+namespace SR2E.Patches.General;
 
 [HarmonyPatch(typeof(ButtonBehaviorViewHolder), nameof(ButtonBehaviorViewHolder.OnEnable))]
 public static class ButtonBehaviorViewHolderFontGetPatch
