@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SR2E.Library.Patches;
-
+﻿namespace SR2E.Patches.General;
 
 [HarmonyPatch(typeof(AutoSaveDirector), "Awake")]
 public static class SaveDirectorPatch

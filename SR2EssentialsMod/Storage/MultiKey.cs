@@ -21,12 +21,12 @@ public class MultiKey
         {
             bool wasPressed = false;
             foreach (Key key in requiredKeys)
-                if (Keyboard.current[key].wasPressedThisFrame)
+                if(key.kc().wasPressedThisFrame)
                 {
                     wasPressed = true;
                     foreach (Key keyTwo in requiredKeys)
                         if (key != keyTwo)
-                            if (!Keyboard.current[keyTwo].isPressed)
+                            if (!keyTwo.kc().isPressed)
                                 wasPressed = false;
                 }
             return wasPressed;
@@ -39,12 +39,12 @@ public class MultiKey
         {
             bool wasReleased = false;
             foreach (Key key in requiredKeys)
-                if (Keyboard.current[key].wasReleasedThisFrame)
+                if(key.kc().wasReleasedThisFrame)
                 {
                     wasReleased = true;
                     foreach (Key keyTwo in requiredKeys)
                         if (key != keyTwo)
-                            if (!Keyboard.current[keyTwo].isPressed)
+                            if (!keyTwo.kc().isPressed)
                                 wasReleased = false;
                 }
             return wasReleased;
@@ -56,7 +56,7 @@ public class MultiKey
         get
         {
             foreach (Key key in requiredKeys)
-                if (!Keyboard.current[key].isPressed)
+                if(!key.kc().isPressed)
                     return false;
             return true;
         }

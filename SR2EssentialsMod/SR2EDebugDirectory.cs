@@ -80,17 +80,17 @@ internal class SR2EDebugDirector : MonoBehaviour
 		if (SR2EModMenu.isOpen) return;
 		if (Time.timeScale == 0)  return;
 		
-		if (Keyboard.current.digit0Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("giveupgrades *", true);
-		if (Keyboard.current.digit7Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("infenergy true", true);
-		if (Keyboard.current.digit8Key.wasPressedThisFrame) SR2EConsole.ExecuteByString("infhealth", true);
-		if (Keyboard.current.digit9Key.wasPressedThisFrame) GameContext.Instance.AutoSaveDirector.SaveGame();
-		if (Keyboard.current.kKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("clearinv", true);
-		if (Keyboard.current.lKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("refillinv", true);
-		if (Keyboard.current.nKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("noclip", true);
-		if (Keyboard.current.numpadPlusKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks 1000", true);
-		if (Keyboard.current.numpadMinusKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks -1000", true);
-		if (Keyboard.current.leftBracketKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("fastforward -1", true);
-		if (Keyboard.current.rightBracketKey.wasPressedThisFrame) SR2EConsole.ExecuteByString("fastforward 1", true);
+		if (Key.Digit0.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("giveupgrades *", true);
+		if (Key.Digit7.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("infenergy true", true);
+		if (Key.Digit8.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("infhealth", true);
+		if (Key.Digit9.kc().wasPressedThisFrame) GameContext.Instance.AutoSaveDirector.SaveGame();
+		if (Key.K.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("clearinv", true);
+		if (Key.L.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("refillinv", true);
+		if (Key.N.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("noclip", true);
+		if (Key.NumpadPlus.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks 1000", true);
+		if (Key.NumpadMinus.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks -1000", true);
+		if (Key.LeftBracket.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("fastforward -1", true);
+		if (Key.RightBracket.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("fastforward 1", true);
 
 	}
 

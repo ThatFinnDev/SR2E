@@ -182,7 +182,6 @@ namespace SR2E
             }
         }
 
-        public static Damage KillDamage => killDamage;
         internal static Damage killDamage;
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {

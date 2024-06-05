@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
 
-namespace SR2E.Patches;
+namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(VacuumItem), nameof(VacuumItem.Expel), typeof(GameObject), typeof(bool), typeof(float), typeof(SlimeAppearance.AppearanceSaveSet))]
 internal class VacuumItemExpelPatch
