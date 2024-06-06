@@ -173,7 +173,7 @@ cmd.party.novolume=An error occured, couldn't find volume!
 
 cmd.refillinv.success=Successfully refilled your inventory!
 cmd.refillinv.successsingle=Successfully refilled slot number $1!
-cmd.refillinv.error.slotdoesntexist=There are only $1 number of slots!
+cmd.refillinv.error.slotdoesntexist=There are only $1 slots!
 cmd.refillinv.error.slotempty=Slot $1 is empty!
 cmd.refillinv.error.slotnotunlocked=Slot $1 hasn't been unlocked!
 cmd.refillinv.description=Refills your inventory
