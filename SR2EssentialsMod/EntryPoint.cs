@@ -250,7 +250,7 @@ namespace SR2E
                     break;
                 
             }
-            
+            GameContext.Instance.gameObject.AddComponent<ConsoleControllerWatch>();
             SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
