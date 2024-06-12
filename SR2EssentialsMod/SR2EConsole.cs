@@ -10,20 +10,6 @@ using UnityEngine.UI;
 
 namespace SR2E
 {
-    internal static class ConsoleKeyboard
-    {
-        public static InputBinding console;
-    }
-    internal static class ConsoleController
-    {
-        public static InputBinding console;
-
-        public static void ConsoleOpen()
-        {
-            System.Diagnostics.Process.Start("osk.exe");
-        }
-    }
-
     public static class SR2EConsole
     {
         /// <summary>
