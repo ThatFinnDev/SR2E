@@ -23,9 +23,9 @@ namespace SR2E
     {
         public const string Name = "SR2E"; // Name of the Mod.  (MUST BE SET)
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
-        public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
+        public const string Author = "SR2E Team"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.4"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.5.0"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -42,6 +42,7 @@ namespace SR2E
 
         static AssetBundle bundle;
 
+        public const bool spawnAny = true; // disable for release please
 
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed { get { return prefs.GetEntry<float>("noclipAdjustSpeed").Value; } }
@@ -92,7 +93,11 @@ namespace SR2E
                 prefs.CreateEntry("noclipSprintMultiply", 2f, "Noclip sprint speed multiplier", false).disableWarning();
         }
 
-        
+        public override void OnEarlyInitializeMelon()
+        {
+            MelonLogger.Log(System.ConsoleColor.Green, Credits.TeamAsString());
+        }
+
         public override void OnLateInitializeMelon()
         {
             if (Get<GameObject>("SR2ELibraryROOT")) { rootOBJ = Get<GameObject>("SR2ELibraryROOT"); }
@@ -150,6 +155,15 @@ namespace SR2E
         }
         public override void OnInitializeMelon()
         {
+            if (spawnAny)
+            {
+                for (int amount = 0; amount <= 10; amount++)
+                {
+                    MelonLogger.BigError("SR2E", "DO NOT SHARE ANY UNRELEASED CONTENT FOUND IN THIS VERSION");
+                }
+            }
+
+
             instance = this;
             prefs = MelonPreferences.CreateCategory("SR2E","SR2E");
             RefreshPrefs();
@@ -235,6 +249,9 @@ namespace SR2E
                             FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
                     }
 
+                    GameContext.Instance.gameObject.AddComponent<ConsoleControllerWatch>();
+                    SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
+
                     break;
                 case "UICore":
                     if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2EConsole.ExecuteByString(onSaveLoadCommand);
@@ -250,8 +267,6 @@ namespace SR2E
                     break;
                 
             }
-            GameContext.Instance.gameObject.AddComponent<ConsoleControllerWatch>();
-            SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
         internal static void SetupFonts()

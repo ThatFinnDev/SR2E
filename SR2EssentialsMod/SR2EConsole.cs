@@ -10,17 +10,11 @@ using UnityEngine.UI;
 
 namespace SR2E
 {
-    internal static class ConsoleKeyboard
-    {
-        public static InputBinding console;
-    }
     internal static class ConsoleController
     {
-        public static InputBinding console;
-
         public static void ConsoleOpen()
         {
-            System.Diagnostics.Process.Start("osk.exe");
+            
         }
     }
 
@@ -468,6 +462,8 @@ namespace SR2E
             RegisterCommand(new NoClipCommand());
             RegisterCommand(new StrikeCommand());
             RegisterCommand(new FXPlayCommand());
+            if(SR2EEntryPoint.spawnAny)
+                RegisterCommand(new LoadAllAssetsCommand());
             //RegisterCommand(new TimeScaleCommand());
             RegisterCommand(new InfiniteHealthCommand());
             RegisterCommand(new InfiniteEnergyCommand());

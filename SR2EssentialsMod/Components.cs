@@ -24,7 +24,7 @@ public class ConsoleControllerWatch : MonoBehaviour
         {
             if (Gamepad.current.yButton.wasPressedThisFrame)
             {
-                SR2EConsole.Open();
+                SR2EConsole.Toggle();
                 ConsoleController.ConsoleOpen();
             }
         }
