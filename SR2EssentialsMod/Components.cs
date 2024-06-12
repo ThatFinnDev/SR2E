@@ -16,22 +16,6 @@ public class ObjectBlocker : MonoBehaviour
 }
 
 [RegisterTypeInIl2Cpp(false)]
-public class ConsoleControllerWatch : MonoBehaviour
-{
-    public void Update()
-    {
-        if (Gamepad.current != null)
-        {
-            if (Gamepad.current.yButton.wasPressedThisFrame)
-            {
-                SR2EConsole.Open();
-                ConsoleController.ConsoleOpen();
-            }
-        }
-    }
-}
-
-[RegisterTypeInIl2Cpp(false)]
 public class FlingMode : MonoBehaviour
 {
     public void Update()
