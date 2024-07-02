@@ -25,7 +25,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.4"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.4.5"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -45,8 +45,8 @@ namespace SR2E
 
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed { get { return prefs.GetEntry<float>("noclipAdjustSpeed").Value; } }
-        static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
-        static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
+        internal static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
+        internal static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
         internal static bool syncConsole { get { return prefs.GetEntry<bool>("doesConsoleSync").Value; } }
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
@@ -105,7 +105,19 @@ namespace SR2E
             }
 
             MelonCoroutines.Start(CheckForNewVersion());
+            
+            //This is because ML has no way (to my knowledge) to get the version
+            string logFilePath = Application.dataPath+"/../MelonLoader/Latest.log";
+            using(System.IO.FileStream logFileStream = new System.IO.FileStream(logFilePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
+            {
+                using(System.IO.StreamReader logFileReader = new System.IO.StreamReader(logFileStream))
+                {
+                    string text = logFileReader.ReadToEnd();
+                    MLVERSION = text.Split("\n")[1].Split("v")[1].Split(" ")[0];
+                }
+            }
         }
+        public static string MLVERSION = "unknown";
         public static string newVersion = null;
         IEnumerator CheckForNewVersion()
         {
@@ -209,10 +221,30 @@ namespace SR2E
                     
                     break;
                 case "MainMenuUI":
-                    
-                    if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) SR2EConsole.ExecuteByString(onMainMenuLoadCommand);
+
                     SaveCountChanged = false;
                     Time.timeScale = 1f;
+                    try
+                    {
+                        actionMaps = new Dictionary<string, InputActionMap>();
+                        MainGameActions = new Dictionary<string, InputAction>();
+                        PausedActions = new Dictionary<string, InputAction>();
+                        DebugActions = new Dictionary<string, InputAction>();
+                        foreach (InputActionMap map in GameContext.Instance.InputDirector._inputActions.actionMaps)
+                            actionMaps.Add(map.name, map);
+                        foreach (InputAction action in actionMaps["MainGame"].actions)
+                            MainGameActions.Add(action.name,action); 
+                        foreach (InputAction action in actionMaps["Paused"].actions)
+                            PausedActions.Add(action.name,action); 
+                        foreach (InputAction action in actionMaps["Debug"].actions)
+                            DebugActions.Add(action.name,action); 
+                    }
+                    catch (Exception e)
+                    {
+                        MelonLogger.Error(e);
+                        MelonLogger.Error("There was a problem loading SR2 action maps!");
+                    }
+                    
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
@@ -237,7 +269,6 @@ namespace SR2E
 
                     break;
                 case "UICore":
-                    if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2EConsole.ExecuteByString(onSaveLoadCommand);
                     if(SceneContext.Instance.Player.GetComponent<SR2EDebugDirector>()==null)
                         SceneContext.Instance.Player.AddComponent<SR2EDebugDirector>();
                     break;
