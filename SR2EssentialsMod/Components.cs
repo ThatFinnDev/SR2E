@@ -1,6 +1,7 @@
 ﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Buttons;
+using SR2E.Commands;
 using SR2E.Patches.MainMenu;
 using UnityEngine.InputSystem;
 
@@ -156,26 +157,27 @@ public class NoClipComponent : MonoBehaviour
 
     public void Update()
     {
-        if (Key.A.kc().isPressed || Key.LeftArrow.kc().isPressed)
+        if(NoClipCommand.horizontal!=null)
         {
-            player.position += -transform.right * (speed * Time.deltaTime);
+            float horizontal = NoClipCommand.horizontal.ReadValue<float>();
+            float vertical = NoClipCommand.vertical.ReadValue<float>();
+            if(horizontal>0.01f||horizontal<-0.01f)
+                player.position += transform.right * (horizontal*speed * Time.deltaTime);
+            if(vertical>0.01f||vertical<-0.01f)
+                player.position += transform.forward * (vertical*speed * Time.deltaTime);
         }
-
-        if (Key.D.kc().isPressed || Key.RightArrow.kc().isPressed)
+        else
         {
-            player.position += transform.right * (speed * Time.deltaTime);
+            if (Key.A.kc().isPressed || Key.LeftArrow.kc().isPressed)
+                player.position += -transform.right * (speed * Time.deltaTime);
+            if (Key.D.kc().isPressed || Key.RightArrow.kc().isPressed)
+                player.position += transform.right * (speed * Time.deltaTime);
+            if (Key.W.kc().isPressed || Key.UpArrow.kc().isPressed)
+                player.position += transform.forward * (speed * Time.deltaTime);
+            if (Key.S.kc().isPressed || Key.DownArrow.kc().isPressed)
+                player.position += -transform.forward * (speed * Time.deltaTime);
         }
-
-        if (Key.W.kc().isPressed || Key.UpArrow.kc().isPressed)
-        {
-            player.position += transform.forward * (speed * Time.deltaTime);
-        }
-
-        if (Key.S.kc().isPressed || Key.DownArrow.kc().isPressed)
-        {
-            player.position += -transform.forward * (speed * Time.deltaTime);
-        }
-
+            
         if (Mouse.current.scroll.ReadValue().y > 0)
         {
             baseSpeed += (speedAdjust * Time.deltaTime);

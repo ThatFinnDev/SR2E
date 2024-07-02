@@ -15,6 +15,10 @@ namespace SR2E
 {
     public static class SR2EUtils
     {
+        internal static Dictionary<string, InputActionMap> actionMaps = new Dictionary<string, InputActionMap>();
+        internal static Dictionary<string, InputAction> MainGameActions = new Dictionary<string, InputAction>();
+        internal static Dictionary<string, InputAction> PausedActions = new Dictionary<string, InputAction>();
+        internal static Dictionary<string, InputAction> DebugActions = new Dictionary<string, InputAction>();
         public static WeatherStateDefinition[] weatherStateDefinitions => Resources.FindObjectsOfTypeAll<WeatherStateDefinition>();
 
         internal static GameObject rootOBJ;

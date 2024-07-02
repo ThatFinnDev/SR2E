@@ -1,4 +1,5 @@
 ﻿using SR2E.Saving;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
@@ -37,6 +38,14 @@ namespace SR2E.Commands
                 return true;
             }
             catch { return false; }
+        }
+
+        public static InputAction horizontal;
+        public static InputAction vertical;
+        public override void OnMainMenuUILoad()
+        {
+            horizontal = MainGameActions["Horizontal"];
+            vertical = MainGameActions["Vertical"];
         }
     }
 }
