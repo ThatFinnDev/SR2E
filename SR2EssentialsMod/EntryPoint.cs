@@ -45,8 +45,8 @@ namespace SR2E
 
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed { get { return prefs.GetEntry<float>("noclipAdjustSpeed").Value; } }
-        static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
-        static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
+        internal static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
+        internal static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
         internal static bool syncConsole { get { return prefs.GetEntry<bool>("doesConsoleSync").Value; } }
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
@@ -209,10 +209,26 @@ namespace SR2E
                     
                     break;
                 case "MainMenuUI":
-                    
-                    if (!System.String.IsNullOrEmpty(onMainMenuLoadCommand)) SR2EConsole.ExecuteByString(onMainMenuLoadCommand);
+
                     SaveCountChanged = false;
                     Time.timeScale = 1f;
+                    try
+                    {
+                        foreach (InputActionMap map in GameContext.Instance.InputDirector._inputActions.actionMaps)
+                            actionMaps.Add(map.name, map);
+                        foreach (InputAction action in actionMaps["MainGame"].actions)
+                            MainGameActions.Add(action.name,action); 
+                        foreach (InputAction action in actionMaps["Paused"].actions)
+                            PausedActions.Add(action.name,action); 
+                        foreach (InputAction action in actionMaps["Debug"].actions)
+                            DebugActions.Add(action.name,action); 
+                    }
+                    catch (Exception e)
+                    {
+                        MelonLogger.Error(e);
+                        MelonLogger.Error("There was a problem loading SR2 action maps!");
+                    }
+                    
                     break;
                 case "StandaloneEngagementPrompt":
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
@@ -237,7 +253,6 @@ namespace SR2E
 
                     break;
                 case "UICore":
-                    if (!System.String.IsNullOrEmpty(onSaveLoadCommand)) SR2EConsole.ExecuteByString(onSaveLoadCommand);
                     if(SceneContext.Instance.Player.GetComponent<SR2EDebugDirector>()==null)
                         SceneContext.Instance.Player.AddComponent<SR2EDebugDirector>();
                     break;
