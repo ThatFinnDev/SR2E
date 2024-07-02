@@ -1,4 +1,5 @@
 ﻿using SR2E.Saving;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
@@ -25,7 +26,6 @@ namespace SR2E.Commands
                 {
                     SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
                     SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
-                    SR2EConsole.SendWarning(translation("cmd.noclip.info"));
                     SendMessage(translation("cmd.noclip.success"));
                 }
                 else
@@ -37,6 +37,14 @@ namespace SR2E.Commands
                 return true;
             }
             catch { return false; }
+        }
+
+        public static InputAction horizontal;
+        public static InputAction vertical;
+        public override void OnMainMenuUILoad()
+        {
+            horizontal = MainGameActions["Horizontal"];
+            vertical = MainGameActions["Vertical"];
         }
     }
 }

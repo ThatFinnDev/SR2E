@@ -488,10 +488,12 @@ namespace SR2E
                 case "UICore":
                     foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnUICoreLoad();
+                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onSaveLoadCommand)) SR2EConsole.ExecuteByString(SR2EEntryPoint.onSaveLoadCommand);
                     break;
                 case "MainMenuUI":
                     foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnMainMenuUILoad();
+                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onMainMenuLoadCommand)) SR2EConsole.ExecuteByString(SR2EEntryPoint.onMainMenuLoadCommand);
                     break;
             }
         }

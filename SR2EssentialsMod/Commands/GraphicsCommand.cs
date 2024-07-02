@@ -49,7 +49,7 @@ public class GraphicsCommand : SR2Command
         for (int i = 0; i < vectorUpdaters.Length; i++)
             vectorUpdaters[i].enabled = false;
         
-        switch (args[0])
+        switch (args[0].ToUpper())
         {
             default:
                 SendMessage(translation("cmd.graphics.success","normal"));

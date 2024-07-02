@@ -116,7 +116,7 @@ public static class SR2EModMenu
 
             }));
         }
-
+        modContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
     }
 
     /// <summary>

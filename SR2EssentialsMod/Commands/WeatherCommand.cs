@@ -10,11 +10,11 @@ public class WeatherCommand : SR2Command
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0) return new List<string> { "list", "change" };
+        if (argIndex == 0) return new List<string> { "list", "modify" };
         if (argIndex == 1)
         {
             if (args[0] == "list") return new List<string> { "all", "running" };
-            if (args[0] == "change")
+            if (args[0] == "modify")
             {
                 var list = new List<string>();
                 foreach (var state in weatherStateDefinitions) list.Add(state.name.Replace(" ", ""));
@@ -22,8 +22,8 @@ public class WeatherCommand : SR2Command
             }
         }
 
-        if (argIndex == 2) if (args[0] == "change")
-                return new List<string> { "start", "stop" };
+        if (argIndex == 2) if (args[0] == "modify")
+                return new List<string> { "start", "stop", "toggle" };
         
         return null;
     }
@@ -62,7 +62,7 @@ public class WeatherCommand : SR2Command
                         SendMessage(translation("cmd.weather.successlistrunning",stateNames));
                         return true;
                     }
-                    if (args[1] == "change")
+                    if (args[1] == "all")
                     {
                         var stateNames = "";
                         foreach (var state in weatherStateDefinitions) stateNames += $"\n{state.GetName()}";
