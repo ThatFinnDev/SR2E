@@ -164,7 +164,6 @@ cmd.newbucks.description=Adds or removes newbucks
 cmd.noclip.success=Sucessfully activated noclip!
 cmd.noclip.success2=Sucessfully deactivated noclip!
 cmd.noclip.description=Activates or deactivates noclip
-cmd.noclip.info=FYI: Controller input for noclip doesn't work yet!
 
 cmd.party.success=Successfully enabled party mode!
 cmd.party.success2=Successfully disabled party mode!

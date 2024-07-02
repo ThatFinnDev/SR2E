@@ -105,7 +105,19 @@ namespace SR2E
             }
 
             MelonCoroutines.Start(CheckForNewVersion());
+            
+            //This is because ML has no way (to my knowledge) to get the version
+            string logFilePath = Application.dataPath+"/../MelonLoader/Latest.log";
+            using(System.IO.FileStream logFileStream = new System.IO.FileStream(logFilePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
+            {
+                using(System.IO.StreamReader logFileReader = new System.IO.StreamReader(logFileStream))
+                {
+                    string text = logFileReader.ReadToEnd();
+                    MLVERSION = text.Split("\n")[1].Split("v")[1].Split(" ")[0];
+                }
+            }
         }
+        public static string MLVERSION = "unknown";
         public static string newVersion = null;
         IEnumerator CheckForNewVersion()
         {
@@ -214,6 +226,10 @@ namespace SR2E
                     Time.timeScale = 1f;
                     try
                     {
+                        actionMaps = new Dictionary<string, InputActionMap>();
+                        MainGameActions = new Dictionary<string, InputAction>();
+                        PausedActions = new Dictionary<string, InputAction>();
+                        DebugActions = new Dictionary<string, InputAction>();
                         foreach (InputActionMap map in GameContext.Instance.InputDirector._inputActions.actionMaps)
                             actionMaps.Add(map.name, map);
                         foreach (InputAction action in actionMaps["MainGame"].actions)
