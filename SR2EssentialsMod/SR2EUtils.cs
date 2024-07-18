@@ -49,6 +49,7 @@ namespace SR2E
 
         public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
 
+        internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new Dictionary<string, LocalizedString>();
         public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
         {
             StringTable table2 = LocalizationUtil.GetTable(table);
@@ -79,7 +80,13 @@ namespace SR2E
             StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
             return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
-        
+        public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
+        {
+            LocalizedString localizedString = AddTranslation(translation(sr2eTranslationID), key, table);
+            sr2etosrlanguage.Add(sr2eTranslationID,localizedString);
+            return localizedString;
+        }
+
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos) => SpawnActor(obj, pos, Quaternion.identity);
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)=> SpawnActor(obj, pos, Quaternion.Euler(rot));
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Quaternion rot)
@@ -408,6 +415,17 @@ namespace SR2E
             return null;
         }
 
+        public static List<Transform> GetChildren(this Transform obj)
+        {
+            List<Transform> children = new List<Transform>();
+            for (int i = 0; i < obj.childCount; i++)
+                children.Add(obj.GetChild(i)); 
+            return children;
+        }
+        public static void DestroyAllChildren(this Transform obj)
+        {
+            for (int i = 0; i < obj.childCount; i++) GameObject.Destroy(obj.GetChild(i).gameObject); 
+        }
         public static List<GameObject> getAllChildren(this GameObject obj)
         {
             var container = obj.transform;
@@ -463,6 +481,38 @@ namespace SR2E
             return null;
         }
 
+        private static Sprite _whitePillBg;
+        private static Texture2D _whitePillBgTex;
+
+        internal static Sprite whitePillBg
+        {
+            get
+            {
+                if(_whitePillBg==null)
+                {
+                    _whitePillBgTex = Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle")
+                        .LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
+                    _whitePillBg = Sprite.Create(_whitePillBgTex,
+                        new Rect(0f, 0f, _whitePillBgTex.width, _whitePillBgTex.height),
+                        new Vector2(0.5f, 0.5f), 1f);
+                }
+
+                return _whitePillBg;
+            }
+        }
+        internal static Texture2D whitePillBgTex
+        {
+            get
+            {
+                if(_whitePillBgTex==null)
+                {
+                    _whitePillBgTex = Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle")
+                        .LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
+                }
+
+                return _whitePillBgTex;
+            }
+        }
         public static List<GameObject> getAllChildren(this Transform container)
         {
             List<GameObject> allChildren = new List<GameObject>();

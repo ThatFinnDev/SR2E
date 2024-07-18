@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using Il2CppKinematicCharacterController;
 using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
 using SR2E.Buttons;
 using UnityEngine.Networking;
@@ -54,6 +55,7 @@ namespace SR2E
         internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
+        internal static bool enableCheatMenuButton { get { return prefs.GetEntry<bool>("enableCheatMenuButton").Value; } }
 
         internal static void RefreshPrefs()
         {
@@ -75,32 +77,42 @@ namespace SR2E
                 prefs.CreateEntry("showUnityErrors", (bool)false, "Shows unity errors in the console", true);
             
             if (!prefs.HasEntry("enableDebugDirector"))
-                prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable Debug Menu", false).disableWarning((System.Action)(
+                prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).disableWarning((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
+            
+            if (!prefs.HasEntry("enableCheatMenuButton"))
+                prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).disableWarning((System.Action)(
+                    () =>
+                    {
+                        if (!enableCheatMenuButton)
+                            cheatMenuButton.Remove();
+                        if (enableCheatMenuButton)
+                            cheatMenuButton.AddAgain();
+                    }));
 
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
             if (!prefs.HasEntry("debugLogging"))
                 prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
             if (!prefs.HasEntry("devMode"))
-                prefs.CreateEntry("devMode", (bool)false, "Enable Dev Mode", true);
+                prefs.CreateEntry("devMode", (bool)false, "Enable dev mode", true);
             if (!prefs.HasEntry("onSaveLoadCommand"))
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
                 prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).disableWarning();
             if (!prefs.HasEntry("noclipSprintMultiply"))
-                prefs.CreateEntry("noclipSprintMultiply", 2f, "Noclip sprint speed multiplier", false).disableWarning();
+                prefs.CreateEntry("noclipSprintMultiply", 2f, "NoClip sprint speed multiplier", false).disableWarning();
         }
 
         
         public override void OnLateInitializeMelon()
         {
-            if (Get<GameObject>("SR2ELibraryROOT")) { rootOBJ = Get<GameObject>("SR2ELibraryROOT"); }
+            if (Get<GameObject>("SR2EPrefabHolder")) { rootOBJ = Get<GameObject>("SR2EPrefabHolder"); }
             else
             {
                 rootOBJ = new GameObject();
                 rootOBJ.SetActive(false);
-                rootOBJ.name = "SR2ELibraryROOT";
+                rootOBJ.name = "SR2EPrefabHolder";
                 Object.DontDestroyOnLoad(rootOBJ);
             }
 
@@ -266,7 +278,27 @@ namespace SR2E
                         if (!FXLibraryReversable.ContainsKey(pname))
                             FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
                     }
+                    
+                    //Creating Teleporters for Warps
+                    StaticTeleporterNode ConservatoryFieldsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterHomeBlue").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+                    ConservatoryFieldsTeleporter.gameObject.SetActive(false); ConservatoryFieldsTeleporter.name = "TP-ConservatoryFields"; ConservatoryFieldsTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
+                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.ConservatoryFields", ConservatoryFieldsTeleporter);
+                    
+                    StaticTeleporterNode RumblingGorgeTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneGorge").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+                    RumblingGorgeTeleporter.gameObject.SetActive(false); RumblingGorgeTeleporter.name = "TP-RumblingGorge"; RumblingGorgeTeleporter.gameObject.MakePrefab(); RumblingGorgeTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
+                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.RumblingGorge", RumblingGorgeTeleporter);
 
+                    StaticTeleporterNode LuminousStrandTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneStrand").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+                    LuminousStrandTeleporter.gameObject.SetActive(false); LuminousStrandTeleporter.name = "TP-LuminousStrand"; LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
+                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.LuminousStrand", LuminousStrandTeleporter);
+
+                    StaticTeleporterNode PowderfallBluffsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneBluffs").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+                    PowderfallBluffsTeleporter.gameObject.SetActive(false); PowderfallBluffsTeleporter.name = "TP-PowderfallBluffs"; PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
+                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.PowderfallBluffs", PowderfallBluffsTeleporter);
+
+                    
+                    
+                    
                     break;
                 case "UICore":
                     if(SceneContext.Instance.Player.GetComponent<SR2EDebugDirector>()==null)
@@ -297,13 +329,14 @@ namespace SR2E
                 MelonLogger.Error("This happens on some platforms and I (the dev) haven't found a fix yet!");
             }
             if (consoleUsesSR2Font)
-                foreach (var text in SR2EConsole.gameObject.getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2EConsole.parent.getAllChildrenOfType<TMP_Text>())
                     text.font = SR2Font;
             else if(normalFont!=null)
-                foreach (var text in SR2EConsole.gameObject.getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2EConsole.parent.getAllChildrenOfType<TMP_Text>())
                     text.font = normalFont==null?SR2Font:normalFont;
-            foreach (var text in SR2EConsole.gameObject.getObjRec<GameObject>("modMenu")
-                         .getAllChildrenOfType<TMP_Text>())
+            foreach (var text in SR2EConsole.parent.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
+                text.font = SR2Font;
+            foreach (var text in SR2EConsole.parent.getObjRec<GameObject>("cheatMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
 
         }
@@ -312,13 +345,16 @@ namespace SR2E
         {
             }
 
+        internal static CustomPauseMenuButton cheatMenuButton;
         internal static void SaveDirectorLoaded()
         {
-            LocalizedString label = AddTranslation(translation("buttons.mods.label"), "b.button_mods_sr2e", "UI");
+            LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
             new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
             new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
+            cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { SR2ECheatMenu.Open(); }));
+            if(!enableCheatMenuButton) cheatMenuButton.Remove();
             
-            if (devMode) new CustomPauseMenuButton( AddTranslation(translation("buttons.debugplayer.label"), "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
+            if (devMode) new CustomPauseMenuButton( AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
 
         }
         public override void OnSceneWasInitialized(int buildindex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = true; }
@@ -339,7 +375,7 @@ namespace SR2E
                         {
                             ScrollRect rect = scrollView.GetComponent<ScrollRect>();
                             rect.vertical = true;
-                            Scrollbar scrollBar = GameObject.Instantiate(SR2EConsole.transform.getObjRec<Scrollbar>("saveFilesSlider"), rect.transform);
+                            Scrollbar scrollBar = GameObject.Instantiate(SR2EConsole.transform.getObjRec<Scrollbar>("saveFilesSliderRec"), rect.transform);
                             rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
                             scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width/250f, 0, 0);
@@ -356,10 +392,10 @@ namespace SR2E
                 if (obj != null)
                 {
                     consoleFinishedCreating = true;
-                    SR2EConsole.gameObject = obj;
-                    obj.name = "SR2Console";
+                    obj.name = "SR2EStuff";
                     GameObject.DontDestroyOnLoad(obj);
-                    SR2EConsole.transform = obj.transform;
+                    
+                    SR2EConsole.parent = obj.transform;
                     SR2EConsole.Start();
                 }
             }

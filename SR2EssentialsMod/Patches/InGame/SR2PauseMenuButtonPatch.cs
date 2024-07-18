@@ -3,7 +3,7 @@ using SR2E.Buttons;
 
 namespace SR2E.Patches.InGame;
 
-[HarmonyPatch(typeof(PauseMenuDirector), nameof(PauseMenuDirector.Awake))]
+[HarmonyPatch(typeof(PauseMenuDirector), nameof(PauseMenuDirector.PauseGame))]
 public static class SR2PauseMenuButtonPatch
 {
     internal static List<CustomPauseMenuButton> buttons = new List<CustomPauseMenuButton>();
@@ -20,6 +20,12 @@ public static class SR2PauseMenuButtonPatch
             {
                 if (button._model != null)
                 {
+                    if (!button.enabled)
+                    {
+                        if (__instance.pauseUIPrefab.pauseItemModelList.items.Contains(button._model))
+                            __instance.pauseUIPrefab.pauseItemModelList.items.Remove(button._model);
+                        continue;
+                    }
                     if (__instance.pauseUIPrefab.pauseItemModelList.items.Contains(button._model))
                         continue;
                     if (!__instance.pauseUIPrefab.pauseItemModelList.items.Contains(button._model))
@@ -33,6 +39,12 @@ public static class SR2PauseMenuButtonPatch
                 button._model.hideFlags |= HideFlags.HideAndDontSave;
                 //button._model.prefabToSpawn = button._prefabToSpawn;
 
+                if (!button.enabled)
+                {
+                    if (__instance.pauseUIPrefab.pauseItemModelList.items.Contains(button._model))
+                        __instance.pauseUIPrefab.pauseItemModelList.items.Remove(button._model);
+                    continue;
+                }
                 if (!__instance.pauseUIPrefab.pauseItemModelList.items.Contains(button._model))
                     __instance.pauseUIPrefab.pauseItemModelList.items.Insert(button.insertIndex, button._model);
                 

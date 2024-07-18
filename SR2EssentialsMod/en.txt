@@ -1,4 +1,5 @@
 buttons.mods.label=Mods
+buttons.cheatmenu.label=CheatMenu
 buttons.debugplayer.label=Debug Player
 
 modmenu.modinfo.mod=Mod: $1
