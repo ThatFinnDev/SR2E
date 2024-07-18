@@ -18,6 +18,12 @@ public static class SR2RanchUIButtonPatch
             if (button.label == null || button.action == null) continue;
             try
             {
+                if (!button.enabled)
+                {
+                    if (__instance._menuItems.Contains(button._model))
+                        __instance._menuItems.Remove(button._model);
+                    continue;
+                }
                 if (button._model != null)
                 {
                     if (__instance._menuItems.Contains(button._model))
@@ -32,6 +38,12 @@ public static class SR2RanchUIButtonPatch
                 button._model.name = button.label.GetLocalizedString();
                 button._model.hideFlags |= HideFlags.HideAndDontSave;
 
+                if (!button.enabled)
+                {
+                    if (__instance._menuItems.Contains(button._model))
+                        __instance._menuItems.Remove(button._model);
+                    continue;
+                }
                 if (!__instance._menuItems.Contains(button._model))
                     __instance._menuItems.Insert(button.insertIndex, button._model);
             }

@@ -42,6 +42,7 @@ public static class SR2ESaveManager
     
     public static class WarpManager
     {
+        internal static Dictionary<string, StaticTeleporterNode> teleporters;
         internal static Warp warpTo = null;
 
         internal static SR2EError AddWarp(string warpName, Warp warp)
@@ -111,24 +112,15 @@ public static class SR2ESaveManager
                     {
                         try
                         {
-                            GameObject prefab = null;
-                            switch (sceneGroup)
-                            {
-                                case "SceneGroup.ConservatoryFields": WarpManager.warpTo = this; prefab = getGadgetDefByName("TeleporterHomeBlue").prefab; break;
-                                case "SceneGroup.RumblingGorge": WarpManager.warpTo = this; prefab = getGadgetDefByName("TeleporterZoneGorge").prefab; break;
-                                case "SceneGroup.LuminousStrand": WarpManager.warpTo = this; prefab = getGadgetDefByName("TeleporterZoneStrand").prefab; break;
-                                case "SceneGroup.PowderfallBluffs": WarpManager.warpTo = this; prefab = getGadgetDefByName("TeleporterZoneBluffs").prefab; break;
-                                default: return SR2EError.SceneGroupNotSupported;
-                            }
+                            if(!WarpManager.teleporters.ContainsKey(sceneGroup)) return SR2EError.SceneGroupNotSupported;
 
-                            if (prefab != null)
-                            {
-                                GameObject teleporterCollider = prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject;
-                                GameObject obj = GameObject.Instantiate(teleporterCollider, SceneContext.Instance.Player.transform.position, Quaternion.identity);
-                                obj.SetActive(true);
-                                obj.GetComponent<StaticTeleporterNode>()._hasDestination = true;
-                                obj.GetComponent<StaticTeleporterNode>().UpdateFX();
-                            }
+                            StaticTeleporterNode node = WarpManager.teleporters[sceneGroup];
+                            WarpManager.warpTo = this;
+                            
+                            StaticTeleporterNode obj = GameObject.Instantiate(node, SceneContext.Instance.Player.transform.position, Quaternion.identity);
+                            obj.gameObject.SetActive(true);
+                            obj.UpdateFX();
+                            
                         }catch { }
                     }
             }

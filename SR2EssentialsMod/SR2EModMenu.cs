@@ -27,7 +27,7 @@ public static class SR2EModMenu
         if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
         modMenuBlock.SetActive(false);
         gameObject.SetActive(false);
-        gameObject.getObjRec<Button>("ModMenu").onClick.Invoke();
+        gameObject.getObjRec<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
 
         if (SR2EEntryPoint.mainMenuLoaded)
         {
@@ -43,7 +43,7 @@ public static class SR2EModMenu
 
 
 
-        Transform modContent = transform.getObjRec<Transform>("ModContent");
+        Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         for (int i = 0; i < modContent.childCount; i++)
             Object.Destroy(modContent.GetChild(i).gameObject);
     }
@@ -56,6 +56,7 @@ public static class SR2EModMenu
     public static void Open()
     {
         if (SR2EConsole.isOpen) return;
+        if (SR2ECheatMenu.isOpen) return;
         modMenuBlock.SetActive(true);
         gameObject.SetActive(true);
 
@@ -83,8 +84,8 @@ public static class SR2EModMenu
 
 
 
-        GameObject buttonPrefab = transform.getObjRec<GameObject>("TemplateModButton");
-        Transform modContent = transform.getObjRec<Transform>("ModContent");
+        GameObject buttonPrefab = transform.getObjRec<GameObject>("ModMenuModMenuTemplateButtonRec");
+        Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
         {
             GameObject obj = GameObject.Instantiate(buttonPrefab, modContent);
@@ -142,13 +143,12 @@ public static class SR2EModMenu
 
     internal static void Start()
     {
-        modMenuBlock = parent.getObjRec<GameObject>("modMenuBlock");
-        entryTemplate = transform.getObjRec<GameObject>("ModConfigurationEntryTemplate");
-        headerTemplate = transform.getObjRec<GameObject>("ModConfigurationHeaderTemplate");
-        warningText = transform.getObjRec<GameObject>("ModConfigRestartWarning");
-        Transform content = transform.getObjRec<Transform>("ModConfigurationContent");
-        modInfoText = transform.getObjRec<TextMeshProUGUI>("ModInfoText");
-        gameObject.SetActive(false);
+        modMenuBlock = parent.getObjRec<GameObject>("modMenuBlockRec");
+        entryTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateEntryRec");
+        headerTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
+        warningText = transform.getObjRec<GameObject>("ModMenuModConfigurationRestartWarningRec");
+        Transform content = transform.getObjRec<Transform>("ModMenuModConfigurationContentRec");
+        modInfoText = transform.getObjRec<TextMeshProUGUI>("ModMenuModInfoTextRec");
         foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
             if (!String.IsNullOrEmpty(stringKey))
                 if (stringKey != "None")
@@ -163,14 +163,9 @@ public static class SR2EModMenu
         allPossibleKeys.Remove(Key.RightCommand);
         allPossibleKeys.Remove(Key.LeftWindows);
         allPossibleKeys.Remove(Key.RightCommand);
-
-
-        modMenuTabImage = Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle")
-            .LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
-        var spr = Sprite.Create(modMenuTabImage, new Rect(0f, 0f, modMenuTabImage.width, modMenuTabImage.height),
-            new Vector2(0.5f, 0.5f), 1f);
-        transform.getObjRec<Image>("ModMenu").sprite = spr;
-        transform.getObjRec<Image>("ModConfiguration").sprite = spr;
+        
+        transform.getObjRec<Image>("ModMenuModMenuSelectionButtonRec").sprite = whitePillBg;
+        transform.getObjRec<Image>("ModMenuConfigurationSelectionButtonRec").sprite = whitePillBg;
 
 
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
