@@ -107,22 +107,18 @@ public static class SR2ESaveManager
             }
             else
             {
-                foreach (SceneGroup group in SystemContext.Instance.SceneLoader.SceneGroupList.items)
-                    if (group.IsGameplay) if (group.ReferenceId == sceneGroup)
-                    {
-                        try
-                        {
-                            if(!WarpManager.teleporters.ContainsKey(sceneGroup)) return SR2EError.SceneGroupNotSupported;
+                try
+                {
+                    if(!WarpManager.teleporters.ContainsKey(sceneGroup)) return SR2EError.SceneGroupNotSupported;
 
-                            StaticTeleporterNode node = WarpManager.teleporters[sceneGroup];
-                            WarpManager.warpTo = this;
+                    StaticTeleporterNode node = WarpManager.teleporters[sceneGroup];
+                    WarpManager.warpTo = this;
                             
-                            StaticTeleporterNode obj = GameObject.Instantiate(node, SceneContext.Instance.Player.transform.position, Quaternion.identity);
-                            obj.gameObject.SetActive(true);
-                            obj.UpdateFX();
+                    StaticTeleporterNode obj = GameObject.Instantiate(node, SceneContext.Instance.Player.transform.position, Quaternion.identity);
+                    obj.gameObject.SetActive(true);
+                    obj.UpdateFX();
                             
-                        }catch { }
-                    }
+                }catch { }
             }
             return SR2EError.NoError;
         }

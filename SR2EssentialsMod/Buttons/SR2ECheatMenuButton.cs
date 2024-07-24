@@ -1,15 +1,17 @@
+using Il2CppTMPro;
+using UnityEngine.UI;
+
 namespace SR2E.Buttons;
 
 public class SR2ECheatMenuButton
 {
     public string label;
-    public int insertIndex;
     public System.Action action;
-    
-    public SR2ECheatMenuButton(string label, int insertIndex, System.Action action)
+    public Button buttonInstance;
+    public TextMeshProUGUI textInstance;
+    public SR2ECheatMenuButton(string label, System.Action action)
     {
-        this.label = label; ;
-        this.insertIndex = insertIndex;
+        this.label = label;
         this.action = action;
 
         foreach (SR2ECheatMenuButton entry in SR2ECheatMenu.cheatButtons)
