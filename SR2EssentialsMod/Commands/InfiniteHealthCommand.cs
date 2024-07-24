@@ -40,7 +40,7 @@ public class InfiniteHealthCommand : SR2Command
         infHealth = false;
     }
 
-    static bool infHealth = false;
+    public static bool infHealth = false;
 
     private static HealthMeter healthMeter;
     public override void OnUICoreLoad()

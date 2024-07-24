@@ -278,7 +278,8 @@ namespace SR2E
                         if (!FXLibraryReversable.ContainsKey(pname))
                             FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
                     }
-                    
+
+                    SR2ESaveManager.WarpManager.teleporters = new Dictionary<string, StaticTeleporterNode>();
                     //Creating Teleporters for Warps
                     StaticTeleporterNode ConservatoryFieldsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterHomeBlue").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
                     ConservatoryFieldsTeleporter.gameObject.SetActive(false); ConservatoryFieldsTeleporter.name = "TP-ConservatoryFields"; ConservatoryFieldsTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
@@ -404,8 +405,8 @@ namespace SR2E
                 try { SR2EConsole.Update(); } catch (Exception e) { Console.WriteLine(e); }
                 try { SR2ESaveManager.Update(); } catch (Exception e) { Console.WriteLine(e); }
                 try { SR2EModMenu.Update(); } catch (Exception e) { Console.WriteLine(e); }
-                if(devMode)
-                    SR2EDebugDirector.DebugStatsManager.Update();
+                try { SR2ECheatMenu.Update(); } catch (Exception e) { Console.WriteLine(e); }
+                if(devMode) SR2EDebugDirector.DebugStatsManager.Update();
             }
         }
         

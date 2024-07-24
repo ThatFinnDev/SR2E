@@ -21,15 +21,10 @@ public class DeleteWarpCommand : SR2Command
     {
         if (!args.IsBetween(1,1)) return SendUsage();
 
-        string name = args[0];
-        if (SR2ESaveManager.WarpManager.GetWarp(name) != null)
+        switch (SR2ESaveManager.WarpManager.RemoveWarp(args[0]))
         {
-            SR2ESaveManager.WarpManager.RemoveWarp(name);
-            SendMessage(translation("cmd.delwarp.success",name));
-            return true;
+            case SR2EError.DoesntExist: return SendError(translation("cmd.warpstuff.nowarpwithname",args[0]));
+            default: SendMessage(translation("cmd.delwarp.success",args[0])); return true;
         }
-
-        SendError(translation("cmd.warpstuff.nowarpwithname",name));
-        return false;
     }
 }

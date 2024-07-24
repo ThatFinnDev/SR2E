@@ -103,7 +103,7 @@ public class InfiniteEnergyCommand : SR2Command
         energyMeter = Get<EnergyMeter>("Energy Meter");
     }
 
-    static bool infEnergy = false;
+    public static bool infEnergy = false;
     static float normalEnergy = 100;
     static float normalHoverHeight = 0;
     static float normalMaxUpwardThrustForce = 0;

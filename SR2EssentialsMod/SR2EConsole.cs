@@ -251,10 +251,15 @@ namespace SR2E
             SendMessage(translation("cmd.notregistered",cmd.ToLowerInvariant()));
             return false;
         }
+
+        public static void ExecuteByString(string input, bool silent = false)
+        {
+            ExecuteByString(input, silent, false);
+        }
         /// <summary>
         /// Execute a string as if it was a commandId with args
         /// </summary>
-        public static void ExecuteByString(string input, bool silent = false)
+        public static void ExecuteByString(string input, bool silent, bool alwaysPlay)
         {
             string[] cmds = input.Split(';');
             foreach (string cc in cmds)
@@ -276,6 +281,7 @@ namespace SR2E
 
                         if (!canPlay && commands[cmd].executeWhenConsoleIsOpen) canPlay = true;
                         if (!silent) canPlay = true;
+                        if (alwaysPlay) canPlay = true;
                         bool successful;
                         if (spaces)
                         {
@@ -465,6 +471,7 @@ namespace SR2E
             RegisterCommand(new StrikeCommand());
             RegisterCommand(new FXPlayCommand());
             //RegisterCommand(new TimeScaleCommand());
+            RegisterCommand(new ResolutionCommand());
             RegisterCommand(new InfiniteHealthCommand());
             RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new ScaleCommand());
