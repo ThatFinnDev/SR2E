@@ -125,8 +125,7 @@ public class CheatMenuGadgetEntry : MonoBehaviour
         handleText = amountSlider.gameObject.getObjRec<TextMeshProUGUI>("Text");
         itemName = gameObject.getObjRec<TextMeshProUGUI>("Name");
         icon = gameObject.getObjRec<Image>("Icon");
-
-            icon.sprite = item.icon;
+        icon.sprite = item.icon;
         
         itemName.text = item.getName().Replace("'", "");
         amountSlider.onValueChanged.AddListener((Action<float>)((valueFloat) =>

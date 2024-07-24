@@ -476,7 +476,9 @@ namespace SR2E
             RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new ScaleCommand());
             RegisterCommands(new SR2Command[]{new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
-            RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
+            RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand()});
+            RegisterCommands(new SR2Command[]{new CheatMenuVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand()});
+            RegisterCommands(new SR2Command[]{new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand()});
 
         }
 
