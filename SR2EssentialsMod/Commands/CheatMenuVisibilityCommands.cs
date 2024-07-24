@@ -1,0 +1,44 @@
+namespace SR2E.Commands;
+
+public class CheatMenuVisibilityCommands
+{
+    
+    public class OpenCommand : SR2Command
+    {
+        public override string ID => "opencheatmenu";
+        public override string Usage => "opencheatmenu";
+        public override bool Execute(string[] args)
+        {
+            if (!args.IsBetween(0,0)) return SendNoArguments();
+            if (!inGame) return SendLoadASaveFirst();
+            if(!SR2ECheatMenu.isOpen)
+                SR2ECheatMenu.Open();
+            return true;
+        }
+    }
+    public class CloseCommand : SR2Command
+    {
+        public override string ID => "closecheatmenu";
+        public override string Usage => "closecheatmenu";
+        public override bool Execute(string[] args)
+        {
+            if (!args.IsBetween(0,0)) return SendNoArguments();
+            if (!inGame) return SendLoadASaveFirst();
+            if(SR2ECheatMenu.isOpen)
+                SR2ECheatMenu.Close();
+            return true;
+        }
+    }
+    public class ToggleCommand : SR2Command
+    {
+        public override string ID => "togglecheatmenu";
+        public override string Usage => "togglecheatmenu";
+        public override bool Execute(string[] args)
+        {
+            if (!args.IsBetween(0,0)) return SendNoArguments();
+            if (!inGame) return SendLoadASaveFirst();
+            SR2ECheatMenu.Toggle();
+            return true;
+        }
+    }
+}

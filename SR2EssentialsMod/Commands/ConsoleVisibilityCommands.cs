@@ -2,7 +2,7 @@
 
 public class ConsoleVisibilityCommands
 {
-    public class OpenConsoleCommand : SR2Command
+    public class OpenCommand : SR2Command
     {
         public override string ID => "openconsole";
         public override string Usage => "openconsole";
@@ -15,7 +15,7 @@ public class ConsoleVisibilityCommands
             return true;
         }
     }
-    public class CloseConsoleCommand : SR2Command
+    public class CloseCommand : SR2Command
     {
         public override string ID => "closeconsole";
         public override string Usage => "closeconsole";
@@ -28,7 +28,7 @@ public class ConsoleVisibilityCommands
             return true;
         }
     }
-    public class ToggleConsoleCommand : SR2Command
+    public class ToggleCommand : SR2Command
     {
         public override string ID => "toggleconsole";
         public override string Usage => "toggleconsole";
