@@ -10,7 +10,10 @@ public class ModMenuVisibilityCommands
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
-            if (!inGame) return SendLoadASaveFirst();
+            if(SR2EConsole.isOpen)
+                SR2EConsole.Close();
+            if(SR2ECheatMenu.isOpen)
+                SR2ECheatMenu.Close();
             if(!SR2EModMenu.isOpen)
                 SR2EModMenu.Open();
             return true;
@@ -23,7 +26,10 @@ public class ModMenuVisibilityCommands
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
-            if (!inGame) return SendLoadASaveFirst();
+            if(SR2EConsole.isOpen)
+                SR2EConsole.Close();
+            if(SR2ECheatMenu.isOpen)
+                SR2ECheatMenu.Close();
             if(SR2EModMenu.isOpen)
                 SR2EModMenu.Close();
             return true;
@@ -36,7 +42,10 @@ public class ModMenuVisibilityCommands
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
-            if (!inGame) return SendLoadASaveFirst();
+            if(SR2EConsole.isOpen)
+                SR2EConsole.Close();
+            if(SR2ECheatMenu.isOpen)
+                SR2ECheatMenu.Close();
             SR2EModMenu.Toggle();
             return true;
         }
