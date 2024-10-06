@@ -83,6 +83,14 @@ cmd.openconsole.description=Opens the console
 cmd.closeconsole.description=Closes the console
 cmd.toggleconsole.description=Closes or opens the console
 
+cmd.openmodmenu.description=Opens the mod menu
+cmd.closemodmenu.description=Closes the mod menu
+cmd.togglemodmenu.description=Closes or opens the mod menu
+
+cmd.opencheatmenu.description=Opens the cheat menu
+cmd.closecheatmenu.description=Closes the cheat menu
+cmd.togglecheatmenu.description=Closes or opens the cheat menu
+
 cmd.warpstuff.nowarpwithname=There is no warp with the name: $1!
 cmd.warpstuff.alreadywarpwithname=There is already warp with the name: $1!
 
@@ -110,7 +118,7 @@ cmd.fxplayer.waitforstop=Please wait for the current FX to stop!
 cmd.fxplayer.invalidfxname=Invalid FX Name!
 cmd.fxplayer.description=Plays an effect in front of you
 
-cmd.giveblueprint.success=Sucessfully added $1!
+cmd.giveblueprint.success=Successfully added $1!
 cmd.giveblueprint.description=Gives you a blueprint
 cmd.giveblueprint.alreadyowned=You already have the $1 blueprint!
 
@@ -172,8 +180,8 @@ cmd.scale.description=Changes the scale of a gadget/slime/largo/fruit etc.
 cmd.newbucks.success=Successfully added $1 newbucks!
 cmd.newbucks.description=Adds or removes newbucks
 
-cmd.noclip.success=Sucessfully activated noclip!
-cmd.noclip.success2=Sucessfully deactivated noclip!
+cmd.noclip.success=Successfully activated noclip!
+cmd.noclip.success2=Successfully deactivated noclip!
 cmd.noclip.description=Activates or deactivates noclip
 
 cmd.party.success=Successfully enabled party mode!
@@ -222,7 +230,7 @@ cmd.warp.extendeddescription=Warps you to a saved warping point, use <u>setwarp<
 cmd.warp.unknownerror=An unknown error occured!
 
 cmd.warplist.success=<color=blue>List of all Warps:</color>
-cmd.warplist.sucessdesc='$1' in '$2' at '$3 $4 $5'
+cmd.warplist.successdesc='$1' in '$2' at '$3 $4 $5'
 cmd.warplist.error=There aren't warps yet!
 cmd.warplist.description=Displays all mods loaded
 

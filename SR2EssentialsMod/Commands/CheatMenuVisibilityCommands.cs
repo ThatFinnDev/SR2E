@@ -11,6 +11,10 @@ public class CheatMenuVisibilityCommands
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
             if (!inGame) return SendLoadASaveFirst();
+            if(SR2EModMenu.isOpen)
+                SR2EModMenu.Close();
+            if(SR2EConsole.isOpen)
+                SR2EConsole.Close();
             if(!SR2ECheatMenu.isOpen)
                 SR2ECheatMenu.Open();
             return true;
@@ -24,6 +28,10 @@ public class CheatMenuVisibilityCommands
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
             if (!inGame) return SendLoadASaveFirst();
+            if(SR2EModMenu.isOpen)
+                SR2EModMenu.Close();
+            if(SR2EConsole.isOpen)
+                SR2EConsole.Close();
             if(SR2ECheatMenu.isOpen)
                 SR2ECheatMenu.Close();
             return true;
@@ -37,6 +45,10 @@ public class CheatMenuVisibilityCommands
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
             if (!inGame) return SendLoadASaveFirst();
+            if(SR2EModMenu.isOpen)
+                SR2EModMenu.Close();
+            if(SR2EConsole.isOpen)
+                SR2EConsole.Close();
             SR2ECheatMenu.Toggle();
             return true;
         }
