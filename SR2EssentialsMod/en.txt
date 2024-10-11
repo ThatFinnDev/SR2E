@@ -1,5 +1,15 @@
 buttons.mods.label=Mods
+buttons.cheatmenu.label=CheatMenu
 buttons.debugplayer.label=Debug Player
+
+cheatmenu.cheatbuttons.refillinv=Refillinv
+cheatmenu.cheatbuttons.noclipon=NoClip [On]
+cheatmenu.cheatbuttons.noclipoff=NoClip [Off]
+cheatmenu.cheatbuttons.infenergyon=InfEnergy [On]
+cheatmenu.cheatbuttons.infenergyoff=InfEnergy [Off]
+cheatmenu.cheatbuttons.infhealthon=InfHealth [On]
+cheatmenu.cheatbuttons.infhealthoff=InfHealth [Off]
+
 
 modmenu.modinfo.mod=Mod: $1
 modmenu.modinfo.author=by: $1
@@ -37,6 +47,7 @@ cmd.error.notvalididenttype=$1 is not a valid IdentifiableType!
 cmd.error.notvalidgadget=$1 is not a valid Gadget!
 cmd.error.notvalidupgrade=$1 is not a valid Upgrade!
 cmd.error.notintabove=$1 is not an integer above $2!
+cmd.error.notintbelow=$1 is not an integer below $2!
 cmd.error.notfloatabove=$1 is not a float above $2!
 cmd.error.notdoubleabove=$1 is not a double above $2!
 cmd.error.notintatleast=$1 is not a int with at least $2!
@@ -72,6 +83,14 @@ cmd.openconsole.description=Opens the console
 cmd.closeconsole.description=Closes the console
 cmd.toggleconsole.description=Closes or opens the console
 
+cmd.openmodmenu.description=Opens the mod menu
+cmd.closemodmenu.description=Closes the mod menu
+cmd.togglemodmenu.description=Closes or opens the mod menu
+
+cmd.opencheatmenu.description=Opens the cheat menu
+cmd.closecheatmenu.description=Closes the cheat menu
+cmd.togglecheatmenu.description=Closes or opens the cheat menu
+
 cmd.warpstuff.nowarpwithname=There is no warp with the name: $1!
 cmd.warpstuff.alreadywarpwithname=There is already warp with the name: $1!
 
@@ -99,7 +118,7 @@ cmd.fxplayer.waitforstop=Please wait for the current FX to stop!
 cmd.fxplayer.invalidfxname=Invalid FX Name!
 cmd.fxplayer.description=Plays an effect in front of you
 
-cmd.giveblueprint.success=Sucessfully added $1!
+cmd.giveblueprint.success=Successfully added $1!
 cmd.giveblueprint.description=Gives you a blueprint
 cmd.giveblueprint.alreadyowned=You already have the $1 blueprint!
 
@@ -161,14 +180,17 @@ cmd.scale.description=Changes the scale of a gadget/slime/largo/fruit etc.
 cmd.newbucks.success=Successfully added $1 newbucks!
 cmd.newbucks.description=Adds or removes newbucks
 
-cmd.noclip.success=Sucessfully activated noclip!
-cmd.noclip.success2=Sucessfully deactivated noclip!
+cmd.noclip.success=Successfully activated noclip!
+cmd.noclip.success2=Successfully deactivated noclip!
 cmd.noclip.description=Activates or deactivates noclip
 
 cmd.party.success=Successfully enabled party mode!
 cmd.party.success2=Successfully disabled party mode!
 cmd.party.description=Enables or disables party mode
 cmd.party.novolume=An error occured, couldn't find volume!
+
+cmd.resolution.success=Successfully changed your resolution to $1x$2!
+cmd.resolution.description=Allows you to change the game resolution
 
 cmd.refillinv.success=Successfully refilled your inventory!
 cmd.refillinv.successsingle=Successfully refilled slot number $1!
@@ -208,7 +230,7 @@ cmd.warp.extendeddescription=Warps you to a saved warping point, use <u>setwarp<
 cmd.warp.unknownerror=An unknown error occured!
 
 cmd.warplist.success=<color=blue>List of all Warps:</color>
-cmd.warplist.sucessdesc='$1' in '$2' at '$3 $4 $5'
+cmd.warplist.successdesc='$1' in '$2' at '$3 $4 $5'
 cmd.warplist.error=There aren't warps yet!
 cmd.warplist.description=Displays all mods loaded
 

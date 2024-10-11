@@ -10,6 +10,7 @@ public class CustomRanchUIButton
     public int insertIndex;
     internal RanchHouseMenuItemModel _model;
     public System.Action action;
+    public bool enabled = true;
 
     public CustomRanchUIButton(LocalizedString label, int insertIndex, System.Action action)
     {
@@ -21,5 +22,14 @@ public class CustomRanchUIButton
             if (entry.label == this.label) { MelonLogger.Error($"There is already a button with the name {this.label}"); return; }
 
         SR2RanchUIButtonPatch.buttons.Add(this);
+    }
+    
+    public void Remove()
+    {
+        enabled = false;
+    }
+    public void AddAgain()
+    {
+        enabled = true;
     }
 }
