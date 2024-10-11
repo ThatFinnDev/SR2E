@@ -10,6 +10,9 @@ using UnityEngine.UI;
 
 namespace SR2E
 {
+    //Changed transform to parent
+    //transform to consoleMenu
+    //no fix every get child :/
     public static class SR2EConsole
     {
         /// <summary>
@@ -44,7 +47,7 @@ namespace SR2E
                 else
                 {
                     if (doMLLog && internal_logMLForSingleLine) MelonLogger.Msg($"[SR2E]: {message}");
-                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
                     instance.gameObject.SetActive(true);
                     instance.transform.GetChild(0).gameObject.SetActive(true);
                     instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
@@ -88,7 +91,7 @@ namespace SR2E
                 {
                     if (doMLLog && internal_logMLForSingleLine) MelonLogger.Error($"[SR2E]: {message}");
 
-                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
                     instance.gameObject.SetActive(true);
                     instance.transform.GetChild(0).gameObject.SetActive(true);
                     instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
@@ -131,7 +134,7 @@ namespace SR2E
                 else
                 {
                     if (doMLLog && internal_logMLForSingleLine) MelonLogger.Warning($"[SR2E]: {message}");
-                    GameObject instance = GameObject.Instantiate(specialMessagePrefab, consoleContent);
+                    GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
                     instance.gameObject.SetActive(true);
                     instance.transform.GetChild(0).gameObject.SetActive(true);
                     instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
@@ -147,7 +150,7 @@ namespace SR2E
         /// Check if console is open
         /// </summary>
         public static bool isOpen
-        { get { return transform.GetChild(0).gameObject.activeSelf; } }
+        { get { return gameObject.activeSelf; } }
 
         /// <summary>
         /// Closes the console
@@ -158,7 +161,7 @@ namespace SR2E
             { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
 
             consoleBlock.SetActive(false);
-            consoleMenu.SetActive(false);
+            gameObject.SetActive(false);
             try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch  { }
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
 
@@ -171,10 +174,11 @@ namespace SR2E
         {
             if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if (SR2EModMenu.isOpen) return;
+            if (SR2ECheatMenu.isOpen) return;
             if (SR2ESaveManager.WarpManager.warpTo != null) return;
 
             consoleBlock.SetActive(true);
-            consoleMenu.SetActive(true);
+            gameObject.SetActive(true);
             try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch  { }
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
             RefreshAutoComplete(commandInput.text);
@@ -247,10 +251,15 @@ namespace SR2E
             SendMessage(translation("cmd.notregistered",cmd.ToLowerInvariant()));
             return false;
         }
+
+        public static void ExecuteByString(string input, bool silent = false)
+        {
+            ExecuteByString(input, silent, false);
+        }
         /// <summary>
         /// Execute a string as if it was a commandId with args
         /// </summary>
-        public static void ExecuteByString(string input, bool silent = false)
+        public static void ExecuteByString(string input, bool silent, bool alwaysPlay)
         {
             string[] cmds = input.Split(';');
             foreach (string cc in cmds)
@@ -264,13 +273,15 @@ namespace SR2E
                     if (commands.ContainsKey(cmd))
                     {
                         bool canPlay = false;
-                        if (!SR2EConsole.isOpen)
+                        if (!isOpen)
                             if (!SR2EModMenu.isOpen)
-                                if (Time.timeScale != 0)
-                                    canPlay = true;
+                                if (!SR2ECheatMenu.isOpen)
+                                    if (Time.timeScale != 0)
+                                        canPlay = true;
 
                         if (!canPlay && commands[cmd].executeWhenConsoleIsOpen) canPlay = true;
                         if (!silent) canPlay = true;
+                        if (alwaysPlay) canPlay = true;
                         bool successful;
                         if (spaces)
                         {
@@ -309,7 +320,8 @@ namespace SR2E
                     else
                         if (isOpen)
                             if (!SR2EModMenu.isOpen)
-                                SendError(translation("cmd.unknowncommand"));
+                                if (!SR2ECheatMenu.isOpen)
+                                    SendError(translation("cmd.unknowncommand"));
                 }
             }
                 
@@ -317,6 +329,7 @@ namespace SR2E
 
 
 
+        internal static Transform parent;
         internal static Transform transform;
         internal static GameObject gameObject;
         internal static Dictionary<string, SR2Command> commands = new Dictionary<string, SR2Command>();
@@ -413,13 +426,16 @@ namespace SR2E
 
         }
 
-        //Setup ModMenu
-        static void SetupModMenu()
+        static void SetupOtherMenus()
         {
-            SR2EModMenu.parent = transform;
-            SR2EModMenu.gameObject = transform.getObjRec<GameObject>("modMenu");
-            SR2EModMenu.transform = transform.getObjRec<Transform>("modMenu");
+            SR2EModMenu.parent = parent;
+            SR2EModMenu.gameObject = parent.getObjRec<GameObject>("modMenu");
+            SR2EModMenu.transform = parent.getObjRec<Transform>("modMenu");
             SR2EModMenu.Start();
+            SR2ECheatMenu.parent = parent;
+            SR2ECheatMenu.gameObject = parent.getObjRec<GameObject>("cheatMenu");
+            SR2ECheatMenu.transform = parent.getObjRec<Transform>("cheatMenu");
+            SR2ECheatMenu.Start();
         }
         static void SetupCommands()
         {
@@ -455,11 +471,14 @@ namespace SR2E
             RegisterCommand(new StrikeCommand());
             RegisterCommand(new FXPlayCommand());
             //RegisterCommand(new TimeScaleCommand());
+            RegisterCommand(new ResolutionCommand());
             RegisterCommand(new InfiniteHealthCommand());
             RegisterCommand(new InfiniteEnergyCommand());
             RegisterCommand(new ScaleCommand());
             RegisterCommands(new SR2Command[]{new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
-            RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenConsoleCommand(), new ConsoleVisibilityCommands.CloseConsoleCommand(), new ConsoleVisibilityCommands.ToggleConsoleCommand()});
+            RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand()});
+            RegisterCommands(new SR2Command[]{new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand()});
+            RegisterCommands(new SR2Command[]{new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand()});
 
         }
 
@@ -488,17 +507,20 @@ namespace SR2E
                 case "UICore":
                     foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnUICoreLoad();
-                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onSaveLoadCommand)) SR2EConsole.ExecuteByString(SR2EEntryPoint.onSaveLoadCommand);
+                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onSaveLoadCommand)) ExecuteByString(SR2EEntryPoint.onSaveLoadCommand);
                     break;
                 case "MainMenuUI":
                     foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnMainMenuUILoad();
-                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onMainMenuLoadCommand)) SR2EConsole.ExecuteByString(SR2EEntryPoint.onMainMenuLoadCommand);
+                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onMainMenuLoadCommand)) ExecuteByString(SR2EEntryPoint.onMainMenuLoadCommand);
                     break;
             }
         }
         internal static void Start()
         {
+            gameObject = parent.getObjRec<GameObject>("consoleMenu");
+            transform = parent.getObjRec<Transform>("consoleMenu");
+            
             commandHistory = new List<string>();
             if(!SR2EEntryPoint._mSRMLIsInstalled)
                 if (SR2EEntryPoint.syncConsole)
@@ -506,20 +528,17 @@ namespace SR2E
 
             mlog = new MelonLogger.Instance("SR2E");
             
-            consoleBlock = transform.getObjRec<GameObject>("consoleBlock");
-            consoleMenu = transform.getObjRec<GameObject>("consoleMenu");
-            consoleContent = transform.getObjRec<Transform>("ConsoleContent"); 
-            messagePrefab = transform.getObjRec<GameObject>("messagePrefab");
-            specialMessagePrefab = transform.getObjRec<GameObject>("specialMessagePrefab");
-            commandInput = transform.getObjRec<TMP_InputField>("commandInput");
-            _scrollbar = transform.getObjRec<Scrollbar>("ConsoleScroll");
-            autoCompleteContent = transform.getObjRec<Transform>("AutoCompleteContent");
-            autoCompleteEntryPrefab = transform.getObjRec<GameObject>("AutoCompleteEntry");
-            autoCompleteScrollView = transform.getObjRec<GameObject>("AutoCompleteScroll");
+            consoleBlock = parent.getObjRec<GameObject>("consoleBlockRec");
+            consoleContent = transform.getObjRec<Transform>("ConsoleMenuConsoleContentRec"); 
+            messagePrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateMessageRec");
+            commandInput = transform.getObjRec<TMP_InputField>("ConsoleMenuCommandInputRec");
+            _scrollbar = transform.getObjRec<Scrollbar>("ConsoleMenuConsoleScrollbarRec");
+            autoCompleteContent = transform.getObjRec<Transform>("ConsoleMenuAutoCompleteContentRec");
+            autoCompleteEntryPrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateAutoCompleteEntryRec");
+            autoCompleteScrollView = transform.getObjRec<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
             autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
             autoCompleteScrollView.SetActive(false);
-            consoleBlock.SetActive(false);
-            consoleMenu.SetActive(false);
+            
             if (!SR2EEntryPoint._mSRMLIsInstalled)
             {
                 commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); })); 
@@ -527,7 +546,9 @@ namespace SR2E
             SetupCommands();
             SR2ESaveManager.Start();
 
-            SetupModMenu();
+            SetupOtherMenus();
+            foreach (Transform child in parent.GetChildren())
+                child.gameObject.SetActive(false);
             if(syncedSetuped) SetupConsoleSync();
         }
 
@@ -535,12 +556,10 @@ namespace SR2E
         static TMP_InputField commandInput;
         static GameObject autoCompleteEntryPrefab;
         static GameObject consoleBlock;
-        static GameObject consoleMenu;
         internal static Transform consoleContent;
         static Transform autoCompleteContent;
         static GameObject autoCompleteScrollView;
         static GameObject messagePrefab;
-        static GameObject specialMessagePrefab;
         private static int selectedAutoComplete = 0;
         const int maxEntryOnScreen = 6;
         internal static void Update()
