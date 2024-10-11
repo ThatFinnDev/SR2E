@@ -83,6 +83,7 @@ public class FXPlayCommand : SR2Command
 
             currFX = fxobj.GetComponent<ParticleSystem>();
             SendMessage(translation("cmd.fxplayer.success"));
+            return true;
         }
 
         return SendError(translation( "cmd.error.notlookingatanything"));
