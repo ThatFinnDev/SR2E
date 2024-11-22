@@ -37,20 +37,6 @@ public class FlingMode : MonoBehaviour
 }
 
 [RegisterTypeInIl2Cpp(false)]
-public class CustomMainMenuButtonPressHandler : MonoBehaviour
-{
-    public void OnEnable()
-    {
-        foreach (CustomMainMenuButton button in SR2MainMenuButtonPatch.buttons)
-            if (button.label.GetLocalizedString()+"ButtonStarter(Clone)" == gameObject.name)
-            {
-                button.action.Invoke();
-                break;
-            }
-        Destroy(gameObject);
-    }
-}
-[RegisterTypeInIl2Cpp(false)]
 public class CheatMenuRefineryEntry : MonoBehaviour
 {
     public IdentifiableType item;
