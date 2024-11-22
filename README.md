@@ -38,3 +38,5 @@
 
 
 
+# For developers: Please use MelonLoader 0.6.5 alpha for developing this.
+Current MelonLoader build: https://github.com/LavaGang/MelonLoader/actions/runs/10216962862

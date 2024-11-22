@@ -350,7 +350,11 @@ namespace SR2E
         internal static void SaveDirectorLoaded()
         {
             LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
+            new ModsMenuButtonBehaviorDef()
+            {
+                label = label,
+                icon = LoadSprite("modsMenuIcon")
+            };
             new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
             cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { SR2ECheatMenu.Open(); }));
             if(!enableCheatMenuButton) cheatMenuButton.Remove();
