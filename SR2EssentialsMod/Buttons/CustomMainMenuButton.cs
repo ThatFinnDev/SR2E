@@ -2,35 +2,37 @@
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using SR2E.Patches.MainMenu;
-using System;
-using Il2CppInterop.Runtime.Injection;
 namespace SR2E.Buttons;
 
-[RegisterTypeInIl2Cpp(false)]
-public class ModsMenuButtonBehaviorModel : ButtonBehaviorModel
+public class CustomMainMenuButton
 {
-    public ModsMenuButtonBehaviorModel(IntPtr ptr) : base(ptr) { }
-    public ModsMenuButtonBehaviorModel(ButtonBehaviorDefinition def) : base(def) { }
-    public ModsMenuButtonBehaviorModel() : base(ClassInjector.DerivedConstructorPointer<ModsMenuButtonBehaviorModel>()) => ClassInjector.DerivedConstructorBody(this);
+    public LocalizedString label;
+    public Sprite icon;
+    public int insertIndex;
+    public GameObject _prefabToSpawn;
+    internal CreateNewUIItemDefinition _definition;
+    public System.Action action;
 
-
-    public override void InvokeBehavior()
+    public CustomMainMenuButton(LocalizedString label, Sprite icon, int insertIndex, System.Action action)
     {
-        SR2EModMenu.Open();
-    }
-}
+        this.label = label;
+        this.icon = icon;
+        this.insertIndex = insertIndex;
+        this.action = action;
 
-[RegisterTypeInIl2Cpp(false)]
-public class ModsMenuButtonBehaviorDef : ButtonBehaviorDefinition
-{
-    public ModsMenuButtonBehaviorDef(IntPtr ptr) : base(ptr)
-    {
+
+        foreach (CustomMainMenuButton entry in SR2MainMenuButtonPatch.buttons)
+            if (entry.label == this.label) { MelonLogger.Error($"There is already a button with the name {this.label}"); return; }
+
         SR2MainMenuButtonPatch.buttons.Add(this);
-    }
-    public ModsMenuButtonBehaviorDef() : base(ClassInjector.DerivedConstructorPointer<ModsMenuButtonBehaviorDef>()) => ClassInjector.DerivedConstructorBody(this);
-
-    public override ButtonBehaviorModel CreateButtonBehaviorModel()
-    { 
-        return new ModsMenuButtonBehaviorModel(this);
+        if (SR2EEntryPoint.mainMenuLoaded)
+        {
+            MainMenuLandingRootUI mainMenu = Object.FindObjectOfType<MainMenuLandingRootUI>();
+            if (mainMenu != null)
+            {
+                mainMenu.gameObject.SetActive(false);
+                mainMenu.gameObject.SetActive(true);
+            }
+        }
     }
 }
