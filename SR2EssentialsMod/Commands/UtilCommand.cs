@@ -481,7 +481,7 @@ public class UtilCommand : SR2Command
         catch { return SendError(translation("cmd.error.srccnull"));}
         if (isGet)
         {
-            SendMessage(translation("cmd.util.player.gravity.show",SRCC._gravityMagnitude));
+            SendMessage(translation("cmd.util.player.gravity.show",SRCC._gravityMagnitude.Value));
             return true;
         }
         

@@ -477,7 +477,7 @@ namespace SR2E
             RegisterCommand(new ScaleCommand());
             RegisterCommands(new SR2Command[]{new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
             RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand()});
-            RegisterCommands(new SR2Command[]{new CheatMenuVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand()});
+            RegisterCommands(new SR2Command[]{new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand()});
             RegisterCommands(new SR2Command[]{new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand()});
 
         }
@@ -507,12 +507,12 @@ namespace SR2E
                 case "UICore":
                     foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnUICoreLoad();
-                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onSaveLoadCommand)) SR2EConsole.ExecuteByString(SR2EEntryPoint.onSaveLoadCommand);
+                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onSaveLoadCommand)) ExecuteByString(SR2EEntryPoint.onSaveLoadCommand);
                     break;
                 case "MainMenuUI":
                     foreach (KeyValuePair<string,SR2Command> pair in commands)
                         pair.Value.OnMainMenuUILoad();
-                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onMainMenuLoadCommand)) SR2EConsole.ExecuteByString(SR2EEntryPoint.onMainMenuLoadCommand);
+                    if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onMainMenuLoadCommand)) ExecuteByString(SR2EEntryPoint.onMainMenuLoadCommand);
                     break;
             }
         }

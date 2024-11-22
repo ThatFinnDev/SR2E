@@ -13,7 +13,7 @@ public class WarpListCommand : SR2Command
 
         SendMessage(translation("cmd.warplist.success"));
         foreach (KeyValuePair<string, SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps)
-            SendMessage(translation("cmd.warplist.sucessdesc",pair.Key,pair.Value.sceneGroup,pair.Value.x,pair.Value.y,pair.Value.z));
+            SendMessage(translation("cmd.warplist.successdesc",pair.Key,pair.Value.sceneGroup,pair.Value.x,pair.Value.y,pair.Value.z));
 
         return true;
     }
