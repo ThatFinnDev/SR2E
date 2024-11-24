@@ -233,6 +233,8 @@ public class CheatMenuNewbucks : MonoBehaviour
     {
         didStartRan = true;
         amountSlider = gameObject.getObjRec<Slider>("Slider");
+        amountSlider.wholeNumbers = true;
+        amountSlider.maxValue = 999999999;
         handleText = amountSlider.gameObject.getObjRec<TextMeshProUGUI>("Text");
         amountSlider.onValueChanged.AddListener((Action<float>)((value) =>
         {
@@ -241,11 +243,11 @@ public class CheatMenuNewbucks : MonoBehaviour
                 dontChange = false; return;
             }
 
-            double newValue = Math.Pow(value, 4.5);
+            int newValue = (int)amountSlider.value;
             if (newValue < 0) newValue = 0;
-            if (newValue > 9999999999) newValue = 9999999999;
-            handleText.SetText(newValue.ToString().Split(".")[0]);
-            SceneContext.Instance.PlayerState._model.currency = int.Parse(newValue.ToString().Split(".")[0]);
+            if (newValue > 999999999) newValue = 999999999;
+            handleText.SetText(newValue.ToString());
+            SceneContext.Instance.PlayerState._model.currency = newValue;
         }));
     }
 
