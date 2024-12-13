@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,4 +15,5 @@ internal class VacuumItemExpelPatch
         if (__instance._player.Ammo.GetSelectedEmotions() == null)
             ignoreEmotions = true;
     }
-}
+}*/
+//NOT REQUIRED AS OF SR2 0.6.0

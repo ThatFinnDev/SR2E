@@ -1,4 +1,4 @@
-using Il2CppMonomiPark.SlimeRancher.DataModel;
+/*using Il2CppMonomiPark.SlimeRancher.DataModel;
 
 namespace SR2E.Saving;
 
@@ -15,18 +15,18 @@ public class SR2EGadgetDataSaver : MonoBehaviour
             foreach (var pair in gameModel.identifiables)
                 if (pair.Value.GetGameObject() == gameObject)
                 {
-                    gotActor = true; 
-                    actorID = pair.Key; break; 
+                    gotActor = true;
+                    actorID = pair.Key; break;
                 }
-            
+
             if(!gotActor) return;
-            
+
             var data = new SR2EGadgetData()
             {
                 scaleX = transform.localScale.x,
                 scaleY = transform.localScale.y,
                 scaleZ = transform.localScale.z,
-            }; 
+            };
             if (SR2ESavableDataV2.Instance.gadgetSavedData.ContainsKey(actorID.Value))
             {
                 SR2ESavableDataV2.Instance.gadgetSavedData[actorID.Value] = data;
@@ -47,20 +47,20 @@ public class SR2EGadgetDataSaver : MonoBehaviour
     {
         if (SR2EEntryPoint.debugLogging)
             SR2EConsole.SendMessage($"load ident debug start: {gameObject.name}");
-        
-        
+
+
         GameModel gameModel = FindObjectOfType<GameModel>();
         ActorId id = new ActorId();
         bool gotActor = false;
         foreach (var pair in gameModel.identifiables)
             if (pair.Value.GetGameObject() == gameObject)
             {
-                gotActor = true; 
-                id = pair.Key; break; 
+                gotActor = true;
+                id = pair.Key; break;
             }
-            
+
         if(!gotActor) return;
-        
+
         transform.localScale = new Vector3(SR2ESavableDataV2.Instance.gadgetSavedData[id.Value].scaleX, SR2ESavableDataV2.Instance.gadgetSavedData[id.Value].scaleY, SR2ESavableDataV2.Instance.gadgetSavedData[id.Value].scaleZ);
         if (SR2EEntryPoint.debugLogging)
             SR2EConsole.SendMessage("loaded ident");
@@ -73,4 +73,5 @@ public class SR2EGadgetDataSaver : MonoBehaviour
         }
         catch { }
     }
-}
+}*/
+//Broken as of SR2 0.6.0

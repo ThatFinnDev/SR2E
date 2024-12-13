@@ -1,11 +1,13 @@
 ﻿using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using System;
-using SR2E.Saving;
 using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
+using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppMonomiPark.SlimeRancher.World;
+using Unity.Mathematics;
+
 namespace SR2E.Commands;
 
 public class UtilCommand : SR2Command
@@ -18,7 +20,7 @@ public class UtilCommand : SR2Command
 
     readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER", "GADGET" };
     readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
-    readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR", "USE_GRAVITY" };
+    readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR","SLIME_SLEEPINESS", "USE_GRAVITY" };
     readonly List<string> GameParam = new List<string>() { "ACTOR_TYPE" };
     readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
     readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION" };
@@ -47,9 +49,10 @@ public class UtilCommand : SR2Command
                     return null;
                 case "SLIME": switch (args[1])
                     {
-                        case "SLIME_HUNGER": return new List<string> { "0", "0.25", "0.5", "1" };
-                        case "SLIME_AGI": return new List<string> { "0", "0.25", "0.5", "1" };
-                        case "SLIME_FEAR": return new List<string> { "0", "0.25", "0.5", "1" };
+                        case "SLIME_HUNGER": 
+                        case "SLIME_AGI": 
+                        case "SLIME_FEAR": 
+                        case "SLIME_SLEEPINESS": return new List<string> { "0", "0.25", "0.5", "1" };
                         case "USE_GRAVITY": return new List<string> { "false", "true" };
                     }
                     return null;
@@ -146,6 +149,9 @@ public class UtilCommand : SR2Command
             case "SLIME_FEAR":
                 if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.FEAR);
                 return SlimeEmotion(false, SlimeEmotions.Emotion.FEAR, cmd[2]);
+            case "SLIME_SLEEPINESS":
+                if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.SLEEPINESS);
+                return SlimeEmotion(false, SlimeEmotions.Emotion.SLEEPINESS, cmd[2]);
             case "USE_GRAVITY":
                 if (cmd.Length == 2) return ToggleActorZeroGrav(true);
                 return ToggleActorZeroGrav(false,cmd[2]);
@@ -197,6 +203,7 @@ public class UtilCommand : SR2Command
         }
     }
 
+
     public bool SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, string valString = "1f")
     {
         
@@ -209,9 +216,10 @@ public class UtilCommand : SR2Command
             {
                 var emotions = new Dictionary<SlimeEmotions.Emotion, float>()
                 {
-                    { SlimeEmotions.Emotion.HUNGER, slime._model.emotionHunger.CurrVal },
-                    { SlimeEmotions.Emotion.AGITATION, slime._model.emotionAgitation.CurrVal },
-                    { SlimeEmotions.Emotion.FEAR, slime._model.emotionFear.CurrVal }
+                    { SlimeEmotions.Emotion.HUNGER, slime._model.Emotions[(int)SlimeEmotions.Emotion.HUNGER] },
+                    { SlimeEmotions.Emotion.AGITATION, slime._model.Emotions[(int)SlimeEmotions.Emotion.AGITATION] },
+                    { SlimeEmotions.Emotion.FEAR, slime._model.Emotions[(int)SlimeEmotions.Emotion.FEAR] },
+                    { SlimeEmotions.Emotion.SLEEPINESS, slime._model.Emotions[(int)SlimeEmotions.Emotion.SLEEPINESS] }
                 };
                 if (isGet)
                 {
@@ -220,29 +228,40 @@ public class UtilCommand : SR2Command
                         case SlimeEmotions.Emotion.FEAR: SendMessage(translation("cmd.util.emotion.fear.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
                         case SlimeEmotions.Emotion.HUNGER: SendMessage(translation("cmd.util.emotion.hunger.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
                         case SlimeEmotions.Emotion.AGITATION: SendMessage(translation("cmd.util.emotion.agitation.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
+                        case SlimeEmotions.Emotion.SLEEPINESS: SendMessage(translation("cmd.util.emotion.sleepiness.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
                     }
                     return true;
                 }
-               
+
+                SendError("Changing emotions is currently not supported. It will be fixed very soon!");
+                return false;
                 float val = -1;
                 try { val = float.Parse(valString); }
                 catch { return SendError(translation("cmd.error.notvalidfloat",valString)); }
                 if (val < 0) return SendError(translation("cmd.error.notfloatatleast",valString,0));
                 if (emotion == SlimeEmotions.Emotion.HUNGER) 
                 {
-                    slime._model.emotionHunger.CurrVal = val;
+                    slime._model.Emotions = slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.HUNGER,val);
+                    MelonLogger.Msg(slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.HUNGER, val));
                     SendMessage(translation("cmd.util.emotion.hunger.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
                     return true;
                 }
                 if (emotion == SlimeEmotions.Emotion.AGITATION)
                 {
-                    slime._model.emotionAgitation.CurrVal = val;
+                    slime._model.Emotions = slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.AGITATION,val);
                     SendMessage(translation("cmd.util.emotion.agitation.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
                     return true;
                     
                 }
+                if (emotion == SlimeEmotions.Emotion.SLEEPINESS)
+                {
+                    slime._model.Emotions = slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.SLEEPINESS,val);
+                    SendMessage(translation("cmd.util.emotion.sleepiness.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
+                    return true;
+                    
+                }
 
-                slime._model.emotionFear.CurrVal = val; 
+                slime._model.Emotions = slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.FEAR,val);
                 SendMessage(translation("cmd.util.emotion.fear.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
                 return true;
 
@@ -270,13 +289,13 @@ public class UtilCommand : SR2Command
             {
                 if (isGet)
                 {
-                    if(actor.ignoresGravity) SendMessage(translation("cmd.util.actorgravity.showenable",actor.identifiable.identType.getName()));
-                    else SendMessage(translation("cmd.util.actorgravity.showdisable",actor.identifiable.identType.getName()));
+                    if(actor._ignoresGravity) SendMessage(translation("cmd.util.actorgravity.showenable",actor._identifiable.identType.getName()));
+                    else SendMessage(translation("cmd.util.actorgravity.showdisable",actor._identifiable.identType.getName()));
                     return true;
                 }
-                actor.ignoresGravity = !newGravityState;
-                if(actor.ignoresGravity) SendMessage(translation("cmd.util.actorgravity.editenable",actor.identifiable.identType.getName()));
-                else SendMessage(translation("cmd.util.actorgravity.editdisable",actor.identifiable.identType.getName()));
+                actor._ignoresGravity = !newGravityState;
+                if(actor._ignoresGravity) SendMessage(translation("cmd.util.actorgravity.editenable",actor._identifiable.identType.getName()));
+                else SendMessage(translation("cmd.util.actorgravity.editdisable",actor._identifiable.identType.getName()));
                 return true;
             }
             return SendError(translation("cmd.error.notlookingatvalidobject"));
@@ -453,7 +472,7 @@ public class UtilCommand : SR2Command
         SceneContext.Instance.player.transform.localScale = Vector3.one * size;
         KCC.CapsuleHeight = playerColliderHeightBase * size;
         KCC.CapsuleRadius = playerColliderRadBase * size;
-        SR2ESavableDataV2.Instance.playerSavedData.size = size;
+        //SR2ESavableDataV2.Instance.playerSavedData.size = size;
         SendMessage(translation("cmd.util.player.size.edit",size));
         return true;
 
@@ -490,7 +509,7 @@ public class UtilCommand : SR2Command
         catch { return SendError(translation("cmd.error.notvalidfloat",levelString)); }
         
         SRCC._gravityMagnitude = new Il2CppSystem.Nullable<float>(level);
-        SR2ESavableDataV2.Instance.playerSavedData.gravityLevel = level;
+        //SR2ESavableDataV2.Instance.playerSavedData.gravityLevel = level;
         SendMessage(translation("cmd.util.player.gravity.edit",level));
         return true;
 
@@ -557,12 +576,12 @@ public class UtilCommand : SR2Command
     }
 
 
-
+    private static VacModes currVacMode;
     public static bool PlayerVacModeSet(bool isGet,bool silent,string modeString = ".")
     {
         if (isGet)
         {
-            if(!silent) SR2EConsole.SendMessage(translation("cmd.util.vacmode.show",SR2ESavableDataV2.Instance.playerSavedData.vacMode.ToString().Replace("VacModes","")));
+            if(!silent) SR2EConsole.SendMessage(translation("cmd.util.vacmode.show",currVacMode.ToString().Replace("VacModes","")));
             return true;
         }
         VacModes mode;
@@ -622,7 +641,8 @@ public class UtilCommand : SR2Command
             SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
         }
 
-        SR2ESavableDataV2.Instance.playerSavedData.vacMode = mode;
+        //SR2ESavableDataV2.Instance.playerSavedData.vacMode = mode;
+        currVacMode = mode;
         if(!silent) SR2EConsole.SendMessage(translation("cmd.util.vacmode.success",mode.ToString().Replace("VacModes","")));
         return true;
     }
@@ -632,9 +652,22 @@ public class UtilCommand : SR2Command
         yield return new WaitForSeconds(seconds);
     }
 
-
-
-
+    public override void OnPlayerCoreLoad()
+    {
+        switch (SceneContext.Instance.PlayerState.VacuumItem._vacMode)
+        {
+            case VacuumItem.VacMode.NONE:
+                currVacMode = VacModes.NONE;
+                break;
+            case VacuumItem.VacMode.SHOOT:
+                currVacMode = VacModes.AUTO_SHOOT;
+                break;
+            case VacuumItem.VacMode.VAC:
+                currVacMode = VacModes.AUTO_VAC;
+                break;
+        }
+        
+    }
 }
 
 

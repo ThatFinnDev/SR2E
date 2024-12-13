@@ -1,5 +1,4 @@
-﻿using SR2E.Saving;
-using UnityEngine.InputSystem;
+﻿using UnityEngine.InputSystem;
 
 namespace SR2E.Commands
 {
@@ -11,7 +10,7 @@ namespace SR2E.Commands
         {
             if (n)
             {
-                SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
+                //SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
                 //var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
                 SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
             }
@@ -25,13 +24,13 @@ namespace SR2E.Commands
                 if (!SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>())
                 {
                     SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
-                    SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
+                    //SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
                     SendMessage(translation("cmd.noclip.success"));
                 }
                 else
                 {
                     
-                    SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
+                    //SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
                     SendMessage(translation("cmd.noclip.success2"));
                 }
                 return true;

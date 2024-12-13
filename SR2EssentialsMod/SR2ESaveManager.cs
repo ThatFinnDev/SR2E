@@ -3,6 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using Newtonsoft.Json;
+using SR2E.Commands;
 using UnityEngine.InputSystem;
 
 namespace SR2E;
@@ -79,7 +80,7 @@ public static class SR2ESaveManager
                             SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
                             cc.Position = warpTo.position;
                             cc.Rotation = warpTo.rotation;
-                            cc.Velocity = Vector3.zero;
+                            cc.BaseVelocity = Vector3.zero;
                             warpTo = null;
                             return;
                         }
@@ -103,7 +104,7 @@ public static class SR2ESaveManager
             {
                 cc.Position = position;
                 cc.Rotation = rotation;
-                cc.Velocity = Vector3.zero;
+                cc.BaseVelocity = Vector3.zero;
             }
             else
             {
@@ -117,7 +118,9 @@ public static class SR2ESaveManager
                     StaticTeleporterNode obj = GameObject.Instantiate(node, SceneContext.Instance.Player.transform.position, Quaternion.identity);
                     obj.gameObject.SetActive(true);
                     obj.UpdateFX();
-                            
+                    SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();
+                    //SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
+
                 }catch { }
             }
             return SR2EError.NoError;

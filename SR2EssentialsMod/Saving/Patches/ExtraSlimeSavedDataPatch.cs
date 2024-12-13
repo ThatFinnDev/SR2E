@@ -1,4 +1,4 @@
-﻿using SR2E.Saving;
+﻿/*using SR2E.Saving;
 
 [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
 public static class ExtraSlimeSavedDataPatch
@@ -25,4 +25,5 @@ public static class ExtraSlimeSavedDataPatch
             }
         }
     }
-}
+}*/
+//Broken as of SR2 0.6.0

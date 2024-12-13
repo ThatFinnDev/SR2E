@@ -353,7 +353,7 @@ public class NoClipComponent : MonoBehaviour
     {
         try
         {
-            playerController.Velocity = Vector3.zero;
+            playerController.BaseVelocity = Vector3.zero;
             playerMotor.enabled = true;
             playerSettings.AutoSimulation = true;
             playerController.Position = player.position;

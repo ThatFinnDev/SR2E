@@ -1,4 +1,4 @@
-using System.IO;
+/*using System.IO;
 
 [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.DeleteGame))]
 public static class AutoSaveDirectorDeleteGamePatch
@@ -12,4 +12,5 @@ public static class AutoSaveDirectorDeleteGamePatch
         ew.Delete();
     }
     
-}
+}*/
+//Broken as of SR2 0.6.0

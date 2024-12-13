@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿/*using Newtonsoft.Json;
 using System;
 
 namespace SR2E.Saving;
@@ -28,4 +28,5 @@ public struct SR2EPlayerData
         vacMode = VacModes.NORMAL;
         velocity = new Vector3Data(0, 0, 0);
     }
-}
+}*/
+//Broken as of SR2 0.6.0
