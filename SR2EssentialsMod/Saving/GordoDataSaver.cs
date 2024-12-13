@@ -1,4 +1,4 @@
-﻿namespace SR2E.Saving;
+﻿/*namespace SR2E.Saving;
 
 [RegisterTypeInIl2Cpp(false)]
 public class SR2EGordoDataSaver : MonoBehaviour
@@ -36,4 +36,5 @@ public class SR2EGordoDataSaver : MonoBehaviour
         }
         catch { }
     }
-}
+}*/
+//Broken as of SR2 0.6.0

@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using Newtonsoft.Json;
 namespace SR2E.Saving;
 
@@ -19,4 +19,5 @@ public struct SR2EGadgetData
         scaleY = 1f;
         scaleZ = 1f;
     }
-}
+}*/
+//Broken as of SR2 0.6.0

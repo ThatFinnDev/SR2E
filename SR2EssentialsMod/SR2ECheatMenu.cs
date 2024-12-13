@@ -9,7 +9,6 @@ using Il2CppSystem.Linq;
 using Il2CppTMPro;
 using SR2E.Buttons;
 using SR2E.Commands;
-using SR2E.Saving;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -209,7 +208,7 @@ public class SR2ECheatMenu
             () =>
             {
                 SR2EConsole.ExecuteByString("noclip", true,true);
-                noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SR2ESavableDataV2.Instance.playerSavedData.noclipState ? "on" : "off"));
+                noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SceneContext.Instance.Camera.GetComponent<NoClipComponent>()!=null ? "on" : "off"));
             });
         new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.refillinv"), () => { SR2EConsole.ExecuteByString("refillinv", true,true); });
         

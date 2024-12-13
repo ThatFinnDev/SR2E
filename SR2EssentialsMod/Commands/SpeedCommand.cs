@@ -1,6 +1,5 @@
 ﻿using Il2CppMonomiPark.KFC;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using SR2E.Saving;
 
 namespace SR2E.Commands;
 
@@ -42,7 +41,7 @@ public class SpeedCommand : SR2Command
             parameters._maxAirMoveSpeed = speedValue * baseMaxAirSpeed;
             parameters._airAccelerationSpeed = speedValue * baseAccAirSpeed;
 
-            SR2ESavableDataV2.Instance.playerSavedData.speed = speedValue;
+            //SR2ESavableDataV2.Instance.playerSavedData.speed = speedValue;
 
             SendMessage(translation("cmd.speed.success",args[0]));
             return true;

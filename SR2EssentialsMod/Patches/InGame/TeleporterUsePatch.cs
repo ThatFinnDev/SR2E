@@ -12,7 +12,7 @@ internal class TeleporterUsePatch
 {
     public static void Prefix(Collider collider)
     {
-        if (collider.gameObject == SceneContext.Instance.player)
-            GameContext.Instance.AutoSaveDirector.SaveGame();
+        //if (collider.gameObject == SceneContext.Instance.player)
+        //    GameContext.Instance.AutoSaveDirector.SaveGame();
     }
 }
