@@ -1,6 +1,8 @@
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
+using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using Newtonsoft.Json;
 using SR2E.Commands;
@@ -120,6 +122,20 @@ public static class SR2ESaveManager
                     obj.gameObject.SetActive(true);
                     obj.UpdateFX();
                     SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();
+                    try
+                    {
+                        PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>(); 
+                        pauseMenuRoot.Close();
+                    }catch { }
+                    try
+                    {
+                        SystemContext.Instance.SceneLoader.UnpauseGame();
+                    }catch { }
+                    try
+                    {
+                        PauseMenuDirector pauseMenuDirector = Object.FindObjectOfType<PauseMenuDirector>(); 
+                        pauseMenuDirector.UnPauseGame();
+                    }catch { }
                     //SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
 
                 }catch { }
