@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 
 namespace SR2E.Saving
 {
@@ -15,4 +15,5 @@ namespace SR2E.Saving
 
         public static Vector3 ConvertBack(Vector3Data vector) => new Vector3(vector.X, vector.Y, vector.Z);
     }
-}
+}*/
+//Broken as of SR2 0.6.0

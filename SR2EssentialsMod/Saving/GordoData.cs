@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using Newtonsoft.Json;
 namespace SR2E.Saving;
 
@@ -13,4 +13,5 @@ public struct SR2EGordoData
     {
         baseSize = 4f;
     }
-}
+}*/
+//Broken as of SR2 0.6.0

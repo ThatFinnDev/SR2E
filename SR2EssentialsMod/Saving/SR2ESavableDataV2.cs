@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.IO;
 using Newtonsoft.Json;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
@@ -19,12 +19,12 @@ internal class SR2ESavableDataV2
         slimeSavedData = new Dictionary<long, SR2ESlimeData>();
         gadgetSavedData = new Dictionary<long, SR2EGadgetData>();
     }
-    
+
     public Dictionary<string, SR2EGordoData> gordoSavedData;
     public Dictionary<long, SR2ESlimeData> slimeSavedData;
     public Dictionary<long, SR2EGadgetData> gadgetSavedData;
     public SR2EPlayerData playerSavedData = new SR2EPlayerData();
-    
+
     public void SaveToStream(Stream stream)
     {
         var writer = new StreamWriter(stream);
@@ -59,4 +59,5 @@ internal class SR2ESavableDataV2
             return save;
         }
     }
-}
+}*/
+//Broken as of SR2 0.6.0

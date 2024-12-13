@@ -1,4 +1,4 @@
-﻿using Il2CppKinematicCharacterController;
+﻿/*using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Commands;
 using SR2E.Saving;
@@ -24,4 +24,5 @@ public static class PlayerDataLoadPatch
         }
         catch { }
     }
-}
+}*/
+//Broken as of SR2 0.6.0

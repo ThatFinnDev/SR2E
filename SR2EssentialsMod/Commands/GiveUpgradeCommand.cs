@@ -11,11 +11,10 @@ public class GiveUpgradeCommand : SR2Command
     {
         if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
-
         if (args[0] == "*")
         {
             UpgradeDefinition[] ids = Resources.FindObjectsOfTypeAll<UpgradeDefinition>();
-            foreach (UpgradeDefinition id in ids) 
+            foreach (UpgradeDefinition id in ids)
                 for (var i = 0; i < 10; i++)
                     SceneContext.Instance.PlayerState._model.upgradeModel.IncrementUpgradeLevel(id);
 
@@ -25,14 +24,14 @@ public class GiveUpgradeCommand : SR2Command
         else
         {
             UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>()
-                .FirstOrDefault(x => x.ValidatableName.Equals(args[0]));
+                .FirstOrDefault(x => x.name.Equals(args[0]));
             if (id == null)
                 return SendError(translation("cmd.error.notvalidupgrade",args[0]));
-               
+
 
             SceneContext.Instance.PlayerState._model.upgradeModel.IncrementUpgradeLevel(id);
             SendMessage(translation("cmd.giveupgrade.success",
-                id.ValidatableName,SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)));
+                id.name,SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)));
             return true;
         }
     }
@@ -42,7 +41,7 @@ public class GiveUpgradeCommand : SR2Command
         if (argIndex == 0)
         {
             var identifiableTypeGroup =
-                Resources.FindObjectsOfTypeAll<UpgradeDefinition>().Select(x => x.ValidatableName);
+                Resources.FindObjectsOfTypeAll<UpgradeDefinition>().Select(x => x.name);
             List<string> list = identifiableTypeGroup.ToList();
             list.Add("*");
             return list;
