@@ -6,7 +6,7 @@
 [assembly: AssemblyProduct(SR2E.BuildInfo.Name)]
 [assembly: AssemblyCopyright($"Created by {SR2E.BuildInfo.Author}")]
 [assembly: AssemblyTrademark(SR2E.BuildInfo.Company)]
-[assembly: VerifyLoaderVersion(0,6,5, true)]
+[assembly: VerifyLoaderVersion(0,6,2, true)]
 [assembly: AssemblyVersion(SR2E.BuildInfo.Version)]
 [assembly: MelonPriority(-10000)]
 [assembly: AssemblyFileVersion(SR2E.BuildInfo.Version)]

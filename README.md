@@ -2,7 +2,7 @@
  A mod for SlimeRancher 2 that adds a ModMenu to the Main Menu and a InGameConsole with commands (expandable by other mods).
 
  # Installation:
-  1. Install MelonLoader 0.6.5 or higher https://github.com/LavaGang/MelonLoader/releases
+  1. Install MelonLoader 0.6.2 or higher https://github.com/LavaGang/MelonLoader/releases (BUT NOT 0.6.5 OR 0.6.6!)
   2. Download the SR2E.dll in the releases Tab.
   3. Put the SR2E.dll in your Mods Folder
 
@@ -34,7 +34,3 @@
 ![Screenshot 7](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot7.png?raw=true)
 ![Screenshot 8](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot8.png?raw=true)
 ![Screenshot 9](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot9.png?raw=true)
-
-
-
-

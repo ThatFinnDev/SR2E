@@ -81,85 +81,6 @@ __MACOSX
 
 
 # Mono auto generated files
-SR2ELibraryExampleMod/mono_crash.*
-SR2EQuickButtons/mono_crash.*
-
-
-# Build results
-SR2ELibraryExampleMod/[Dd]ebug/
-SR2ELibraryExampleMod/[Dd]ebugPublic/
-SR2ELibraryExampleMod/[Rr]elease/
-SR2ELibraryExampleMod/[Rr]eleases/
-SR2ELibraryExampleMod/x64/
-SR2ELibraryExampleMod/x86/
-SR2ELibraryExampleMod/[Aa][Rr][Mm]/
-SR2ELibraryExampleMod/[Aa][Rr][Mm]64/
-SR2ELibraryExampleMod/bld/
-SR2ELibraryExampleMod/[Bb]in/
-SR2ELibraryExampleMod/[Ll]og/
-SR2ELibraryExampleMod/[Ll]ogs/
-
-# Build results 2
-SR2EQuickButtons/[Dd]ebug/
-SR2EQuickButtons/[Dd]ebugPublic/
-SR2EQuickButtons/[Rr]elease/
-SR2EQuickButtons/[Rr]eleases/
-SR2EQuickButtons/x64/
-SR2EQuickButtons/x86/
-SR2EQuickButtons/[Aa][Rr][Mm]/
-SR2EQuickButtons/[Aa][Rr][Mm]64/
-SR2EQuickButtons/bld/
-SR2EQuickButtons/[Bb]in/
-SR2EQuickButtons/[Ll]og/
-SR2EQuickButtons/[Ll]ogs/
-
-
-# Uncomment if you have tasks that create the project's static files in wwwroot
-#wwwroot/
-
-# Visual Studio 2017 auto generated files
-SR2EQuickButtons/Generated\ Files/
-SR2ELibraryExampleMod/Generated\ Files/
-
-# MSTest test Results
-SR2EQuickButtons/[Tt]est[Rr]esult*/
-SR2EQuickButtons/[Bb]uild[Ll]og.*
-SR2ELibraryExampleMod/[Tt]est[Rr]esult*/
-SR2ELibraryExampleMod/[Bb]uild[Ll]og.*
-
-# NUnit
-*.VisualState.xml
-SR2ELibraryExampleMod/TestResult.xml
-SR2ELibraryExampleMod/nunit-*.xml
-SR2EQuickButtons/TestResult.xml
-SR2EQuickButtons/nunit-*.xml
-
-# Build Results of an ATL Project
-SR2ELibraryExampleMod/[Dd]ebugPS/
-SR2ELibraryExampleMod/[Rr]eleasePS/
-SR2ELibraryExampleMod/dlldata.c
-SR2EQuickButtons/[Dd]ebugPS/
-SR2EQuickButtons/[Rr]eleasePS/
-SR2EQuickButtons/dlldata.c
-
-# Benchmark Results
-SR2ELibraryExampleMod/BenchmarkDotNet.Artifacts/
-SR2EQuickButtons/BenchmarkDotNet.Artifacts/
-
-# .NET Core
-SR2ELibraryExampleMod/project.lock.json
-SR2ELibraryExampleMod/project.fragment.lock.json
-SR2ELibraryExampleMod/artifacts/
-SR2EQuickButtons/project.lock.json
-SR2EQuickButtons/project.fragment.lock.json
-SR2EQuickButtons/artifacts/
-
-# StyleCop
-SR2ELibraryExampleMod/StyleCopReport.xml
-SR2EQuickButtons/StyleCopReport.xml
-
-
-# Mono auto generated files
 SR2EssentialsMod/mono_crash.*
 
 
@@ -238,13 +159,9 @@ SR2EssentialsMod/StyleCopReport.xml
 
 # Chutzpah Test files
 SR2EssentialsMod/_Chutzpah*
-SR2ELibraryExampleMod/_Chutzpah*
-SR2EQuickButtons/_Chutzpah*
 
 # Visual C++ cache files
 SR2EssentialsMod/ipch/
-SR2ELibraryExampleMod/ipch/
-SR2EQuickButtons/ipch/
 *.aps
 *.ncb
 *.opendb
@@ -271,15 +188,11 @@ $tf/
 
 # ReSharper is a .NET coding add-in
 SR2EssentialsMod/_ReSharper*/
-SR2ELibraryExampleMod/_ReSharper*/
-SR2EQuickButtons/_ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
 # TeamCity is a build add-in
 _SR2EssentialsMod/TeamCity*
-SR2ELibraryExampleMod/TeamCity*
-SR2EQuickButtons/TeamCity*
 
 # DotCover is a Code Coverage Tool
 *.dotCover
@@ -287,13 +200,8 @@ SR2EQuickButtons/TeamCity*
 # AxoCover is a Code Coverage Tool
 .axoCover/*
 SR2EssentialsMod/!.axoCover/settings.json
-SR2ELibraryExampleMod/!.axoCover/settings.json
-SR2EQuickButtons/!.axoCover/settings.json
-
 # Coverlet is a free, cross platform Code Coverage Tool
 SR2EssentialsMod/coverage*[.json, .xml, .info]
-SR2EQuickButtons/coverage*[.json, .xml, .info]
-SR2ELibraryExampleMod/!.axoCover/settings.json
 
 
 # Visual Studio code coverage results
@@ -302,26 +210,18 @@ SR2ELibraryExampleMod/!.axoCover/settings.json
 
 # NCrunch
 SR2EssentialsMod/_NCrunch_*
-SR2ELibraryExampleMod/_NCrunch_*
-SR2EQuickButtons/_NCrunch_*
 .*crunch*.local.xml
 SR2EssentialsMod/nCrunchTemp_*
-SR2EQuickButtons/nCrunchTemp_*
-SR2ELibraryExampleMod/nCrunchTemp_*
 
 # MightyMoose
 *.mm.*
 SR2EssentialsMod/AutoTest.Net/
-SR2ELibraryExampleMod/AutoTest.Net/
-SR2EQuickButtons/AutoTest.Net/
 
 # Web workbench (sass)
 .sass-cache/
 
 # Installshield output folder
 SR2EssentialsMod/[Ee]xpress/
-SR2ELibraryExampleMod/[Ee]xpress/
-SR2EQuickButtons/[Ee]xpress/
 
 # DocProject is a documentation generator add-in
 SR2EssentialsMod/DocProject/buildhelp/
@@ -332,28 +232,10 @@ SR2EssentialsMod/DocProject/Help/*.hhk
 SR2EssentialsMod/DocProject/Help/*.hhp
 SR2EssentialsMod/DocProject/Help/Html2
 SR2EssentialsMod/DocProject/Help/html
-SR2ELibraryExampleMod/DocProject/buildhelp/
-SR2ELibraryExampleMod/DocProject/Help/*.HxT
-SR2ELibraryExampleMod/DocProject/Help/*.HxC
-SR2ELibraryExampleMod/DocProject/Help/*.hhc
-SR2ELibraryExampleMod/DocProject/Help/*.hhk
-SR2ELibraryExampleMod/DocProject/Help/*.hhp
-SR2ELibraryExampleMod/DocProject/Help/Html2
-SR2ELibraryExampleMod/DocProject/Help/html
-SR2EQuickButtons/DocProject/buildhelp/
-SR2EQuickButtons/DocProject/Help/*.HxT
-SR2EQuickButtons/DocProject/Help/*.HxC
-SR2EQuickButtons/DocProject/Help/*.hhc
-SR2EQuickButtons/DocProject/Help/*.hhk
-SR2EQuickButtons/DocProject/Help/*.hhp
-SR2EQuickButtons/DocProject/Help/Html2
-SR2EQuickButtons/DocProject/Help/html
 
 
 # Click-Once directory
 SR2EssentialsMod/publish/
-SR2ELibraryExampleMod/publish/
-SR2EQuickButtons/publish/
 
 # Publish Web Output
 *.[Pp]ublish.xml
@@ -367,8 +249,6 @@ SR2EQuickButtons/publish/
 # checkin your Azure Web App publish settings, but sensitive information contained
 # in these scripts will be unencrypted
 SR2EssentialsMod/PublishScripts/
-SR2ELibraryExampleMod/PublishScripts/
-SR2EQuickButtons/PublishScripts/
 
 # NuGet Packages
 *.nupkg
@@ -382,28 +262,16 @@ SR2EQuickButtons/PublishScripts/
 
 # Microsoft Azure Build Output
 SR2EssentialsMod/csx/
-SR2ELibraryExampleMod/csx/
-SR2EQuickButtons/csx/
 *.build.csdef
 
 # Microsoft Azure Emulator
 SR2EssentialsMod/ecf/
 SR2EssentialsMod/rcf/
-SR2ELibraryExampleMod/ecf/
-SR2ELibraryExampleMod/rcf/
-SR2EQuickButtons/ecf/
-SR2EQuickButtons/rcf/
 
 # Windows Store app package directories and files
 SR2EssentialsMod/AppPackages/
 SR2EssentialsMod/BundleArtifacts/
 SR2EssentialsMod/Package.StoreAssociation.xml
-SR2ELibraryExampleMod/AppPackages/
-SR2ELibraryExampleMod/BundleArtifacts/
-SR2ELibraryExampleMod/Package.StoreAssociation.xml
-SR2EQuickButtons/AppPackages/
-SR2EQuickButtons/BundleArtifacts/
-SR2EQuickButtons/Package.StoreAssociation.xml
 _pkginfo.txt
 *.appx
 *.appxbundle
@@ -414,13 +282,9 @@ _pkginfo.txt
 *.[Cc]ache
 # but keep track of directories ending in .cache
 SR2EssentialsMod/!?*.[Cc]ache/
-SR2ELibraryExampleMod/!?*.[Cc]ache/
-SR2EQuickButtons/!?*.[Cc]ache/
 
 # Others
 SR2EssentialsMod/ClientBin/
-SR2ELibraryExampleMod/ClientBin/
-SR2EQuickButtons/ClientBin/
 ~$*
 *~
 *.dbmdl
@@ -429,8 +293,6 @@ SR2EQuickButtons/ClientBin/
 *.pfx
 *.publishsettings
 SR2EssentialsMod/orleans.codegen.css
-SR2EQuickButtons/orleans.codegen.cs
-SR2ELibraryExampleMod/orleans.codegen.cs
 
 # Including strong name files can present a security risk
 # (https://github.com/github/gitignore/pull/2483#issue-259490424)
@@ -442,9 +304,6 @@ SR2ELibraryExampleMod/orleans.codegen.cs
 
 # RIA/Silverlight projects
 SR2EssentialsMod/Generated_Code/
-SR2ELibraryExampleMod/Generated_Code/
-SR2EQuickButtons/Generated_Code/
-
 # Backup & report files from converting an old project file
 # to a newer Visual Studio version. Backup files are not needed,
 # because we have git ;-)
@@ -453,16 +312,6 @@ SR2EssentialsMod/Backup*/
 SR2EssentialsMod/UpgradeLog*.XML
 SR2EssentialsMod/UpgradeLog*.htm
 SR2EssentialsMod/ServiceFabricBackup/
-SR2ELibraryExampleMod/_UpgradeReport_Files/
-SR2ELibraryExampleMod/Backup*/
-SR2ELibraryExampleMod/UpgradeLog*.XML
-SR2ELibraryExampleMod/UpgradeLog*.htm
-SR2ELibraryExampleMod/ServiceFabricBackup/
-SR2EQuickButtons/_UpgradeReport_Files/
-SR2EQuickButtons/Backup*/
-SR2EQuickButtons/UpgradeLog*.XML
-SR2EQuickButtons/UpgradeLog*.htm
-SR2EQuickButtons/ServiceFabricBackup/
 *.rptproj.bak
 
 # SQL Server files
@@ -481,8 +330,6 @@ SR2EQuickButtons/ServiceFabricBackup/
 
 # Microsoft Fakes
 SR2EssentialsMod/FakesAssemblies/
-SR2ELibraryExampleMod/FakesAssemblies/
-SR2EQuickButtons/FakesAssemblies/
 
 # GhostDoc plugin setting file
 *.GhostDoc.xml
@@ -490,7 +337,6 @@ SR2EQuickButtons/FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 SR2EssentialsMod/node_modules/
-SR2ELibraryExampleMod/node_modules/
 
 # Visual Studio 6 build log
 *.plg
@@ -578,22 +424,4 @@ SR2EssentialsMod/.vs
 SR2EssentialsMod/obj
 SR2EssentialsMod/start.bat
 SR2EssentialsMod/start.sh
-SR2ELibraryExampleMod/Output
-SR2ELibraryExampleMod/Libs/MelonLoader.dll
-SR2ELibraryExampleMod//packages/LavaGang.MelonLoader.0.6.1
-SR2ELibraryExampleMod/Libs
-SR2ELibraryExampleMod/.idea
-SR2ELibraryExampleMod/.vs
-SR2ELibraryExampleMod/obj
-SR2ELibraryExampleMod/start.bat
-SR2ELibraryExampleMod/start.sh
-SR2EQuickButtons/Output
-SR2EQuickButtons/Libs/MelonLoader.dll
-SR2EQuickButtons//packages/LavaGang.MelonLoader.0.6.1
-SR2EQuickButtons/Libs
-SR2EQuickButtons/.idea
-SR2EQuickButtons/.vs
-SR2EQuickButtons/obj
-SR2EQuickButtons/start.bat
-SR2EQuickButtons/start.sh
 tempreleasenotes.txt

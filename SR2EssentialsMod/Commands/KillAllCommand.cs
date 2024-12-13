@@ -22,7 +22,7 @@ public class KillAllCommand : SR2Command
             {
                 if (ident.hasStarted)
                 {
-                    var id = ident.model.actorId;
+                    var id = ident._model.actorId;
                     if (ident.identType.name != "Player")
                     {
                         Object.Destroy(ident.gameObject);
@@ -46,7 +46,7 @@ public class KillAllCommand : SR2Command
                 if (ident.hasStarted)
                     if (ident.identType == type)
                     {
-                        var id = ident.model.actorId;
+                        var id = ident._model.actorId;
                         Object.Destroy(ident.gameObject);
                         SceneContext.Instance.GameModel.identifiables.Remove(id);
                     }

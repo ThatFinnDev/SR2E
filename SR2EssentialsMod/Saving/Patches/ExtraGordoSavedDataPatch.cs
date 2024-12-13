@@ -1,4 +1,4 @@
-﻿
+﻿/*
 using SR2E.Saving;
 using SR2E;
 
@@ -12,4 +12,5 @@ public static class ExtraGordoSavedDataPatch
         if(__instance.gameObject.GetComponent<SR2EGordoDataSaver>()==null)
             __instance.gameObject.AddComponent<SR2EGordoDataSaver>();
     }
-}
+}*/
+//Broken as of SR2 0.6.0

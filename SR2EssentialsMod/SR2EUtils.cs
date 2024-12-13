@@ -9,6 +9,7 @@ using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppSystem.IO;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
+using Unity.Mathematics;
 using UnityEngine.InputSystem.Controls;
 
 namespace SR2E
@@ -723,7 +724,16 @@ namespace SR2E
         {
             KeyControl kc = Keyboard.current[key];
             if (kc != null) return kc;
-            return Keyboard.current[key];
+            else
+                return Keyboard.current[key];
+        }
+        public static float4 changeValue(this float4 float4, int index, float value)
+        {
+            return new float4(index == 0 ? value : float4[0],
+                index == 1 ? value : float4[1],
+                index == 2 ? value : float4[2],
+                index == 3 ? value : float4[3]
+            );
         }
 
     }

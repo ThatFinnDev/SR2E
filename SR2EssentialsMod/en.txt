@@ -1,14 +1,14 @@
 buttons.mods.label=Mods
-buttons.cheatmenu.label=CheatMenu
+buttons.cheatmenu.label=Cheat Menu
 buttons.debugplayer.label=Debug Player
 
-cheatmenu.cheatbuttons.refillinv=Refillinv
+cheatmenu.cheatbuttons.refillinv=Refill Inventory
 cheatmenu.cheatbuttons.noclipon=NoClip [On]
 cheatmenu.cheatbuttons.noclipoff=NoClip [Off]
-cheatmenu.cheatbuttons.infenergyon=InfEnergy [On]
-cheatmenu.cheatbuttons.infenergyoff=InfEnergy [Off]
-cheatmenu.cheatbuttons.infhealthon=InfHealth [On]
-cheatmenu.cheatbuttons.infhealthoff=InfHealth [Off]
+cheatmenu.cheatbuttons.infenergyon=Infinite Energy [On]
+cheatmenu.cheatbuttons.infenergyoff=Infinite Energy [Off]
+cheatmenu.cheatbuttons.infhealthon=Infinite Health [On]
+cheatmenu.cheatbuttons.infhealthoff=Infinite Health [Off]
 
 
 modmenu.modinfo.mod=Mod: $1
@@ -16,7 +16,7 @@ modmenu.modinfo.author=by: $1
 modmenu.modinfo.version=Version: $1
 modmenu.modinfo.link=Link: $1
 modmenu.modinfo.unknown=Unknown
-modmenu.modinfo.isuniversal=IsUniversalMod: $1
+modmenu.modinfo.isuniversal=Is Universal Mod: $1
 modmenu.modinfo.description=Description: $1
 
 modmenu.modconfig.enterint=Please enter a non decimal number
@@ -24,7 +24,7 @@ modmenu.modconfig.enterfloat=Please enter a decimal number
 modmenu.modconfig.enterdouble=Please enter a decimal number
 modmenu.modconfig.entertext=Please enter text
 
-modmenu.modconfig.keylistening=Listening
+modmenu.modconfig.keylistening=Listening...
 
 cmd.loadasavefirst=Load a save first!
 cmd.usage=Usage: $1
@@ -34,30 +34,30 @@ cmd.alreadyregistered=Trying to register command with id '<color=white>$1</color
 cmd.notregistered=Trying to unregister command with id '<color=white>$1</color>' but the ID is not registered!
 
 
-cmd.error.notvalidvacmode=$1 is not a valid vacmode!
+cmd.error.notvalidvacmode=$1 is not a valid VACMODE!
 cmd.error.notvalidweather=$1 is not a valid weather!
 cmd.error.notvalidkeycode=$1 is not a valid KeyCode!
 cmd.error.notvalidint=$1 is not a valid integer!
 cmd.error.notvalidfloat=$1 is not a valid float!
-cmd.error.notvaliddouble=$1 is not a valid double!
-cmd.error.notvalidbool=$1 is not a valid bool!
-cmd.error.notvalidtrool=$1 has to be true,false or toggle!
-cmd.error.notvalidvector3=$1 $2 $3 is not a valid Vector3!
-cmd.error.notvalididenttype=$1 is not a valid IdentifiableType!
-cmd.error.notvalidgadget=$1 is not a valid Gadget!
-cmd.error.notvalidupgrade=$1 is not a valid Upgrade!
+cmd.error.notvaliddouble=$1 is not a valid double-float!
+cmd.error.notvalidbool=$1 is not a valid boolean!
+cmd.error.notvalidtrool=$1 has to be true, false or toggle!
+cmd.error.notvalidvector3=($1, $2, $3) is not a valid Vector3!
+cmd.error.notvalididenttype=$1 is not a valid actor type!
+cmd.error.notvalidgadget=$1 is not a valid gadget!
+cmd.error.notvalidupgrade=$1 is not a valid upgrade!
 cmd.error.notintabove=$1 is not an integer above $2!
 cmd.error.notintbelow=$1 is not an integer below $2!
 cmd.error.notfloatabove=$1 is not a float above $2!
-cmd.error.notdoubleabove=$1 is not a double above $2!
+cmd.error.notdoubleabove=$1 is not a double-float above $2!
 cmd.error.notintatleast=$1 is not a int with at least $2!
 cmd.error.notfloatatleast=$1 is not a float with at least $2!
-cmd.error.notdoubleatleast=$1 is not a double with at least above $2!
+cmd.error.notdoubleatleast=$1 is not a double-float with at least above $2!
 
-cmd.error.srccnull=An error occured, SRCharacterController couldn't be found!
-cmd.error.teleportableplayernull=An error occured, TeleportablePlayer couldn't be found!
-cmd.error.kinematiccharactermotornull=An error occured, KinematicCharacterMotor couldn't be found!
-cmd.error.scenegroupnotsupported=There SceneGroup $1 is not supported!
+cmd.error.srccnull=An error occured, SRCharacterController component couldn't be found!
+cmd.error.teleportableplayernull=An error occured, TeleportablePlayer component couldn't be found!
+cmd.error.kinematiccharactermotornull=An error occured, KinematicCharacterMotor component couldn't be found!
+cmd.error.scenegroupnotsupported=The scene group "$1" is not supported!
 
 cmd.error.nocamera=Couldn't find player camera!
 cmd.error.notlookingatvalidobject=You're not looking at a valid object!
@@ -81,25 +81,17 @@ cmd.clearinv.extendeddescription=Clears your inventory or if you want to, just a
 
 cmd.openconsole.description=Opens the console
 cmd.closeconsole.description=Closes the console
-cmd.toggleconsole.description=Closes or opens the console
+cmd.toggleconsole.description=Toggles the console
 
-cmd.openmodmenu.description=Opens the mod menu
-cmd.closemodmenu.description=Closes the mod menu
-cmd.togglemodmenu.description=Closes or opens the mod menu
+cmd.warpstuff.nowarpwithname=There is no warp point with the name: $1!
+cmd.warpstuff.alreadywarpwithname=There is already a warp point with the name: $1!
 
-cmd.opencheatmenu.description=Opens the cheat menu
-cmd.closecheatmenu.description=Closes the cheat menu
-cmd.togglecheatmenu.description=Closes or opens the cheat menu
+cmd.delwarp.success=Successfully deleted the warp point: $1!
+cmd.delwarp.description=Deletes a warp point
+cmd.delwarp.extendeddescription=Deletes a warp point from the <u>warp</u> command
 
-cmd.warpstuff.nowarpwithname=There is no warp with the name: $1!
-cmd.warpstuff.alreadywarpwithname=There is already warp with the name: $1!
-
-cmd.delwarp.success=Successfully deleted the Warp: $1!
-cmd.delwarp.description=Deletes a warp
-cmd.delwarp.extendeddescription=Deletes a warp from the <u>warp</u> command
-
-cmd.fastforward.success=Successfully fastforwarded $1 hours!
-cmd.fastforward.description=Fast forwards to next morning, or the amount of hours you request
+cmd.fastforward.success=Successfully fast-forwarded $1 hours!
+cmd.fastforward.description=Fast-forwards to next morning, or the amount of hours you request
 
 cmd.fling.success=Successfully flinged the object with a string of $1!
 cmd.fling.description=Flings any object you are looking at
@@ -133,10 +125,10 @@ cmd.giveupgrade.success=$1 is now on level $2!
 cmd.giveupgrade.successall=Successfully upgraded all upgrades!
 cmd.giveupgrade.description=Gives an upgrade
 
-cmd.graphics.success=Successfully set graphics to $1!
-cmd.graphics.description=Makes your game look cool, or worse
+cmd.graphics.success=Successfully set graphics type to $1!
+cmd.graphics.description=Makes your game look... like something...
 cmd.graphics.extendeddescription=Changes the look of your game. It may make your experience better or worse
-cmd.graphics.norangelights=An error occured, rangelights couldn't be found!
+cmd.graphics.norangelights=An error occured, 'rangelights' couldn't be found!
 
 cmd.gravity.success=Successfully changed the gravity to $1 $2 $3!
 cmd.gravity.description=Changes the gravity!
@@ -164,17 +156,17 @@ cmd.killall.success=Successfully killed all actors!
 cmd.killall.successspecific=Successfully killed all actors with type $1!
 cmd.killall.description=Kills everything or only everything with a specified id
 
-cmd.kill.success=Successfully killed the thing!
+cmd.kill.success=Successfully killed the actor!
 cmd.kill.description=Kills what you're looking at
 
 cmd.mods.success=<color=blue>List of Mods Loaded:</color>
 cmd.mods.successdesc=$1 by $2
 cmd.mods.description=Displays all mods loaded
 
-cmd.move.success=Successfully moved the thing!
+cmd.move.success=Successfully moved the object!
 cmd.move.description=Moves a gadget/slime/largo/fruit/ etc.
 
-cmd.scale.success=Succesfully changed the scale of the thing!
+cmd.scale.success=Succesfully changed the scale of the object!
 cmd.scale.description=Changes the scale of a gadget/slime/largo/fruit etc.
 
 cmd.newbucks.success=Successfully added $1 newbucks!
@@ -203,41 +195,42 @@ cmd.refillinv.extendeddescription=Refills your inventory or if you want, just a 
 cmd.replace.success=Successfully replaced $1 with $2!
 cmd.replace.description=Replaces the thing you're looking at
 
-cmd.rotate.success=Successfully rotated the thing!
+cmd.rotate.success=Successfully rotated the object!
 cmd.rotate.description=Rotates a gadget/slime/largo/fruit/ etc.
 
-cmd.setwarp.success=Successfully added the Warp: $1!
+cmd.setwarp.success=Successfully added the Warp point "$1"!
 cmd.setwarp.description=Saves your location, so you can teleport to it later!
 
 cmd.spawn.success=Successfully spawned $1 $2!
-cmd.spawn.description=Spawns something in front of your face
+cmd.spawn.description=Spawns an actor in front of your face
 cmd.spawn.isgadgetnotitem=$1 is a gadget, not an item!
 
-cmd.speed.success=Speed set to $1!
+cmd.speed.success=Set speed to $1!
 cmd.speed.description=Changes the player speed
 cmd.speed.unknownerror=An unknown error occured!
 
 cmd.strike.success=Summoned lightning!
-cmd.strike.description=Spawns a lightning strike
+cmd.strike.description=Summons a lightning strike
 
 cmd.unbind.success=Successfully unbound key $1!
-cmd.unbind.notbound=$1 is not bound to anything!
+cmd.unbind.notbound=Key $1 is not bound to anything!
 cmd.unbind.description=Unbinds a key that was previously bound to a command/multiple commands
+cmd.unbind.extendeddescription=Unbinds a key that was previously bound to a command/multiple commands. For multiple commands, use 'unbind <key> <command>;<command>;<command>;....'
 
-cmd.warp.success=Successfully warped to the warp $1!
-cmd.warp.description=Warps you to a saved warping point
-cmd.warp.extendeddescription=Warps you to a saved warping point, use <u>setwarp</u> to create more
+cmd.warp.success=Successfully warped to the warp point $1!
+cmd.warp.description=Warps you to a saved warp point
+cmd.warp.extendeddescription=Warps you to a saved warp point, use <u>setwarp</u> to create more
 cmd.warp.unknownerror=An unknown error occured!
 
-cmd.warplist.success=<color=blue>List of all Warps:</color>
-cmd.warplist.successdesc='$1' in '$2' at '$3 $4 $5'
-cmd.warplist.error=There aren't warps yet!
-cmd.warplist.description=Displays all mods loaded
+cmd.warplist.success=<color=blue>List of all warp points:</color>
+cmd.warplist.sucessdesc='$1' in '$2' at '$3 $4 $5'
+cmd.warplist.error=There aren't any warp points yet!
+cmd.warplist.description=Displays all warp points.
 
 cmd.weather.successlist=All weathers are: $1
-cmd.weather.successlistrunning=Running weathers are: $1
-cmd.weather.successstart=Successfully started the weather $1!
-cmd.weather.successstop=Successfully stopped the weather $1!
+cmd.weather.successlistrunning=Currently running weathers are: $1
+cmd.weather.successstart=Successfully started the weather "$1"!
+cmd.weather.successstop=Successfully stopped the weather "$1"!
 cmd.weather.notvalidargument='$1' is not a valid argument!
 cmd.weather.requiresmore='$1' requires more arguments!
 cmd.weather.requiresless='$1' less more arguments!
@@ -246,10 +239,10 @@ cmd.weather.currentlynotrunning=The weather $1 is currently not running!
 cmd.weather.alreadyrunning=The weather $1 is already running!
 cmd.weather.alreadynotrunning=The weather $1 is already stopped!
 cmd.weather.description=Manage the weather
-cmd.weather.extendeddescription=Allows you to start/stop weathers as well as to view every weather
-cmd.weather.nodirector=An error occured, cannot find WeatherDirector!
+cmd.weather.extendeddescription=Allows you to toggle weathers as well as to view every weather
+cmd.weather.nodirector=An error occured, cannot find WeatherDirector component!
 
-cmd.timescale.success=Timescale is now: $1!
+cmd.timescale.success=Timescale is now $1!
 cmd.timescale.description=Modifies game speed
 cmd.timescale.between=The scale has to be between $1 and $2!
 
@@ -271,8 +264,8 @@ cmd.util.emotion.hunger.show=The hunger of $1 is currently $2
 cmd.util.emotion.hunger.edit=The hunger of $1 is now $2!
 cmd.util.emotion.agitation.show=The agitation of $1 is currently $2
 cmd.util.emotion.agitation.edit=The agitation of $1 is now $2!
-cmd.util.actor.enabled=The actor $1 is currently now enabled!
-cmd.util.actor.disabled=The actor $1 is currently now disabled!
+cmd.util.emotion.sleepiness.show=The sleepiness of $1 is currently $2
+cmd.util.emotion.sleepiness.edit=The sleepiness of $1 is now $2!
 cmd.util.actor.showenable=The actor type $1 is currently enabled
 cmd.util.actor.showdisable=The actor type $1 is currently disabled
 cmd.util.actor.editenable=The actor type $1 is now enabled!
@@ -283,7 +276,7 @@ cmd.util.player.size.show=The current size of the player is $1
 cmd.util.player.size.edit=The new size of the player is $1!
 cmd.util.player.gravity.show=The current gravity level of the player is $1
 cmd.util.player.gravity.edit=The new gravity level of the player is $1!
-cmd.util.vacmode.success=The vacmode is now $1!
-cmd.util.vacmode.show=The vacmode is currently $1
-cmd.util.gadget.pos.show=The gadget $1 is currently at $2 $3 $4
-cmd.util.gadget.pos.edit=The gadget $1 is now at $2 $3 $4!
+cmd.util.vacmode.success=The VACMODE is now $1!
+cmd.util.vacmode.show=The VACMODE is currently $1
+cmd.util.gadget.pos.show=The gadget $1 is currently at ($2, $3, $4)
+cmd.util.gadget.pos.edit=The gadget $1 is now at ($2, $3, $4)!

@@ -26,7 +26,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.6"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.4.7"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -182,7 +182,7 @@ namespace SR2E
             try
             {
                 SR2ELanguageManger.LoadLanguage(); }
-            catch (Exception e) { Console.WriteLine(e); }
+            catch (Exception e) { MelonLogger.Error(e); }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
                 switch (melonBase.Info.Name)
                 {
@@ -290,14 +290,17 @@ namespace SR2E
                     SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.RumblingGorge", RumblingGorgeTeleporter);
 
                     StaticTeleporterNode LuminousStrandTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneStrand").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    LuminousStrandTeleporter.gameObject.SetActive(false); LuminousStrandTeleporter.name = "TP-LuminousStrand"; LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
+                    LuminousStrandTeleporter.gameObject.SetActive(false); LuminousStrandTeleporter.name = "TP-LuminousStrand"; LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter._hasDestination = true;
                     SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.LuminousStrand", LuminousStrandTeleporter);
 
                     StaticTeleporterNode PowderfallBluffsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneBluffs").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    PowderfallBluffsTeleporter.gameObject.SetActive(false); PowderfallBluffsTeleporter.name = "TP-PowderfallBluffs"; PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
+                    PowderfallBluffsTeleporter.gameObject.SetActive(false); PowderfallBluffsTeleporter.name = "TP-PowderfallBluffs"; PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter._hasDestination = true;
                     SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.PowderfallBluffs", PowderfallBluffsTeleporter);
 
-                    
+                    StaticTeleporterNode LabyrinthTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneLabyrinth").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+                    LabyrinthTeleporter.gameObject.SetActive(false); LabyrinthTeleporter.name = "TP-Labyrinth"; LabyrinthTeleporter.gameObject.MakePrefab(); LabyrinthTeleporter.gameObject.MakePrefab(); LabyrinthTeleporter._hasDestination = true;
+                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.Labyrinth", LabyrinthTeleporter);
+               
                     
                     
                     break;
@@ -344,6 +347,7 @@ namespace SR2E
 
         internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
         {
+            
             }
 
         internal static CustomPauseMenuButton cheatMenuButton;
@@ -402,10 +406,10 @@ namespace SR2E
             }
             else
             {
-                try { SR2EConsole.Update(); } catch (Exception e) { Console.WriteLine(e); }
-                try { SR2ESaveManager.Update(); } catch (Exception e) { Console.WriteLine(e); }
-                try { SR2EModMenu.Update(); } catch (Exception e) { Console.WriteLine(e); }
-                try { SR2ECheatMenu.Update(); } catch (Exception e) { Console.WriteLine(e); }
+                try { SR2EConsole.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 if(devMode) SR2EDebugDirector.DebugStatsManager.Update();
             }
         }
