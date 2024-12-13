@@ -64,6 +64,7 @@ public static class SR2ESaveManager
         {
             if (!data.warps.ContainsKey(warpName)) return SR2EError.DoesntExist;
             data.warps.Remove(warpName);
+            Save();
             return SR2EError.NoError;
         }
         internal static void OnSceneLoaded()

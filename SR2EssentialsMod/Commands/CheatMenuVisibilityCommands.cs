@@ -7,6 +7,7 @@ public class CheatMenuVisibilityCommands
     {
         public override string ID => "opencheatmenu";
         public override string Usage => "opencheatmenu";
+        public override bool executeWhenConsoleIsOpen => true;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -24,6 +25,7 @@ public class CheatMenuVisibilityCommands
     {
         public override string ID => "closecheatmenu";
         public override string Usage => "closecheatmenu";
+        public override bool executeWhenConsoleIsOpen => true;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -41,6 +43,8 @@ public class CheatMenuVisibilityCommands
     {
         public override string ID => "togglecheatmenu";
         public override string Usage => "togglecheatmenu";
+        public override bool executeWhenConsoleIsOpen => true;
+
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();

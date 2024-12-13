@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
@@ -72,15 +73,22 @@ public static class SR2EModMenu
             {
             }
         else
+        {
             try
             {
-                PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>();
+                PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>(); 
                 pauseMenuRoot.Close();
-                SystemContext.Instance.SceneLoader.TryPauseGame();
-            }
-            catch
+            }catch { }
+            try
             {
-            }
+                SystemContext.Instance.SceneLoader.TryPauseGame();
+            }catch { }
+            try
+            {
+                PauseMenuDirector pauseMenuDirector = Object.FindObjectOfType<PauseMenuDirector>(); 
+                pauseMenuDirector.PauseGame();
+            }catch { }
+        }
 
 
 
