@@ -272,14 +272,25 @@ namespace SR2E
 
                     if (commands.ContainsKey(cmd))
                     {
+                        bool isModMenuOpen = SR2EModMenu.isOpen;
+                        bool isConsoleOpen = isOpen;
+                        bool isCheatMenuOpen = SR2ECheatMenu.isOpen;
                         bool canPlay = false;
-                        if (!isOpen)
-                            if (!SR2EModMenu.isOpen)
-                                if (!SR2ECheatMenu.isOpen)
+                        if (!isConsoleOpen)
+                            if (!isModMenuOpen)
+                                if (!isCheatMenuOpen)
                                     if (Time.timeScale != 0)
                                         canPlay = true;
 
-                        if (!canPlay && commands[cmd].executeWhenConsoleIsOpen) canPlay = true;
+                        if (!canPlay)
+                        {
+                            if (commands[cmd].execWhenIsOpenConsole && !isModMenuOpen && !isCheatMenuOpen)
+                                canPlay = true;
+                            if (commands[cmd].execWhenIsOpenModMenu && !isConsoleOpen && !isCheatMenuOpen)
+                                canPlay = true;
+                            if (commands[cmd].execWhenIsOpenCheatMenu && !isModMenuOpen && !isConsoleOpen)
+                                canPlay = true;
+                        }
                         if (!silent) canPlay = true;
                         if (alwaysPlay) canPlay = true;
                         bool successful;

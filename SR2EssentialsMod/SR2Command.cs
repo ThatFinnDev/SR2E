@@ -55,7 +55,17 @@ public abstract class SR2Command
     /// <summary>
     /// Allows the execution of the Command when the console is open
     /// </summary>
-    public virtual bool executeWhenConsoleIsOpen { get; } = false;
+    public virtual bool execWhenIsOpenConsole { get; } = false;
+
+    /// <summary>
+    /// Allows the execution of the Command when the cheat menu is open
+    /// </summary>
+    public virtual bool execWhenIsOpenCheatMenu { get; } = false;
+
+    /// <summary>
+    /// Allows the execution of the Command when the mod menu is open
+    /// </summary>
+    public virtual bool execWhenIsOpenModMenu { get; } = false;
 
 
     /// <summary>

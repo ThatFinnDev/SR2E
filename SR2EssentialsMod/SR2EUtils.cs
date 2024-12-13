@@ -11,6 +11,7 @@ using UnityEngine.InputSystem;
 using SR2E.Storage;
 using Unity.Mathematics;
 using UnityEngine.InputSystem.Controls;
+using Enumerable = Il2CppSystem.Linq.Enumerable;
 
 namespace SR2E
 {
@@ -543,6 +544,7 @@ namespace SR2E
         internal const int MAX_AUTOCOMPLETE = 55;
         internal const int MAX_CONSOLELINES = 150;
         internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
+        internal static IdentifiableType[] vaccableTypes { get { return vaccableGroup.GetAllMembers().ToArray(); } }
         internal static IdentifiableType getIdentByName(string name)
         {
             if (String.IsNullOrWhiteSpace(name)) return null;
@@ -569,6 +571,82 @@ namespace SR2E
         {
             if (useContain) return input.Contains(value);
             return input.StartsWith(value);
+        }
+
+        public static IdentifiableTypeGroup vaccableGroup;
+        internal static List<string> getIdentListByPartialName(string input, bool useContain, IdentifiableTypeGroup group)
+        {
+            IdentifiableType[] types = vaccableTypes;
+            if (String.IsNullOrWhiteSpace(input))
+            {
+                List<string> cleanList = new List<string>();
+                int j = 0;
+                foreach (IdentifiableType type in types)
+                {
+                    bool isGadget = type.isGadget();
+                    if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
+                    if (j > MAX_AUTOCOMPLETE) break;
+                    try
+                    {if (type.LocalizedName != null)
+                        {
+                            string localizedString = type.LocalizedName.GetLocalizedString();
+                            if(localizedString.StartsWith("!")) continue;
+                            j++;
+                            cleanList.Add(localizedString.Replace(" ", ""));
+                        }
+                    }catch { }
+                }
+                cleanList.Sort();
+                return cleanList;
+            }
+            
+            List<string> list = new List<string>();
+            List<string> listTwo = new List<string>();
+            int i = 0;
+            foreach (IdentifiableType type in types)
+            {
+                if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
+                
+                if (i > MAX_AUTOCOMPLETE) break;
+                try
+                {
+                    if (type.LocalizedName != null)
+                    {
+                        string localizedString = type.LocalizedName.GetLocalizedString();
+                        if (localizedString.ToLower().Replace(" ", "").StartsWith(input.ToLower()))
+                        {
+                            if(localizedString.StartsWith("!")) continue;
+                            i++;
+                            list.Add(localizedString.Replace(" ", ""));
+                        }
+                    }
+                }catch { }
+            }
+            if(useContain)
+                foreach (IdentifiableType type in types)
+                {
+                    if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
+                
+                    if (i > MAX_AUTOCOMPLETE) break;
+                    try
+                    {
+                        if (type.LocalizedName != null)
+                        {
+                            string localizedString = type.LocalizedName.GetLocalizedString();
+                            if (localizedString.ToLower().Replace(" ", "").Contains(input.ToLower()))
+                                if(!list.Contains(localizedString.Replace(" ", "")))
+                                {
+                                    if(localizedString.StartsWith("!")) continue;
+                                    i++;
+                                    listTwo.Add(localizedString.Replace(" ", ""));
+                                }
+                        }
+                    }catch { }
+                }
+            list.Sort();
+            listTwo.Sort();
+            list.AddRange(listTwo);
+            return list;
         }
         internal static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain)
         {

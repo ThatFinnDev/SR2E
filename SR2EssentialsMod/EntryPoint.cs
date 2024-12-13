@@ -279,6 +279,7 @@ namespace SR2E
                             FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
                     }
 
+                    vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
                     SR2ESaveManager.WarpManager.teleporters = new Dictionary<string, StaticTeleporterNode>();
                     //Creating Teleporters for Warps
                     StaticTeleporterNode ConservatoryFieldsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterHomeBlue").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
