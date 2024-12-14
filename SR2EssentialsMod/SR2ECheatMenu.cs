@@ -200,28 +200,36 @@ public class SR2ECheatMenu
     public static SR2ECheatMenuButton infEnergyButton;
     public static SR2ECheatMenuButton infHealthButton;
     public static SR2ECheatMenuButton removeFogButton;
+    public static SR2ECheatMenuButton betterScreenshotButton;
     public static bool removeFog = false;
+    public static bool betterScreenshot = false;
     static void CheatButtons()
     {
-        infEnergyButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infenergyoff"),
+        infEnergyButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off")),
             () =>
         {
             SR2EConsole.ExecuteByString("infenergy", true,true);
             infEnergyButton.textInstance.text = translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off"));
         });
-        infHealthButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infhealthoff"),
+        infHealthButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infhealth" + (InfiniteHealthCommand.infHealth? "on" : "off")),
             () =>
         {
             SR2EConsole.ExecuteByString("infhealth", true,true);
             infHealthButton.textInstance.text = translation("cheatmenu.cheatbuttons.infhealth" + (InfiniteHealthCommand.infHealth? "on" : "off"));
             });
-        removeFogButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.removeFogoff"),
+        removeFogButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.removeFog" + (removeFog? "on" : "off")),
             () =>
             {
                 removeFog = !removeFog;
                 removeFogButton.textInstance.text = translation("cheatmenu.cheatbuttons.removeFog" + (removeFog? "on" : "off"));
             });
-        noclipButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.noclipoff"),
+        betterScreenshotButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.betterScreenshot" + (betterScreenshot? "on" : "off")),
+            () =>
+            {
+                betterScreenshot = !betterScreenshot;
+                betterScreenshotButton.textInstance.text = translation("cheatmenu.cheatbuttons.betterScreenshot" + (betterScreenshot? "on" : "off"));
+            });
+        noclipButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.noclip"+ (SceneContext.Instance.Camera.GetComponent<NoClipComponent>()!=null ? "on" : "off")),
             () =>
             {
                 SR2EConsole.ExecuteByString("noclip", true,true);

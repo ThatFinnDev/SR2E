@@ -17,7 +17,10 @@ public static class ScreenshotPatch
     
     public static void Prefix(ScreenshotPauseItemModel __instance)
     {
-        SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
-        MelonCoroutines.Start(WaitForUnpause());
+        if (SR2ECheatMenu.betterScreenshot)
+        {
+            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
+            MelonCoroutines.Start(WaitForUnpause());
+        }
     }
 }

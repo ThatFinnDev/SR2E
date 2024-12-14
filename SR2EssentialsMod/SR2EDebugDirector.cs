@@ -76,6 +76,7 @@ internal class SR2EDebugDirector : MonoBehaviour
 	{
 		if (!isEnabled) return;
 
+		if (SR2ECheatMenu.isOpen) return;
 		if (SR2EConsole.isOpen) return;
 		if (SR2EModMenu.isOpen) return;
 		if (Time.timeScale == 0)  return;
