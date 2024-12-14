@@ -11,7 +11,7 @@ public class ToggleUICommand : SR2Command
     public override bool Execute(string[] args)
     {
         HudUI.Instance.gameObject.SetActive(!HudUI.Instance.gameObject.active);
-        SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(!SceneContext.Instance.PlayerState.VacuumItem.gameObject.active);
+        SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(HudUI.Instance.gameObject.active);
         return true;
     }
 }

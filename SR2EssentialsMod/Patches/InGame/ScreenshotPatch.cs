@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.Pause;
 
 namespace SR2E.Patches.InGame;
 
-[HarmonyPatch(typeof(ScreenshotPauseItemModel), nameof(ScreenshotPauseItemModel.InvokeBehavior))]
+[HarmonyPatch(typeof(GameContext), nameof(GameContext.TakeScreenshot))]
 public static class ScreenshotPatch
 {
     public static System.Collections.IEnumerator WaitForUnpause()
