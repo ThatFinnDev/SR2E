@@ -52,6 +52,7 @@ namespace SR2E
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
         internal static bool devMode { get { return prefs.GetEntry<bool>("devMode").Value; } }
+        internal static bool fixSaves { get { return prefs.GetEntry<bool>("fixSaves").Value; } }
         internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
@@ -96,6 +97,8 @@ namespace SR2E
                 prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
             if (!prefs.HasEntry("devMode"))
                 prefs.CreateEntry("devMode", (bool)false, "Enable dev mode", true);
+            if (!prefs.HasEntry("fixSaves"))
+                prefs.CreateEntry("fixSaves", (bool)false, "Fixes saves that broken through mods/updates","This is EXPERIMENTAL, it may break stuff or not work. Disable after usage!", false).disableWarning();
             if (!prefs.HasEntry("onSaveLoadCommand"))
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
@@ -352,8 +355,11 @@ namespace SR2E
             }
 
         internal static CustomPauseMenuButton cheatMenuButton;
+        static bool isSaveDirectorLoaded = false;
         internal static void SaveDirectorLoaded()
         {
+            if (isSaveDirectorLoaded) return;
+            isSaveDirectorLoaded = true;
             LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
             new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
             new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));

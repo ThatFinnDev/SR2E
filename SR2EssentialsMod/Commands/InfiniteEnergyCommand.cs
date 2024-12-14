@@ -70,7 +70,11 @@ public class InfiniteEnergyCommand : SR2Command
                 jetpackAbilityData._upwardThrustForceIncrement = 5f;
             }
 
-            SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+            try
+            {
+                SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+            }
+            catch { }
             normalEnergy = energyMeter.maxEnergy;
             energyMeter.maxEnergy = new NullableFloatProperty(2.14748365E+09f);
             SendMessage(translation("cmd.infenergy.success"));
@@ -82,10 +86,14 @@ public class InfiniteEnergyCommand : SR2Command
 
     public override void Update()
     {
-        if (infEnergy)
-            if (SceneContext.Instance != null)
-                if (SceneContext.Instance.PlayerState != null)
-                    SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+        try
+        {
+            if (infEnergy)
+                if (SceneContext.Instance != null)
+                    if (SceneContext.Instance.PlayerState != null)
+                        SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+        }
+        catch { }
     }
 
     public override void OnMainMenuUILoad()
