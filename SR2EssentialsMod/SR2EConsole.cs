@@ -220,7 +220,7 @@ namespace SR2E
         /// <summary>
         /// Registers multiple commands to be used in the console
         /// </summary>
-        public static bool RegisterCommands(SR2Command[] cmds)
+        public static bool RegisterCommands(params SR2Command[] cmds)
         {
             bool successful = true;
             for (int i = 0; i < cmds.Length; i++)
@@ -451,46 +451,70 @@ namespace SR2E
         static void SetupCommands()
         {
             RegisterCommand(new FloatCommand());
-            RegisterCommand(new GiveCommand());
+            
+            
             RegisterCommand(new UtilCommand());;
+            
             RegisterCommand(new BindCommand());
+            
             RegisterCommand(new UnbindCommand());
+            
             RegisterCommand(new SpawnCommand());
+            
             RegisterCommand(new FastForwardCommand());
-            RegisterCommand(new ClearCommand());
+            
             RegisterCommand(new ClearInventoryCommand());
+            
             RegisterCommand(new ModsCommand());
             RegisterCommand(new HelpCommand());
+            RegisterCommand(new ClearCommand());
+
             RegisterCommand(new RefillInvCommand());
             RegisterCommand(new NewBucksCommand());
+            
             RegisterCommand(new KillCommand());
             RegisterCommand(new KillAllCommand());
+            
             RegisterCommand(new GiveGadgetCommand());
             RegisterCommand(new GiveBlueprintCommand());
             RegisterCommand(new GiveUpgradeCommand());
             RegisterCommand(new ReplaceCommand());
+            RegisterCommand(new GiveCommand());
+
             RegisterCommand(new SpeedCommand());
             RegisterCommand(new GravityCommand());
+            
             RegisterCommand(new RotateCommand());
             RegisterCommand(new MoveCommand());
+            
             RegisterCommand(new WeatherCommand());
-            RegisterCommand(new FlingCommand());
+            
             RegisterCommand(new PartyCommand());
             RegisterCommand(new GraphicsCommand());
+            
             RegisterCommand(new FreezeCommand());
             RegisterCommand(new NoClipCommand());
+            RegisterCommand(new FlingCommand());
+
             RegisterCommand(new StrikeCommand());
             RegisterCommand(new FXPlayCommand());
+            
             RegisterCommand(new TimeScaleCommand());
+            
             RegisterCommand(new ResolutionCommand());
+            
             RegisterCommand(new InfiniteHealthCommand());
             RegisterCommand(new InfiniteEnergyCommand());
+            
             RegisterCommand(new ScaleCommand());
-            RegisterCommands(new SR2Command[]{new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
-            RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand()});
-            RegisterCommands(new SR2Command[]{new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand()});
-            RegisterCommands(new SR2Command[]{new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand()});
+            
+            RegisterCommand(new ToggleUICommand());
 
+            RegisterCommands(new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(), new WarpListCommand());
+            RegisterCommands(new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand());
+            RegisterCommands(new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand());
+            RegisterCommands(new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand());
+            
         }
 
         internal static bool syncedSetuped = false;
