@@ -214,59 +214,59 @@ public class UtilCommand : SR2Command
             var slime = hit.collider.gameObject.GetComponent<SlimeEmotions>();
             if (slime != null)
             {
-                var emotions = new Dictionary<SlimeEmotions.Emotion, float>()
-                {
-                    { SlimeEmotions.Emotion.HUNGER, slime._model.Emotions[(int)SlimeEmotions.Emotion.HUNGER] },
-                    { SlimeEmotions.Emotion.AGITATION, slime._model.Emotions[(int)SlimeEmotions.Emotion.AGITATION] },
-                    { SlimeEmotions.Emotion.FEAR, slime._model.Emotions[(int)SlimeEmotions.Emotion.FEAR] },
-                    { SlimeEmotions.Emotion.SLEEPINESS, slime._model.Emotions[(int)SlimeEmotions.Emotion.SLEEPINESS] }
-                };
                 if (isGet)
                 {
                     switch (emotion)
                     {
-                        case SlimeEmotions.Emotion.FEAR: SendMessage(translation("cmd.util.emotion.fear.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
-                        case SlimeEmotions.Emotion.HUNGER: SendMessage(translation("cmd.util.emotion.hunger.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
-                        case SlimeEmotions.Emotion.AGITATION: SendMessage(translation("cmd.util.emotion.agitation.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
-                        case SlimeEmotions.Emotion.SLEEPINESS: SendMessage(translation("cmd.util.emotion.sleepiness.show",slime.gameObject.GetComponent<Identifiable>().identType.getName(),emotions[emotion])); break;
+                        case SlimeEmotions.Emotion.FEAR:
+                            SendMessage(translation("cmd.util.emotion.fear.show",
+                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
+                            break;
+                        case SlimeEmotions.Emotion.HUNGER:
+                            SendMessage(translation("cmd.util.emotion.hunger.show",
+                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
+                            break;
+                        case SlimeEmotions.Emotion.AGITATION:
+                            SendMessage(translation("cmd.util.emotion.agitation.show",
+                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
+                            break;
+                        case SlimeEmotions.Emotion.SLEEPINESS:
+                            SendMessage(translation("cmd.util.emotion.sleepiness.show",
+                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
+                            break;
                     }
-                    return true;
-                }
 
-                SendError("Changing emotions is currently not supported. It will be fixed very soon!");
-                return false;
-                float val = -1;
-                try { val = float.Parse(valString); }
-                catch { return SendError(translation("cmd.error.notvalidfloat",valString)); }
-                if (val < 0) return SendError(translation("cmd.error.notfloatatleast",valString,0));
-                if (emotion == SlimeEmotions.Emotion.HUNGER) 
-                {
-                    slime._model.Emotions = slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.HUNGER,val);
-                    MelonLogger.Msg(slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.HUNGER, val));
-                    SendMessage(translation("cmd.util.emotion.hunger.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
                     return true;
                 }
-                if (emotion == SlimeEmotions.Emotion.AGITATION)
+                else
                 {
-                    slime._model.Emotions = slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.AGITATION,val);
-                    SendMessage(translation("cmd.util.emotion.agitation.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
-                    return true;
+                    float parsed = float.Parse(valString);
+                    slime.Set(emotion, parsed);
                     
-                }
-                if (emotion == SlimeEmotions.Emotion.SLEEPINESS)
-                {
-                    slime._model.Emotions = slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.SLEEPINESS,val);
-                    SendMessage(translation("cmd.util.emotion.sleepiness.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
+                    switch (emotion)
+                    {
+                        case SlimeEmotions.Emotion.FEAR:
+                            SendMessage(translation("cmd.util.emotion.fear.edit",
+                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), parsed));
+                            break;
+                        case SlimeEmotions.Emotion.HUNGER:
+                            SendMessage(translation("cmd.util.emotion.hunger.edit",
+                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), parsed));
+                            break;
+                        case SlimeEmotions.Emotion.AGITATION:
+                            SendMessage(translation("cmd.util.emotion.agitation.edit",
+                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), parsed));
+                            break;
+                        case SlimeEmotions.Emotion.SLEEPINESS:
+                            SendMessage(translation("cmd.util.emotion.sleepiness.edit",
+                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), parsed));
+                            break;
+                    }
+
                     return true;
-                    
                 }
-
-                slime._model.Emotions = slime._model.Emotions.changeValue((int)SlimeEmotions.Emotion.FEAR,val);
-                SendMessage(translation("cmd.util.emotion.fear.edit",slime.gameObject.GetComponent<Identifiable>().identType.getName(),val));
-                return true;
-
-
             }
+
             return SendError(translation("cmd.error.notlookingatvalidobject"));
         }
         return SendError(translation("cmd.error.notlookingatanything"));
