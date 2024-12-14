@@ -24,9 +24,9 @@ public static class SavedGamePatch
 	public static void FixActors(SavedGame savedGame)
 	{
 		//Remove invalid Actors
-		foreach (ActorDataV02 actor in savedGame.gameState.Actors)
+		foreach (var actor in savedGame.gameState.Actors)
 		{
-			IdentifiableType identifiableType = savedGame.persistenceIdToIdentifiableType.GetIdentifiableType(actor.TypeId);
+			var identifiableType = savedGame.persistenceIdToIdentifiableType.GetIdentifiableType(actor.TypeId);
 			if (identifiableType == null)
 				savedGame.gameState.Actors.Remove(actor);
 		}
@@ -40,7 +40,7 @@ public static class SavedGamePatch
 	}
 	public static void FixLandPlots(SavedGame savedGame)
 	{
-		foreach(LandPlotV02 plot in savedGame.gameState.Ranch.Plots)
+		foreach(var plot in savedGame.gameState.Ranch.Plots)
 		{
 			//Remove invalid plot
 			if (!Enum.IsDefined<LandPlot.Id>(plot.TypeId))
