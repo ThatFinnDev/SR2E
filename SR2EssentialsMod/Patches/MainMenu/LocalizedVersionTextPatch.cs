@@ -5,7 +5,7 @@ using UnityEngine.Localization;
 namespace SR2E.Patches.MainMenu;
 
 [HarmonyPatch(typeof(LocalizedVersionText), nameof(LocalizedVersionText.OnEnable))]
-public static class SR2LocalizedVersionTextPatch
+public static class LocalizedVersionTextPatch
 {
     public static void Postfix(LocalizedVersionText __instance)
     {
