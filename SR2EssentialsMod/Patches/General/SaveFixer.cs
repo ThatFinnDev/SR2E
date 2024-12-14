@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 
 namespace SR2E.Patches.General;
 //Experimental
