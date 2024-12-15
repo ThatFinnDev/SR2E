@@ -475,9 +475,8 @@ namespace SR2E
             RegisterCommand(new KillCommand());
             RegisterCommand(new KillAllCommand());
             
-            RegisterCommand(new GiveGadgetCommand());
-            RegisterCommand(new GiveBlueprintCommand());
-            RegisterCommand(new GiveUpgradeCommand());
+            RegisterCommand(new GadgetCommand());
+            RegisterCommand(new UpgradeCommand());
             RegisterCommand(new ReplaceCommand());
             RegisterCommand(new GiveCommand());
 

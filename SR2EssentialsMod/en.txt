@@ -113,20 +113,37 @@ cmd.fxplayer.waitforstop=Please wait for the current FX to stop!
 cmd.fxplayer.invalidfxname=Invalid FX Name!
 cmd.fxplayer.description=Plays an effect in front of you
 
-cmd.giveblueprint.success=Successfully added $1!
-cmd.giveblueprint.description=Gives you a blueprint
-cmd.giveblueprint.alreadyowned=You already have the $1 blueprint!
-
 cmd.give.success=Successfully gave $1 $2!
 cmd.give.description=Gives you items
 cmd.give.isgadgetnotitem=$1 is a gadget, not an item!
 
-cmd.givegadget.success=Successfully gave $1 $2!
-cmd.givegadget.description=Gives you gadgets
+cmd.gadget.successadd=Successfully added $1 to $2!
+cmd.gadget.successalladd=Successfully added $1 to everything!
+cmd.gadget.successremove=Successfully removed $1 of $2!
+cmd.gadget.successallremove=Successfully removed $1 of everything!
+cmd.gadget.successset=Successfully set $1 to $2!
+cmd.gadget.successallset=Successfully set everything to $1!
+cmd.gadget.successget=You currently have $1 of $2!
+cmd.gadget.successlock=Successfully locked the blueprint for $1!
+cmd.gadget.successalllock=Successfully locked the blueprint for everything!
+cmd.gadget.successunlock=Successfully unlocked the blueprint for $1!
+cmd.gadget.successallunlock=Successfully unlocked the blueprint for everything!
+cmd.gadget.errorlock=The blueprint for $1 is already locked!
+cmd.gadget.errorunlock=The blueprint for $1 is already unlocked!
+cmd.gadget.errortoomanyargs=To many arguments for "§1"!
+cmd.gadget.description=Gives/Removes/Unlocks/Gets gadgets!
+cmd.gadget.notvalidoption=$1 is not a valid option!
 
-cmd.giveupgrade.success=$1 is now on level $2!
-cmd.giveupgrade.successall=Successfully upgraded all upgrades!
-cmd.giveupgrade.description=Gives an upgrade
+cmd.upgrade.successadd=Successfully increased $1 by $2 level(s)!
+cmd.upgrade.successalladd=Successfully increased all by $1 levels!
+cmd.upgrade.successremove=Successfully decreased $1 by $2 level(s)!
+cmd.upgrade.successallremove=Successfully decreased all by $1 level(s)!
+cmd.upgrade.successset=Successfully set $1 to level $2!
+cmd.upgrade.successallset=Successfully set all to level $1!
+cmd.upgrade.successget=$1 is currently on level $2!!
+cmd.upgrade.errortoomanyargs=To many arguments for "§1"!
+cmd.upgrade.description=Manage updates!
+cmd.upgrade.notvalidoption=$1 is not a valid option!
 
 cmd.graphics.success=Successfully set graphics type to $1!
 cmd.graphics.description=Makes your game look... like something...

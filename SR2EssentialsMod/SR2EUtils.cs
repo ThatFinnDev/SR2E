@@ -574,7 +574,7 @@ namespace SR2E
         }
 
         public static IdentifiableTypeGroup vaccableGroup;
-        internal static List<string> getIdentListByPartialName(string input, bool useContain, IdentifiableTypeGroup group)
+        internal static List<string> getVaccablesByPartialName(string input, bool useContain)
         {
             IdentifiableType[] types = vaccableTypes;
             if (String.IsNullOrWhiteSpace(input))
@@ -648,9 +648,11 @@ namespace SR2E
             list.AddRange(listTwo);
             return list;
         }
-        internal static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain)
+        internal static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain,bool includeStars = false)
         {
-            if (!includeGadget && !includeNormal) return new List<string>();
+            if (!includeGadget && !includeNormal)
+                if (includeStars) return new List<string>() { "*" };
+                else return new List<string>();
             if (String.IsNullOrWhiteSpace(input))
             {
                 List<string> cleanList = new List<string>();
@@ -673,6 +675,7 @@ namespace SR2E
                         }
                     }catch { }
                 }
+                cleanList.Add("*");
                 cleanList.Sort();
                 return cleanList;
             }

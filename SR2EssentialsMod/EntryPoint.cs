@@ -98,7 +98,7 @@ namespace SR2E
             if (!prefs.HasEntry("devMode"))
                 prefs.CreateEntry("devMode", (bool)false, "Enable dev mode", true);
             if (!prefs.HasEntry("fixSaves"))
-                prefs.CreateEntry("fixSaves", (bool)false, "Fixes saves that broken through mods/updates","This is EXPERIMENTAL, it may break stuff or not work. Disable after usage!", false).disableWarning();
+                prefs.CreateEntry("fixSaves", (bool)false, "Fix saves that broken through mods/updates","This is EXPERIMENTAL, it may break stuff or not work. Disable after usage!", false).disableWarning();
             if (!prefs.HasEntry("onSaveLoadCommand"))
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
