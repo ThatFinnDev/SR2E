@@ -117,6 +117,4 @@ public class UpgradeCommand : SR2Command
 
         return false;
     }
-
-    public System.ArgumentOutOfRangeException f;
 }

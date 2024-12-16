@@ -37,6 +37,7 @@ cmd.alreadyregistered=Trying to register command with id '<color=white>$1</color
 cmd.notregistered=Trying to unregister command with id '<color=white>$1</color>' but the ID is not registered!
 
 
+cmd.error.notvalidpedia=$1 is not a valid pedia entry!
 cmd.error.notvalidvacmode=$1 is not a valid VACMODE!
 cmd.error.notvalidweather=$1 is not a valid weather!
 cmd.error.notvalidkeycode=$1 is not a valid KeyCode!
@@ -144,6 +145,15 @@ cmd.upgrade.successget=$1 is currently on level $2!!
 cmd.upgrade.errortoomanyargs=Too many arguments for '§1'!
 cmd.upgrade.description=Manage updates!
 cmd.upgrade.notvalidoption=$1 is not a valid option!
+
+cmd.pedia.descripton=Manage your pedia!
+cmd.pedia.notvalidoption=$1 is not a valid option!
+cmd.pedia.successlock=Successfully locked the pedia entry for $1!
+cmd.pedia.successalllock=Successfully locked the pedia entry for everything!
+cmd.pedia.successunlock=Successfully unlocked the pedia entry for $1!
+cmd.pedia.successallunlock=Successfully unlocked the pedia entry for everything!
+cmd.pedia.errorlock=The pedia entry for $1 is already locked!
+cmd.pedia.errorunlock=The pedia entry for $1 is already unlocked!
 
 cmd.graphics.success=Successfully set graphics type to $1!
 cmd.graphics.description=Makes your game look... like something...

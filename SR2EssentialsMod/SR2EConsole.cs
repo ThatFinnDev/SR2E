@@ -477,6 +477,7 @@ namespace SR2E
             
             RegisterCommand(new GadgetCommand());
             RegisterCommand(new UpgradeCommand());
+            RegisterCommand(new PediaCommand());
             RegisterCommand(new ReplaceCommand());
             RegisterCommand(new GiveCommand());
 
