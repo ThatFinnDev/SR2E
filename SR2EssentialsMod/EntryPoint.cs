@@ -16,6 +16,7 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
 using SR2E.Buttons;
+using SR2E.Patches.General;
 using UnityEngine.Networking;
 
 namespace SR2E
@@ -262,6 +263,7 @@ namespace SR2E
                     
                     break;
                 case "StandaloneEngagementPrompt":
+                    CompanyLogoScenePatch.alreadyStarted = false;
                     PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
                     Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
                     prompt.EngagementPromptTextUI.SetActive(false);
@@ -271,7 +273,7 @@ namespace SR2E
                     killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
-                    autoSaveDirector.saveSlotCount = 50;
+                    autoSaveDirector.saveSlotCount = 75;
                     
                     foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
                     {
