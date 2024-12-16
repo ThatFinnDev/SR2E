@@ -81,7 +81,7 @@ internal class SR2EDebugDirector : MonoBehaviour
 		if (SR2EModMenu.isOpen) return;
 		if (Time.timeScale == 0)  return;
 		
-		if (Key.Digit0.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("giveupgrades *", true);
+		if (Key.Digit0.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("upgrade set * 10", true);
 		if (Key.Digit7.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("infenergy true", true);
 		if (Key.Digit8.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("infhealth", true);
 		if (Key.Digit9.kc().wasPressedThisFrame) GameContext.Instance.AutoSaveDirector.SaveGame();

@@ -130,7 +130,7 @@ cmd.gadget.successunlock=Successfully unlocked the blueprint for $1!
 cmd.gadget.successallunlock=Successfully unlocked the blueprint for everything!
 cmd.gadget.errorlock=The blueprint for $1 is already locked!
 cmd.gadget.errorunlock=The blueprint for $1 is already unlocked!
-cmd.gadget.errortoomanyargs=To many arguments for "§1"!
+cmd.gadget.errortoomanyargs=Too many arguments for '§1'!
 cmd.gadget.description=Gives/Removes/Unlocks/Gets gadgets!
 cmd.gadget.notvalidoption=$1 is not a valid option!
 
@@ -141,7 +141,7 @@ cmd.upgrade.successallremove=Successfully decreased all by $1 level(s)!
 cmd.upgrade.successset=Successfully set $1 to level $2!
 cmd.upgrade.successallset=Successfully set all to level $1!
 cmd.upgrade.successget=$1 is currently on level $2!!
-cmd.upgrade.errortoomanyargs=To many arguments for "§1"!
+cmd.upgrade.errortoomanyargs=Too many arguments for '§1'!
 cmd.upgrade.description=Manage updates!
 cmd.upgrade.notvalidoption=$1 is not a valid option!
 

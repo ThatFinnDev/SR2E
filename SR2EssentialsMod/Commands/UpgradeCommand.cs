@@ -5,8 +5,8 @@ namespace SR2E.Commands;
 public class UpgradeCommand : SR2Command
 {
     public override string ID => "upgrade";
-    public override string Usage => "upgrade <increment/set/decrement/unlock/lock> <id> [amount]";
-    List<string> arg0List = new List<string> { "add","set","remove","get"};
+    public override string Usage => "upgrade <increment/set/decrement/get> <id> [amount]";
+    List<string> arg0List = new List<string> { "increment","set","decrement","get"};
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
@@ -38,7 +38,7 @@ public class UpgradeCommand : SR2Command
         {
             if(args[0]=="get") return SendError(translation("cmd.upgrade.errortoomanyargs",args[0])); 
             if (!int.TryParse(args[2], out level)) return SendError(translation("cmd.error.notvalidint",args[2]));
-            if (level <= 0) return SendError(translation("cmd.error.notintabove",args[2],0));
+            if (level <= -1) return SendError(translation("cmd.error.notintabove",args[2],-1));
         }
         else switch (args[0])
         {
@@ -53,7 +53,8 @@ public class UpgradeCommand : SR2Command
             foreach (UpgradeDefinition def in Resources.FindObjectsOfTypeAll<UpgradeDefinition>())
             {
                 silent=isSilent?true:args[0]!="get";
-                Execute(new []{args[0], def.name, args[3]});
+                if(args.Length==3) Execute(new []{args[0], def.name, args[2]});
+                else Execute(new []{args[0], def.name});
                 silent=args[0]!="get";
             }
             if(silent)
@@ -75,25 +76,39 @@ public class UpgradeCommand : SR2Command
             return true;
         }
         string identifierTypeName = args[1];
-        UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>().FirstOrDefault(x => x.name.Equals(args[0]));
+        UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>().FirstOrDefault(x => x.name.Equals(identifierTypeName));
         if(id==null) return SendError(translation("cmd.error.notvalidupgrade",identifierTypeName));
         string itemName = id.name;
+        int maxUpgrade = 0;
+        bool continueTesting = true;
+        while (continueTesting)
+        {
+            if (id.UpgradeLevelExist(maxUpgrade+1)) maxUpgrade++;
+            else continueTesting = false;
+        }
 
+        int newLevel = 0;
         switch (args[0])
         {
-            case "increment": 
-                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id,
-                    SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)+level);
-                SendMessage(translation("cmd.upgrade.successadd",itemName,level));
+            case "increment":
+                newLevel = SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id) + level;
+                if(newLevel > maxUpgrade) newLevel = maxUpgrade;
+                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
+                if(newLevel==maxUpgrade) SendMessage(translation("cmd.upgrade.successset",itemName,newLevel));
+                else SendMessage(translation("cmd.upgrade.successadd",itemName,level));
                 break;
             case "set":
-                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id,level);
-                SendMessage(translation("cmd.upgrade.successset",itemName,level)); 
+                newLevel = level;
+                if(newLevel > maxUpgrade) newLevel = maxUpgrade;
+                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
+                SendMessage(translation("cmd.upgrade.successset",itemName,newLevel)); 
                 break;
             case "decrement":
-                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id,
-                    SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id)-level);
-                SendMessage(translation("cmd.upgrade.successremove",itemName,level)); 
+                newLevel = Mathf.Clamp((SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id) - level), 0, int.MaxValue);
+                if(newLevel < 0) newLevel = 0;
+                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
+                if(newLevel==maxUpgrade) SendMessage(translation("cmd.upgrade.successset",itemName,newLevel));
+                else SendMessage(translation("cmd.upgrade.successremove",itemName,level));
                 break;
             case "get":
                 SendMessage(translation("cmd.upgrade.successget",SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id),itemName)); 
@@ -102,4 +117,6 @@ public class UpgradeCommand : SR2Command
 
         return false;
     }
+
+    public System.ArgumentOutOfRangeException f;
 }
