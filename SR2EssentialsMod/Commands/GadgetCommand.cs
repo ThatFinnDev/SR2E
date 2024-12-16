@@ -11,7 +11,7 @@ public class GadgetCommand : SR2Command
         if (argIndex == 0)
             return arg0List;
         if (argIndex == 1)
-            return getIdentListByPartialName(args == null ? null : args[0], false, true,true);
+            return getIdentListByPartialName(args == null ? null : args[1], false, true,true);
         if (argIndex == 2)
             if(args[0]!="get")
                 return new List<string> { "1", "5", "10", "20", "30", "50" };
@@ -30,7 +30,7 @@ public class GadgetCommand : SR2Command
         {
             if(args[0]=="get"||args[0]=="unlock"||args[0]=="lock") 
                 return SendError(translation("cmd.gadget.errortoomanyargs",args[0])); 
-            if (!int.TryParse(args[1], out amount)) return SendError(translation("cmd.error.notvalidint",args[2]));
+            if (!int.TryParse(args[2], out amount)) return SendError(translation("cmd.error.notvalidint",args[2]));
             if (amount <= 0) return SendError(translation("cmd.error.notintabove",args[2],0));
         }
         else

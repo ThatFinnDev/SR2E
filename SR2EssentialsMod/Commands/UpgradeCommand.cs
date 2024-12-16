@@ -37,7 +37,7 @@ public class UpgradeCommand : SR2Command
         if (args.Length == 3)
         {
             if(args[0]=="get") return SendError(translation("cmd.upgrade.errortoomanyargs",args[0])); 
-            if (!int.TryParse(args[1], out level)) return SendError(translation("cmd.error.notvalidint",args[2]));
+            if (!int.TryParse(args[2], out level)) return SendError(translation("cmd.error.notvalidint",args[2]));
             if (level <= 0) return SendError(translation("cmd.error.notintabove",args[2],0));
         }
         else switch (args[0])
@@ -79,7 +79,6 @@ public class UpgradeCommand : SR2Command
         if(id==null) return SendError(translation("cmd.error.notvalidupgrade",identifierTypeName));
         string itemName = id.name;
 
-        
         switch (args[0])
         {
             case "increment": 
