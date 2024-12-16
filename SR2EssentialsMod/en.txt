@@ -179,6 +179,9 @@ cmd.killall.description=Kills everything or only everything with a specified id
 cmd.kill.success=Successfully killed the actor!
 cmd.kill.description=Kills what you're looking at
 
+cmd.toggleui.success=Successfully toggled the hud!
+cmd.toggleui.description=Toggles the hud.
+
 cmd.mods.success=<color=blue>List of Mods Loaded:</color>
 cmd.mods.successdesc=$1 by $2
 cmd.mods.description=Displays all mods loaded
