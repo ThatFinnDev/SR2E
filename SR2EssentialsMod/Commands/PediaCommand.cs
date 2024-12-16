@@ -33,11 +33,11 @@ public class PediaCommand : SR2Command
         if(!arg0List.Contains(args[0]))
             return SendError(translation("cmd.pedia.notvalidoption",args[0]));
         
-        bool showPopup = args[1] == "*";
+        bool showPopup = args[1] != "*";
         if (args.Length == 3)
         {
-            string boolToParse = args[0].ToLower();
-            if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",args[0]));
+            string boolToParse = args[2].ToLower();
+            if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",args[2]));
             showPopup = boolToParse == "true";
         }
         if (args[1] == "*")
@@ -66,7 +66,7 @@ public class PediaCommand : SR2Command
             return true;
         }
         string identifierTypeName = args[1];
-        PediaEntry id = Resources.FindObjectsOfTypeAll<PediaEntry>().FirstOrDefault(x => x.name.Equals(identifierTypeName));
+        PediaEntry id = Resources.FindObjectsOfTypeAll<PediaEntry>().FirstOrDefault(x => x.name.ToLower().Equals(identifierTypeName.ToLower()));
         if(id==null) return SendError(translation("cmd.error.notvalidpedia",identifierTypeName));
         string itemName = id.name;
 

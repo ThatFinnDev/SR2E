@@ -76,7 +76,7 @@ public class UpgradeCommand : SR2Command
             return true;
         }
         string identifierTypeName = args[1];
-        UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>().FirstOrDefault(x => x.name.Equals(identifierTypeName));
+        UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>().FirstOrDefault(x => x.name.ToLower().Equals(identifierTypeName.ToLower()));
         if(id==null) return SendError(translation("cmd.error.notvalidupgrade",identifierTypeName));
         string itemName = id.name;
         int maxUpgrade = 0;
