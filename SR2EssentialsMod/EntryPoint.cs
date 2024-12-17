@@ -237,8 +237,6 @@ namespace SR2E
                     
                     break;
                 case "MainMenuUI":
-
-                    SaveCountChanged = false;
                     Time.timeScale = 1f;
                     try
                     {
@@ -263,11 +261,7 @@ namespace SR2E
                     
                     break;
                 case "StandaloneEngagementPrompt":
-                    CompanyLogoScenePatch.alreadyStarted = false;
-                    PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
                     Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
-                    prompt.EngagementPromptTextUI.SetActive(false);
-                    prompt.OnInteract(new InputAction.CallbackContext());
                     break;
                 case "GameCore":
                     killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
@@ -285,30 +279,9 @@ namespace SR2E
                     }
 
                     vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
-                    SR2ESaveManager.WarpManager.teleporters = new Dictionary<string, StaticTeleporterNode>();
-                    //Creating Teleporters for Warps
-                    StaticTeleporterNode ConservatoryFieldsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterHomeBlue").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    ConservatoryFieldsTeleporter.gameObject.SetActive(false); ConservatoryFieldsTeleporter.name = "TP-ConservatoryFields"; ConservatoryFieldsTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.ConservatoryFields", ConservatoryFieldsTeleporter);
                     
-                    StaticTeleporterNode RumblingGorgeTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneGorge").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    RumblingGorgeTeleporter.gameObject.SetActive(false); RumblingGorgeTeleporter.name = "TP-RumblingGorge"; RumblingGorgeTeleporter.gameObject.MakePrefab(); RumblingGorgeTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.RumblingGorge", RumblingGorgeTeleporter);
-
-                    StaticTeleporterNode LuminousStrandTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneStrand").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    LuminousStrandTeleporter.gameObject.SetActive(false); LuminousStrandTeleporter.name = "TP-LuminousStrand"; LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.LuminousStrand", LuminousStrandTeleporter);
-
-                    StaticTeleporterNode PowderfallBluffsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneBluffs").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    PowderfallBluffsTeleporter.gameObject.SetActive(false); PowderfallBluffsTeleporter.name = "TP-PowderfallBluffs"; PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.PowderfallBluffs", PowderfallBluffsTeleporter);
-
-                    StaticTeleporterNode LabyrinthTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneLabyrinth").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    LabyrinthTeleporter.gameObject.SetActive(false); LabyrinthTeleporter.name = "TP-Labyrinth"; LabyrinthTeleporter.gameObject.MakePrefab(); LabyrinthTeleporter.gameObject.MakePrefab(); LabyrinthTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.Labyrinth", LabyrinthTeleporter);
-               
-                    
-                    
+                    foreach (KeyValuePair<string, string> pair in teleportersToAdd)
+                        AddTeleporter(pair.Key, pair.Value);
                     break;
                 case "UICore":
                     if(SceneContext.Instance.Player.GetComponent<SR2EDebugDirector>()==null)
@@ -321,12 +294,26 @@ namespace SR2E
                     NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
                     player = Get<GameObject>("PlayerControllerKCC");
                     break;
-                
             }
-            
             SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
+        static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
+        {
+            {"SceneGroup.ConservatoryFields", "TeleporterHomeBlue"},
+            {"SceneGroup.RumblingGorge", "TeleporterZoneGorge"},
+            {"SceneGroup.LuminousStrand", "TeleporterZoneStrand"},
+            {"SceneGroup.PowderfallBluffs", "TeleporterZoneBluffs"},
+            {"SceneGroup.Labyrinth", "TeleporterZoneLabyrinth"},
+        };
+        static void AddTeleporter(string sceneGroup, string gadgetName)
+        {
+            
+            StaticTeleporterNode teleporter = GameObject.Instantiate(getGadgetDefByName(gadgetName).prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+            teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
+            SR2ESaveManager.WarpManager.teleporters.TryAdd(sceneGroup, teleporter);
+
+        }
         internal static void SetupFonts()
         {
             try
@@ -373,15 +360,14 @@ namespace SR2E
         }
         public override void OnSceneWasInitialized(int buildindex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = true; }
         public override void OnSceneWasUnloaded(int buildIndex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = false; SR2ESaveManager.WarpManager.OnSceneLoaded(); }
-        internal static bool SaveCountChanged = false;
+        internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
        
         public override void OnUpdate()
         {
             if (mainMenuLoaded)
             {
-                if (!SaveCountChanged)
+                foreach (BaseUI ui in baseUIAddSliders)
                 {
-                    SaveGamesRootUI ui = GameObject.FindObjectOfType<SaveGamesRootUI>();
                     if (ui != null)
                     {
                         GameObject scrollView = GameObject.Find("ButtonsScrollView");
@@ -393,10 +379,9 @@ namespace SR2E
                             rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
                             scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width/250f, 0, 0);
-                            SaveCountChanged = true;
                         }
                     }
-                    
+                    baseUIAddSliders.Remove(ui);
                 }
             }
 

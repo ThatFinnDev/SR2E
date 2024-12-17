@@ -45,7 +45,7 @@ public static class SR2ESaveManager
     
     public static class WarpManager
     {
-        internal static Dictionary<string, StaticTeleporterNode> teleporters;
+        internal static Dictionary<string, StaticTeleporterNode> teleporters = new Dictionary<string, StaticTeleporterNode>();
         internal static Warp warpTo = null;
 
         internal static SR2EError AddWarp(string warpName, Warp warp)
