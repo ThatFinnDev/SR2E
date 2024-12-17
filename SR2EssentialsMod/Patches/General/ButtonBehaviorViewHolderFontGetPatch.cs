@@ -1,5 +1,7 @@
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
+using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppTMPro;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Patches.General;
 
@@ -14,5 +16,6 @@ public static class ButtonBehaviorViewHolderFontGetPatch
         SR2EEntryPoint.SetupFonts();
         
     }
+    
     
 }

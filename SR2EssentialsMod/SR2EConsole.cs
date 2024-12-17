@@ -452,7 +452,6 @@ namespace SR2E
         {
             RegisterCommand(new FloatCommand());
             
-            
             RegisterCommand(new UtilCommand());;
             
             RegisterCommand(new BindCommand());
@@ -509,7 +508,8 @@ namespace SR2E
             RegisterCommand(new ScaleCommand());
             
             RegisterCommand(new ToggleUICommand());
-
+            RegisterCommand(new ReCenterCommand());
+            
             RegisterCommands(new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(), new WarpListCommand());
             RegisterCommands(new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand());
             RegisterCommands(new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand());

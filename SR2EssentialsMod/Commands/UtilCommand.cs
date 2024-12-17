@@ -398,6 +398,24 @@ public class UtilCommand : SR2Command
     public List<string> disabledActors = new List<string>();
     public bool ToggleActorType(bool isGet, string identName, string action = ".") 
     {
+        if (identName == "*")
+        {
+            foreach (IdentifiableType loopedType in identifiableTypes)
+            {
+                bool enabledLoop = !disabledActors.Contains(loopedType.ReferenceId);
+                if (enabledLoop)
+                {
+                    disabledActors.Add(loopedType.ReferenceId);
+                    foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
+                        if (actor.identType == loopedType) actor.gameObject.AddComponent<ObjectBlocker>();
+                }
+                disabledActors.Remove(loopedType.ReferenceId);
+                foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
+                    if (actor.identType == loopedType) actor.gameObject.RemoveComponent<ObjectBlocker>();
+            }
+
+            return true;
+        }
         IdentifiableType type = getIdentByName(identName);
         if (type == null) return SendError(translation("cmd.error.notvalididenttype", identName));
         if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));

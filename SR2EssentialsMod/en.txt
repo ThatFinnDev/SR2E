@@ -1,4 +1,6 @@
 buttons.mods.label=Mods
+buttons.mods.label=Mods
+buttons.mods.label=Mods
 buttons.cheatmenu.label=Cheat Menu
 buttons.debugplayer.label=Debug Player
 
@@ -313,3 +315,11 @@ cmd.util.vacmode.success=The VACMODE is now $1!
 cmd.util.vacmode.show=The VACMODE is currently $1
 cmd.util.gadget.pos.show=The gadget $1 is currently at ($2, $3, $4)
 cmd.util.gadget.pos.edit=The gadget $1 is now at ($2, $3, $4)!
+
+cmd.recentercamera.success=Successfully recentered the camera! Make sure to screenshot before unpausing.
+
+setting.gamesettingtest=Test Option
+setting.gamesettingtest.desc=This is a SR2E test option.
+setting.gamesettingtest.value1=Value 1
+setting.gamesettingtest.value2=Value B
+setting.gamesettingtest.value3=Value 03
