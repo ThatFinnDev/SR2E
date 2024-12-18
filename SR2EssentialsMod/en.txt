@@ -157,6 +157,17 @@ cmd.pedia.successallunlock=Successfully unlocked the pedia entry for everything!
 cmd.pedia.errorlock=The pedia entry for $1 is already locked!
 cmd.pedia.errorunlock=The pedia entry for $1 is already unlocked!
 
+
+cmd.ranch.descripton=Manage your ranch expansions!
+cmd.ranch.notvalidoption=$1 is not a valid option!
+cmd.ranch.successlock=Successfully locked the expansion $1!
+cmd.ranch.successalllock=Successfully locked all expansions!
+cmd.ranch.successunlock=Successfully unlocked the expansion $1!
+cmd.ranch.successallunlock=Successfully unlocked all expansions!
+cmd.ranch.errorlock=The expansion $1 is already locked!
+cmd.ranch.errorunlock=The expansion $1 is already unlocked!
+
+
 cmd.graphics.success=Successfully set graphics type to $1!
 cmd.graphics.description=Makes your game look... like something...
 cmd.graphics.extendeddescription=Changes the look of your game. It may make your experience better or worse
@@ -316,7 +327,10 @@ cmd.util.vacmode.show=The VACMODE is currently $1
 cmd.util.gadget.pos.show=The gadget $1 is currently at ($2, $3, $4)
 cmd.util.gadget.pos.edit=The gadget $1 is now at ($2, $3, $4)!
 
+cmd.recentercamera.description=Recenters your camera to look at the center of an object you're looking at
 cmd.recentercamera.success=Successfully recentered the camera! Make sure to screenshot before unpausing.
+cmd.recentercamera.needtolook=You need to lock at something!
+cmd.recentercamera.nocamera=There was no main camera found!
 
 setting.gamesettingtest=Test Option
 setting.gamesettingtest.desc=This is a SR2E test option.
