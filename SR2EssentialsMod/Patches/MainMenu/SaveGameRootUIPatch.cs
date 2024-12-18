@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SR2E.Patches.MainMenu;
 
-[HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.Init))]
+[HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.FocusUI))]
 public static class SaveGameRootUIPatch
 {
-    public static void Prefix()
+    public static void Postfix(SaveGamesRootUI __instance)
     {
-        SR2EEntryPoint.SaveCountChanged = false;
+        SR2EEntryPoint.baseUIAddSliders.Add(__instance);
     }
 }

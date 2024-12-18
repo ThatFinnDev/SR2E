@@ -13,9 +13,12 @@ using UnityEngine.UI;
 using Il2CppKinematicCharacterController;
 using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.Options;
+using Il2CppMonomiPark.SlimeRancher.Player.FirstPersonScreenEffects;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
 using SR2E.Buttons;
+using SR2E.Patches.General;
 using UnityEngine.Networking;
 
 namespace SR2E
@@ -26,7 +29,7 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.7"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.4.8"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
@@ -52,6 +55,7 @@ namespace SR2E
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
         internal static bool devMode { get { return prefs.GetEntry<bool>("devMode").Value; } }
+        internal static bool fixSaves { get { return prefs.GetEntry<bool>("fixSaves").Value; } }
         internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
@@ -96,6 +100,8 @@ namespace SR2E
                 prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
             if (!prefs.HasEntry("devMode"))
                 prefs.CreateEntry("devMode", (bool)false, "Enable dev mode", true);
+            if (!prefs.HasEntry("fixSaves"))
+                prefs.CreateEntry("fixSaves", (bool)false, "Fix saves that broken through mods/updates","This is EXPERIMENTAL, it may break stuff or not work. Disable after usage!", false).disableWarning();
             if (!prefs.HasEntry("onSaveLoadCommand"))
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
@@ -233,8 +239,45 @@ namespace SR2E
                     
                     break;
                 case "MainMenuUI":
+                    
+                    var optionCategories = Resources.FindObjectsOfTypeAll<OptionsItemCategory>();
 
-                    SaveCountChanged = false;
+                    foreach (var category in optionCategories)
+                    {
+                        switch (category.name)
+                        {
+                            case "GameSettings":
+                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.GameSettings, category);
+                                break;
+                            case "Display":
+                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Display, category);
+                                break;
+                            case "Audio":
+                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Audio, category);
+                                break;
+                            case "BindingsGamepad":
+                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Bindings_Controller, category);
+                                break;
+                            case "Input":
+                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Input, category);
+                                break;
+                            case "Gameplay_MainMenu":
+                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Gameplay_MainMenu, category);
+                                break;
+                            case "BindingsKbm":
+                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Bindings_Keyboard, category);
+                                break;
+                            case "Video":
+                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Graphics, category);
+                                break;
+                            default:
+                                // There are 2 other categories, but they are console only. 
+                                // Also, the Gameplay_InGame is loaded somewhere after GameCore.
+                                break;
+                        }
+                        MelonLogger.BigError("SR2E TODO","PLEASE IMPLEMENT THE GAMEPLAY_INGAME SETTINGS CATEGORY");
+                    }
+                    
                     Time.timeScale = 1f;
                     try
                     {
@@ -259,16 +302,13 @@ namespace SR2E
                     
                     break;
                 case "StandaloneEngagementPrompt":
-                    PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
                     Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
-                    prompt.EngagementPromptTextUI.SetActive(false);
-                    prompt.OnInteract(new InputAction.CallbackContext());
                     break;
                 case "GameCore":
                     killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
-                    autoSaveDirector.saveSlotCount = 50;
+                    autoSaveDirector.saveSlotCount = 75;
                     
                     foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
                     {
@@ -279,28 +319,12 @@ namespace SR2E
                             FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
                     }
 
-                    SR2ESaveManager.WarpManager.teleporters = new Dictionary<string, StaticTeleporterNode>();
-                    //Creating Teleporters for Warps
-                    StaticTeleporterNode ConservatoryFieldsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterHomeBlue").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    ConservatoryFieldsTeleporter.gameObject.SetActive(false); ConservatoryFieldsTeleporter.name = "TP-ConservatoryFields"; ConservatoryFieldsTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.ConservatoryFields", ConservatoryFieldsTeleporter);
+                    vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
                     
-                    StaticTeleporterNode RumblingGorgeTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneGorge").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    RumblingGorgeTeleporter.gameObject.SetActive(false); RumblingGorgeTeleporter.name = "TP-RumblingGorge"; RumblingGorgeTeleporter.gameObject.MakePrefab(); RumblingGorgeTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.RumblingGorge", RumblingGorgeTeleporter);
+                    
+                    foreach (KeyValuePair<string, string> pair in teleportersToAdd)
+                        AddTeleporter(pair.Key, pair.Value);
 
-                    StaticTeleporterNode LuminousStrandTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneStrand").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    LuminousStrandTeleporter.gameObject.SetActive(false); LuminousStrandTeleporter.name = "TP-LuminousStrand"; LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.LuminousStrand", LuminousStrandTeleporter);
-
-                    StaticTeleporterNode PowderfallBluffsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneBluffs").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    PowderfallBluffsTeleporter.gameObject.SetActive(false); PowderfallBluffsTeleporter.name = "TP-PowderfallBluffs"; PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.PowderfallBluffs", PowderfallBluffsTeleporter);
-
-                    StaticTeleporterNode LabyrinthTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneLabyrinth").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    LabyrinthTeleporter.gameObject.SetActive(false); LabyrinthTeleporter.name = "TP-Labyrinth"; LabyrinthTeleporter.gameObject.MakePrefab(); LabyrinthTeleporter.gameObject.MakePrefab(); LabyrinthTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.Labyrinth", LabyrinthTeleporter);
-               
                     
                     
                     break;
@@ -315,12 +339,29 @@ namespace SR2E
                     NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
                     player = Get<GameObject>("PlayerControllerKCC");
                     break;
-                
             }
-            
             SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
+        static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
+        {
+            {"SceneGroup.ConservatoryFields", "TeleporterHomeBlue"},
+            {"SceneGroup.RumblingGorge", "TeleporterZoneGorge"},
+            {"SceneGroup.LuminousStrand", "TeleporterZoneStrand"},
+            {"SceneGroup.PowderfallBluffs", "TeleporterZoneBluffs"},
+            {"SceneGroup.Labyrinth", "TeleporterZoneLabyrinth"},
+        };
+        static void AddTeleporter(string sceneGroup, string gadgetName)
+        {
+            
+            StaticTeleporterNode teleporter = GameObject.Instantiate(getGadgetDefByName(gadgetName).prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+            teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
+            SR2ESaveManager.WarpManager.teleporters.TryAdd(sceneGroup, teleporter);
+
+        }
+
+        public static event EventHandler RegisterOptionMenuButtons;  
+        
         internal static void SetupFonts()
         {
             try
@@ -348,11 +389,35 @@ namespace SR2E
         internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
         {
             
-            }
+        }
 
         internal static CustomPauseMenuButton cheatMenuButton;
+        static bool isSaveDirectorLoaded = false;
         internal static void SaveDirectorLoaded()
         {
+            if (isSaveDirectorLoaded) return;
+            isSaveDirectorLoaded = true;
+            
+            
+            var scriptedValue = CustomSettingsButton.CreateScriptedInt(0);
+
+            RegisterOptionMenuButtons += (_, _) =>
+            {
+                CustomSettingsButton.Create(
+                    CustomSettingsButton.SettingsCategory.Gameplay_MainMenu,
+                    AddTranslationFromSR2E("setting.gamesettingtest", "b.testsetting", "UI"),
+                    AddTranslationFromSR2E("setting.gamesettingtest.desc", "l.testsettingdescription", "UI"),
+                    0,
+                    "testButton1",
+                    true,
+                    false,
+
+                    new CustomSettingsButton.OptionValue("val1", AddTranslationFromSR2E("setting.gamesettingtest.value1", "l.testsettingvalue1", "UI"), scriptedValue),
+                    new CustomSettingsButton.OptionValue("val2", AddTranslationFromSR2E("setting.gamesettingtest.value2", "l.testsettingvalue2", "UI"), scriptedValue),
+                    new CustomSettingsButton.OptionValue("val3", AddTranslationFromSR2E("setting.gamesettingtest.value3", "l.testsettingvalue3", "UI"), scriptedValue)
+                );
+            };
+            
             LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
             new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
             new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
@@ -361,19 +426,20 @@ namespace SR2E
             
             if (devMode) new CustomPauseMenuButton( AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
 
+            RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
+            
         }
         public override void OnSceneWasInitialized(int buildindex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = true; }
         public override void OnSceneWasUnloaded(int buildIndex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = false; SR2ESaveManager.WarpManager.OnSceneLoaded(); }
-        internal static bool SaveCountChanged = false;
-       
+        internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
+
         public override void OnUpdate()
         {
             if (mainMenuLoaded)
             {
-                if (!SaveCountChanged)
+                foreach (BaseUI ui in new List<BaseUI>(baseUIAddSliders))
                 {
-                    SaveGamesRootUI ui = GameObject.FindObjectOfType<SaveGamesRootUI>();
-                    if (ui != null)
+                    if (ui)
                     {
                         GameObject scrollView = GameObject.Find("ButtonsScrollView");
                         if (scrollView != null)
@@ -383,11 +449,10 @@ namespace SR2E
                             Scrollbar scrollBar = GameObject.Instantiate(SR2EConsole.parent.getObjRec<Scrollbar>("saveFilesSliderRec"), rect.transform);
                             rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
-                            scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width/250f, 0, 0);
-                            SaveCountChanged = true;
+                            scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width / 250f, 0, 0);
                         }
                     }
-                    
+                    baseUIAddSliders.Remove(ui);
                 }
             }
 

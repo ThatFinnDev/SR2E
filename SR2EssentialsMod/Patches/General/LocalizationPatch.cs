@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace SR2E.Patches.General;
 
-[HarmonyPatch(typeof(LocalizationDirector), "LoadTables")]
+[HarmonyPatch(typeof(LocalizationDirector), nameof(LocalizationDirector.LoadTables))]
 public static class LocalizationDirectorLoadTablePatch
 {
     public static void Postfix(LocalizationDirector __instance)
