@@ -5,6 +5,7 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
+using SR2E.Addons;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Action = System.Action;
@@ -96,6 +97,8 @@ public static class SR2EModMenu
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
         {
+            SR2EAddonAttribute sr2eAddonAttribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EAddonAttribute>();
+            bool isSR2EAddon = sr2eAddonAttribute != null;
             GameObject obj = GameObject.Instantiate(buttonPrefab, modContent);
             Button b = obj.GetComponent<Button>();
             b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = melonBase.Info.Name;
@@ -103,6 +106,8 @@ public static class SR2EModMenu
             b.onClick.AddListener((Action)(() =>
             {
                 modInfoText.text = translation("modmenu.modinfo.mod",melonBase.Info.Name);
+                if(isSR2EAddon) 
+                    modInfoText.text = translation("modmenu.modinfo.addon",melonBase.Info.Name);
                 modInfoText.text += "\n" + translation("modmenu.modinfo.author",melonBase.Info.Author);
                 modInfoText.text += "\n" + translation("modmenu.modinfo.version",melonBase.Info.Version);
                 modInfoText.text += "\n";

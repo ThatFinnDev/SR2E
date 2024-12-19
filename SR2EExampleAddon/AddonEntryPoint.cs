@@ -1,4 +1,6 @@
-﻿namespace SR2EExampleAddon
+﻿using SR2E.Addons;
+
+namespace SR2EExampleAddon
 {
     public static class BuildInfo
     {
@@ -10,10 +12,24 @@
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Addon.  (Set as null if none)
     }
 
-    public class AddonEntryPoint : MelonMod
+    public class AddonEntryPoint : SR2EAddonV1
     {
         public override void OnInitializeMelon()
         {
+        }
+
+        public override void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
+        {
+            
+        }
+        public override void SaveDirectorLoaded()
+        {
+            
+        }
+
+        public override void LoadCommands()
+        {
+            ///SR2EConsole.RegisterCommand(new Command());
         }
     }
 

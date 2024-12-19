@@ -16,6 +16,7 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.Player.FirstPersonScreenEffects;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
+using SR2E.Addons;
 using UnityEngine.Localization;
 using SR2E.Buttons;
 using SR2E.Commands;
@@ -125,8 +126,8 @@ namespace SR2E
 
             MelonCoroutines.Start(CheckForNewVersion());
         }
-        public static string MLVERSION = MelonLoader.BuildInfo.Version;
-        public static string newVersion = null;
+        internal static string MLVERSION = MelonLoader.BuildInfo.Version;
+        internal static string newVersion = null;
         IEnumerator CheckForNewVersion()
         {
             UnityWebRequest uwr = UnityWebRequest.Get("https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt");
@@ -168,6 +169,8 @@ namespace SR2E
                     break;
             }
         }
+
+        internal static List<SR2EAddonV1> addons = new List<SR2EAddonV1>();
         public override void OnInitializeMelon()
         {
             instance = this;
@@ -180,6 +183,9 @@ namespace SR2E
                 SR2ELanguageManger.LoadLanguage(); }
             catch (Exception e) { MelonLogger.Error(e); }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+            {
+                if(melonBase is SR2EAddonV1)
+                    addons.Add(melonBase as SR2EAddonV1);
                 switch (melonBase.Info.Name)
                 {
                     case "InfiniteEnergy":
@@ -192,6 +198,7 @@ namespace SR2E
                         _mSRMLIsInstalled = true;
                         break;
                 }
+            }
         }
 
         public override void OnApplicationQuit()
@@ -377,7 +384,9 @@ namespace SR2E
 
         internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
         {
-            
+            foreach (var addon in addons)
+                try { addon.OnSaveDirectorLoading(autoSaveDirector); }
+                catch (Exception e) { MelonLogger.Error(e); }
         }
 
         internal static CustomPauseMenuButton cheatMenuButton;
@@ -417,6 +426,9 @@ namespace SR2E
 
             RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
             
+            foreach (var addon in addons)
+                try { addon.SaveDirectorLoaded(); }
+                catch (Exception e) { MelonLogger.Error(e); }
         }
         public override void OnSceneWasInitialized(int buildindex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = true; }
         public override void OnSceneWasUnloaded(int buildIndex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = false; SR2ESaveManager.WarpManager.OnSceneLoaded(); }

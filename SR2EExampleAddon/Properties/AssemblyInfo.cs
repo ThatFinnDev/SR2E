@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using MelonLoader;
-using SR2E.Properties;
+using SR2E.Addons;
 
 [assembly: AssemblyTitle(SR2EExampleAddon.BuildInfo.Name)]
 [assembly: AssemblyDescription(SR2EExampleAddon.BuildInfo.Description)]
