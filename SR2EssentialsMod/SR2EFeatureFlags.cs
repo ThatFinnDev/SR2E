@@ -4,7 +4,7 @@ public static class SR2EFeatureFlags
 {
     static List<FeatureFlag> flags = new List<FeatureFlag>()
     {
-        FeatureFlag.ExperimentalSettingsInjection
+        FeatureFlag.ExperimentalSettingsInjection, FeatureFlag.ExperimentalCommands
     };
     public static List<FeatureFlag> FeatureFlags => flags;
     public static bool hasFeature(this FeatureFlag featureFlag) => flags.Contains(featureFlag);
