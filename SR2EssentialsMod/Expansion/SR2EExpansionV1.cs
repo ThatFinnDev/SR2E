@@ -1,8 +1,8 @@
 using Il2CppTMPro;
 
-namespace SR2E.Addons;
+namespace SR2E.Expansion;
 
-public abstract class SR2EAddonV1 : MelonMod
+public abstract class SR2EExpansionV1 : MelonMod
 {
     public static TMP_FontAsset sr2Font => SR2E.SR2EEntryPoint.SR2Font;
 

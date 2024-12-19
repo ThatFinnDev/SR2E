@@ -16,7 +16,7 @@ cheatmenu.cheatbuttons.removeFogoff=Remove Fog [Off]
 cheatmenu.cheatbuttons.betterScreenshoton=BetterScreenshot [On]
 cheatmenu.cheatbuttons.betterScreenshotoff=BetterScreenshot [Off]
 
-modmenu.modinfo.addon=Expansion: $1
+modmenu.modinfo.expansion=Expansion: $1
 modmenu.modinfo.mod=Mod: $1
 modmenu.modinfo.author=by: $1
 modmenu.modinfo.version=Version: $1

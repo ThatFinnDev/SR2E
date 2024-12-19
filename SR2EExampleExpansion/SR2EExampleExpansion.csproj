@@ -3,10 +3,10 @@
     <TargetFramework>net6.0</TargetFramework>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <OutputType>Library</OutputType>
-    <RootNamespace>SR2EExampleAddon</RootNamespace>
+    <RootNamespace>SR2EExampleExpansion</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>SR2EExampleAddon</AssemblyName>
     <Configurations>Debug;Release;Development</Configurations>
+    <PackageId>SR2EExampleExpansion</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>embedded</DebugType>

@@ -515,8 +515,8 @@ namespace SR2E
             RegisterCommands(new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand());
             RegisterCommands(new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand());
             
-            foreach (var addon in SR2EEntryPoint.addons)
-                try { addon.LoadCommands(); }
+            foreach (var expansion in SR2EEntryPoint.expansions)
+                try { expansion.LoadCommands(); }
                 catch (Exception e) { MelonLogger.Error(e); }
                 
         }

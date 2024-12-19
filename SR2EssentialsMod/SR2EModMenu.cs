@@ -5,7 +5,7 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
-using SR2E.Addons;
+using SR2E.Expansion;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Action = System.Action;
@@ -97,19 +97,26 @@ public static class SR2EModMenu
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
         {
-            SR2EAddonAttribute sr2eAddonAttribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EAddonAttribute>();
-            bool isSR2EAddon = sr2eAddonAttribute != null;
+            SR2EExpansionAttribute sr2EExpansionAttribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
+            bool isSR2EExpansion = sr2EExpansionAttribute != null;
             GameObject obj = GameObject.Instantiate(buttonPrefab, modContent);
             Button b = obj.GetComponent<Button>();
             b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = melonBase.Info.Name;
             obj.SetActive(true);
-            //if (isSR2EAddon)
-            //    b.colors.normalColor = new Color(0.049f, 0.7f,0.1961f,1f);
+            if (isSR2EExpansion)
+            {
+                ColorBlock colorBlock = b.colors;
+                colorBlock.normalColor = new Color(0.149f, 0.7176f, 0.3961f, 1);
+                colorBlock.highlightedColor = new Color(0.1098f, 0.6314f, 0.2157f, 1); 
+                colorBlock.pressedColor = new Color(0.1371f, 0.7248f, 0.3792f, 1f);
+                colorBlock.selectedColor = new Color(0.8706f, 0.5298f, 0.4216f, 1f);
+                b.colors = colorBlock;
+            }
             b.onClick.AddListener((Action)(() =>
             {
                 modInfoText.text = translation("modmenu.modinfo.mod",melonBase.Info.Name);
-                if(isSR2EAddon) 
-                    modInfoText.text = translation("modmenu.modinfo.addon",melonBase.Info.Name);
+                if(isSR2EExpansion) 
+                    modInfoText.text = translation("modmenu.modinfo.expansion",melonBase.Info.Name);
                 modInfoText.text += "\n" + translation("modmenu.modinfo.author",melonBase.Info.Author);
                 modInfoText.text += "\n" + translation("modmenu.modinfo.version",melonBase.Info.Version);
                 modInfoText.text += "\n";

@@ -16,7 +16,7 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.Player.FirstPersonScreenEffects;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
-using SR2E.Addons;
+using SR2E.Expansion;
 using UnityEngine.Localization;
 using SR2E.Buttons;
 using SR2E.Commands;
@@ -170,7 +170,7 @@ namespace SR2E
             }
         }
 
-        internal static List<SR2EAddonV1> addons = new List<SR2EAddonV1>();
+        internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
         public override void OnInitializeMelon()
         {
             instance = this;
@@ -184,8 +184,8 @@ namespace SR2E
             catch (Exception e) { MelonLogger.Error(e); }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
-                if(melonBase is SR2EAddonV1)
-                    addons.Add(melonBase as SR2EAddonV1);
+                if(melonBase is SR2EExpansionV1)
+                    expansions.Add(melonBase as SR2EExpansionV1);
                 switch (melonBase.Info.Name)
                 {
                     case "InfiniteEnergy":
@@ -339,13 +339,13 @@ namespace SR2E
             
             switch (sceneName)
             {
-                case "SystemCore": foreach (var addon in addons) try { addon.OnSystemCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "StandaloneEngagementPrompt": foreach (var addon in addons) try { addon.OnStandaloneEngagementPromptLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "GameCore": foreach (var addon in addons) try { addon.OnGameCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "PlayerCore": foreach (var addon in addons) try { addon.OnPlayerCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "UICore": foreach (var addon in addons) try { addon.OnUICoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "MainMenuUI": foreach (var addon in addons) try { addon.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "LoadScene": foreach (var addon in addons) try { addon.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
             }
             SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
@@ -389,15 +389,15 @@ namespace SR2E
             foreach (var text in SR2EConsole.parent.getObjRec<GameObject>("cheatMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
 
-            foreach (var addon in addons)
-                try { addon.OnSR2FontLoad(); }
+            foreach (var expansion in expansions)
+                try { expansion.OnSR2FontLoad(); }
                 catch (Exception e) { MelonLogger.Error(e); }
         }
 
         internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
         {
-            foreach (var addon in addons)
-                try { addon.OnSaveDirectorLoading(autoSaveDirector); }
+            foreach (var expansion in expansions)
+                try { expansion.OnSaveDirectorLoading(autoSaveDirector); }
                 catch (Exception e) { MelonLogger.Error(e); }
         }
 
@@ -438,8 +438,8 @@ namespace SR2E
 
             RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
             
-            foreach (var addon in addons)
-                try { addon.SaveDirectorLoaded(); }
+            foreach (var expansion in expansions)
+                try { expansion.SaveDirectorLoaded(); }
                 catch (Exception e) { MelonLogger.Error(e); }
         }
 
@@ -448,13 +448,13 @@ namespace SR2E
             if(sceneName=="MainMenuUI") mainMenuLoaded = true;
             switch (sceneName)
             {
-                case "SystemCore": foreach (var addon in addons) try { addon.OnSystemCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "StandaloneEngagementPrompt": foreach (var addon in addons) try { addon.OnStandaloneEngagementPromptInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "GameCore": foreach (var addon in addons) try { addon.OnGameCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "PlayerCore": foreach (var addon in addons) try { addon.OnPlayerCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "UICore": foreach (var addon in addons) try { addon.OnUICoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "MainMenuUI": foreach (var addon in addons) try { addon.OnMainMenuUIInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "LoadScene": foreach (var addon in addons) try { addon.OnLoadSceneInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
             }
         }
 
@@ -466,13 +466,13 @@ namespace SR2E
             
             switch (sceneName)
             {
-                case "SystemCore": foreach (var addon in addons) try { addon.OnSystemCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "StandaloneEngagementPrompt": foreach (var addon in addons) try { addon.OnStandaloneEngagementPromptUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "GameCore": foreach (var addon in addons) try { addon.OnGameCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "PlayerCore": foreach (var addon in addons) try { addon.OnPlayerCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "UICore": foreach (var addon in addons) try { addon.OnUICoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "MainMenuUI": foreach (var addon in addons) try { addon.OnMainMenuUIUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "LoadScene": foreach (var addon in addons) try { addon.OnLoadSceneUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
             }
         }
         internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
