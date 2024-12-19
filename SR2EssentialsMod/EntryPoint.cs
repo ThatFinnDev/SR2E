@@ -18,6 +18,7 @@ using Il2CppMonomiPark.SlimeRancher.Player.FirstPersonScreenEffects;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using UnityEngine.Localization;
 using SR2E.Buttons;
+using SR2E.Commands;
 using SR2E.Patches.General;
 using UnityEngine.Networking;
 
@@ -123,19 +124,8 @@ namespace SR2E
             }
 
             MelonCoroutines.Start(CheckForNewVersion());
-            
-            //This is because ML has no way (to my knowledge) to get the version
-            string logFilePath = Application.dataPath+"/../MelonLoader/Latest.log";
-            using(System.IO.FileStream logFileStream = new System.IO.FileStream(logFilePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
-            {
-                using(System.IO.StreamReader logFileReader = new System.IO.StreamReader(logFileStream))
-                {
-                    string text = logFileReader.ReadToEnd();
-                    MLVERSION = text.Split("\n")[1].Split("v")[1].Split(" ")[0];
-                }
-            }
         }
-        public static string MLVERSION = "unknown";
+        public static string MLVERSION = MelonLoader.BuildInfo.Version;
         public static string newVersion = null;
         IEnumerator CheckForNewVersion()
         {
@@ -148,7 +138,7 @@ namespace SR2E
         }
 
         
-        //Logging code from KomiksPL
+        //Logging code from Atmudia
         private static void AppLogUnity(string message, string trace, LogType type)
         {
             if (message.Equals(string.Empty))
@@ -324,7 +314,6 @@ namespace SR2E
                     
                     foreach (KeyValuePair<string, string> pair in teleportersToAdd)
                         AddTeleporter(pair.Key, pair.Value);
-
                     
                     
                     break;
