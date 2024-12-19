@@ -500,4 +500,7 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SR2EssentialsMod\SR2EssentialsMod.csproj" />
+  </ItemGroup>
 </Project>

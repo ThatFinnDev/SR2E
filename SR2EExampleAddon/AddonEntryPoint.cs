@@ -1,7 +1,4 @@
-﻿using MelonLoader;
-using UnityEngine;
-
-namespace SR2EExampleAddon
+﻿namespace SR2EExampleAddon
 {
     public static class BuildInfo
     {
@@ -13,7 +10,7 @@ namespace SR2EExampleAddon
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Addon.  (Set as null if none)
     }
 
-    public class SR2EEntryPoint : MelonMod
+    public class AddonEntryPoint : MelonMod
     {
         public override void OnInitializeMelon()
         {
