@@ -18,6 +18,10 @@ namespace SR2EExampleAddon
         {
         }
 
+        public override void OnSR2FontLoad()
+        {
+            
+        }
         public override void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
         {
             

@@ -336,10 +336,21 @@ namespace SR2E
                     player = Get<GameObject>("PlayerControllerKCC");
                     break;
             }
+            
+            switch (sceneName)
+            {
+                case "SystemCore": foreach (var addon in addons) try { addon.OnSystemCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var addon in addons) try { addon.OnStandaloneEngagementPromptLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var addon in addons) try { addon.OnGameCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var addon in addons) try { addon.OnPlayerCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var addon in addons) try { addon.OnUICoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var addon in addons) try { addon.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var addon in addons) try { addon.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            }
             SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
-        static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
+        internal static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
         {
             {"SceneGroup.ConservatoryFields", "TeleporterHomeBlue"},
             {"SceneGroup.RumblingGorge", "TeleporterZoneGorge"},
@@ -347,13 +358,11 @@ namespace SR2E
             {"SceneGroup.PowderfallBluffs", "TeleporterZoneBluffs"},
             {"SceneGroup.Labyrinth", "TeleporterZoneLabyrinth"},
         };
-        static void AddTeleporter(string sceneGroup, string gadgetName)
+        internal static void AddTeleporter(string sceneGroup, string gadgetName)
         {
-            
             StaticTeleporterNode teleporter = GameObject.Instantiate(getGadgetDefByName(gadgetName).prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
             teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
             SR2ESaveManager.WarpManager.teleporters.TryAdd(sceneGroup, teleporter);
-
         }
 
         public static event EventHandler RegisterOptionMenuButtons;  
@@ -380,6 +389,9 @@ namespace SR2E
             foreach (var text in SR2EConsole.parent.getObjRec<GameObject>("cheatMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
 
+            foreach (var addon in addons)
+                try { addon.OnSR2FontLoad(); }
+                catch (Exception e) { MelonLogger.Error(e); }
         }
 
         internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
@@ -390,7 +402,7 @@ namespace SR2E
         }
 
         internal static CustomPauseMenuButton cheatMenuButton;
-        static bool isSaveDirectorLoaded = false;
+        internal static bool isSaveDirectorLoaded = false;
         internal static void SaveDirectorLoaded()
         {
             if (isSaveDirectorLoaded) return;
@@ -430,8 +442,39 @@ namespace SR2E
                 try { addon.SaveDirectorLoaded(); }
                 catch (Exception e) { MelonLogger.Error(e); }
         }
-        public override void OnSceneWasInitialized(int buildindex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = true; }
-        public override void OnSceneWasUnloaded(int buildIndex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = false; SR2ESaveManager.WarpManager.OnSceneLoaded(); }
+
+        public override void OnSceneWasInitialized(int buildindex, string sceneName)
+        {
+            if(sceneName=="MainMenuUI") mainMenuLoaded = true;
+            switch (sceneName)
+            {
+                case "SystemCore": foreach (var addon in addons) try { addon.OnSystemCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var addon in addons) try { addon.OnStandaloneEngagementPromptInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var addon in addons) try { addon.OnGameCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var addon in addons) try { addon.OnPlayerCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var addon in addons) try { addon.OnUICoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var addon in addons) try { addon.OnMainMenuUIInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var addon in addons) try { addon.OnLoadSceneInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            }
+        }
+
+        public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
+        {
+            if(sceneName=="MainMenuUI") mainMenuLoaded = false;
+            try { SR2ESaveManager.WarpManager.OnSceneLoaded(); }
+            catch (Exception e) { MelonLogger.Error(e); }
+            
+            switch (sceneName)
+            {
+                case "SystemCore": foreach (var addon in addons) try { addon.OnSystemCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var addon in addons) try { addon.OnStandaloneEngagementPromptUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var addon in addons) try { addon.OnGameCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var addon in addons) try { addon.OnPlayerCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var addon in addons) try { addon.OnUICoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var addon in addons) try { addon.OnMainMenuUIUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var addon in addons) try { addon.OnLoadSceneUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            }
+        }
         internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
 
         public override void OnUpdate()
@@ -464,6 +507,7 @@ namespace SR2E
                 {
                     consoleFinishedCreating = true;
                     obj.name = "SR2EStuff";
+                    obj.tag = "";
                     GameObject.DontDestroyOnLoad(obj);
                     
                     SR2EConsole.parent = obj.transform;

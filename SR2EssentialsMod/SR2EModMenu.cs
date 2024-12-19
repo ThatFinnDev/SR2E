@@ -103,6 +103,8 @@ public static class SR2EModMenu
             Button b = obj.GetComponent<Button>();
             b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = melonBase.Info.Name;
             obj.SetActive(true);
+            //if (isSR2EAddon)
+            //    b.colors.normalColor = new Color(0.049f, 0.7f,0.1961f,1f);
             b.onClick.AddListener((Action)(() =>
             {
                 modInfoText.text = translation("modmenu.modinfo.mod",melonBase.Info.Name);
