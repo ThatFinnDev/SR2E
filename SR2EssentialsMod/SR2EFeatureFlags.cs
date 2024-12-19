@@ -12,5 +12,5 @@ public static class SR2EFeatureFlags
 
 public enum FeatureFlag
 {
-    ExperimentalSettingsInjection,
+    ExperimentalSettingsInjection, ExperimentalCommands
 }

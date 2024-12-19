@@ -509,11 +509,14 @@ namespace SR2E
             
             RegisterCommand(new ToggleUICommand());
             RegisterCommand(new ReCenterCommand());
-            //RegisterCommand(new RanchCommand());
             RegisterCommands(new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(), new WarpListCommand());
             RegisterCommands(new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand());
             RegisterCommands(new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand());
             RegisterCommands(new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand());
+            if (FeatureFlag.ExperimentalCommands.hasFeature())
+            {
+                RegisterCommand(new RanchCommand());
+            }
             
             foreach (var expansion in SR2EEntryPoint.expansions)
                 try { expansion.LoadCommands(); }
