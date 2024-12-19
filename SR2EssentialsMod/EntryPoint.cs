@@ -325,7 +325,7 @@ namespace SR2E
                     killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
-                    autoSaveDirector.saveSlotCount = 75;
+                    autoSaveDirector.saveSlotCount = SAVESLOT_COUNT;
                     
                     foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
                     {

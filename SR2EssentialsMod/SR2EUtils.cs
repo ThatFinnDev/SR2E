@@ -553,8 +553,6 @@ namespace SR2E
             }
         }
 
-        internal const int MAX_AUTOCOMPLETE = 55;
-        internal const int MAX_CONSOLELINES = 150;
         internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType[] vaccableTypes { get { return vaccableGroup.GetAllMembers().ToArray(); } }
         internal static IdentifiableType getIdentByName(string name)
