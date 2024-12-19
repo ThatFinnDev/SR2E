@@ -14,8 +14,10 @@ namespace SR2EExampleExpansion
 
     public class ExpansionEntryPoint : SR2EExpansionV1
     {
-        public override void OnInitializeMelon()
+        public override void OnNormalInitializeMelon()
         {
+            foreach (var code in new List<string> { "en" })
+                AddLanguage(code,LoadTextFile("SR2EExampleExpansion.Languages."+code+".txt"));
         }
 
         public override void OnSR2FontLoad()
@@ -35,6 +37,7 @@ namespace SR2EExampleExpansion
         {
             ///SR2EConsole.RegisterCommand(new Command());
         }
+
     }
 
 }

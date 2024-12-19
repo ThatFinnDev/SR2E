@@ -29,6 +29,7 @@
   <ItemGroup>
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />
+    <EmbeddedResource Include="Languages\**" />
     <None Remove="modsMenuIcon.png" />
   </ItemGroup>
   <ItemGroup>

@@ -54,6 +54,7 @@ namespace SR2E
         internal static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
         internal static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
         internal static bool syncConsole { get { return prefs.GetEntry<bool>("doesConsoleSync").Value; } }
+        internal static bool quickStart { get { return prefs.GetEntry<bool>("quickStart").Value; } }
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
         internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
         internal static bool devMode { get { return prefs.GetEntry<bool>("devMode").Value; } }
@@ -78,6 +79,8 @@ namespace SR2E
                     {
                         SetupFonts(); 
                     }));
+            if (!prefs.HasEntry("quickStart"))
+                prefs.CreateEntry("quickStart", (bool)false, "Start SR2 quicker");
 
             if (!prefs.HasEntry("showUnityErrors"))
                 prefs.CreateEntry("showUnityErrors", (bool)false, "Shows unity errors in the console", true);
@@ -180,12 +183,14 @@ namespace SR2E
                 Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
             try
             {
-                SR2ELanguageManger.LoadLanguage(); }
+                foreach (var code in new List<string> { "en" })
+                    AddLanguage(code,LoadTextFile("SR2E."+code+".txt"));
+            }
             catch (Exception e) { MelonLogger.Error(e); }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
                 if(melonBase is SR2EExpansionV1)
-                    expansions.Add(melonBase as SR2EExpansionV1);
+                   expansions.Add(melonBase as SR2EExpansionV1);
                 switch (melonBase.Info.Name)
                 {
                     case "InfiniteEnergy":
@@ -199,6 +204,11 @@ namespace SR2E
                         break;
                 }
             }
+            foreach (var expansion in expansions)
+                try { expansion.OnNormalInitializeMelon(); }
+                catch (Exception e) { MelonLogger.Error(e); }
+
+            LoadLanguage(defaultLanguageCode);
         }
 
         public override void OnApplicationQuit()
@@ -237,44 +247,54 @@ namespace SR2E
                     break;
                 case "MainMenuUI":
                     
-                    var optionCategories = Resources.FindObjectsOfTypeAll<OptionsItemCategory>();
-
-                    foreach (var category in optionCategories)
+                    if(FeatureFlag.ExperimentalSettingsInjection.hasFeature())
                     {
-                        switch (category.name)
+                        var optionCategories = Resources.FindObjectsOfTypeAll<OptionsItemCategory>();
+                        foreach (var category in optionCategories)
                         {
-                            case "GameSettings":
-                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.GameSettings, category);
-                                break;
-                            case "Display":
-                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Display, category);
-                                break;
-                            case "Audio":
-                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Audio, category);
-                                break;
-                            case "BindingsGamepad":
-                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Bindings_Controller, category);
-                                break;
-                            case "Input":
-                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Input, category);
-                                break;
-                            case "Gameplay_MainMenu":
-                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Gameplay_MainMenu, category);
-                                break;
-                            case "BindingsKbm":
-                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Bindings_Keyboard, category);
-                                break;
-                            case "Video":
-                                CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Graphics, category);
-                                break;
-                            default:
-                                // There are 2 other categories, but they are console only. 
-                                // Also, the Gameplay_InGame is loaded somewhere after GameCore.
-                                break;
+                            switch (category.name)
+                            {
+                                case "GameSettings":
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.GameSettings, category);
+                                    break;
+                                case "Display":
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Display,
+                                        category);
+                                    break;
+                                case "Audio":
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Audio,
+                                        category);
+                                    break;
+                                case "BindingsGamepad":
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Bindings_Controller, category);
+                                    break;
+                                case "Input":
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Input,
+                                        category);
+                                    break;
+                                case "Gameplay_MainMenu":
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Gameplay_MainMenu, category);
+                                    break;
+                                case "BindingsKbm":
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Bindings_Keyboard, category);
+                                    break;
+                                case "Video":
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Graphics,
+                                        category);
+                                    break;
+                                default:
+                                    // There are 2 other categories, but they are console only. 
+                                    // Also, the Gameplay_InGame is loaded somewhere after GameCore.
+                                    break;
+                            }
+
+                            MelonLogger.BigError("SR2E TODO", "PLEASE IMPLEMENT THE GAMEPLAY_INGAME SETTINGS CATEGORY");
                         }
-                        MelonLogger.BigError("SR2E TODO","PLEASE IMPLEMENT THE GAMEPLAY_INGAME SETTINGS CATEGORY");
                     }
-                    
                     Time.timeScale = 1f;
                     try
                     {
@@ -461,7 +481,7 @@ namespace SR2E
         public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
         {
             if(sceneName=="MainMenuUI") mainMenuLoaded = false;
-            try { SR2ESaveManager.WarpManager.OnSceneLoaded(); }
+            try { SR2ESaveManager.WarpManager.OnSceneUnloaded(); }
             catch (Exception e) { MelonLogger.Error(e); }
             
             switch (sceneName)

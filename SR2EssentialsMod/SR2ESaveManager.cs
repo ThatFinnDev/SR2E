@@ -48,7 +48,7 @@ public static class SR2ESaveManager
         internal static Dictionary<string, StaticTeleporterNode> teleporters = new Dictionary<string, StaticTeleporterNode>();
         internal static Warp warpTo = null;
 
-        internal static SR2EError AddWarp(string warpName, Warp warp)
+        public static SR2EError AddWarp(string warpName, Warp warp)
         {
             if (data.warps.ContainsKey(warpName)) return SR2EError.AlreadyExists;
             data.warps.Add(warpName, warp);
@@ -56,20 +56,20 @@ public static class SR2ESaveManager
             return SR2EError.NoError;
         }
 
-        internal static Warp GetWarp(string warpName)
+        public static Warp GetWarp(string warpName)
         {
             if (!data.warps.ContainsKey(warpName)) return null;
             return data.warps[warpName];
         }
 
-        internal static SR2EError RemoveWarp(string warpName)
+        public static SR2EError RemoveWarp(string warpName)
         {
             if (!data.warps.ContainsKey(warpName)) return SR2EError.DoesntExist;
             data.warps.Remove(warpName);
             Save();
             return SR2EError.NoError;
         }
-        internal static void OnSceneLoaded()
+        internal static void OnSceneUnloaded()
         {
             if (SceneContext.Instance == null) { warpTo = null; return; }
             if (SceneContext.Instance.PlayerState == null) { warpTo = null; return; }

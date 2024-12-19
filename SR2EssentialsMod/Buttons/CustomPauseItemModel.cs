@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace SR2E.Buttons;
 
 [RegisterTypeInIl2Cpp(false)]
-public class CustomPauseItemModel : ResumePauseItemModel
+internal class CustomPauseItemModel : ResumePauseItemModel
 {
-    public System.Action action;
+    internal System.Action action;
     public override void InvokeBehavior()
     {
         action.Invoke();

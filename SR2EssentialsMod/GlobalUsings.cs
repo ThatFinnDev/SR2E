@@ -10,3 +10,4 @@ global using Console = System.Console;
 global using Exception = System.Exception;
 global using Object = UnityEngine.Object;
 global using File = System.IO.File;
+global using static SR2E.SR2EFeatureFlags;

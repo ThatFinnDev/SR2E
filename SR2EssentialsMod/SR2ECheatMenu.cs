@@ -29,7 +29,7 @@ public class SR2ECheatMenu
     internal static Transform refineryContent;
     internal static Transform gadgetsContent;
     internal static Transform warpsContent;
-    internal static bool isOpen
+    public static bool isOpen
     {
         get { return gameObject == null ? false : gameObject.activeSelf; }
     }
@@ -111,6 +111,7 @@ public class SR2ECheatMenu
                 cheatButton.action.Invoke();
             }));
             cheatButton.textInstance = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            cheatButton.buttonInstance = button.GetComponent<Button>();
         }
 
 
@@ -198,13 +199,13 @@ public class SR2ECheatMenu
 
     }
 
-    public static SR2ECheatMenuButton noclipButton;
-    public static SR2ECheatMenuButton infEnergyButton;
-    public static SR2ECheatMenuButton infHealthButton;
-    public static SR2ECheatMenuButton removeFogButton;
-    public static SR2ECheatMenuButton betterScreenshotButton;
-    public static bool removeFog = false;
-    public static bool betterScreenshot = false;
+    internal static SR2ECheatMenuButton noclipButton;
+    internal static SR2ECheatMenuButton infEnergyButton;
+    internal static SR2ECheatMenuButton infHealthButton;
+    internal static SR2ECheatMenuButton removeFogButton;
+    internal static SR2ECheatMenuButton betterScreenshotButton;
+    internal static bool removeFog = false;
+    internal static bool betterScreenshot = false;
     static void CheatButtons()
     {
         infEnergyButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infenergyoff"),

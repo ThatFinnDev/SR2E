@@ -10,7 +10,7 @@ namespace SR2E;
 internal class SR2EDebugDirector : MonoBehaviour
 {
 	internal static bool isEnabled;
-	private Font _helpFont;
+	internal Font _helpFont;
 	internal class DebugStatsManager
     {
         internal static bool playerDebugUIEnabled = false;

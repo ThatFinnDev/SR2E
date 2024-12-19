@@ -45,6 +45,18 @@ namespace SR2E
             return null;
         }
 
+        public static string LoadTextFile(string name)
+        {
+            System.IO.Stream stream = Assembly.GetCallingAssembly().GetManifestResourceStream(name);
+            byte[] buffer = new byte[16 * 1024];
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            int read;
+            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                ms.Write(buffer, 0, read);
+            return System.Text.Encoding.Default.GetString(ms.ToArray());
+
+        }
+
         public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector.weatherStates.items.ToArray();
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
