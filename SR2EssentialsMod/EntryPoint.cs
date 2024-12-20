@@ -51,6 +51,7 @@ namespace SR2E
         internal static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
         internal static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
         internal static bool syncConsole { get { return prefs.GetEntry<bool>("doesConsoleSync").Value; } }
+        internal static bool autoUpdate { get { return prefs.GetEntry<bool>("autoUpdate").Value; } }
         internal static bool quickStart { get { return prefs.GetEntry<bool>("quickStart").Value; } }
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } } 
         internal static bool fixSaves { get { return prefs.GetEntry<bool>("fixSaves").Value; } }
