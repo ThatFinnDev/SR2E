@@ -2,14 +2,14 @@ using System;
 
 namespace SR2E;
 
-public enum FeatureInt
+public enum FeatureIntegerValues
 {
     MAX_AUTOCOMPLETE,MAX_CONSOLELINES,SAVESLOT_COUNT, MAX_AUTOCOMPLETEONSCREEN
 }
 public static class SR2EFeatureFlags
 {
     private static SR2ECommand.CommandType enabledCMDs;
-    private static Dictionary<FeatureInt, int> featureObjects = new Dictionary<FeatureInt, int>()
+    private static Dictionary<FeatureIntegerValues, int> featureObjects = new Dictionary<FeatureIntegerValues, int>()
     {
         {MAX_AUTOCOMPLETE,55},
         {MAX_CONSOLELINES,150},
@@ -45,16 +45,31 @@ public static class SR2EFeatureFlags
             if (CommandsLoadMiscellaneous.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Miscellaneous;
             if (CommandsLoadFun.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Fun;
         }
+        foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+        {  
+            switch (melonBase.Info.Name)
+            {
+                case "InfiniteEnergy":
+                    enabledFlags |= DisableInfEnergy;
+                    break;
+                case "InfiniteHealth":
+                    enabledFlags |= DisableInfHealth;
+                    break;
+                case "mSRML":
+                    enabledFlags &= ~EnableConsole;
+                    break;
+            }
+        }
     }
     
     public static SR2ECommand.CommandType enabledCommands => enabledCMDs;
     public static FeatureFlag flags => enabledFlags;
     public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags.HasFlag(featureFlag);
 
-    public static int Get(this FeatureInt featureInt)
+    public static int Get(this FeatureIntegerValues featureIntegerValues)
     {
-        if (!featureObjects.ContainsKey(featureInt)) return 0;
-        return featureObjects[featureInt];
+        if (!featureObjects.ContainsKey(featureIntegerValues)) return 0;
+        return featureObjects[featureIntegerValues];
     }
 }
 
@@ -86,4 +101,7 @@ public enum FeatureFlag
     AllowExpansions = 1 << 22, //
     InjectSR2Translations = 1 << 23, //
     EnableIl2CppDetourExceptionReporting = 1 << 24, //
+    DisableLocalizedVersionPatch = 1 << 25,
+    DisableInfHealth = 1 << 26,
+    DisableInfEnergy = 1 << 27,
 }

@@ -30,7 +30,7 @@ namespace SR2E
         /// </summary>
         public static void SendMessage(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -73,7 +73,7 @@ namespace SR2E
         /// </summary>
         public static void SendError(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -117,7 +117,7 @@ namespace SR2E
         /// </summary>
         public static void SendWarning(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -174,8 +174,7 @@ namespace SR2E
         /// </summary>
         public static void Open()
         {
-            if (!EnableModMenu.HasFlag()) return;
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             if (SR2EModMenu.isOpen) return;
             if (SR2ECheatMenu.isOpen) return;
             if (SR2ESaveManager.WarpManager.warpTo != null) return;
@@ -191,7 +190,6 @@ namespace SR2E
         /// </summary>
         public static void Toggle()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "StandaloneStart" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "LoadScene")
@@ -358,7 +356,7 @@ namespace SR2E
 
         static void RefreshAutoComplete(string text)
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             
             // autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, ((744f/1080f)*Screen.height), autoCompleteContent.position.z);
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
@@ -461,7 +459,11 @@ namespace SR2E
                 foreach (SR2ECommand sr2Command in exporters)
                     if(sr2Command!=null) 
                         if((enabledCommands & sr2Command.type) == sr2Command.type)
+                        {
+                            if (sr2Command is InfiniteHealthCommand && DisableInfHealth.HasFlag()) continue;
+                            if (sr2Command is InfiniteEnergyCommand && DisableInfEnergy.HasFlag()) continue;
                             RegisterCommand(sr2Command);
+                        }
             }
             
             
@@ -512,7 +514,7 @@ namespace SR2E
             transform = parent.getObjRec<Transform>("consoleMenu");
             
             commandHistory = new List<string>();
-            if(!SR2EEntryPoint._mSRMLIsInstalled)
+            if (EnableConsole.HasFlag())
                 if (SR2EEntryPoint.syncConsole)
                     SetupConsoleSync();
 
@@ -529,7 +531,7 @@ namespace SR2E
             autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
             autoCompleteScrollView.SetActive(false);
             
-            if (!SR2EEntryPoint._mSRMLIsInstalled)
+            if (EnableConsole.HasFlag())
             {
                 commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); })); 
             }
@@ -553,7 +555,7 @@ namespace SR2E
         private static int selectedAutoComplete = 0;
         internal static void Update()
         {
-            if (!SR2EEntryPoint._mSRMLIsInstalled)
+            if (EnableConsole.HasFlag())
             {
                 if (SR2EEntryPoint.consoleFinishedCreating != true)
                     return;
@@ -667,7 +669,7 @@ namespace SR2E
 
         static void NextAutoComplete()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             selectedAutoComplete += 1;
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
             {
@@ -683,7 +685,7 @@ namespace SR2E
         }
         static void PrevAutoComplete()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             selectedAutoComplete -= 1;
 
             if (selectedAutoComplete < 0)
@@ -701,7 +703,7 @@ namespace SR2E
 
         static void Execute()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             string cmds = commandInput.text;
             commandHistory.Add(cmds);
             commandHistoryIdx = commandHistory.Count - 1;

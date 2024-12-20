@@ -37,12 +37,9 @@ namespace SR2E
 
     public class SR2EEntryPoint : MelonMod
     {
-        internal static bool _mSRMLIsInstalled = false;
         internal static SR2EEntryPoint instance;
         internal static TMP_FontAsset SR2Font;
         internal static TMP_FontAsset normalFont;
-        internal static bool infEnergyInstalled = false;
-        internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         internal static bool mainMenuLoaded = false;
 
@@ -190,19 +187,6 @@ namespace SR2E
                 if(AllowExpansions.HasFlag())
                     if (melonBase is SR2EExpansionV1)
                         expansions.Add(melonBase as SR2EExpansionV1);
-                
-                switch (melonBase.Info.Name)
-                {
-                    case "InfiniteEnergy":
-                        infEnergyInstalled = true;
-                        break;
-                    case "InfiniteHealth":
-                        infHealthInstalled = true;
-                        break;
-                    case "mSRML":
-                        _mSRMLIsInstalled = true;
-                        break;
-                }
             }
             foreach (var expansion in expansions)
                 try { expansion.OnNormalInitializeMelon(); }
