@@ -31,8 +31,9 @@ public abstract class SR2EExpansionV1 : MelonMod
     public virtual void SaveDirectorLoaded(AutoSaveDirector autoSaveDirector) {}
     /// <summary>
     /// Gets executed once all commands get registered.
-    /// You should use this method to register your own commands
-    /// with SR2EConsole.RegisterCommand(new YourCommand()).
+    /// You should use this method to register your own commands,
+    /// with the SR2ECommand.CommandType.DontLoad flag,
+    /// by using SR2EConsole.RegisterCommand(new YourCommand()).
     /// </summary>
     public virtual void LoadCommands() { }
     

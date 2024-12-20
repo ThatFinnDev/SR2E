@@ -248,7 +248,7 @@ namespace SR2E
                     break;
                 case "MainMenuUI":
                     
-                    if(FeatureFlag.ExperimentalSettingsInjection.hasFeature())
+                    if(ExperimentalSettingsInjection.HasFlag())
                     {
                         var optionCategories = Resources.FindObjectsOfTypeAll<OptionsItemCategory>();
                         foreach (var category in optionCategories)

@@ -157,15 +157,15 @@ public abstract class SR2ECommand
     [Flags]
     public enum CommandType
     {
-        DontLoad=1,
-        DevOnly=2,
-        Cheat=4,
-        Binding=8,
-        Warp=16,
-        Common=32,
-        Menu=64,
-        Miscellaneous=128,
-        Fun=256,
-        Experimental=512
+        DontLoad = 0,
+        DevOnly = 1 << 0,
+        Cheat = 1 << 1,
+        Binding = 1 << 2,
+        Warp = 1 << 3,
+        Common = 1 << 4,
+        Menu = 1 << 5,
+        Miscellaneous = 1 << 6,
+        Fun = 1 << 7,
+        Experimental = 1 << 8
     }
 }
