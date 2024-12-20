@@ -184,14 +184,12 @@ namespace SR2E
         internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
         public override void OnEarlyInitializeMelon()
         {
-            if (File.Exists(MelonAssembly.Assembly.Location))
-                File.Delete(MelonAssembly.Assembly.Location+".old");
+            instance = this;
             InitFlagManager();
         }
 
         public override void OnInitializeMelon()
         {
-            instance = this;
             prefs = MelonPreferences.CreateCategory("SR2E","SR2E");
             string path = MelonAssembly.Assembly.Location+".old";
             if (File.Exists(path)) File.Delete(path);

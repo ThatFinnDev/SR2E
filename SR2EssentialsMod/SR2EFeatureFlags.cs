@@ -1,37 +1,133 @@
 using System;
+using System.IO;
+using System.Xml;
 
 namespace SR2E;
 
-public enum FeatureIntegerValues
+public enum FeatureIntegerValue
 {
     MAX_AUTOCOMPLETE,MAX_CONSOLELINES,SAVESLOT_COUNT, MAX_AUTOCOMPLETEONSCREEN
 }
+public enum FeatureStringValue
+{
+    TEST_STRING
+}
 public static class SR2EFeatureFlags
 {
-    private static SR2ECommand.CommandType enabledCMDs;
-    private static Dictionary<FeatureIntegerValues, int> featureObjects = new Dictionary<FeatureIntegerValues, int>()
+    
+    const FeatureFlag defaultFlags =
+            CommandsLoadCommands | CommandsLoadCheat | CommandsLoadBinding | CommandsLoadWarp | CommandsLoadCommon | CommandsLoadMenu | CommandsLoadMiscellaneous | CommandsLoadFun | 
+            AllowCheats | AllowExpansions |
+            EnableModMenu | EnableConsole | EnableIl2CppDetourExceptionReporting |
+            InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
+            AddCheatMenuButton | AddModMenuButton |
+            CheckForUpdates | AllowAutoUpdate;
+    private static Dictionary<FeatureIntegerValue, int> defaultFeatureInts = new Dictionary<FeatureIntegerValue, int>()
     {
         {MAX_AUTOCOMPLETE,55},
         {MAX_CONSOLELINES,150},
         {SAVESLOT_COUNT,75},
         {MAX_AUTOCOMPLETEONSCREEN,6}
     };
-
-    private static FeatureFlag enabledFlags =
-        CommandsLoadCommands | CommandsLoadCheat | CommandsLoadBinding | CommandsLoadWarp | CommandsLoadCommon | CommandsLoadMenu | CommandsLoadMiscellaneous | CommandsLoadFun | 
-        AllowCheats | AllowExpansions |
-        EnableModMenu | EnableConsole | EnableIl2CppDetourExceptionReporting |
-        InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
-        AddCheatMenuButton | AddModMenuButton |
-        CheckForUpdates | AllowAutoUpdate | DevMode
-        ;
-
-
+    private static Dictionary<FeatureStringValue, string> defaultFeatureStrings = new Dictionary<FeatureStringValue, string>()
+    {
+        {TEST_STRING,"test"}
+    };
+    
+    
+    private static SR2ECommand.CommandType enabledCMDs;
+    private static Dictionary<FeatureIntegerValue, int> featureints = new Dictionary<FeatureIntegerValue, int>();
+    private static Dictionary<FeatureStringValue, string> featurestrings = new Dictionary<FeatureStringValue, string>();
+    private static FeatureFlag enabledFlags = None;
+    
     static bool initialized = false;
+    internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
+
+    static void SaveToFlagFile()
+    {
+        XmlDocument xmlDoc = new XmlDocument();
+        
+        XmlElement root = xmlDoc.CreateElement("SR2EFeatureFlags");
+        xmlDoc.AppendChild(root);
+        XmlElement flags = xmlDoc.CreateElement("FeatureFlags");
+        root.AppendChild(flags);
+        XmlElement ints = xmlDoc.CreateElement("FeatureIntegerValues");
+        root.AppendChild(ints);
+        XmlElement strings = xmlDoc.CreateElement("FeatureStringValue");
+        root.AppendChild(strings);
+        foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
+        {
+            //bools
+            if (flag == None) continue;
+            XmlElement xmlElement = xmlDoc.CreateElement(flag.ToString());
+            flags.AppendChild(xmlElement);
+            xmlElement.SetAttribute("value",flag.HasFlag().ToString().ToLower());
+            xmlElement.SetAttribute("default", defaultFlags.HasFlag(flag).ToString().ToLower());
+        }
+        foreach (FeatureIntegerValue value in Enum.GetValues(typeof(FeatureIntegerValue)))
+        {
+            //ints
+            XmlElement xmlElement = xmlDoc.CreateElement(value.ToString());
+            ints.AppendChild(xmlElement);
+            xmlElement.SetAttribute("value",value.Get().ToString().ToLower());
+            xmlElement.SetAttribute("default", value.GetDefault().ToString().ToLower());
+        }
+        foreach (FeatureStringValue value in Enum.GetValues(typeof(FeatureStringValue)))
+        {
+            //strings
+            XmlElement xmlElement = xmlDoc.CreateElement(value.ToString());
+            strings.AppendChild(xmlElement);
+            xmlElement.SetAttribute("value",value.Get().ToLower());
+            xmlElement.SetAttribute("default", value.GetDefault().ToLower());
+        }
+        // Save the XML document to a file
+        xmlDoc.Save(flagfile_path);
+        File.SetAttributes(flagfile_path, FileAttributes.Hidden);
+    }
+
+    static void LoadFromFlagFile()
+    {
+        if (!File.Exists(flagfile_path)) { SaveToFlagFile(); return; }
+        
+        XmlDocument xmlDoc = new XmlDocument();
+        try { xmlDoc.Load(flagfile_path); }
+        catch {}
+
+        XmlElement root = xmlDoc["SR2EFeatureFlags"];
+        if (root == null) { SaveToFlagFile(); return; }
+
+        XmlElement flags = root["FeatureFlags"];
+        if (flags != null)
+            foreach (XmlElement flagElement in flags.ChildNodes)
+                if (Enum.TryParse(flagElement.Name, out FeatureFlag flag))
+                    if (bool.TryParse(flagElement.GetAttribute("value"), out bool isEnabled))
+                        if(isEnabled) enabledFlags |= flag;
+                        else enabledFlags &= ~flag;
+        XmlElement ints = root["FeatureIntegerValues"];
+        if (ints != null)
+            foreach (XmlElement intElement in ints.ChildNodes)
+                if (Enum.TryParse(intElement.Name, out FeatureIntegerValue intValue))
+                    if (int.TryParse(intElement.GetAttribute("value"), out int intResult))
+                        featureints[intValue] = intResult;
+        XmlElement strings = root["FeatureStringValue"];
+        if (strings != null)
+            foreach (XmlElement stringElement in strings.ChildNodes)
+                if (Enum.TryParse(stringElement.Name, out FeatureStringValue intValue))
+                    featurestrings[intValue] = stringElement.GetAttribute("value");
+
+        SaveToFlagFile();
+    }
+
     internal static void InitFlagManager()
     {
         if (initialized) return;
         initialized = true;
+        enabledFlags = defaultFlags;
+        featureints = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
+        featurestrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
+        if (File.Exists(flagfile_path)) LoadFromFlagFile();
+        else SaveToFlagFile();
+        
         if (DevMode.HasFlag())
         {
             enabledFlags &= ~CheckForUpdates;
@@ -72,10 +168,25 @@ public static class SR2EFeatureFlags
     public static FeatureFlag flags => enabledFlags;
     public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags.HasFlag(featureFlag);
 
-    public static int Get(this FeatureIntegerValues featureIntegerValues)
+    public static int Get(this FeatureIntegerValue featureIntegerValue)
     {
-        if (!featureObjects.ContainsKey(featureIntegerValues)) return 0;
-        return featureObjects[featureIntegerValues];
+        if (!featureints.ContainsKey(featureIntegerValue)) return 0;
+        return featureints[featureIntegerValue];
+    }
+    public static string Get(this FeatureStringValue featureStringValue)
+    {
+        if (!featurestrings.ContainsKey(featureStringValue)) return "";
+        return featurestrings[featureStringValue];
+    }
+    public static int GetDefault(this FeatureIntegerValue featureIntegerValue)
+    {
+        if (!defaultFeatureInts.ContainsKey(featureIntegerValue)) return 0;
+        return defaultFeatureInts[featureIntegerValue];
+    }
+    public static string GetDefault(this FeatureStringValue featureStringValue)
+    {
+        if (!defaultFeatureStrings.ContainsKey(featureStringValue)) return "";
+        return defaultFeatureStrings[featureStringValue];
     }
 }
 

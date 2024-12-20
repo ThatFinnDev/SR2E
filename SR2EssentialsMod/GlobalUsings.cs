@@ -12,4 +12,5 @@ global using Object = UnityEngine.Object;
 global using File = System.IO.File;
 global using static SR2E.SR2EFeatureFlags;
 global using static SR2E.FeatureFlag;
-global using static SR2E.FeatureIntegerValues;
+global using static SR2E.FeatureIntegerValue;
+global using static SR2E.FeatureStringValue;
