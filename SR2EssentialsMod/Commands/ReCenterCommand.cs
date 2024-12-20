@@ -1,6 +1,6 @@
 namespace SR2E.Commands;
 
-public class ReCenterCommand : SR2Command
+public class ReCenterCommand : SR2ECommand
 {
     public override string ID => "recentercamera";
     public override string Usage => "recentercamera";

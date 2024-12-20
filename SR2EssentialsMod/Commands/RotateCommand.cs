@@ -2,7 +2,7 @@
 
 namespace SR2E.Commands;
 
-public class RotateCommand : SR2Command
+public class RotateCommand : SR2ECommand
 {
     public override string ID => "rotate";
     public override string Usage => "rotate <x> <y> <z>";

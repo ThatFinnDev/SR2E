@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class ClearInventoryCommand : SR2Command
+public class ClearInventoryCommand : SR2ECommand
 {
     public override string ID => "clearinv";
     public override string Usage => "clearinv [slot]";

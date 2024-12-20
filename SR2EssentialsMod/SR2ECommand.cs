@@ -2,7 +2,7 @@
 
 namespace SR2E;
 
-public abstract class SR2Command
+public abstract class SR2ECommand
 {
     /// <summary>
     /// The ID of this command (Always lowercase)

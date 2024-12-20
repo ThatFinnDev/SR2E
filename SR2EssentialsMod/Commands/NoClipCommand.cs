@@ -2,7 +2,7 @@
 
 namespace SR2E.Commands;
 
-public class NoClipCommand : SR2Command
+public class NoClipCommand : SR2ECommand
 {
     public override string ID => "noclip";
     public override string Usage => "noclip";

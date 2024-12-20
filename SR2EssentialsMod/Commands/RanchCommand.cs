@@ -5,7 +5,7 @@ using Il2CppMonomiPark.World;
 
 namespace SR2E.Commands;
 
-public class RanchCommand : SR2Command
+public class RanchCommand : SR2ECommand
 {
     public override string ID => "ranch";
     public override string Usage => "ranch <lock/unlock> <door>";

@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class HelpCommand : SR2Command
+public class HelpCommand : SR2ECommand
 {
     public override string ID => "help";
     public override string Usage => "help [cmdName]";
@@ -18,7 +18,7 @@ public class HelpCommand : SR2Command
         if (argIndex == 0)
         {
             List<string> list = new List<string>();
-            foreach (KeyValuePair<string, SR2Command> entry in SR2EConsole.commands)
+            foreach (KeyValuePair<string, SR2ECommand> entry in SR2EConsole.commands)
             {
                 if (!entry.Value.Hidden)
                     list.Add(entry.Key);
@@ -38,7 +38,7 @@ public class HelpCommand : SR2Command
             string currText = translation("cmd.help.success")+"\n";
 
 
-            foreach (KeyValuePair<string, SR2Command> entry in SR2EConsole.commands)
+            foreach (KeyValuePair<string, SR2ECommand> entry in SR2EConsole.commands)
             {
                 if (!entry.Value.Hidden)
                     currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";

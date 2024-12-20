@@ -205,7 +205,7 @@ namespace SR2E
         /// Registers a command to be used in the console
         /// </summary>
         
-        public static bool RegisterCommand(SR2Command cmd)
+        public static bool RegisterCommand(SR2ECommand cmd)
         {
             if (commands.ContainsKey(cmd.ID.ToLowerInvariant()))
             {
@@ -213,16 +213,16 @@ namespace SR2E
                 return false;
             }
             commands.Add(cmd.ID.ToLowerInvariant(), cmd);
-            List<KeyValuePair<string, SR2Command>> myList = commands.ToList();
+            List<KeyValuePair<string, SR2ECommand>> myList = commands.ToList();
 
-            myList.Sort(delegate (KeyValuePair<string, SR2Command> pair1, KeyValuePair<string, SR2Command> pair2) { return pair1.Key.CompareTo(pair2.Key); });
+            myList.Sort(delegate (KeyValuePair<string, SR2ECommand> pair1, KeyValuePair<string, SR2ECommand> pair2) { return pair1.Key.CompareTo(pair2.Key); });
             commands = myList.ToDictionary(x => x.Key, x => x.Value);
             return true;
         }
         /// <summary>
         /// Registers multiple commands to be used in the console
         /// </summary>
-        public static bool RegisterCommands(params SR2Command[] cmds)
+        public static bool RegisterCommands(params SR2ECommand[] cmds)
         {
             bool successful = true;
             for (int i = 0; i < cmds.Length; i++)
@@ -236,7 +236,7 @@ namespace SR2E
         /// <summary>
         /// Unregisters a command
         /// </summary>
-        public static bool UnRegisterCommand(SR2Command cmd)
+        public static bool UnRegisterCommand(SR2ECommand cmd)
         {
             return UnRegisterCommand(cmd.ID);
         }
@@ -308,14 +308,14 @@ namespace SR2E
                                 if (split.Count != 0)
                                 {
                                     string[] stringArray = split.ToArray();
-                                    SR2Command command = commands[cmd];
+                                    SR2ECommand command = commands[cmd];
                                     command.silent = silent;
                                     successful = command.Execute(stringArray);
                                     command.silent = false;
                                 }
                                 else
                                 {
-                                    SR2Command command = commands[cmd];
+                                    SR2ECommand command = commands[cmd];
                                     command.silent = silent;
                                     successful = command.Execute(null);
                                     command.silent = false;
@@ -324,7 +324,7 @@ namespace SR2E
                         }
                         else if(canPlay)
                         {
-                            SR2Command command = commands[cmd];
+                            SR2ECommand command = commands[cmd];
                             command.silent = silent;
                             successful = command.Execute(null);
                             command.silent = false;
@@ -345,7 +345,7 @@ namespace SR2E
         internal static Transform parent;
         internal static Transform transform;
         internal static GameObject gameObject;
-        internal static Dictionary<string, SR2Command> commands = new Dictionary<string, SR2Command>();
+        internal static Dictionary<string, SR2ECommand> commands = new Dictionary<string, SR2ECommand>();
 
         static List<string> commandHistory;
         static int commandHistoryIdx = -1;
@@ -423,7 +423,7 @@ namespace SR2E
                 }
             }
             else
-                foreach (KeyValuePair<string, SR2Command> valuePair in commands)
+                foreach (KeyValuePair<string, SR2ECommand> valuePair in commands)
                     if (valuePair.Key.StartsWith(text) && !valuePair.Value.Hidden)
                     {
                         GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
@@ -461,10 +461,10 @@ namespace SR2E
         {
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
-                IEnumerable<SR2Command> exporters = melonBase.MelonAssembly.Assembly.GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(SR2Command)) && !t.IsAbstract)
-                    .Select(t => (SR2Command)Activator.CreateInstance(t));
-                foreach (SR2Command sr2Command in exporters)
+                IEnumerable<SR2ECommand> exporters = melonBase.MelonAssembly.Assembly.GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(SR2ECommand)) && !t.IsAbstract)
+                    .Select(t => (SR2ECommand)Activator.CreateInstance(t));
+                foreach (SR2ECommand sr2Command in exporters)
                     RegisterCommand(sr2Command);
             }
 
@@ -564,20 +564,20 @@ namespace SR2E
             switch (sceneName)
             {
                 case "GameCore":
-                    foreach (KeyValuePair<string,SR2Command> pair in commands)
+                    foreach (KeyValuePair<string,SR2ECommand> pair in commands)
                         pair.Value.OnGameCoreLoad();
                     break;
                 case "PlayerCore":
-                    foreach (KeyValuePair<string,SR2Command> pair in commands)
+                    foreach (KeyValuePair<string,SR2ECommand> pair in commands)
                         pair.Value.OnPlayerCoreLoad();
                     break;
                 case "UICore":
-                    foreach (KeyValuePair<string,SR2Command> pair in commands)
+                    foreach (KeyValuePair<string,SR2ECommand> pair in commands)
                         pair.Value.OnUICoreLoad();
                     if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onSaveLoadCommand)) ExecuteByString(SR2EEntryPoint.onSaveLoadCommand);
                     break;
                 case "MainMenuUI":
-                    foreach (KeyValuePair<string,SR2Command> pair in commands)
+                    foreach (KeyValuePair<string,SR2ECommand> pair in commands)
                         pair.Value.OnMainMenuUILoad();
                     if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onMainMenuLoadCommand)) ExecuteByString(SR2EEntryPoint.onMainMenuLoadCommand);
                     break;
@@ -738,7 +738,7 @@ namespace SR2E
             }
 
             //Console Commands Update
-            foreach (KeyValuePair<string, SR2Command> pair in commands)
+            foreach (KeyValuePair<string, SR2ECommand> pair in commands)
                 pair.Value.Update();
         }
         

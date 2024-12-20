@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 
 namespace SR2E.Commands;
 
-public class InfiniteHealthCommand : SR2Command
+public class InfiniteHealthCommand : SR2ECommand
 {
     public override string ID => "infhealth";
     public override string Usage => "infhealth";

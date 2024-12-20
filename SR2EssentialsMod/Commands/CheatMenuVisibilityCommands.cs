@@ -3,7 +3,7 @@ namespace SR2E.Commands;
 public class CheatMenuVisibilityCommands
 {
     
-    public class OpenCommand : SR2Command
+    public class OpenCommand : SR2ECommand
     {
         public override string ID => "opencheatmenu";
         public override string Usage => "opencheatmenu";
@@ -22,7 +22,7 @@ public class CheatMenuVisibilityCommands
             return true;
         }
     }
-    public class CloseCommand : SR2Command
+    public class CloseCommand : SR2ECommand
     {
         public override string ID => "closecheatmenu";
         public override string Usage => "closecheatmenu";
@@ -41,7 +41,7 @@ public class CheatMenuVisibilityCommands
             return true;
         }
     }
-    public class ToggleCommand : SR2Command
+    public class ToggleCommand : SR2ECommand
     {
         public override string ID => "togglecheatmenu";
         public override string Usage => "togglecheatmenu";

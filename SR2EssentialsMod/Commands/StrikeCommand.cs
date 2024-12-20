@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 namespace SR2E.Commands;
 
-public class StrikeCommand : SR2Command
+public class StrikeCommand : SR2ECommand
 {
     public override string ID => "strike";
     public override string Usage => "strike [power]";
