@@ -459,7 +459,7 @@ namespace SR2E
             RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
             
             foreach (var expansion in expansions)
-                try { expansion.SaveDirectorLoaded(); }
+                try { expansion.SaveDirectorLoaded(GameContext.Instance.AutoSaveDirector); }
                 catch (Exception e) { MelonLogger.Error(e); }
         }
 

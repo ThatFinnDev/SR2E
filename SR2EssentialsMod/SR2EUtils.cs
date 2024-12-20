@@ -584,7 +584,7 @@ namespace SR2E
         }
 
         public static IdentifiableTypeGroup vaccableGroup;
-        internal static List<string> getVaccablesByPartialName(string input, bool useContain)
+        public static List<string> getVaccableListByPartialName(string input, bool useContain)
         {
             IdentifiableType[] types = vaccableTypes;
             if (String.IsNullOrWhiteSpace(input))
@@ -658,7 +658,7 @@ namespace SR2E
             list.AddRange(listTwo);
             return list;
         }
-        internal static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain,bool includeStars = false)
+        public static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain,bool includeStars = false)
         {
             if (!includeGadget && !includeNormal)
                 if (includeStars) return new List<string>() { "*" };
@@ -746,7 +746,7 @@ namespace SR2E
             list.AddRange(listTwo);
             return list;
         }
-        internal static List<string> getKeyListByPartialName(string input, bool useContain)
+        public static List<string> getKeyListByPartialName(string input, bool useContain)
         {
             if (String.IsNullOrWhiteSpace(input))
             {
@@ -776,7 +776,7 @@ namespace SR2E
             list.AddRange(listTwo);
             return list;
         }
-        internal static bool IsBetween(this string[] list, uint min, int max)
+        public static bool IsBetween(this string[] list, uint min, int max)
         {
             if (list == null)
             {
@@ -807,9 +807,6 @@ namespace SR2E
         }
         public static TripleDictionary<GameObject, ParticleSystemRenderer, string> FXLibrary = new TripleDictionary<GameObject, ParticleSystemRenderer, string>();
         public static TripleDictionary<string, ParticleSystemRenderer, GameObject> FXLibraryReversable = new TripleDictionary<string, ParticleSystemRenderer, GameObject>();
-
-        
-        static Dictionary<KeyCode, Key> lookup;
 
         public static KeyControl kc(this Key key)
         {

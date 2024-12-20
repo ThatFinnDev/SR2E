@@ -8,7 +8,7 @@ public class GiveCommand : SR2Command
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return getVaccablesByPartialName(args == null ? null : args[0], true);
+            return getVaccableListByPartialName(args == null ? null : args[0], true);
         if (argIndex == 1)
             return new List<string> { "1", "5", "10", "20", "30", "50" };
 
