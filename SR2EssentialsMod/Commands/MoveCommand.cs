@@ -6,6 +6,7 @@ public class MoveCommand: SR2Command
 {
     public override string ID => "move";
     public override string Usage => "move <x> <y> <z>";
+    public override CommandType type => CommandType.Miscellaneous;
 
     public override bool Execute(string[] args)
     {

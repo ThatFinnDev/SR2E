@@ -7,6 +7,7 @@ public class InfiniteHealthCommand : SR2Command
 {
     public override string ID => "infhealth";
     public override string Usage => "infhealth";
+    public override CommandType type => CommandType.Cheat;
 
     public override bool Execute(string[] args)
     {

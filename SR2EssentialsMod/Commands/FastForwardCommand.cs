@@ -4,6 +4,7 @@ public class FastForwardCommand : SR2Command
 {
     public override string ID => "fastforward";
     public override string Usage => "fastforward [hour amount]";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

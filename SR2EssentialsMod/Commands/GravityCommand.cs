@@ -4,6 +4,7 @@ public class GravityCommand : SR2Command
 {
     public override string ID => "gravity";
     public override string Usage => "gravity <x> <y> <z>";
+    public override CommandType type => CommandType.Cheat;
 
     public override bool Execute(string[] args)
     {

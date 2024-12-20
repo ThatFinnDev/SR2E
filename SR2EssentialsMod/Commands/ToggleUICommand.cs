@@ -1,12 +1,11 @@
 using Il2CppMonomiPark.SlimeRancher.UI;
 
 namespace SR2E.Commands;
-
-
 public class ToggleUICommand : SR2Command
 {
     public override string ID => "toggleui";
     public override string Usage => "toggleui";
+    public override CommandType type => CommandType.Miscellaneous;
 
     public override bool Execute(string[] args)
     {

@@ -8,6 +8,7 @@ public class InfiniteEnergyCommand : SR2Command
 {
     public override string ID => "infenergy";
     public override string Usage => "infenergy [should disable height limit(true/false)]";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

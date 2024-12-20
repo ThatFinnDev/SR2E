@@ -14,6 +14,7 @@ public class UtilCommand : SR2Command
 {
     public override string ID => "util";
     public override string Usage => "util <type> <parameter [value] [value2] [value3]";
+    public override CommandType type => CommandType.Cheat;
 
     public const float playerColliderHeightBase = 2f;
     public const float playerColliderRadBase = 0.6f;

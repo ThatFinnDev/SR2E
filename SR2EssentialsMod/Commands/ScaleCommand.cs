@@ -6,6 +6,7 @@ public class ScaleCommand: SR2Command
 {
     public override string ID => "scale";
     public override string Usage => "scale <x> <y> <z>";
+    public override CommandType type => CommandType.Miscellaneous;
 
     public override bool Execute(string[] args)
     {

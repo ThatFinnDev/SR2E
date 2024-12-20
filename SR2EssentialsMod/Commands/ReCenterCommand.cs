@@ -4,6 +4,7 @@ public class ReCenterCommand : SR2Command
 {
     public override string ID => "recentercamera";
     public override string Usage => "recentercamera";
+    public override CommandType type => CommandType.Miscellaneous;
 
     public override bool Execute(string[] args)
     {

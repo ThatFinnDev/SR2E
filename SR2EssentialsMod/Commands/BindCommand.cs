@@ -8,6 +8,7 @@ public class BindCommand : SR2Command
 {
     public override string ID => "bind";
     public override string Usage => "bind <key> <command>";
+    public override CommandType type => CommandType.Binding;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

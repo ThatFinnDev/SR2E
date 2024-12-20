@@ -4,6 +4,7 @@ public class HelpCommand : SR2Command
 {
     public override string ID => "help";
     public override string Usage => "help [cmdName]";
+    public override CommandType type => CommandType.Common;
 
     public string GetCommandDescription(string command)
     {

@@ -6,6 +6,7 @@ public class SetWarpCommand : SR2Command
 {
     public override string ID => "setwarp";
     public override string Usage => "setwarp <name>";
+    public override CommandType type => CommandType.Warp;
 
 
     public override bool Execute(string[] args)

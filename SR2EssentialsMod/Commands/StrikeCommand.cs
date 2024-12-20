@@ -3,11 +3,12 @@ using UnityEngine.SceneManagement;
 
 namespace SR2E.Commands;
 
-internal class StrikeCommand : SR2Command
+public class StrikeCommand : SR2Command
 {
     public override string ID => "strike";
     public override string Usage => "strike [power]";
     public static bool setup = false;
+    public override CommandType type => CommandType.Fun | CommandType.Cheat;
 
     public static GameObject lightningPrefab;
 

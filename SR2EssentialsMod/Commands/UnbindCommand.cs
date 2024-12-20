@@ -5,7 +5,8 @@ public class UnbindCommand : SR2Command
 {
     public override string ID => "unbind";
     public override string Usage => "unbind <key>";
-
+    public override CommandType type => CommandType.Binding;
+    
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)

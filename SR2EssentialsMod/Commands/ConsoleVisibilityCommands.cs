@@ -7,6 +7,7 @@ public class ConsoleVisibilityCommands
         public override string ID => "openconsole";
         public override string Usage => "openconsole";
         public override bool execWhenIsOpenConsole => true;
+        public override CommandType type => CommandType.Menu;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -23,6 +24,7 @@ public class ConsoleVisibilityCommands
     {
         public override string ID => "closeconsole";
         public override string Usage => "closeconsole";
+        public override CommandType type => CommandType.Menu;
         public override bool execWhenIsOpenConsole => true;
         public override bool Execute(string[] args)
         {
@@ -40,6 +42,7 @@ public class ConsoleVisibilityCommands
     {
         public override string ID => "toggleconsole";
         public override string Usage => "toggleconsole";
+        public override CommandType type => CommandType.Menu;
         public override bool execWhenIsOpenConsole => true;
         public override bool Execute(string[] args)
         {

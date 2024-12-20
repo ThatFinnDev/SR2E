@@ -6,6 +6,7 @@ public class FloatCommand : SR2Command
 {
     public override string ID => "floaty";
     public override string Usage => "floaty <duration>";
+    public override CommandType type => CommandType.Fun;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

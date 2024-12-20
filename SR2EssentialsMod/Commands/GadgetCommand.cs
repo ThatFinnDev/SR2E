@@ -8,6 +8,7 @@ public class GadgetCommand : SR2Command
     public override string Usage => "gadget <add/set/remove/unlock/get> <gadget> [amount]";
     //Lock is broken rn
     List<string> arg0List = new List<string> { "add","set","remove","get","unlock"/*, lock*/};
+    public override CommandType type => CommandType.Cheat;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)

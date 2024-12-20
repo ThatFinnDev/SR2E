@@ -1,4 +1,6 @@
-﻿namespace SR2E;
+﻿using System;
+
+namespace SR2E;
 
 public abstract class SR2Command
 {
@@ -29,6 +31,11 @@ public abstract class SR2Command
             return key == translation ? Description : translation;
         }
     }
+
+    /// <summary>
+    /// The type of this command
+    /// </summary>
+    public virtual CommandType type { get; } = CommandType.DontLoad;
 
 
     public virtual bool Hidden { get; }
@@ -146,4 +153,10 @@ public abstract class SR2Command
     }
 
     public bool silent = false;
+
+    [Flags]
+    public enum CommandType
+    {
+        DontLoad,DevOnly,Cheat,Binding,Warp,Common,Menu,Miscellaneous,Fun,Experimental
+    }
 }

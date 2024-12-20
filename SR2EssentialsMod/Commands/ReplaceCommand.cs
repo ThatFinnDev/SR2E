@@ -8,6 +8,7 @@ public class ReplaceCommand : SR2Command
 {
     public override string ID => "replace";
     public override string Usage => "replace <object>";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

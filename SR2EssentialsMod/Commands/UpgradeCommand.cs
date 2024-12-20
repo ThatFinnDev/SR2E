@@ -6,6 +6,7 @@ public class UpgradeCommand : SR2Command
 {
     public override string ID => "upgrade";
     public override string Usage => "upgrade <increment/set/decrement/get> <id> [amount]";
+    public override CommandType type => CommandType.Cheat;
     List<string> arg0List = new List<string> { "increment","set","decrement","get"};
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

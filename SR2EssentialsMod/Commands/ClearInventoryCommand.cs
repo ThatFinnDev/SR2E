@@ -4,6 +4,7 @@ public class ClearInventoryCommand : SR2Command
 {
     public override string ID => "clearinv";
     public override string Usage => "clearinv [slot]";
+    public override CommandType type => CommandType.Cheat;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)

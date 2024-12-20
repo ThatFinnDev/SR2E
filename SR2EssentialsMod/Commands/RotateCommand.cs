@@ -6,6 +6,7 @@ public class RotateCommand : SR2Command
 {
     public override string ID => "rotate";
     public override string Usage => "rotate <x> <y> <z>";
+    public override CommandType type => CommandType.Miscellaneous;
 
     public override bool Execute(string[] args)
     {

@@ -177,6 +177,7 @@ namespace SR2E
         public override void OnInitializeMelon()
         {
             instance = this;
+            InitFlagManager();
             prefs = MelonPreferences.CreateCategory("SR2E","SR2E");
             RefreshPrefs();
             if (showUnityErrors)

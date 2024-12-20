@@ -5,6 +5,7 @@ public class PartyCommand : SR2Command
 {
     public override string ID => "party";
     public override string Usage => "party";
+    public override CommandType type => CommandType.Fun;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         return null;

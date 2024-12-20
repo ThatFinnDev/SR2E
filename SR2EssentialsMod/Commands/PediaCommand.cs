@@ -9,6 +9,7 @@ public class PediaCommand : SR2Command
     public override string ID => "pedia";
     public override string Usage => "pedia <lock/unlock> <gadget> [show popup(true/false)]";
     List<string> arg0List = new List<string> { "unlock", "lock"};
+    public override CommandType type => CommandType.Cheat;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)

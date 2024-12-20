@@ -4,6 +4,7 @@ public class DeleteWarpCommand : SR2Command
 {
     public override string ID => "delwarp";
     public override string Usage => "delwarp <name>";
+    public override CommandType type => CommandType.Warp;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

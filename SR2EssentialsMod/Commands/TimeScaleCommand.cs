@@ -1,9 +1,10 @@
 ﻿namespace SR2E.Commands;
 
-internal class TimeScaleCommand : SR2Command
+public class TimeScaleCommand : SR2Command
 {
     public override string ID => "timescale";
     public override string Usage => "timescale <scale>";
+    public override CommandType type => CommandType.Cheat;
 
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)

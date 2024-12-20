@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.Localization.Metadata;
 using UnityEngine.UI;
 
 namespace SR2E
@@ -448,75 +450,98 @@ namespace SR2E
             SR2ECheatMenu.transform = parent.getObjRec<Transform>("cheatMenu");
             SR2ECheatMenu.Start();
         }
+        const bool enableCheatCommands = false;
+        const bool enableBindingCommands = false;
+        const bool enableWarpCommands = false;
+        const bool enableCommonCommands = false;
+        const bool enableMenuCommands = false;
+        const bool enableMiscellaneousCommands = false;
+        const bool enableFunCommands = false;
         static void SetupCommands()
         {
-            RegisterCommand(new FloatCommand());
-            
-            RegisterCommand(new UtilCommand());;
-            
-            RegisterCommand(new BindCommand());
-            
-            RegisterCommand(new UnbindCommand());
-            
-            RegisterCommand(new SpawnCommand());
-            
-            RegisterCommand(new FastForwardCommand());
-            
-            RegisterCommand(new ClearInventoryCommand());
-            
-            RegisterCommand(new ModsCommand());
-            RegisterCommand(new HelpCommand());
-            RegisterCommand(new ClearCommand());
+            foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+            {
+                IEnumerable<SR2Command> exporters = melonBase.MelonAssembly.Assembly.GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(SR2Command)) && !t.IsAbstract)
+                    .Select(t => (SR2Command)Activator.CreateInstance(t));
+                foreach (SR2Command sr2Command in exporters)
+                    RegisterCommand(sr2Command);
+            }
 
-            RegisterCommand(new RefillInvCommand());
-            RegisterCommand(new NewBucksCommand());
+            if (enableCommonCommands)
+            {
+                RegisterCommand(new ModsCommand());
+                RegisterCommand(new HelpCommand());
+                RegisterCommand(new ClearCommand());
+                RegisterCommand(new ResolutionCommand());
+            }
+            if (enableCheatCommands)
+            {
+                RegisterCommand(new GadgetCommand());
+                RegisterCommand(new UpgradeCommand());
+                RegisterCommand(new PediaCommand());
+                
+                RegisterCommand(new NewBucksCommand());
+                RegisterCommand(new SpawnCommand());
+                RegisterCommand(new ReplaceCommand());
+                RegisterCommand(new GiveCommand());
+                RegisterCommand(new WeatherCommand());
+                RegisterCommand(new NoClipCommand());
             
-            RegisterCommand(new KillCommand());
-            RegisterCommand(new KillAllCommand());
-            
-            RegisterCommand(new GadgetCommand());
-            RegisterCommand(new UpgradeCommand());
-            RegisterCommand(new PediaCommand());
-            RegisterCommand(new ReplaceCommand());
-            RegisterCommand(new GiveCommand());
+                RegisterCommand(new RefillInvCommand());
+                RegisterCommand(new SpeedCommand());
+                RegisterCommand(new FastForwardCommand());
+                RegisterCommand(new TimeScaleCommand());
+                
+                RegisterCommand(new InfiniteHealthCommand());
+                RegisterCommand(new InfiniteEnergyCommand());
+                
+                RegisterCommand(new UtilCommand());;
+                
+                RegisterCommand(new KillCommand());
+                RegisterCommand(new KillAllCommand());
+                RegisterCommand(new ClearInventoryCommand());
+            }
+            if (enableBindingCommands)
+            {
+                RegisterCommand(new BindCommand());
+                RegisterCommand(new UnbindCommand());
+            }
 
-            RegisterCommand(new SpeedCommand());
-            RegisterCommand(new GravityCommand());
-            
-            RegisterCommand(new RotateCommand());
-            RegisterCommand(new MoveCommand());
-            
-            RegisterCommand(new WeatherCommand());
-            
-            RegisterCommand(new PartyCommand());
-            RegisterCommand(new GraphicsCommand());
-            
-            RegisterCommand(new FreezeCommand());
-            RegisterCommand(new NoClipCommand());
-            RegisterCommand(new FlingCommand());
-
-            RegisterCommand(new StrikeCommand());
-            RegisterCommand(new FXPlayCommand());
-            
-            RegisterCommand(new TimeScaleCommand());
-            
-            RegisterCommand(new ResolutionCommand());
-            
-            RegisterCommand(new InfiniteHealthCommand());
-            RegisterCommand(new InfiniteEnergyCommand());
-            
-            RegisterCommand(new ScaleCommand());
-            
-            RegisterCommand(new ToggleUICommand());
-            RegisterCommand(new ReCenterCommand());
-            RegisterCommands(new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(), new WarpListCommand());
-            RegisterCommands(new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand());
-            RegisterCommands(new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand());
-            RegisterCommands(new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand());
+            if (enableFunCommands)
+            {
+                RegisterCommand(new FloatCommand());
+                RegisterCommand(new GravityCommand());
+                RegisterCommand(new PartyCommand());
+                RegisterCommand(new GraphicsCommand());
+                RegisterCommand(new FreezeCommand());
+                RegisterCommand(new FlingCommand());
+                RegisterCommand(new StrikeCommand());
+                RegisterCommand(new FXPlayCommand());
+            }
+            if (enableMiscellaneousCommands)
+            {
+                RegisterCommand(new RotateCommand());
+                RegisterCommand(new MoveCommand());
+                RegisterCommand(new ScaleCommand());
+                
+                RegisterCommand(new ToggleUICommand());
+                RegisterCommand(new ReCenterCommand());
+            }
+            if (enableMenuCommands)
+            {
+                RegisterCommands(new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand());
+                RegisterCommands(new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand());
+                RegisterCommands(new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand());
+            }
+            if (enableWarpCommands)
+                RegisterCommands(new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(), new WarpListCommand());
             if (FeatureFlag.ExperimentalCommands.hasFeature())
             {
-                RegisterCommand(new RanchCommand());
+                if(enableCheatCommands) RegisterCommand(new RanchCommand());
             }
+            
+            
             
             foreach (var expansion in SR2EEntryPoint.expansions)
                 try { expansion.LoadCommands(); }

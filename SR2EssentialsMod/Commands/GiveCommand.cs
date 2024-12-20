@@ -4,6 +4,7 @@ public class GiveCommand : SR2Command
 {
     public override string ID => "give";
     public override string Usage => "give <item> [amount]";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

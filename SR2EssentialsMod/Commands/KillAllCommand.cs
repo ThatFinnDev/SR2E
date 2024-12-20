@@ -4,6 +4,7 @@ public class KillAllCommand : SR2Command
 {
     public override string ID => "killall";
     public override string Usage => "killall [id]";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

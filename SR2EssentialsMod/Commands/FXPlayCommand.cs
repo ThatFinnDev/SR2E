@@ -6,6 +6,7 @@ public class FXPlayCommand : SR2Command
 {
     public override string ID => "fxplayer";
     public override string Usage => "fxplayer <FX> [speed] [playandpause]";
+    public override CommandType type => CommandType.Fun;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

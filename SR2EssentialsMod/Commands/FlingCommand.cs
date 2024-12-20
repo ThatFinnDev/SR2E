@@ -4,6 +4,7 @@ public class FlingCommand : SR2Command
 {
     public override string ID => "fling";
     public override string Usage => "fling <strength>";
+    public override CommandType type => CommandType.Fun | CommandType.Cheat;
 
     public override bool Execute(string[] args)
     {

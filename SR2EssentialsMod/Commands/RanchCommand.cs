@@ -10,6 +10,7 @@ public class RanchCommand : SR2Command
     public override string ID => "ranch";
     public override string Usage => "ranch <lock/unlock> <door>";
     List<string> arg0List = new List<string> { "unlock", "lock"};
+    public override CommandType type => CommandType.Cheat | CommandType.Experimental;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)

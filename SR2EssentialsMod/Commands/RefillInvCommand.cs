@@ -4,6 +4,7 @@ public class RefillInvCommand : SR2Command
 {
     public override string ID => "refillinv";
     public override string Usage => "refillinv [slot]";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

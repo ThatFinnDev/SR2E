@@ -4,6 +4,7 @@ public class ClearCommand : SR2Command
 {
     public override string ID => "clear";
     public override string Usage => "clear";
+    public override CommandType type => CommandType.Common;
 
     public override bool Execute(string[] args)
     {

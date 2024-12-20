@@ -7,6 +7,7 @@ public class SpeedCommand : SR2Command
 {
     public override string ID { get; } = "speed";
     public override string Usage { get; } = "speed <speed>";
+    public override CommandType type => CommandType.Cheat;
 
     private static float baseMaxAirSpeed = 10;
     private static float baseAccAirSpeed = 60;

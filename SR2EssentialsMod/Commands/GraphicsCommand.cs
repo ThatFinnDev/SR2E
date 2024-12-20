@@ -7,6 +7,7 @@ public class GraphicsCommand : SR2Command
 {
     public override string ID => "graphics";
     public override string Usage => "graphics <mode>";
+    public override CommandType type => CommandType.Fun;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     { 
         if (argIndex == 0)

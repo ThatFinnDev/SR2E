@@ -8,6 +8,7 @@ public class ModMenuVisibilityCommands
         public override string ID => "openmodmenu";
         public override string Usage => "openmodmenu";
         public override bool execWhenIsOpenModMenu => true;
+        public override CommandType type => CommandType.Menu;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -25,6 +26,7 @@ public class ModMenuVisibilityCommands
         public override string ID => "closemodmenu";
         public override string Usage => "closemodmenu";
         public override bool execWhenIsOpenModMenu => true;
+        public override CommandType type => CommandType.Menu;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -42,6 +44,7 @@ public class ModMenuVisibilityCommands
         public override string ID => "togglemodmenu";
         public override string Usage => "togglemodmenu";
         public override bool execWhenIsOpenModMenu => true;
+        public override CommandType type => CommandType.Menu;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
