@@ -182,6 +182,7 @@ namespace SR2E
                     AddLanguage(code,LoadTextFile("SR2E."+code+".txt"));
             }
             catch (Exception e) { MelonLogger.Error(e); }
+
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
                 if(AllowExpansions.HasFlag())
@@ -191,7 +192,7 @@ namespace SR2E
             foreach (var expansion in expansions)
                 try { expansion.OnNormalInitializeMelon(); }
                 catch (Exception e) { MelonLogger.Error(e); }
-
+            
             LoadLanguage(defaultLanguageCode);
         }
 

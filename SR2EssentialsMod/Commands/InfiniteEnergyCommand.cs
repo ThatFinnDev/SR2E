@@ -21,9 +21,7 @@ public class InfiniteEnergyCommand : SR2ECommand
     {
         if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
-        
-        if (SR2EEntryPoint.infEnergyInstalled) { SR2EConsole.SendError(translation("cmd.infenergy.dedicatedmodinstalled")); return false; }
-        
+
         bool shouldDisableThrusterHeight = false;
         if (args != null)
             if (args.Length != 1)

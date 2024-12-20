@@ -96,6 +96,50 @@ public static class SR2EModMenu
 
         GameObject buttonPrefab = transform.getObjRec<GameObject>("ModMenuModMenuTemplateButtonRec");
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
+        foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (RottenMelon rotten in loadedAssembly.RottenMelons)
+        {
+            try
+            {
+                SR2EExpansionAttribute sr2EExpansionAttribute =
+                    rotten.assembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
+                bool isSR2EExpansion = sr2EExpansionAttribute != null;
+                GameObject obj = GameObject.Instantiate(buttonPrefab, modContent);
+                Button b = obj.GetComponent<Button>();
+                if (String.IsNullOrEmpty(rotten.assembly.Assembly.FullName))
+                    b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = translation("modmenu.modinfo.brokenmodtitle");
+                else b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = rotten.assembly.Assembly.FullName; 
+                obj.SetActive(true);
+                ColorBlock colorBlock = b.colors;colorBlock.normalColor = new Color(0.5f, 0.5f, 0.5f, 1);
+                colorBlock.highlightedColor = new Color(0.7f, 0.7f, 0.7f, 1); 
+                colorBlock.pressedColor = new Color(0.3f, 0.3f, 0.3f, 1); 
+                colorBlock.selectedColor = new Color(0.6f, 0.6f, 0.6f, 1); 
+                b.colors = colorBlock;
+                
+
+                b.onClick.AddListener((Action)(() =>
+                {
+                    string name = "";
+                    try {name = rotten.assembly.Assembly.FullName; } catch {}
+                    if (String.IsNullOrEmpty(name))
+                        if(isSR2EExpansion) name = translation("modmenu.modinfo.brokenmodtitle");
+                        else name = translation("modmenu.modinfo.brokenexpansiontitle");
+                    
+                    modInfoText.text = translation("modmenu.modinfo.brokenmod", name);
+                    if (isSR2EExpansion)
+                        modInfoText.text = translation("modmenu.modinfo.brokenexpansion", name);
+                    try {modInfoText.text = translation("modmenu.modinfo.path", rotten.assembly.Assembly.Location);} catch {}
+                   
+                    try {modInfoText.text += "\n" + translation("modmenu.modinfo.exception", rotten.exception);} catch {}
+                    try {modInfoText.text += "\n" + translation("modmenu.modinfo.errorMessage", rotten.errorMessage);} catch {}
+
+                }));
+            }
+            catch (Exception e)
+            {
+            }
+
+        }
+        
         foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
         {
             SR2EExpansionAttribute sr2EExpansionAttribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();

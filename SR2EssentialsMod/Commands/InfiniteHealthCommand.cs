@@ -14,8 +14,6 @@ public class InfiniteHealthCommand : SR2ECommand
         if (!args.IsBetween(0,0)) return SendNoArguments();
         if (!inGame) return SendLoadASaveFirst();
 
-        if (SR2EEntryPoint.infHealthInstalled) { SR2EConsole.SendError(translation("cmd.infhealth.dedicatedmodinstalled")); return false; }
-
         if (infHealth)
         {
             infHealth = false;
