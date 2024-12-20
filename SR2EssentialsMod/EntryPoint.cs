@@ -210,9 +210,10 @@ namespace SR2E
 
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
-                if(AllowExpansions.HasFlag())
-                    if (melonBase is SR2EExpansionV1)
+                if (melonBase is SR2EExpansionV1)
+                    if(AllowExpansions.HasFlag())
                         expansions.Add(melonBase as SR2EExpansionV1);
+                    else melonBase.Unregister();
             }
             foreach (var expansion in expansions)
                 try { expansion.OnNormalInitializeMelon(); }
