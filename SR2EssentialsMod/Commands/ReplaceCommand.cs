@@ -4,10 +4,11 @@ using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
-public class ReplaceCommand : SR2Command
+public class ReplaceCommand : SR2ECommand
 {
     public override string ID => "replace";
     public override string Usage => "replace <object>";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

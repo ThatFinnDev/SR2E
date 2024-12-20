@@ -2,10 +2,11 @@
 
 namespace SR2E.Commands;
 
-public class FreezeCommand : SR2Command
+public class FreezeCommand : SR2ECommand
 {
     public override string ID => "freeze";
     public override string Usage => "freeze";
+    public override CommandType type => CommandType.Fun;
 
     public override bool Execute(string[] args)
     {

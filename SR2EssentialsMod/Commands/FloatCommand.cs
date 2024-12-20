@@ -2,10 +2,11 @@ using System.Collections;
 
 namespace SR2E.Commands;
 
-public class FloatCommand : SR2Command
+public class FloatCommand : SR2ECommand
 {
     public override string ID => "floaty";
     public override string Usage => "floaty <duration>";
+    public override CommandType type => CommandType.Fun;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

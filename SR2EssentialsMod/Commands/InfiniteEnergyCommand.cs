@@ -4,10 +4,11 @@ using Il2CppMonomiPark.UnitPropertySystem;
 
 namespace SR2E.Commands;
 
-public class InfiniteEnergyCommand : SR2Command
+public class InfiniteEnergyCommand : SR2ECommand
 {
     public override string ID => "infenergy";
     public override string Usage => "infenergy [should disable height limit(true/false)]";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -20,9 +21,7 @@ public class InfiniteEnergyCommand : SR2Command
     {
         if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
-        
-        if (SR2EEntryPoint.infEnergyInstalled) { SR2EConsole.SendError(translation("cmd.infenergy.dedicatedmodinstalled")); return false; }
-        
+
         bool shouldDisableThrusterHeight = false;
         if (args != null)
             if (args.Length != 1)
@@ -70,7 +69,11 @@ public class InfiniteEnergyCommand : SR2Command
                 jetpackAbilityData._upwardThrustForceIncrement = 5f;
             }
 
-            SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+            try
+            {
+                SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+            }
+            catch { }
             normalEnergy = energyMeter.maxEnergy;
             energyMeter.maxEnergy = new NullableFloatProperty(2.14748365E+09f);
             SendMessage(translation("cmd.infenergy.success"));
@@ -82,10 +85,14 @@ public class InfiniteEnergyCommand : SR2Command
 
     public override void Update()
     {
-        if (infEnergy)
-            if (SceneContext.Instance != null)
-                if (SceneContext.Instance.PlayerState != null)
-                    SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+        try
+        {
+            if (infEnergy)
+                if (SceneContext.Instance != null)
+                    if (SceneContext.Instance.PlayerState != null)
+                        SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+        }
+        catch { }
     }
 
     public override void OnMainMenuUILoad()

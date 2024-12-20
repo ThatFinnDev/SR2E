@@ -1,9 +1,10 @@
 ﻿namespace SR2E.Commands;
 
-public class ClearCommand : SR2Command
+public class ClearCommand : SR2ECommand
 {
     public override string ID => "clear";
     public override string Usage => "clear";
+    public override CommandType type => CommandType.Common;
 
     public override bool Execute(string[] args)
     {

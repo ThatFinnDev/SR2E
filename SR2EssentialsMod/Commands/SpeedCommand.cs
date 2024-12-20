@@ -3,10 +3,11 @@ using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 
 namespace SR2E.Commands;
 
-public class SpeedCommand : SR2Command
+public class SpeedCommand : SR2ECommand
 {
     public override string ID { get; } = "speed";
     public override string Usage { get; } = "speed <speed>";
+    public override CommandType type => CommandType.Cheat;
 
     private static float baseMaxAirSpeed = 10;
     private static float baseAccAirSpeed = 60;

@@ -1,11 +1,12 @@
 namespace SR2E.Commands;
 
-public class ResolutionCommand : SR2Command
+public class ResolutionCommand : SR2ECommand
 {
     public override string ID => "resolution";
     public override string Usage => "resolution <x> <y> [fullscreen(true/false)]";
-    
+    public override CommandType type => CommandType.Common;
 
+    
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)

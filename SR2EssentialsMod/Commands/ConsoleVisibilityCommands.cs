@@ -2,11 +2,12 @@
 
 public class ConsoleVisibilityCommands
 {
-    public class OpenCommand : SR2Command
+    public class OpenCommand : SR2ECommand
     {
         public override string ID => "openconsole";
         public override string Usage => "openconsole";
-        public override bool executeWhenConsoleIsOpen => true;
+        public override bool execWhenIsOpenConsole => true;
+        public override CommandType type => CommandType.Menu;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -19,11 +20,12 @@ public class ConsoleVisibilityCommands
             return true;
         }
     }
-    public class CloseCommand : SR2Command
+    public class CloseCommand : SR2ECommand
     {
         public override string ID => "closeconsole";
         public override string Usage => "closeconsole";
-        public override bool executeWhenConsoleIsOpen => true;
+        public override CommandType type => CommandType.Menu;
+        public override bool execWhenIsOpenConsole => true;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -36,11 +38,12 @@ public class ConsoleVisibilityCommands
             return true;
         }
     }
-    public class ToggleCommand : SR2Command
+    public class ToggleCommand : SR2ECommand
     {
         public override string ID => "toggleconsole";
         public override string Usage => "toggleconsole";
-        public override bool executeWhenConsoleIsOpen => true;
+        public override CommandType type => CommandType.Menu;
+        public override bool execWhenIsOpenConsole => true;
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();

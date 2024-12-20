@@ -3,10 +3,11 @@ using Il2CppMonomiPark.SlimeRancher.Weather;
 
 namespace SR2E.Commands;
 
-public class WeatherCommand : SR2Command
+public class WeatherCommand : SR2ECommand
 {
     public override string ID => "weather";
     public override string Usage => "weather <action> <action> <action>";
+    public override CommandType type => CommandType.Cheat;
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

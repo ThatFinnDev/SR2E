@@ -1,6 +1,8 @@
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
+using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using Newtonsoft.Json;
 using SR2E.Commands;
@@ -43,10 +45,10 @@ public static class SR2ESaveManager
     
     public static class WarpManager
     {
-        internal static Dictionary<string, StaticTeleporterNode> teleporters;
+        internal static Dictionary<string, StaticTeleporterNode> teleporters = new Dictionary<string, StaticTeleporterNode>();
         internal static Warp warpTo = null;
 
-        internal static SR2EError AddWarp(string warpName, Warp warp)
+        public static SR2EError AddWarp(string warpName, Warp warp)
         {
             if (data.warps.ContainsKey(warpName)) return SR2EError.AlreadyExists;
             data.warps.Add(warpName, warp);
@@ -54,19 +56,20 @@ public static class SR2ESaveManager
             return SR2EError.NoError;
         }
 
-        internal static Warp GetWarp(string warpName)
+        public static Warp GetWarp(string warpName)
         {
             if (!data.warps.ContainsKey(warpName)) return null;
             return data.warps[warpName];
         }
 
-        internal static SR2EError RemoveWarp(string warpName)
+        public static SR2EError RemoveWarp(string warpName)
         {
             if (!data.warps.ContainsKey(warpName)) return SR2EError.DoesntExist;
             data.warps.Remove(warpName);
+            Save();
             return SR2EError.NoError;
         }
-        internal static void OnSceneLoaded()
+        internal static void OnSceneUnloaded()
         {
             if (SceneContext.Instance == null) { warpTo = null; return; }
             if (SceneContext.Instance.PlayerState == null) { warpTo = null; return; }
@@ -119,6 +122,20 @@ public static class SR2ESaveManager
                     obj.gameObject.SetActive(true);
                     obj.UpdateFX();
                     SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();
+                    try
+                    {
+                        PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>(); 
+                        pauseMenuRoot.Close();
+                    }catch { }
+                    try
+                    {
+                        SystemContext.Instance.SceneLoader.UnpauseGame();
+                    }catch { }
+                    try
+                    {
+                        PauseMenuDirector pauseMenuDirector = Object.FindObjectOfType<PauseMenuDirector>(); 
+                        pauseMenuDirector.UnPauseGame();
+                    }catch { }
                     //SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
 
                 }catch { }

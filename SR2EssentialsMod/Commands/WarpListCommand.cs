@@ -1,9 +1,10 @@
 ﻿namespace SR2E.Commands;
 
-public class WarpListCommand : SR2Command
+public class WarpListCommand : SR2ECommand
 {
     public override string ID => "warplist";
     public override string Usage => "warplist";
+    public override CommandType type => CommandType.Warp;
 
     public override bool Execute(string[] args)
     {

@@ -2,10 +2,11 @@
 
 namespace SR2E.Commands;
 
-public class MoveCommand: SR2Command
+public class MoveCommand: SR2ECommand
 {
     public override string ID => "move";
     public override string Usage => "move <x> <y> <z>";
+    public override CommandType type => CommandType.Miscellaneous;
 
     public override bool Execute(string[] args)
     {

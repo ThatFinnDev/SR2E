@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Patches.General;
 
-[HarmonyPatch(typeof(AutoSaveDirector), "Awake")]
+[HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
 public static class SaveDirectorPatch
 {
     public static void Prefix(AutoSaveDirector __instance)

@@ -3,17 +3,16 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 
 namespace SR2E.Commands;
 
-public class InfiniteHealthCommand : SR2Command
+public class InfiniteHealthCommand : SR2ECommand
 {
     public override string ID => "infhealth";
     public override string Usage => "infhealth";
+    public override CommandType type => CommandType.Cheat;
 
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(0,0)) return SendNoArguments();
         if (!inGame) return SendLoadASaveFirst();
-
-        if (SR2EEntryPoint.infHealthInstalled) { SR2EConsole.SendError(translation("cmd.infhealth.dedicatedmodinstalled")); return false; }
 
         if (infHealth)
         {

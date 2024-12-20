@@ -1,11 +1,12 @@
 ﻿
 namespace SR2E.Commands;
 
-public class SpawnCommand : SR2Command
+public class SpawnCommand : SR2ECommand
 {
 
     public override string ID => "spawn";
     public override string Usage => "spawn <object> [amount]";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

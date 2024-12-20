@@ -1,9 +1,10 @@
 ﻿namespace SR2E.Commands;
 
-public class GravityCommand : SR2Command
+public class GravityCommand : SR2ECommand
 {
     public override string ID => "gravity";
     public override string Usage => "gravity <x> <y> <z>";
+    public override CommandType type => CommandType.Cheat;
 
     public override bool Execute(string[] args)
     {

@@ -1,6 +1,8 @@
-﻿namespace SR2E;
+﻿using System;
 
-public abstract class SR2Command
+namespace SR2E;
+
+public abstract class SR2ECommand
 {
     /// <summary>
     /// The ID of this command (Always lowercase)
@@ -30,6 +32,11 @@ public abstract class SR2Command
         }
     }
 
+    /// <summary>
+    /// The type of this command
+    /// </summary>
+    public virtual CommandType type { get; } = CommandType.DontLoad;
+
 
     public virtual bool Hidden { get; }
 
@@ -55,7 +62,17 @@ public abstract class SR2Command
     /// <summary>
     /// Allows the execution of the Command when the console is open
     /// </summary>
-    public virtual bool executeWhenConsoleIsOpen { get; } = false;
+    public virtual bool execWhenIsOpenConsole { get; } = false;
+
+    /// <summary>
+    /// Allows the execution of the Command when the cheat menu is open
+    /// </summary>
+    public virtual bool execWhenIsOpenCheatMenu { get; } = false;
+
+    /// <summary>
+    /// Allows the execution of the Command when the mod menu is open
+    /// </summary>
+    public virtual bool execWhenIsOpenModMenu { get; } = false;
 
 
     /// <summary>
@@ -136,4 +153,19 @@ public abstract class SR2Command
     }
 
     public bool silent = false;
+
+    [Flags]
+    public enum CommandType
+    {
+        DontLoad = 0,
+        DevOnly = 1 << 0,
+        Cheat = 1 << 1,
+        Binding = 1 << 2,
+        Warp = 1 << 3,
+        Common = 1 << 4,
+        Menu = 1 << 5,
+        Miscellaneous = 1 << 6,
+        Fun = 1 << 7,
+        Experimental = 1 << 8
+    }
 }

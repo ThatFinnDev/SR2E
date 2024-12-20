@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.Localization.Metadata;
 using UnityEngine.UI;
 
 namespace SR2E
@@ -28,7 +30,7 @@ namespace SR2E
         /// </summary>
         public static void SendMessage(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -71,7 +73,7 @@ namespace SR2E
         /// </summary>
         public static void SendError(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -115,7 +117,7 @@ namespace SR2E
         /// </summary>
         public static void SendWarning(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             if(String.IsNullOrEmpty(message))
                 return;
             try
@@ -172,7 +174,7 @@ namespace SR2E
         /// </summary>
         public static void Open()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             if (SR2EModMenu.isOpen) return;
             if (SR2ECheatMenu.isOpen) return;
             if (SR2ESaveManager.WarpManager.warpTo != null) return;
@@ -188,7 +190,6 @@ namespace SR2E
         /// </summary>
         public static void Toggle()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "StandaloneStart" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "LoadScene")
@@ -203,7 +204,7 @@ namespace SR2E
         /// Registers a command to be used in the console
         /// </summary>
         
-        public static bool RegisterCommand(SR2Command cmd)
+        public static bool RegisterCommand(SR2ECommand cmd)
         {
             if (commands.ContainsKey(cmd.ID.ToLowerInvariant()))
             {
@@ -211,16 +212,16 @@ namespace SR2E
                 return false;
             }
             commands.Add(cmd.ID.ToLowerInvariant(), cmd);
-            List<KeyValuePair<string, SR2Command>> myList = commands.ToList();
+            List<KeyValuePair<string, SR2ECommand>> myList = commands.ToList();
 
-            myList.Sort(delegate (KeyValuePair<string, SR2Command> pair1, KeyValuePair<string, SR2Command> pair2) { return pair1.Key.CompareTo(pair2.Key); });
+            myList.Sort(delegate (KeyValuePair<string, SR2ECommand> pair1, KeyValuePair<string, SR2ECommand> pair2) { return pair1.Key.CompareTo(pair2.Key); });
             commands = myList.ToDictionary(x => x.Key, x => x.Value);
             return true;
         }
         /// <summary>
         /// Registers multiple commands to be used in the console
         /// </summary>
-        public static bool RegisterCommands(SR2Command[] cmds)
+        public static bool RegisterCommands(params SR2ECommand[] cmds)
         {
             bool successful = true;
             for (int i = 0; i < cmds.Length; i++)
@@ -234,7 +235,7 @@ namespace SR2E
         /// <summary>
         /// Unregisters a command
         /// </summary>
-        public static bool UnRegisterCommand(SR2Command cmd)
+        public static bool UnRegisterCommand(SR2ECommand cmd)
         {
             return UnRegisterCommand(cmd.ID);
         }
@@ -272,14 +273,25 @@ namespace SR2E
 
                     if (commands.ContainsKey(cmd))
                     {
+                        bool isModMenuOpen = SR2EModMenu.isOpen;
+                        bool isConsoleOpen = isOpen;
+                        bool isCheatMenuOpen = SR2ECheatMenu.isOpen;
                         bool canPlay = false;
-                        if (!isOpen)
-                            if (!SR2EModMenu.isOpen)
-                                if (!SR2ECheatMenu.isOpen)
+                        if (!isConsoleOpen)
+                            if (!isModMenuOpen)
+                                if (!isCheatMenuOpen)
                                     if (Time.timeScale != 0)
                                         canPlay = true;
 
-                        if (!canPlay && commands[cmd].executeWhenConsoleIsOpen) canPlay = true;
+                        if (!canPlay)
+                        {
+                            if (commands[cmd].execWhenIsOpenConsole && !isModMenuOpen && !isCheatMenuOpen)
+                                canPlay = true;
+                            if (commands[cmd].execWhenIsOpenModMenu && !isConsoleOpen && !isCheatMenuOpen)
+                                canPlay = true;
+                            if (commands[cmd].execWhenIsOpenCheatMenu && !isModMenuOpen && !isConsoleOpen)
+                                canPlay = true;
+                        }
                         if (!silent) canPlay = true;
                         if (alwaysPlay) canPlay = true;
                         bool successful;
@@ -295,14 +307,14 @@ namespace SR2E
                                 if (split.Count != 0)
                                 {
                                     string[] stringArray = split.ToArray();
-                                    SR2Command command = commands[cmd];
+                                    SR2ECommand command = commands[cmd];
                                     command.silent = silent;
                                     successful = command.Execute(stringArray);
                                     command.silent = false;
                                 }
                                 else
                                 {
-                                    SR2Command command = commands[cmd];
+                                    SR2ECommand command = commands[cmd];
                                     command.silent = silent;
                                     successful = command.Execute(null);
                                     command.silent = false;
@@ -311,7 +323,7 @@ namespace SR2E
                         }
                         else if(canPlay)
                         {
-                            SR2Command command = commands[cmd];
+                            SR2ECommand command = commands[cmd];
                             command.silent = silent;
                             successful = command.Execute(null);
                             command.silent = false;
@@ -332,7 +344,7 @@ namespace SR2E
         internal static Transform parent;
         internal static Transform transform;
         internal static GameObject gameObject;
-        internal static Dictionary<string, SR2Command> commands = new Dictionary<string, SR2Command>();
+        internal static Dictionary<string, SR2ECommand> commands = new Dictionary<string, SR2ECommand>();
 
         static List<string> commandHistory;
         static int commandHistoryIdx = -1;
@@ -344,7 +356,7 @@ namespace SR2E
 
         static void RefreshAutoComplete(string text)
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             
             // autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, ((744f/1080f)*Screen.height), autoCompleteContent.position.z);
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
@@ -370,7 +382,7 @@ namespace SR2E
                     Color textColor = new Color(0.75f, 0.75f, 0.75f, 1f);
                     if (possibleAutoCompletes != null)
                     {
-                        int maxPredictions = MAX_AUTOCOMPLETE; 
+                        int maxPredictions = MAX_AUTOCOMPLETE.Get(); 
                         int predicted = 0;
                         foreach (string argument in possibleAutoCompletes)
                         {
@@ -410,7 +422,7 @@ namespace SR2E
                 }
             }
             else
-                foreach (KeyValuePair<string, SR2Command> valuePair in commands)
+                foreach (KeyValuePair<string, SR2ECommand> valuePair in commands)
                     if (valuePair.Key.StartsWith(text) && !valuePair.Value.Hidden)
                     {
                         GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
@@ -439,47 +451,27 @@ namespace SR2E
         }
         static void SetupCommands()
         {
-            RegisterCommand(new FloatCommand());
-            RegisterCommand(new GiveCommand());
-            RegisterCommand(new UtilCommand());;
-            RegisterCommand(new BindCommand());
-            RegisterCommand(new UnbindCommand());
-            RegisterCommand(new SpawnCommand());
-            RegisterCommand(new FastForwardCommand());
-            RegisterCommand(new ClearCommand());
-            RegisterCommand(new ClearInventoryCommand());
-            RegisterCommand(new ModsCommand());
-            RegisterCommand(new HelpCommand());
-            RegisterCommand(new RefillInvCommand());
-            RegisterCommand(new NewBucksCommand());
-            RegisterCommand(new KillCommand());
-            RegisterCommand(new KillAllCommand());
-            RegisterCommand(new GiveGadgetCommand());
-            RegisterCommand(new GiveBlueprintCommand());
-            RegisterCommand(new GiveUpgradeCommand());
-            RegisterCommand(new ReplaceCommand());
-            RegisterCommand(new SpeedCommand());
-            RegisterCommand(new GravityCommand());
-            RegisterCommand(new RotateCommand());
-            RegisterCommand(new MoveCommand());
-            RegisterCommand(new WeatherCommand());
-            RegisterCommand(new FlingCommand());
-            RegisterCommand(new PartyCommand());
-            RegisterCommand(new GraphicsCommand());
-            RegisterCommand(new FreezeCommand());
-            RegisterCommand(new NoClipCommand());
-            RegisterCommand(new StrikeCommand());
-            RegisterCommand(new FXPlayCommand());
-            RegisterCommand(new TimeScaleCommand());
-            RegisterCommand(new ResolutionCommand());
-            RegisterCommand(new InfiniteHealthCommand());
-            RegisterCommand(new InfiniteEnergyCommand());
-            RegisterCommand(new ScaleCommand());
-            RegisterCommands(new SR2Command[]{new WarpCommand(), new SetWarpCommand(), new DeleteWarpCommand(),new WarpListCommand()});
-            RegisterCommands(new SR2Command[]{new ConsoleVisibilityCommands.OpenCommand(), new ConsoleVisibilityCommands.CloseCommand(), new ConsoleVisibilityCommands.ToggleCommand()});
-            RegisterCommands(new SR2Command[]{new CheatMenuVisibilityCommands.OpenCommand(), new CheatMenuVisibilityCommands.CloseCommand(), new CheatMenuVisibilityCommands.ToggleCommand()});
-            RegisterCommands(new SR2Command[]{new ModMenuVisibilityCommands.OpenCommand(), new ModMenuVisibilityCommands.CloseCommand(), new ModMenuVisibilityCommands.ToggleCommand()});
-
+            foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+            {
+                IEnumerable<SR2ECommand> exporters = melonBase.MelonAssembly.Assembly.GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(SR2ECommand)) && !t.IsAbstract)
+                    .Select(t => (SR2ECommand)Activator.CreateInstance(t));
+                foreach (SR2ECommand sr2Command in exporters)
+                    if(sr2Command!=null) 
+                        if((enabledCommands & sr2Command.type) == sr2Command.type)
+                        {
+                            if (sr2Command is InfiniteHealthCommand && DisableInfHealth.HasFlag()) continue;
+                            if (sr2Command is InfiniteEnergyCommand && DisableInfEnergy.HasFlag()) continue;
+                            RegisterCommand(sr2Command);
+                        }
+            }
+            
+            
+            
+            foreach (var expansion in SR2EEntryPoint.expansions)
+                try { expansion.LoadCommands(); }
+                catch (Exception e) { MelonLogger.Error(e); }
+                
         }
 
         internal static bool syncedSetuped = false;
@@ -497,20 +489,20 @@ namespace SR2E
             switch (sceneName)
             {
                 case "GameCore":
-                    foreach (KeyValuePair<string,SR2Command> pair in commands)
+                    foreach (KeyValuePair<string,SR2ECommand> pair in commands)
                         pair.Value.OnGameCoreLoad();
                     break;
                 case "PlayerCore":
-                    foreach (KeyValuePair<string,SR2Command> pair in commands)
+                    foreach (KeyValuePair<string,SR2ECommand> pair in commands)
                         pair.Value.OnPlayerCoreLoad();
                     break;
                 case "UICore":
-                    foreach (KeyValuePair<string,SR2Command> pair in commands)
+                    foreach (KeyValuePair<string,SR2ECommand> pair in commands)
                         pair.Value.OnUICoreLoad();
                     if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onSaveLoadCommand)) ExecuteByString(SR2EEntryPoint.onSaveLoadCommand);
                     break;
                 case "MainMenuUI":
-                    foreach (KeyValuePair<string,SR2Command> pair in commands)
+                    foreach (KeyValuePair<string,SR2ECommand> pair in commands)
                         pair.Value.OnMainMenuUILoad();
                     if (!System.String.IsNullOrEmpty(SR2EEntryPoint.onMainMenuLoadCommand)) ExecuteByString(SR2EEntryPoint.onMainMenuLoadCommand);
                     break;
@@ -522,7 +514,7 @@ namespace SR2E
             transform = parent.getObjRec<Transform>("consoleMenu");
             
             commandHistory = new List<string>();
-            if(!SR2EEntryPoint._mSRMLIsInstalled)
+            if (EnableConsole.HasFlag())
                 if (SR2EEntryPoint.syncConsole)
                     SetupConsoleSync();
 
@@ -539,7 +531,7 @@ namespace SR2E
             autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
             autoCompleteScrollView.SetActive(false);
             
-            if (!SR2EEntryPoint._mSRMLIsInstalled)
+            if (EnableConsole.HasFlag())
             {
                 commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); })); 
             }
@@ -561,10 +553,9 @@ namespace SR2E
         static GameObject autoCompleteScrollView;
         static GameObject messagePrefab;
         private static int selectedAutoComplete = 0;
-        const int maxEntryOnScreen = 6;
         internal static void Update()
         {
-            if (!SR2EEntryPoint._mSRMLIsInstalled)
+            if (EnableConsole.HasFlag())
             {
                 if (SR2EEntryPoint.consoleFinishedCreating != true)
                     return;
@@ -650,9 +641,9 @@ namespace SR2E
                     {
                         autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color =
                             new Color32(255, 211, 0, 120);
-                        if (selectedAutoComplete > maxEntryOnScreen)
+                        if (selectedAutoComplete > MAX_AUTOCOMPLETEONSCREEN.Get())
                             autoCompleteContent.position = new Vector3(autoCompleteContent.position.x,
-                                ((744f/1080f)*Screen.height) - (27 * maxEntryOnScreen) + (27 * selectedAutoComplete),
+                                ((744f/1080f)*Screen.height) - (27 * MAX_AUTOCOMPLETEONSCREEN.Get()) + (27 * selectedAutoComplete),
                                 autoCompleteContent.position.z);
 
                         else
@@ -664,21 +655,21 @@ namespace SR2E
 
                 try
                 {
-                    if (consoleContent.childCount >= MAX_CONSOLELINES) GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                    if (consoleContent.childCount >= MAX_CONSOLELINES.Get()) GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 }
                 catch  { }
 
             }
 
             //Console Commands Update
-            foreach (KeyValuePair<string, SR2Command> pair in commands)
+            foreach (KeyValuePair<string, SR2ECommand> pair in commands)
                 pair.Value.Update();
         }
         
 
         static void NextAutoComplete()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             selectedAutoComplete += 1;
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
             {
@@ -694,7 +685,7 @@ namespace SR2E
         }
         static void PrevAutoComplete()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             selectedAutoComplete -= 1;
 
             if (selectedAutoComplete < 0)
@@ -712,7 +703,7 @@ namespace SR2E
 
         static void Execute()
         {
-            if (SR2EEntryPoint._mSRMLIsInstalled) return;
+            if (!EnableConsole.HasFlag()) return;
             string cmds = commandInput.text;
             commandHistory.Add(cmds);
             commandHistoryIdx = commandHistory.Count - 1;

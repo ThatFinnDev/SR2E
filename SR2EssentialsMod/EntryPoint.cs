@@ -13,9 +13,14 @@ using UnityEngine.UI;
 using Il2CppKinematicCharacterController;
 using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.Options;
+using Il2CppMonomiPark.SlimeRancher.Player.FirstPersonScreenEffects;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
+using SR2E.Expansion;
 using UnityEngine.Localization;
 using SR2E.Buttons;
+using SR2E.Commands;
+using SR2E.Patches.General;
 using UnityEngine.Networking;
 
 namespace SR2E
@@ -26,18 +31,15 @@ namespace SR2E
         public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
         public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
         public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.7"; // Version of the Mod.  (MUST BE SET)
+        public const string Version = "2.4.8"; // Version of the Mod.  (MUST BE SET)
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
     }
 
     public class SR2EEntryPoint : MelonMod
     {
-        internal static bool _mSRMLIsInstalled = false;
         internal static SR2EEntryPoint instance;
         internal static TMP_FontAsset SR2Font;
         internal static TMP_FontAsset normalFont;
-        internal static bool infEnergyInstalled = false;
-        internal static bool infHealthInstalled = false;
         internal static bool consoleFinishedCreating = false;
         internal static bool mainMenuLoaded = false;
 
@@ -49,10 +51,10 @@ namespace SR2E
         internal static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
         internal static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
         internal static bool syncConsole { get { return prefs.GetEntry<bool>("doesConsoleSync").Value; } }
-        internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
-        internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
-        internal static bool devMode { get { return prefs.GetEntry<bool>("devMode").Value; } }
-        internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
+        internal static bool autoUpdate { get { return prefs.GetEntry<bool>("autoUpdate").Value; } }
+        internal static bool quickStart { get { return prefs.GetEntry<bool>("quickStart").Value; } }
+        internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } } 
+        internal static bool fixSaves { get { return prefs.GetEntry<bool>("fixSaves").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
         internal static bool enableCheatMenuButton { get { return prefs.GetEntry<bool>("enableCheatMenuButton").Value; } }
@@ -63,24 +65,27 @@ namespace SR2E
             prefs.DeleteEntry("noclipFlySprintSpeed");
             prefs.DeleteEntry("experimentalStuff");
             prefs.DeleteEntry("skipEngagementPrompt");
+            prefs.DeleteEntry("devMode");
+            prefs.DeleteEntry("showUnityErrors");
+            prefs.DeleteEntry("debugLogging");
 
-            if (!prefs.HasEntry("noclipAdjustSpeed"))
-                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
+            
+            if (!prefs.HasEntry("autoUpdate"))
+                prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
+            if (!prefs.HasEntry("fixSaves"))
+                prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).disableWarning();
+
             if (!prefs.HasEntry("consoleUsesSR2Font"))
                 prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).disableWarning((System.Action)(
-                    () =>
-                    {
-                        SetupFonts(); 
-                    }));
+                    () => { SetupFonts(); }));
+            if (!prefs.HasEntry("quickStart"))
+                prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
 
-            if (!prefs.HasEntry("showUnityErrors"))
-                prefs.CreateEntry("showUnityErrors", (bool)false, "Shows unity errors in the console", true);
-            
             if (!prefs.HasEntry("enableDebugDirector"))
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).disableWarning((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
             
-            if (!prefs.HasEntry("enableCheatMenuButton"))
+            if(AllowCheats.HasFlag()) if (!prefs.HasEntry("enableCheatMenuButton"))
                 prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).disableWarning((System.Action)(
                     () =>
                     {
@@ -92,16 +97,14 @@ namespace SR2E
 
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
-            if (!prefs.HasEntry("debugLogging"))
-                prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
-            if (!prefs.HasEntry("devMode"))
-                prefs.CreateEntry("devMode", (bool)false, "Enable dev mode", true);
             if (!prefs.HasEntry("onSaveLoadCommand"))
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
                 prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).disableWarning();
             if (!prefs.HasEntry("noclipSprintMultiply"))
                 prefs.CreateEntry("noclipSprintMultiply", 2f, "NoClip sprint speed multiplier", false).disableWarning();
+            if (!prefs.HasEntry("noclipAdjustSpeed"))
+                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
         }
 
         
@@ -116,33 +119,38 @@ namespace SR2E
                 Object.DontDestroyOnLoad(rootOBJ);
             }
 
-            MelonCoroutines.Start(CheckForNewVersion());
-            
-            //This is because ML has no way (to my knowledge) to get the version
-            string logFilePath = Application.dataPath+"/../MelonLoader/Latest.log";
-            using(System.IO.FileStream logFileStream = new System.IO.FileStream(logFilePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
-            {
-                using(System.IO.StreamReader logFileReader = new System.IO.StreamReader(logFileStream))
-                {
-                    string text = logFileReader.ReadToEnd();
-                    MLVERSION = text.Split("\n")[1].Split("v")[1].Split(" ")[0];
-                }
-            }
+            if(CheckForUpdates.HasFlag())
+                MelonCoroutines.Start(CheckForNewVersion());
         }
-        public static string MLVERSION = "unknown";
-        public static string newVersion = null;
+        internal static string MLVERSION = MelonLoader.BuildInfo.Version;
+        internal static string newVersion = null;
+        public static bool isLatestVersion => newVersion == BuildInfo.Version;
         IEnumerator CheckForNewVersion()
         {
             UnityWebRequest uwr = UnityWebRequest.Get("https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt");
             yield return uwr.SendWebRequest();
 
-            if (!uwr.isNetworkError)
+            if (!uwr.isNetworkError && !uwr.isHttpError)
                 newVersion = uwr.downloadHandler.text.Replace(" ","").Replace("\n","");
             
         }
 
-        
-        //Logging code from KomiksPL
+        IEnumerator UpdateVersion()
+        {
+            UnityWebRequest uwr = UnityWebRequest.Get("https://github.com/ThatFinnDev/SR2E/releases/latest/download/SR2E.dll");
+            yield return uwr.SendWebRequest();
+            if (!uwr.isNetworkError && !uwr.isHttpError)
+                if (uwr.result == UnityWebRequest.Result.Success)
+                {
+                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Downloading SR2E complete");
+                    string path = MelonAssembly.Assembly.Location;
+                    if (File.Exists(path)) File.Move(path, path+".old");
+                    File.WriteAllBytes(path, uwr.downloadHandler.data);
+                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Restart for updates version");
+                }
+            
+        }
+        //Logging code from Atmudia
         private static void AppLogUnity(string message, string trace, LogType type)
         {
             if (message.Equals(string.Empty))
@@ -172,30 +180,46 @@ namespace SR2E
                     break;
             }
         }
-        public override void OnInitializeMelon()
+
+        internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
+        public override void OnEarlyInitializeMelon()
         {
             instance = this;
+            InitFlagManager();
+        }
+
+        public override void OnInitializeMelon()
+        {
             prefs = MelonPreferences.CreateCategory("SR2E","SR2E");
+            string path = MelonAssembly.Assembly.Location+".old";
+            if (File.Exists(path)) File.Delete(path);
             RefreshPrefs();
-            if (showUnityErrors)
+            
+            if(AllowAutoUpdate.HasFlag())
+                if(autoUpdate) 
+                    if(!isLatestVersion)
+                        MelonCoroutines.Start(UpdateVersion());
+            if (ShowUnityErrors.HasFlag())
                 Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
             try
             {
-                SR2ELanguageManger.LoadLanguage(); }
+                foreach (var code in new List<string> { "en" })
+                    AddLanguage(code,LoadTextFile("SR2E."+code+".txt"));
+            }
             catch (Exception e) { MelonLogger.Error(e); }
+
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
-                switch (melonBase.Info.Name)
-                {
-                    case "InfiniteEnergy":
-                        infEnergyInstalled = true;
-                        break;
-                    case "InfiniteHealth":
-                        infHealthInstalled = true;
-                        break;
-                    case "mSRML":
-                        _mSRMLIsInstalled = true;
-                        break;
-                }
+            {
+                if (melonBase is SR2EExpansionV1)
+                    if(AllowExpansions.HasFlag())
+                        expansions.Add(melonBase as SR2EExpansionV1);
+                    else melonBase.Unregister();
+            }
+            foreach (var expansion in expansions)
+                try { expansion.OnNormalInitializeMelon(); }
+                catch (Exception e) { MelonLogger.Error(e); }
+            
+            LoadLanguage(defaultLanguageCode);
         }
 
         public override void OnApplicationQuit()
@@ -209,7 +233,7 @@ namespace SR2E
         internal static Damage killDamage;
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-
+            if(DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: "+sceneName);
             switch (sceneName)
             {
                 case "SystemCore":
@@ -233,8 +257,55 @@ namespace SR2E
                     
                     break;
                 case "MainMenuUI":
+                    
+                    if(ExperimentalSettingsInjection.HasFlag())
+                    {
+                        var optionCategories = Resources.FindObjectsOfTypeAll<OptionsItemCategory>();
+                        foreach (var category in optionCategories)
+                        {
+                            switch (category.name)
+                            {
+                                case "GameSettings":
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.GameSettings, category);
+                                    break;
+                                case "Display":
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Display,
+                                        category);
+                                    break;
+                                case "Audio":
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Audio,
+                                        category);
+                                    break;
+                                case "BindingsGamepad":
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Bindings_Controller, category);
+                                    break;
+                                case "Input":
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Input,
+                                        category);
+                                    break;
+                                case "Gameplay_MainMenu":
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Gameplay_MainMenu, category);
+                                    break;
+                                case "BindingsKbm":
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Bindings_Keyboard, category);
+                                    break;
+                                case "Video":
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Graphics,
+                                        category);
+                                    break;
+                                default:
+                                    // There are 2 other categories, but they are console only. 
+                                    // Also, the Gameplay_InGame is loaded somewhere after GameCore.
+                                    break;
+                            }
 
-                    SaveCountChanged = false;
+                            MelonLogger.BigError("SR2E TODO", "PLEASE IMPLEMENT THE GAMEPLAY_INGAME SETTINGS CATEGORY");
+                        }
+                    }
                     Time.timeScale = 1f;
                     try
                     {
@@ -259,16 +330,13 @@ namespace SR2E
                     
                     break;
                 case "StandaloneEngagementPrompt":
-                    PlatformEngagementPrompt prompt = Object.FindObjectOfType<PlatformEngagementPrompt>();
                     Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
-                    prompt.EngagementPromptTextUI.SetActive(false);
-                    prompt.OnInteract(new InputAction.CallbackContext());
                     break;
                 case "GameCore":
                     killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
-                    autoSaveDirector.saveSlotCount = 50;
+                    autoSaveDirector.saveSlotCount = SAVESLOT_COUNT.Get();
                     
                     foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
                     {
@@ -279,28 +347,11 @@ namespace SR2E
                             FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
                     }
 
-                    SR2ESaveManager.WarpManager.teleporters = new Dictionary<string, StaticTeleporterNode>();
-                    //Creating Teleporters for Warps
-                    StaticTeleporterNode ConservatoryFieldsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterHomeBlue").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    ConservatoryFieldsTeleporter.gameObject.SetActive(false); ConservatoryFieldsTeleporter.name = "TP-ConservatoryFields"; ConservatoryFieldsTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.ConservatoryFields", ConservatoryFieldsTeleporter);
+                    vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
                     
-                    StaticTeleporterNode RumblingGorgeTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneGorge").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    RumblingGorgeTeleporter.gameObject.SetActive(false); RumblingGorgeTeleporter.name = "TP-RumblingGorge"; RumblingGorgeTeleporter.gameObject.MakePrefab(); RumblingGorgeTeleporter.gameObject.MakePrefab(); ConservatoryFieldsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.RumblingGorge", RumblingGorgeTeleporter);
-
-                    StaticTeleporterNode LuminousStrandTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneStrand").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    LuminousStrandTeleporter.gameObject.SetActive(false); LuminousStrandTeleporter.name = "TP-LuminousStrand"; LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter.gameObject.MakePrefab(); LuminousStrandTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.LuminousStrand", LuminousStrandTeleporter);
-
-                    StaticTeleporterNode PowderfallBluffsTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneBluffs").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    PowderfallBluffsTeleporter.gameObject.SetActive(false); PowderfallBluffsTeleporter.name = "TP-PowderfallBluffs"; PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter.gameObject.MakePrefab(); PowderfallBluffsTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.PowderfallBluffs", PowderfallBluffsTeleporter);
-
-                    StaticTeleporterNode LabyrinthTeleporter = GameObject.Instantiate(getGadgetDefByName("TeleporterZoneLabyrinth").prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-                    LabyrinthTeleporter.gameObject.SetActive(false); LabyrinthTeleporter.name = "TP-Labyrinth"; LabyrinthTeleporter.gameObject.MakePrefab(); LabyrinthTeleporter.gameObject.MakePrefab(); LabyrinthTeleporter._hasDestination = true;
-                    SR2ESaveManager.WarpManager.teleporters.Add("SceneGroup.Labyrinth", LabyrinthTeleporter);
-               
+                    
+                    foreach (KeyValuePair<string, string> pair in teleportersToAdd)
+                        AddTeleporter(pair.Key, pair.Value);
                     
                     
                     break;
@@ -315,12 +366,38 @@ namespace SR2E
                     NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
                     player = Get<GameObject>("PlayerControllerKCC");
                     break;
-                
             }
             
+            switch (sceneName)
+            {
+                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            }
             SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
 
+        internal static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
+        {
+            {"SceneGroup.ConservatoryFields", "TeleporterHomeBlue"},
+            {"SceneGroup.RumblingGorge", "TeleporterZoneGorge"},
+            {"SceneGroup.LuminousStrand", "TeleporterZoneStrand"},
+            {"SceneGroup.PowderfallBluffs", "TeleporterZoneBluffs"},
+            {"SceneGroup.Labyrinth", "TeleporterZoneLabyrinth"},
+        };
+        internal static void AddTeleporter(string sceneGroup, string gadgetName)
+        {
+            StaticTeleporterNode teleporter = GameObject.Instantiate(getGadgetDefByName(gadgetName).prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+            teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
+            SR2ESaveManager.WarpManager.teleporters.TryAdd(sceneGroup, teleporter);
+        }
+
+        public static event EventHandler RegisterOptionMenuButtons;  
+        
         internal static void SetupFonts()
         {
             try
@@ -343,37 +420,113 @@ namespace SR2E
             foreach (var text in SR2EConsole.parent.getObjRec<GameObject>("cheatMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
 
+            foreach (var expansion in expansions)
+                try { expansion.OnSR2FontLoad(); }
+                catch (Exception e) { MelonLogger.Error(e); }
         }
 
         internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
         {
-            
-            }
+            foreach (var expansion in expansions)
+                try { expansion.OnSaveDirectorLoading(autoSaveDirector); }
+                catch (Exception e) { MelonLogger.Error(e); }
+        }
 
         internal static CustomPauseMenuButton cheatMenuButton;
+        internal static bool isSaveDirectorLoaded = false;
         internal static void SaveDirectorLoaded()
         {
-            LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
-            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
-            cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { SR2ECheatMenu.Open(); }));
-            if(!enableCheatMenuButton) cheatMenuButton.Remove();
+            if (isSaveDirectorLoaded) return;
+            isSaveDirectorLoaded = true;
             
-            if (devMode) new CustomPauseMenuButton( AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
+            
+            var scriptedValue = CustomSettingsButton.CreateScriptedInt(0);
 
+            RegisterOptionMenuButtons += (_, _) =>
+            {
+                CustomSettingsButton.Create(
+                    CustomSettingsButton.SettingsCategory.Gameplay_MainMenu,
+                    AddTranslationFromSR2E("setting.gamesettingtest", "b.testsetting", "UI"),
+                    AddTranslationFromSR2E("setting.gamesettingtest.desc", "l.testsettingdescription", "UI"),
+                    0,
+                    "testButton1",
+                    true,
+                    false,
+
+                    new CustomSettingsButton.OptionValue("val1", AddTranslationFromSR2E("setting.gamesettingtest.value1", "l.testsettingvalue1", "UI"), scriptedValue),
+                    new CustomSettingsButton.OptionValue("val2", AddTranslationFromSR2E("setting.gamesettingtest.value2", "l.testsettingvalue2", "UI"), scriptedValue),
+                    new CustomSettingsButton.OptionValue("val3", AddTranslationFromSR2E("setting.gamesettingtest.value3", "l.testsettingvalue3", "UI"), scriptedValue)
+                );
+            };
+            
+            if(AddModMenuButton.HasFlag())
+            {
+                LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
+                new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
+                    (System.Action)(() => { SR2EModMenu.Open(); }));
+                new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
+            }if(!AllowCheats.HasFlag())
+            {
+                if(AddCheatMenuButton.HasFlag())
+                {
+                    cheatMenuButton = new CustomPauseMenuButton(
+                        AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4,
+                        (System.Action)(() => { SR2ECheatMenu.Open(); }));
+                    if (!enableCheatMenuButton) cheatMenuButton.Remove();
+                }
+            } 
+            if (DevMode.HasFlag()) new CustomPauseMenuButton( AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
+
+            RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
+            
+            foreach (var expansion in expansions)
+                try { expansion.SaveDirectorLoaded(GameContext.Instance.AutoSaveDirector); }
+                catch (Exception e) { MelonLogger.Error(e); }
         }
-        public override void OnSceneWasInitialized(int buildindex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = true; }
-        public override void OnSceneWasUnloaded(int buildIndex, string sceneName) { if(sceneName=="MainMenuUI") mainMenuLoaded = false; SR2ESaveManager.WarpManager.OnSceneLoaded(); }
-        internal static bool SaveCountChanged = false;
-       
+
+        public override void OnSceneWasInitialized(int buildindex, string sceneName)
+        {
+            if(DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: "+sceneName);
+            if(sceneName=="MainMenuUI") mainMenuLoaded = true;
+            switch (sceneName)
+            {
+                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            }
+        }
+
+        public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
+        {
+            if(DebugLogging.HasFlag()) MelonLogger.Msg("OnUnloaded Scene: "+sceneName);
+            if(sceneName=="MainMenuUI") mainMenuLoaded = false;
+            try { SR2ESaveManager.WarpManager.OnSceneUnloaded(); }
+            catch (Exception e) { MelonLogger.Error(e); }
+            
+            switch (sceneName)
+            {
+                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+                case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            }
+        }
+        internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
+
         public override void OnUpdate()
         {
             if (mainMenuLoaded)
             {
-                if (!SaveCountChanged)
+                foreach (BaseUI ui in new List<BaseUI>(baseUIAddSliders))
                 {
-                    SaveGamesRootUI ui = GameObject.FindObjectOfType<SaveGamesRootUI>();
-                    if (ui != null)
+                    if (ui)
                     {
                         GameObject scrollView = GameObject.Find("ButtonsScrollView");
                         if (scrollView != null)
@@ -383,11 +536,10 @@ namespace SR2E
                             Scrollbar scrollBar = GameObject.Instantiate(SR2EConsole.parent.getObjRec<Scrollbar>("saveFilesSliderRec"), rect.transform);
                             rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
-                            scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width/250f, 0, 0);
-                            SaveCountChanged = true;
+                            scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width / 250f, 0, 0);
                         }
                     }
-                    
+                    baseUIAddSliders.Remove(ui);
                 }
             }
 
@@ -398,6 +550,7 @@ namespace SR2E
                 {
                     consoleFinishedCreating = true;
                     obj.name = "SR2EStuff";
+                    obj.tag = "";
                     GameObject.DontDestroyOnLoad(obj);
                     
                     SR2EConsole.parent = obj.transform;
@@ -409,8 +562,8 @@ namespace SR2E
                 try { SR2EConsole.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-                try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-                if(devMode) SR2EDebugDirector.DebugStatsManager.Update();
+                if(AllowCheats.HasFlag()) try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                if(DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
             }
         }
         

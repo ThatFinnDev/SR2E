@@ -1,9 +1,10 @@
 ﻿namespace SR2E.Commands;
 
-public class WarpCommand : SR2Command
+public class WarpCommand : SR2ECommand
 {
     public override string ID => "warp";
     public override string Usage => "warp <location>";
+    public override CommandType type => CommandType.Warp;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

@@ -3,10 +3,11 @@ using Il2CppMonomiPark.SlimeRancher.Rendering;
 
 namespace SR2E.Commands;
 
-public class GraphicsCommand : SR2Command
+public class GraphicsCommand : SR2ECommand
 {
     public override string ID => "graphics";
     public override string Usage => "graphics <mode>";
+    public override CommandType type => CommandType.Fun;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     { 
         if (argIndex == 0)

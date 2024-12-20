@@ -3,10 +3,11 @@ using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
-public class KillCommand : SR2Command
+public class KillCommand : SR2ECommand
 {
     public override string ID => "kill";
     public override string Usage => "kill";
+    public override CommandType type => CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
