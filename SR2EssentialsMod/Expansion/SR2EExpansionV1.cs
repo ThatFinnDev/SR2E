@@ -6,7 +6,7 @@ public abstract class SR2EExpansionV1 : MelonMod
 {
     public static TMP_FontAsset sr2Font => SR2E.SR2EEntryPoint.SR2Font;
     /// <summary>
-    /// Replacement for OnInitializeMelon
+    /// Replacement for OnInitializeMelon.
     /// </summary>
     public virtual void OnNormalInitializeMelon() { }
     /// <summary>
@@ -14,116 +14,116 @@ public abstract class SR2EExpansionV1 : MelonMod
     /// </summary>
     public sealed override void OnInitializeMelon() { }
     /// <summary>
-    /// Gets executed once SR2's own font has been loaded
-    /// The TMP_FontAsset is called sr2Font
+    /// Gets executed once SR2's own font has been loaded.
+    /// The TMP_FontAsset is called sr2Font.
     /// </summary>
     public virtual void OnSR2FontLoad() { }
     /// <summary>
-    /// Gets executed once the AutoSaveDirector is loading
+    /// Gets executed once the AutoSaveDirector is loading.
     /// </summary>
     public virtual void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector) {}
 
     /// <summary>
-    /// Gets executed once the AutoSaveDirector has finished loading
+    /// Gets executed once the AutoSaveDirector has finished loading.
     /// You should use this method to add your translations to SR2
-    /// and to add your own buttons
+    /// and to add your own buttons.
     /// </summary>
     public virtual void SaveDirectorLoaded(AutoSaveDirector autoSaveDirector) {}
     /// <summary>
-    /// Gets executed  once all commands get registered
+    /// Gets executed once all commands get registered.
     /// You should use this method to register your own commands
-    /// with SR2EConsole.RegisterCommand(new YourCommand())
+    /// with SR2EConsole.RegisterCommand(new YourCommand()).
     /// </summary>
     public virtual void LoadCommands() { }
     
     /// <summary>
-    /// Gets executed every time the scene "SystemCore" gets loaded 
+    /// Gets executed every time the scene "SystemCore" gets loaded.
     /// </summary>
     public virtual void OnSystemCoreLoad() { }
     /// <summary>
-    /// Gets executed every time the scene "SystemCore" gets unloaded 
+    /// Gets executed every time the scene "SystemCore" gets unloaded.
     /// </summary>
     public virtual void OnSystemCoreUnload() { }
     /// <summary>
-    /// Gets executed every time the scene "SystemCore" gets initialized 
+    /// Gets executed every time the scene "SystemCore" gets initialized.
     /// </summary>
     public virtual void OnSystemCoreInitialize() { }
     
     /// <summary>
-    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets loaded 
+    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets loaded.
     /// </summary>
     public virtual void OnStandaloneEngagementPromptLoad() { }
     /// <summary>
-    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets unloaded 
+    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets unloaded.
     /// </summary>
     public virtual void OnStandaloneEngagementPromptUnload() { }
     /// <summary>
-    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets initialized 
+    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets initialized.
     /// </summary>
     public virtual void OnStandaloneEngagementPromptInitialize() { }
     
     /// <summary>
-    /// Gets executed every time the scene "GameCore" gets loaded 
+    /// Gets executed every time the scene "GameCore" gets loaded.
     /// </summary>
     public virtual void OnGameCoreLoad() { }
     /// <summary>
-    /// Gets executed every time the scene "GameCore" gets unloaded 
+    /// Gets executed every time the scene "GameCore" gets unloaded.
     /// </summary>
     public virtual void OnGameCoreUnload() { }
     /// <summary>
-    /// Gets executed every time the scene "GameCore" gets initialized 
+    /// Gets executed every time the scene "GameCore" gets initialized.
     /// </summary>
     public virtual void OnGameCoreInitialize() { }
     
     /// <summary>
-    /// Gets executed every time the scene "PlayerCore" gets loaded 
+    /// Gets executed every time the scene "PlayerCore" gets loaded.
     /// </summary>
     public virtual void OnPlayerCoreLoad() { }
     /// <summary>
-    /// Gets executed every time the scene "PlayerCore" gets unloaded 
+    /// Gets executed every time the scene "PlayerCore" gets unloaded.
     /// </summary>
     public virtual void OnPlayerCoreUnload() { }
     /// <summary>
-    /// Gets executed every time the scene "PlayerCore" gets initialized 
+    /// Gets executed every time the scene "PlayerCore" gets initialized.
     /// </summary>
     public virtual void OnPlayerCoreInitialize() { }
     
     /// <summary>
-    /// Gets executed every time the scene "UICore" gets loaded 
+    /// Gets executed every time the scene "UICore" gets loaded.
     /// </summary>
     public virtual void OnUICoreLoad() { }
     /// <summary>
-    /// Gets executed every time the scene "UICore" gets unloaded 
+    /// Gets executed every time the scene "UICore" gets unloaded.
     /// </summary>
     public virtual void OnUICoreUnload() { }
     /// <summary>
-    /// Gets executed every time the scene "UICore" gets initialized 
+    /// Gets executed every time the scene "UICore" gets initialized.
     /// </summary>
     public virtual void OnUICoreInitialize() { }
     
     /// <summary>
-    /// Gets executed every time the scene "MainMenuUI" gets initialized 
+    /// Gets executed every time the scene "MainMenuUI" gets initialized.
     /// </summary>
     public virtual void OnMainMenuUILoad() { }
     /// <summary>
-    /// Gets executed every time the scene "MainMenuUI" gets loaded 
+    /// Gets executed every time the scene "MainMenuUI" gets loaded.
     /// </summary>
     public virtual void OnMainMenuUIUnload() { }
     /// <summary>
-    /// Gets executed every time the scene "MainMenuUI" gets unloaded 
+    /// Gets executed every time the scene "MainMenuUI" gets unloaded.
     /// </summary>
     public virtual void OnMainMenuUIInitialize() { }
     
     /// <summary>
-    /// Gets executed every time the scene "LoadScene" gets loaded 
+    /// Gets executed every time the scene "LoadScene" gets loaded.
     /// </summary>
     public virtual void OnLoadSceneLoad() { }
     /// <summary>
-    /// Gets executed every time the scene "LoadScene" gets unloaded 
+    /// Gets executed every time the scene "LoadScene" gets unloaded .
     /// </summary>
     public virtual void OnLoadSceneUnload() { }
     /// <summary>
-    /// Gets executed every time the scene "LoadScene" gets initialized 
+    /// Gets executed every time the scene "LoadScene" gets initialized.
     /// </summary>
     public virtual void OnLoadSceneInitialize() { }
     

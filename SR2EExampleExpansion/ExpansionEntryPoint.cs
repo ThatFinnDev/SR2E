@@ -28,7 +28,7 @@ namespace SR2EExampleExpansion
         {
             
         }
-        public override void SaveDirectorLoaded()
+        public override void SaveDirectorLoaded(AutoSaveDirector autoSaveDirector)
         {
             
         }
