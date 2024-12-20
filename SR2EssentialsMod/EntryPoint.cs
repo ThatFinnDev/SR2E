@@ -55,11 +55,8 @@ namespace SR2E
         internal static string onMainMenuLoadCommand { get { return prefs.GetEntry<string>("onMainMenuLoadCommand").Value; } }
         internal static bool syncConsole { get { return prefs.GetEntry<bool>("doesConsoleSync").Value; } }
         internal static bool quickStart { get { return prefs.GetEntry<bool>("quickStart").Value; } }
-        internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } }
-        internal static bool debugLogging { get { return prefs.GetEntry<bool>("debugLogging").Value; } }
-        internal static bool devMode { get { return prefs.GetEntry<bool>("devMode").Value; } }
+        internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } } 
         internal static bool fixSaves { get { return prefs.GetEntry<bool>("fixSaves").Value; } }
-        internal static bool showUnityErrors { get { return prefs.GetEntry<bool>("showUnityErrors").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
         internal static bool enableCheatMenuButton { get { return prefs.GetEntry<bool>("enableCheatMenuButton").Value; } }
@@ -70,6 +67,9 @@ namespace SR2E
             prefs.DeleteEntry("noclipFlySprintSpeed");
             prefs.DeleteEntry("experimentalStuff");
             prefs.DeleteEntry("skipEngagementPrompt");
+            prefs.DeleteEntry("devMode");
+            prefs.DeleteEntry("showUnityErrors");
+            prefs.DeleteEntry("debugLogging");
 
             if (!prefs.HasEntry("noclipAdjustSpeed"))
                 prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
@@ -82,9 +82,6 @@ namespace SR2E
             if (!prefs.HasEntry("quickStart"))
                 prefs.CreateEntry("quickStart", (bool)false, "Start SR2 quicker");
 
-            if (!prefs.HasEntry("showUnityErrors"))
-                prefs.CreateEntry("showUnityErrors", (bool)false, "Shows unity errors in the console", true);
-            
             if (!prefs.HasEntry("enableDebugDirector"))
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).disableWarning((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
@@ -101,10 +98,6 @@ namespace SR2E
 
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
-            if (!prefs.HasEntry("debugLogging"))
-                prefs.CreateEntry("debugLogging", (bool)false, "Log debug info", false).disableWarning();
-            if (!prefs.HasEntry("devMode"))
-                prefs.CreateEntry("devMode", (bool)false, "Enable dev mode", true);
             if (!prefs.HasEntry("fixSaves"))
                 prefs.CreateEntry("fixSaves", (bool)false, "Fix saves that broken through mods/updates","This is EXPERIMENTAL, it may break stuff or not work. Disable after usage!", false).disableWarning();
             if (!prefs.HasEntry("onSaveLoadCommand"))
@@ -180,7 +173,7 @@ namespace SR2E
             InitFlagManager();
             prefs = MelonPreferences.CreateCategory("SR2E","SR2E");
             RefreshPrefs();
-            if (showUnityErrors)
+            if (ShowUnityErrors.HasFlag())
                 Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
             try
             {
@@ -326,7 +319,7 @@ namespace SR2E
                     killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
-                    autoSaveDirector.saveSlotCount = SAVESLOT_COUNT;
+                    autoSaveDirector.saveSlotCount = SAVESLOT_COUNT.Get();
                     
                     foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
                     {
@@ -455,7 +448,7 @@ namespace SR2E
             cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { SR2ECheatMenu.Open(); }));
             if(!enableCheatMenuButton) cheatMenuButton.Remove();
             
-            if (devMode) new CustomPauseMenuButton( AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
+            if (DevMode.HasFlag()) new CustomPauseMenuButton( AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
 
             RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
             
@@ -541,7 +534,7 @@ namespace SR2E
                 try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-                if(devMode) SR2EDebugDirector.DebugStatsManager.Update();
+                if(DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
             }
         }
         

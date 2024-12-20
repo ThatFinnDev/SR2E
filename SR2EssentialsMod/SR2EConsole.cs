@@ -383,7 +383,7 @@ namespace SR2E
                     Color textColor = new Color(0.75f, 0.75f, 0.75f, 1f);
                     if (possibleAutoCompletes != null)
                     {
-                        int maxPredictions = MAX_AUTOCOMPLETE; 
+                        int maxPredictions = MAX_AUTOCOMPLETE.Get(); 
                         int predicted = 0;
                         foreach (string argument in possibleAutoCompletes)
                         {
@@ -550,7 +550,6 @@ namespace SR2E
         static GameObject autoCompleteScrollView;
         static GameObject messagePrefab;
         private static int selectedAutoComplete = 0;
-        const int maxEntryOnScreen = 6;
         internal static void Update()
         {
             if (!SR2EEntryPoint._mSRMLIsInstalled)
@@ -639,9 +638,9 @@ namespace SR2E
                     {
                         autoCompleteContent.GetChild(selectedAutoComplete).GetComponent<Image>().color =
                             new Color32(255, 211, 0, 120);
-                        if (selectedAutoComplete > maxEntryOnScreen)
+                        if (selectedAutoComplete > MAX_AUTOCOMPLETEONSCREEN.Get())
                             autoCompleteContent.position = new Vector3(autoCompleteContent.position.x,
-                                ((744f/1080f)*Screen.height) - (27 * maxEntryOnScreen) + (27 * selectedAutoComplete),
+                                ((744f/1080f)*Screen.height) - (27 * MAX_AUTOCOMPLETEONSCREEN.Get()) + (27 * selectedAutoComplete),
                                 autoCompleteContent.position.z);
 
                         else
@@ -653,7 +652,7 @@ namespace SR2E
 
                 try
                 {
-                    if (consoleContent.childCount >= MAX_CONSOLELINES) GameObject.Destroy(consoleContent.GetChild(0).gameObject);
+                    if (consoleContent.childCount >= MAX_CONSOLELINES.Get()) GameObject.Destroy(consoleContent.GetChild(0).gameObject);
                 }
                 catch  { }
 

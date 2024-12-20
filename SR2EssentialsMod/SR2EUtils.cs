@@ -595,7 +595,7 @@ namespace SR2E
                 {
                     bool isGadget = type.isGadget();
                     if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
-                    if (j > MAX_AUTOCOMPLETE) break;
+                    if (j > MAX_AUTOCOMPLETE.Get()) break;
                     try
                     {if (type.LocalizedName != null)
                         {
@@ -617,7 +617,7 @@ namespace SR2E
             {
                 if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                 
-                if (i > MAX_AUTOCOMPLETE) break;
+                if (i > MAX_AUTOCOMPLETE.Get()) break;
                 try
                 {
                     if (type.LocalizedName != null)
@@ -637,7 +637,7 @@ namespace SR2E
                 {
                     if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                 
-                    if (i > MAX_AUTOCOMPLETE) break;
+                    if (i > MAX_AUTOCOMPLETE.Get()) break;
                     try
                     {
                         if (type.LocalizedName != null)
@@ -674,7 +674,7 @@ namespace SR2E
                     if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
                     if (!includeGadget && isGadget) continue;
                     if (!includeNormal && !isGadget) continue;
-                    if (j > MAX_AUTOCOMPLETE) break;
+                    if (j > MAX_AUTOCOMPLETE.Get()) break;
                     try
                     {if (type.LocalizedName != null)
                         {
@@ -701,7 +701,7 @@ namespace SR2E
                 if (!includeGadget && isGadget) continue;
                 if (!includeNormal && !isGadget) continue;
                 
-                if (i > MAX_AUTOCOMPLETE) break;
+                if (i > MAX_AUTOCOMPLETE.Get()) break;
                 try
                 {
                     if (type.LocalizedName != null)
@@ -725,7 +725,7 @@ namespace SR2E
                     if (!includeGadget && isGadget) continue;
                     if (!includeNormal && !isGadget) continue;
                 
-                    if (i > MAX_AUTOCOMPLETE) break;
+                    if (i > MAX_AUTOCOMPLETE.Get()) break;
                     try
                     {
                         if (type.LocalizedName != null)

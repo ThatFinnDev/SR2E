@@ -2,10 +2,20 @@ using System;
 
 namespace SR2E;
 
+public enum FeatureInt
+{
+    MAX_AUTOCOMPLETE,MAX_CONSOLELINES,SAVESLOT_COUNT, MAX_AUTOCOMPLETEONSCREEN
+}
 public static class SR2EFeatureFlags
 {
     private static SR2ECommand.CommandType enabledCMDs;
-    public static SR2ECommand.CommandType enabledCommands => enabledCMDs;
+    private static Dictionary<FeatureInt, int> featureObjects = new Dictionary<FeatureInt, int>()
+    {
+        {MAX_AUTOCOMPLETE,55},
+        {MAX_CONSOLELINES,150},
+        {SAVESLOT_COUNT,75},
+        {MAX_AUTOCOMPLETEONSCREEN,6}
+    };
 
     private static FeatureFlag enabledFlags =
         CommandsLoadCommands |
@@ -36,11 +46,16 @@ public static class SR2EFeatureFlags
             if (CommandsLoadFun.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Fun;
         }
     }
+    
+    public static SR2ECommand.CommandType enabledCommands => enabledCMDs;
     public static FeatureFlag flags => enabledFlags;
     public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags.HasFlag(featureFlag);
-    internal const int MAX_AUTOCOMPLETE = 55;
-    internal const int MAX_CONSOLELINES = 150;
-    internal const int SAVESLOT_COUNT = 75;
+
+    public static int Get(this FeatureInt featureInt)
+    {
+        if (!featureObjects.ContainsKey(featureInt)) return 0;
+        return featureObjects[featureInt];
+    }
 }
 
 [Flags]
@@ -58,4 +73,6 @@ public enum FeatureFlag
     CommandsLoadMiscellaneous = 1 << 9,
     CommandsLoadFun = 1 << 10,
     ExperimentalSettingsInjection = 1 << 11,
+    DebugLogging = 1 << 12,
+    ShowUnityErrors = 1 << 13,
 }
