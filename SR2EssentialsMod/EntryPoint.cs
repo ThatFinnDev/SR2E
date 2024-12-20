@@ -68,16 +68,17 @@ namespace SR2E
             prefs.DeleteEntry("showUnityErrors");
             prefs.DeleteEntry("debugLogging");
 
-            if (!prefs.HasEntry("noclipAdjustSpeed"))
-                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
+            
+            if (!prefs.HasEntry("autoUpdate"))
+                prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
+            if (!prefs.HasEntry("fixSaves"))
+                prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).disableWarning();
+
             if (!prefs.HasEntry("consoleUsesSR2Font"))
                 prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).disableWarning((System.Action)(
-                    () =>
-                    {
-                        SetupFonts(); 
-                    }));
+                    () => { SetupFonts(); }));
             if (!prefs.HasEntry("quickStart"))
-                prefs.CreateEntry("quickStart", (bool)false, "Start SR2 quicker");
+                prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
 
             if (!prefs.HasEntry("enableDebugDirector"))
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).disableWarning((System.Action)(
@@ -95,14 +96,14 @@ namespace SR2E
 
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
-            if (!prefs.HasEntry("fixSaves"))
-                prefs.CreateEntry("fixSaves", (bool)false, "Fix saves that broken through mods/updates","This is EXPERIMENTAL, it may break stuff or not work. Disable after usage!", false).disableWarning();
             if (!prefs.HasEntry("onSaveLoadCommand"))
                 prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
                 prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).disableWarning();
             if (!prefs.HasEntry("noclipSprintMultiply"))
                 prefs.CreateEntry("noclipSprintMultiply", 2f, "NoClip sprint speed multiplier", false).disableWarning();
+            if (!prefs.HasEntry("noclipAdjustSpeed"))
+                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
         }
 
         
@@ -117,21 +118,37 @@ namespace SR2E
                 Object.DontDestroyOnLoad(rootOBJ);
             }
 
-            MelonCoroutines.Start(CheckForNewVersion());
+            if(CheckForUpdates.HasFlag())
+                MelonCoroutines.Start(CheckForNewVersion());
         }
         internal static string MLVERSION = MelonLoader.BuildInfo.Version;
         internal static string newVersion = null;
+        public static bool isLatestVersion => newVersion == BuildInfo.Version;
         IEnumerator CheckForNewVersion()
         {
             UnityWebRequest uwr = UnityWebRequest.Get("https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt");
             yield return uwr.SendWebRequest();
 
-            if (!uwr.isNetworkError)
+            if (!uwr.isNetworkError && !uwr.isHttpError)
                 newVersion = uwr.downloadHandler.text.Replace(" ","").Replace("\n","");
             
         }
 
-        
+        IEnumerator UpdateVersion()
+        {
+            UnityWebRequest uwr = UnityWebRequest.Get("https://github.com/ThatFinnDev/SR2E/releases/latest/download/SR2E.dll");
+            yield return uwr.SendWebRequest();
+            if (!uwr.isNetworkError && !uwr.isHttpError)
+                if (uwr.result == UnityWebRequest.Result.Success)
+                {
+                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Downloading SR2E complete");
+                    string path = MelonAssembly.Assembly.Location;
+                    if (File.Exists(path)) File.Move(path, path+".old");
+                    File.WriteAllBytes(path, uwr.downloadHandler.data);
+                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Restart for updates version");
+                }
+            
+        }
         //Logging code from Atmudia
         private static void AppLogUnity(string message, string trace, LogType type)
         {
@@ -166,6 +183,8 @@ namespace SR2E
         internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
         public override void OnEarlyInitializeMelon()
         {
+            if (File.Exists(MelonAssembly.Assembly.Location))
+                File.Delete(MelonAssembly.Assembly.Location+".old");
             InitFlagManager();
         }
 
@@ -173,7 +192,14 @@ namespace SR2E
         {
             instance = this;
             prefs = MelonPreferences.CreateCategory("SR2E","SR2E");
+            string path = MelonAssembly.Assembly.Location+".old";
+            if (File.Exists(path)) File.Delete(path);
             RefreshPrefs();
+            
+            if(AllowAutoUpdate.HasFlag())
+                if(autoUpdate) 
+                    if(!isLatestVersion)
+                        MelonCoroutines.Start(UpdateVersion());
             if (ShowUnityErrors.HasFlag())
                 Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
             try
@@ -207,7 +233,7 @@ namespace SR2E
         internal static Damage killDamage;
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-
+            if(DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: "+sceneName);
             switch (sceneName)
             {
                 case "SystemCore":
@@ -460,6 +486,7 @@ namespace SR2E
 
         public override void OnSceneWasInitialized(int buildindex, string sceneName)
         {
+            if(DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: "+sceneName);
             if(sceneName=="MainMenuUI") mainMenuLoaded = true;
             switch (sceneName)
             {
@@ -475,6 +502,7 @@ namespace SR2E
 
         public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
         {
+            if(DebugLogging.HasFlag()) MelonLogger.Msg("OnUnloaded Scene: "+sceneName);
             if(sceneName=="MainMenuUI") mainMenuLoaded = false;
             try { SR2ESaveManager.WarpManager.OnSceneUnloaded(); }
             catch (Exception e) { MelonLogger.Error(e); }

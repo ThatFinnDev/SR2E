@@ -22,7 +22,8 @@ public static class SR2EFeatureFlags
         AllowCheats | AllowExpansions |
         EnableModMenu | EnableConsole | EnableIl2CppDetourExceptionReporting |
         InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
-        AddCheatMenuButton | AddModMenuButton
+        AddCheatMenuButton | AddModMenuButton |
+        CheckForUpdates | AllowAutoUpdate | DevMode
         ;
 
 
@@ -31,6 +32,11 @@ public static class SR2EFeatureFlags
     {
         if (initialized) return;
         initialized = true;
+        if (DevMode.HasFlag())
+        {
+            enabledFlags &= ~CheckForUpdates;
+            enabledFlags &= ~AllowAutoUpdate;
+        }
         if (CommandsLoadCommands.HasFlag())
         {
             if (DevMode.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.DevOnly;
@@ -104,4 +110,6 @@ public enum FeatureFlag
     DisableLocalizedVersionPatch = 1 << 25,
     DisableInfHealth = 1 << 26,
     DisableInfEnergy = 1 << 27,
+    CheckForUpdates = 1 << 28, //
+    AllowAutoUpdate = 1 << 29, //
 }
