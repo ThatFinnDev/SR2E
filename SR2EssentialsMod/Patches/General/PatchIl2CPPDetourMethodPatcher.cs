@@ -5,6 +5,7 @@ public static class PatchIl2CppDetourMethodPatcher
 {
     public static bool Prefix(System.Exception ex)
     {
+        if (!EnableIl2CppDetourExceptionReporting.HasFlag()) return true;
         MelonLogger.Error("During invoking native->managed trampoline", ex);
         return false;                               
     }

@@ -1,7 +1,7 @@
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 
 namespace SR2E.Patches.MainMenu;
-//NewGameRootUIPatch
+
 [HarmonyPatch(typeof(NewGameRootUI), nameof(NewGameRootUI.Awake))]
 public static class NewGameRootUIPatch
 {

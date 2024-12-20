@@ -174,6 +174,7 @@ namespace SR2E
         /// </summary>
         public static void Open()
         {
+            if (!EnableModMenu.HasFlag()) return;
             if (SR2EEntryPoint._mSRMLIsInstalled) return;
             if (SR2EModMenu.isOpen) return;
             if (SR2ECheatMenu.isOpen) return;

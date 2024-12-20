@@ -14,6 +14,7 @@ public static class SR2MainMenuButtonPatch
     internal static bool postSafeLock;
     public static void Prefix(MainMenuLandingRootUI __instance)
     {
+        if (!InjectMainMenuButtons.HasFlag()) return;
         foreach (CustomMainMenuButton button in buttons)
         {
             if (button.label == null || button.action == null) continue;
@@ -52,6 +53,7 @@ public static class SR2MainMenuButtonPatch
     }
     private static void Postfix()
     {
+        if (!InjectMainMenuButtons.HasFlag()) return;
         foreach (CustomMainMenuButton button in buttons)
         {
             if (button.label.GetLocalizedString() == null || button.label == null || button.action == null) continue;

@@ -57,6 +57,7 @@ public static class SR2EModMenu
     /// </summary>
     public static void Open()
     {
+        if (!EnableModMenu.HasFlag()) return;
         if (SR2EConsole.isOpen) return;
         if (SR2ECheatMenu.isOpen) return;
         modMenuBlock.SetActive(true);

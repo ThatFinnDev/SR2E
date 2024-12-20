@@ -11,6 +11,7 @@ public static class SR2RanchUIButtonPatch
     internal static bool postSafeLock;
     public static void Prefix(RanchHouseMenuRoot __instance)
     {
+        if (!InjectRanchUIButtons.HasFlag()) return;
         if (safeLock) { return; }
         safeLock = true;
         foreach (CustomRanchUIButton button in buttons)

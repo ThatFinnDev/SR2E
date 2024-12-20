@@ -86,7 +86,7 @@ namespace SR2E
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).disableWarning((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
             
-            if (!prefs.HasEntry("enableCheatMenuButton"))
+            if(AllowCheats.HasFlag()) if (!prefs.HasEntry("enableCheatMenuButton"))
                 prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).disableWarning((System.Action)(
                     () =>
                     {
@@ -167,10 +167,14 @@ namespace SR2E
         }
 
         internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
+        public override void OnEarlyInitializeMelon()
+        {
+            InitFlagManager();
+        }
+
         public override void OnInitializeMelon()
         {
             instance = this;
-            InitFlagManager();
             prefs = MelonPreferences.CreateCategory("SR2E","SR2E");
             RefreshPrefs();
             if (ShowUnityErrors.HasFlag())
@@ -183,8 +187,10 @@ namespace SR2E
             catch (Exception e) { MelonLogger.Error(e); }
             foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             {
-                if(melonBase is SR2EExpansionV1)
-                   expansions.Add(melonBase as SR2EExpansionV1);
+                if(AllowExpansions.HasFlag())
+                    if (melonBase is SR2EExpansionV1)
+                        expansions.Add(melonBase as SR2EExpansionV1);
+                
                 switch (melonBase.Info.Name)
                 {
                     case "InfiniteEnergy":
@@ -442,12 +448,22 @@ namespace SR2E
                 );
             };
             
-            LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
-            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
-            cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { SR2ECheatMenu.Open(); }));
-            if(!enableCheatMenuButton) cheatMenuButton.Remove();
-            
+            if(AddModMenuButton.HasFlag())
+            {
+                LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
+                new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
+                    (System.Action)(() => { SR2EModMenu.Open(); }));
+                new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
+            }if(!AllowCheats.HasFlag())
+            {
+                if(AddCheatMenuButton.HasFlag())
+                {
+                    cheatMenuButton = new CustomPauseMenuButton(
+                        AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4,
+                        (System.Action)(() => { SR2ECheatMenu.Open(); }));
+                    if (!enableCheatMenuButton) cheatMenuButton.Remove();
+                }
+            } 
             if (DevMode.HasFlag()) new CustomPauseMenuButton( AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
 
             RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
@@ -533,7 +549,7 @@ namespace SR2E
                 try { SR2EConsole.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-                try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                if(AllowCheats.HasFlag()) try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 if(DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
             }
         }
