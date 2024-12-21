@@ -630,7 +630,8 @@ namespace SR2E
             if (Object.FindObjectOfType<PauseMenuRoot>())
             {
                 TryHideMenus();
-                TryPauseGame();
+                TryPauseGame(false);
+                if(inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(false);
             }
             else
             {
@@ -660,6 +661,11 @@ namespace SR2E
                         loader.Start();
                         break;
                     }
+            }
+
+            if (inGame)
+            {
+                HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
             }
         }
         public static void TryDisableSR2Input()

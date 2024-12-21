@@ -61,7 +61,7 @@ public class SR2ECheatMenu
         cheatMenuBlock.SetActive(true);
         gameObject.SetActive(true);
         TryPauseAndHide();
-        TryDisableSR2Input();
+        //TryDisableSR2Input();
         //Refinery
         
         refineryContent.DestroyAllChildren();

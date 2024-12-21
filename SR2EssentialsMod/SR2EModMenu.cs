@@ -53,7 +53,7 @@ public static class SR2EModMenu
         modMenuBlock.SetActive(true);
         gameObject.SetActive(true);
         TryPauseAndHide();
-        TryDisableSR2Input();
+        //TryDisableSR2Input();
         
         GameObject buttonPrefab = transform.getObjRec<GameObject>("ModMenuModMenuTemplateButtonRec");
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
