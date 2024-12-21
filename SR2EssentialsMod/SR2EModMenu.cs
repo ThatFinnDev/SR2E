@@ -95,9 +95,7 @@ public static class SR2EModMenu
 
                 }));
             }
-            catch (Exception e)
-            {
-            }
+            catch {}
 
         }
         
@@ -416,9 +414,7 @@ public static class SR2EModMenu
     static void keyWasPressed(Key key)
     {
         if (listeninAction != null)
-        {
             listeninAction.Invoke(key);
-        }
     }
 
     internal static void Update()
@@ -428,20 +424,10 @@ public static class SR2EModMenu
             if (listeninAction == null)
                 if (Key.Escape.OnKeyPressed())
                     Close();
-
-
             foreach (Key key in allPossibleKeys)
             {
-                try
-                {
-                    if(key.OnKeyPressed())
-                    {
-                        keyWasPressed(key);
-                    }
-                }
-                catch (Exception ignored)
-                {
-                }
+                try { if(key.OnKeyPressed()) keyWasPressed(key); }
+                catch { }
             }
 
             if (Mouse.current.leftButton.wasPressedThisFrame ||
@@ -453,9 +439,7 @@ public static class SR2EModMenu
                 Mouse.current.leftButton.wasPressedThisFrame)
             {
                 if (listeninAction != null)
-                {
                     listeninAction.Invoke(null);
-                }
             }
 
 
