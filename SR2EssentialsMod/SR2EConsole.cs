@@ -148,17 +148,26 @@ namespace SR2E
             }
             catch { }
         }
+
         /// <summary>
         /// Check if console is open
         /// </summary>
         public static bool isOpen
-        { get { return gameObject.activeSelf; } }
+        {
+            get
+            {
+                if (!EnableConsole.HasFlag()) return false;
+                if(gameObject==null) return false;
+                return gameObject.activeSelf;
+            }
+        }
 
         /// <summary>
         /// Closes the console
         /// </summary>
         public static void Close()
         {
+            if (!EnableConsole.HasFlag()) return;
             for (int i = 0; i < autoCompleteContent.childCount; i++)
             { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
 
@@ -190,6 +199,7 @@ namespace SR2E
         /// </summary>
         public static void Toggle()
         {
+            if (!EnableConsole.HasFlag()) return;
             if (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "StandaloneStart" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "LoadScene")
@@ -330,10 +340,11 @@ namespace SR2E
                         }
                     }
                     else
-                        if (isOpen)
-                            if (!SR2EModMenu.isOpen)
-                                if (!SR2ECheatMenu.isOpen)
-                                    SendError(translation("cmd.unknowncommand"));
+                        if(!silent)
+                            if (isOpen)
+                                if (!SR2EModMenu.isOpen)
+                                    if (!SR2ECheatMenu.isOpen)
+                                        SendError(translation("cmd.unknowncommand"));
                 }
             }
                 
@@ -601,7 +612,7 @@ namespace SR2E
                     }
                 }
 
-                if(openKey.wasPressedThisFrame)
+                if(openKey.OnKeyPressed())
                     Toggle();
                 /*
                 if (Keyboard.current.ctrlKey.wasPressedThisFrame)

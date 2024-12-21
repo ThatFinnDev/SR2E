@@ -221,7 +221,7 @@ namespace SR2E
                 try { expansion.OnNormalInitializeMelon(); }
                 catch (Exception e) { MelonLogger.Error(e); }
             
-            LoadLanguage(defaultLanguageCode);
+            LoadLanguage(DEFAULT_LANGUAGECODE.Get());
         }
 
         public override void OnApplicationQuit()

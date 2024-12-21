@@ -26,6 +26,7 @@ public static class SR2EModMenu
     /// </summary>
     public static void Close()
     {
+        if (!EnableModMenu.HasFlag()) return;
         if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
         modMenuBlock.SetActive(false);
         gameObject.SetActive(false);
@@ -192,14 +193,19 @@ public static class SR2EModMenu
     /// </summary>
     public static void Toggle()
     {
-
+        if (!EnableModMenu.HasFlag()) return;
         if (isOpen) Close();
         else Open();
     }
 
-    internal static bool isOpen
+    public static bool isOpen
     {
-        get { return gameObject == null ? false : gameObject.activeSelf; }
+        get
+        {
+            if (!EnableModMenu.HasFlag()) return false;
+            if(gameObject==null) return false;
+            return gameObject.activeSelf;
+        }
     }
 
     static GameObject entryTemplate;

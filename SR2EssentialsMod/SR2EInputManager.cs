@@ -1,12 +1,13 @@
 using System;
 using System.Runtime.InteropServices;
+using SR2E.Storage;
 
 namespace SR2E;
 
 
 public enum KeyState
 {
-    Released, JustPressed, JustReleased, Pressed
+    Released, JustPressed, Pressed, JustReleased,
 }
 public static class SR2EInputManager
 {
@@ -36,5 +37,56 @@ public static class SR2EInputManager
     public static bool OnKeyUnpressed(this Key key) => keyStates[(int)key]==KeyState.JustReleased;
     public static bool OnKey(this Key key) => keyStates[(int)key]==KeyState.Pressed;
     
+    public static bool OnKeyPressed(this MultiKey multiKey)
+    {
+        bool shouldContinue = false;
+        foreach (Key key in multiKey.requiredKeys)
+            if(key.OnKeyPressed())
+            {
+                foreach (Key keyTwo in multiKey.requiredKeys)
+                    if (key != keyTwo)
+                        if (!(keyTwo.OnKey() || keyTwo.OnKeyPressed()))
+                        {
+                            shouldContinue = true;
+                            break;
+                        }
+                if (shouldContinue)
+                {
+                    shouldContinue = false;
+                    continue;
+                }
+                return true;
+            }
+        return false;
+    }
+
+    public static bool OnKeyUnpressed(this MultiKey multiKey)
+    {
+        bool shouldContinue = false;
+        foreach (Key key in multiKey.requiredKeys)
+            if(key.OnKeyUnpressed())
+            {
+                foreach (Key keyTwo in multiKey.requiredKeys)
+                    if (key != keyTwo)
+                        if (!(keyTwo.OnKey() || keyTwo.OnKeyUnpressed()))
+                        {
+                            shouldContinue = true;
+                            break;
+                        }
+                if (shouldContinue)
+                {
+                    shouldContinue = false;
+                    continue;
+                }
+                return true;
+            }
+        return false;
+    }
+    
+    public static bool OnKey(this MultiKey multiKey)
+    {
+        foreach (Key key in multiKey.requiredKeys) if(!key.OnKey()) return false;
+        return true;
+    }
 }
 

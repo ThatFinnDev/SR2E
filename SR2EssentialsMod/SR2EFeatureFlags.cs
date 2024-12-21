@@ -10,7 +10,7 @@ public enum FeatureIntegerValue
 }
 public enum FeatureStringValue
 {
-    TEST_STRING
+    DEFAULT_LANGUAGECODE
 }
 public static class SR2EFeatureFlags
 {
@@ -31,7 +31,7 @@ public static class SR2EFeatureFlags
     };
     private static Dictionary<FeatureStringValue, string> defaultFeatureStrings = new Dictionary<FeatureStringValue, string>()
     {
-        {TEST_STRING,"test"}
+        {DEFAULT_LANGUAGECODE,"en"}
     };
     
     
