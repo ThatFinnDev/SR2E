@@ -90,10 +90,13 @@ namespace SR2E
                 prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).disableWarning((System.Action)(
                     () =>
                     {
-                        if (!enableCheatMenuButton)
-                            cheatMenuButton.Remove();
-                        if (enableCheatMenuButton)
-                            cheatMenuButton.AddAgain();
+                        if(cheatMenuButton!=null)
+                        {
+                            if (!enableCheatMenuButton)
+                                cheatMenuButton.Remove();
+                            if (enableCheatMenuButton)
+                                cheatMenuButton.AddAgain();
+                        }
                     }));
 
             if (!prefs.HasEntry("doesConsoleSync"))
@@ -467,7 +470,8 @@ namespace SR2E
                 new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
                     (System.Action)(() => { SR2EModMenu.Open(); }));
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
-            }if(!AllowCheats.HasFlag())
+            }
+            if(AllowCheats.HasFlag())
             {
                 if(AddCheatMenuButton.HasFlag())
                 {

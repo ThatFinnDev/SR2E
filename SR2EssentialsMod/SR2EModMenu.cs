@@ -31,21 +31,11 @@ public static class SR2EModMenu
         modMenuBlock.SetActive(false);
         gameObject.SetActive(false);
         gameObject.getObjRec<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
-
-        if (SR2EEntryPoint.mainMenuLoaded)
-        {
-            foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
-                if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
-                    loader.parentTransform.name == "MainMenuRoot")
-                {
-                    loader.Start();
-                    break;
-                }
-        }
-        else SystemContext.Instance.SceneLoader.UnpauseGame();
-
-
-
+        
+        TryUnPauseGame();
+        TryUnHideMenus();
+        TryEnableSR2Input();
+        
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         for (int i = 0; i < modContent.childCount; i++)
             Object.Destroy(modContent.GetChild(i).gameObject);
@@ -59,42 +49,12 @@ public static class SR2EModMenu
     public static void Open()
     {
         if (!EnableModMenu.HasFlag()) return;
-        if (SR2EConsole.isOpen) return;
-        if (SR2ECheatMenu.isOpen) return;
+        if (isAnyMenuOpen) return;
         modMenuBlock.SetActive(true);
         gameObject.SetActive(true);
-
-        if (SR2EEntryPoint.mainMenuLoaded)
-            try
-            {
-                _mainMenuLandingRootUI = Object.FindObjectOfType<MainMenuLandingRootUI>();
-                _mainMenuLandingRootUI.gameObject.SetActive(false);
-                _mainMenuLandingRootUI.enabled = false;
-                _mainMenuLandingRootUI.Close(true, null);
-            }
-            catch
-            {
-            }
-        else
-        {
-            try
-            {
-                PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>(); 
-                pauseMenuRoot.Close();
-            }catch { }
-            try
-            {
-                SystemContext.Instance.SceneLoader.TryPauseGame();
-            }catch { }
-            try
-            {
-                PauseMenuDirector pauseMenuDirector = Object.FindObjectOfType<PauseMenuDirector>(); 
-                pauseMenuDirector.PauseGame();
-            }catch { }
-        }
-
-
-
+        TryPauseAndHide();
+        TryDisableSR2Input();
+        
         GameObject buttonPrefab = transform.getObjRec<GameObject>("ModMenuModMenuTemplateButtonRec");
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (RottenMelon rotten in loadedAssembly.RottenMelons)

@@ -168,13 +168,15 @@ namespace SR2E
         public static void Close()
         {
             if (!EnableConsole.HasFlag()) return;
-            for (int i = 0; i < autoCompleteContent.childCount; i++)
-            { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
 
             consoleBlock.SetActive(false);
             gameObject.SetActive(false);
-            try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch  { }
-            Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
+            for (int i = 0; i < autoCompleteContent.childCount; i++)
+            { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
+            
+
+            TryUnPauseGame(false);
+            TryEnableSR2Input();
 
         }
 
@@ -184,14 +186,13 @@ namespace SR2E
         public static void Open()
         {
             if (!EnableConsole.HasFlag()) return;
-            if (SR2EModMenu.isOpen) return;
-            if (SR2ECheatMenu.isOpen) return;
+            if (isAnyMenuOpen) return;
             if (SR2ESaveManager.WarpManager.warpTo != null) return;
-
             consoleBlock.SetActive(true);
             gameObject.SetActive(true);
-            try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch  { }
-            Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
+            TryPauseGame(false);
+
+            TryDisableSR2Input();
             RefreshAutoComplete(commandInput.text);
         }
         /// <summary>

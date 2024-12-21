@@ -38,12 +38,16 @@ public class SR2ECheatMenu
     /// </summary>
     public static void Close()
     {
+        if (!isOpen) return;
         if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
         cheatMenuBlock.SetActive(false);
         gameObject.SetActive(false);
         gameObject.getObjRec<Button>("CheatMenuMainSelectionButtonRec").onClick.Invoke();
 
-        SystemContext.Instance.SceneLoader.UnpauseGame();
+
+        TryUnHideMenus();
+        TryUnPauseGame();
+        TryEnableSR2Input();
     }
 
 
@@ -53,25 +57,11 @@ public class SR2ECheatMenu
     public static void Open()
     {
         if(!AllowCheats.HasFlag()) return;
-        if (SR2EConsole.isOpen) return;
-        if (SR2EModMenu.isOpen) return;
+        if (isAnyMenuOpen) return;
         cheatMenuBlock.SetActive(true);
         gameObject.SetActive(true);
-
-        try
-        {
-            PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>(); 
-            pauseMenuRoot.Close();
-        }catch { }
-        try
-        {
-            SystemContext.Instance.SceneLoader.TryPauseGame();
-        }catch { }
-        try
-        {
-            PauseMenuDirector pauseMenuDirector = Object.FindObjectOfType<PauseMenuDirector>(); 
-            pauseMenuDirector.PauseGame();
-        }catch { }
+        TryPauseAndHide();
+        TryDisableSR2Input();
         //Refinery
         
         refineryContent.DestroyAllChildren();

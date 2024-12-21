@@ -2,7 +2,10 @@
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Linq;
 using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
+using Il2CppMonomiPark.SlimeRancher.UI;
+using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
@@ -11,6 +14,7 @@ using UnityEngine.InputSystem;
 using SR2E.Storage;
 using Unity.Mathematics;
 using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.UI;
 using Enumerable = Il2CppSystem.Linq.Enumerable;
 
 namespace SR2E
@@ -601,5 +605,70 @@ namespace SR2E
             );
         }
 
+        public static bool isAnyMenuOpen => SR2EConsole.isOpen ? true : SR2EModMenu.isOpen ? true : SR2ECheatMenu.isOpen;
+        public static void TryHideMenus()
+        {
+            if (SR2EEntryPoint.mainMenuLoaded)
+            {
+                try
+                {
+                    var ui  = Object.FindObjectOfType<MainMenuLandingRootUI>();
+                    ui.gameObject.SetActive(false);
+                    ui.enabled = false;
+                    ui.Close(true, null);
+                }
+                catch { }
+            }
+            if(inGame)
+            {
+                try { Object.FindObjectOfType<PauseMenuRoot>().Close(); } catch { }
+            }
+        }
+
+        public static void TryPauseAndHide()
+        {
+            if (Object.FindObjectOfType<PauseMenuRoot>())
+            {
+                TryHideMenus();
+                TryPauseGame();
+            }
+            else
+            {
+                TryPauseGame();
+                TryHideMenus();
+            }
+        }
+        public static void TryPauseGame(bool usePauseMenu = true)
+        {
+            try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch { }
+            if(usePauseMenu) try { Object.FindObjectOfType<PauseMenuDirector>().PauseGame(); } catch { }
+        }
+        public static void TryUnPauseGame(bool usePauseMenu = true)
+        {
+            try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch { }
+            if(usePauseMenu) try { Object.FindObjectOfType<PauseMenuDirector>().UnPauseGame(); } catch { }
+            else try { if(Object.FindObjectOfType<PauseMenuRoot>() != null) Object.FindObjectOfType<PauseMenuDirector>().PauseGame(); } catch { }
+        }
+        public static void TryUnHideMenus()
+        {
+            if (SR2EEntryPoint.mainMenuLoaded)
+            {
+                foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
+                    if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
+                        loader.parentTransform.name == "MainMenuRoot")
+                    {
+                        loader.Start();
+                        break;
+                    }
+            }
+        }
+        public static void TryDisableSR2Input()
+        {
+            Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
+        }
+        public static void TryEnableSR2Input()
+        {
+            Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
+        }
     }
 }
