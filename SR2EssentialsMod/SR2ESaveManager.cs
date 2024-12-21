@@ -209,7 +209,7 @@ public static class SR2ESaveManager
             try
             {
                 foreach (KeyValuePair<Key,string> keyValuePair in data.keyBinds)
-                    if (keyValuePair.Key.kc().wasPressedThisFrame)
+                    if (keyValuePair.Key.OnKeyPressed())
                         if(WarpManager.warpTo==null)
                             SR2EConsole.ExecuteByString(keyValuePair.Value,true);
             }

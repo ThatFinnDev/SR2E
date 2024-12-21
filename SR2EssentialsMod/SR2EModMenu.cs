@@ -229,7 +229,7 @@ public static class SR2EModMenu
         allPossibleKeys.Remove(Key.LeftCommand);
         allPossibleKeys.Remove(Key.RightCommand);
         allPossibleKeys.Remove(Key.LeftWindows);
-        allPossibleKeys.Remove(Key.RightCommand);
+        allPossibleKeys.Remove(Key.RightWindows);
         
         transform.getObjRec<Image>("ModMenuModMenuSelectionButtonRec").sprite = whitePillBg;
         transform.getObjRec<Image>("ModMenuConfigurationSelectionButtonRec").sprite = whitePillBg;
@@ -401,8 +401,7 @@ public static class SR2EModMenu
                             }
                         }));
                     }
-                    //KeyCode Conversion doesnt work (because of different keyboard layouts, this is why it is disabled
-                    else if (entry.BoxedEditedValue is Key /*||entry.BoxedEditedValue is KeyCode*/)
+                    else if (entry.BoxedEditedValue is Key)
                     {
                         obj.transform.GetChild(1).gameObject.SetActive(false);
                         obj.transform.GetChild(4).gameObject.SetActive(true);
@@ -426,19 +425,6 @@ public static class SR2EModMenu
                                     {
                                         textMesh.text = key.ToString();
                                         entry.BoxedEditedValue = key.Value;
-                                        if (!entriesWithoutWarning.ContainsKey(entry))
-                                            warningText.SetActive(true);
-                                        else
-                                        {
-                                            System.Action action = entriesWithoutWarning[entry];
-                                            if (action != null)
-                                                action.Invoke();
-                                        }
-                                    }
-                                    else if (entry.BoxedEditedValue is KeyCode)
-                                    {
-                                        textMesh.text = KeyToKeyCode(key.Value).ToString();
-                                        entry.BoxedEditedValue = KeyToKeyCode(key.Value);
                                         if (!entriesWithoutWarning.ContainsKey(entry))
                                             warningText.SetActive(true);
                                         else
@@ -474,7 +460,7 @@ public static class SR2EModMenu
         if (isOpen)
         {
             if (listeninAction == null)
-                if (Key.Escape.kc().wasPressedThisFrame)
+                if (Key.Escape.OnKeyPressed())
                     Close();
 
 
@@ -482,7 +468,7 @@ public static class SR2EModMenu
             {
                 try
                 {
-                    if(key.kc().wasPressedThisFrame)
+                    if(key.OnKeyPressed())
                     {
                         keyWasPressed(key);
                     }

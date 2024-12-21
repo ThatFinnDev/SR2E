@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using Il2CppKinematicCharacterController;
 using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.Player.FirstPersonScreenEffects;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
@@ -127,6 +128,7 @@ namespace SR2E
         public static bool isLatestVersion => newVersion == BuildInfo.Version;
         IEnumerator CheckForNewVersion()
         {
+            
             UnityWebRequest uwr = UnityWebRequest.Get("https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt");
             yield return uwr.SendWebRequest();
 
@@ -542,7 +544,6 @@ namespace SR2E
                     baseUIAddSliders.Remove(ui);
                 }
             }
-
             if (!consoleFinishedCreating)
             {
                 GameObject obj = GameObject.FindGameObjectWithTag("Respawn");
@@ -559,6 +560,7 @@ namespace SR2E
             }
             else
             {
+                try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EConsole.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }

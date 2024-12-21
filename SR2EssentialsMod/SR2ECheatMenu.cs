@@ -165,7 +165,7 @@ public class SR2ECheatMenu
     {
         if (isOpen)
         {
-            if (Key.Escape.kc().wasPressedThisFrame)
+            if (Key.Escape.OnKeyPressed())
                 Close();
         }
     }

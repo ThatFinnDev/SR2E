@@ -498,5 +498,8 @@
       <HintPath>Libs\UnityEngine.XRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="WindowsBase">
+      <HintPath>Libs\WindowsBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

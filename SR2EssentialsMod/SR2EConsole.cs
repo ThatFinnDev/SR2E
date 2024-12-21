@@ -544,7 +544,7 @@ namespace SR2E
             if(syncedSetuped) SetupConsoleSync();
         }
 
-        static MultiKey openKey = new MultiKey(new Key[] { Key.LeftCtrl, Key.Tab });
+        static MultiKey openKey = new MultiKey(new Key[] { Key.LeftControl, Key.Tab });
         static TMP_InputField commandInput;
         static GameObject autoCompleteEntryPrefab;
         static GameObject consoleBlock;
@@ -569,7 +569,7 @@ namespace SR2E
                             scrollCompletlyDown = false;
                         }
 
-                    if (Key.Tab.kc().wasPressedThisFrame)
+                    if (Key.Tab.OnKeyPressed())
                     {
                         if (autoCompleteContent.childCount != 0)
                             try
@@ -585,13 +585,13 @@ namespace SR2E
                     }
                 }
 
-                if (Key.Enter.kc().wasPressedThisFrame)
+                if (Key.Enter.OnKeyPressed())
                     if (commandInput.text != "")
                         Execute();
 
                 if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
                 {
-                    if (Key.UpArrow.kc().wasPressedThisFrame)
+                    if (Key.UpArrow.OnKeyPressed())
                     {
                         commandInput.text = commandHistory[commandHistoryIdx];
                         commandInput.MoveToEndOfLine(false, false);
@@ -612,10 +612,10 @@ namespace SR2E
                         Toggle();*/
                 if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
                 {
-                    if (Key.DownArrow.kc().wasPressedThisFrame)
+                    if (Key.DownArrow.OnKeyPressed())
                         NextAutoComplete();
 
-                    if (Key.UpArrow.kc().wasPressedThisFrame)
+                    if (Key.UpArrow.OnKeyPressed())
                         PrevAutoComplete();
                 }
 
