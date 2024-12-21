@@ -39,47 +39,41 @@ public static class SR2EInputManager
     
     public static bool OnKeyPressed(this MultiKey multiKey)
     {
-        bool shouldContinue = false;
         foreach (Key key in multiKey.requiredKeys)
-            if(key.OnKeyPressed())
+        {
+            if (key.OnKeyPressed())
             {
-                foreach (Key keyTwo in multiKey.requiredKeys)
-                    if (key != keyTwo)
-                        if (!(keyTwo.OnKey() || keyTwo.OnKeyPressed()))
-                        {
-                            shouldContinue = true;
-                            break;
-                        }
-                if (shouldContinue)
-                {
-                    shouldContinue = false;
-                    continue;
-                }
-                return true;
+                bool allKeysPressed = true;
+                foreach (Key requiredKey in multiKey.requiredKeys)
+                    if (!(requiredKey.OnKey() || requiredKey.OnKeyPressed()))
+                    {
+                        allKeysPressed = false;
+                        break;
+                    }
+                if (allKeysPressed) return true;
             }
+        }
         return false;
     }
 
+
+
     public static bool OnKeyUnpressed(this MultiKey multiKey)
     {
-        bool shouldContinue = false;
         foreach (Key key in multiKey.requiredKeys)
-            if(key.OnKeyUnpressed())
+        {
+            if (key.OnKeyUnpressed())
             {
-                foreach (Key keyTwo in multiKey.requiredKeys)
-                    if (key != keyTwo)
-                        if (!(keyTwo.OnKey() || keyTwo.OnKeyUnpressed()))
-                        {
-                            shouldContinue = true;
-                            break;
-                        }
-                if (shouldContinue)
-                {
-                    shouldContinue = false;
-                    continue;
-                }
-                return true;
+                bool allKeysUnpressed = true;
+                foreach (Key requiredKey in multiKey.requiredKeys)
+                    if (!(requiredKey.OnKey() || requiredKey.OnKeyUnpressed()))
+                    {
+                        allKeysUnpressed = false;
+                        break;
+                    }
+                if (allKeysUnpressed) return true;
             }
+        }
         return false;
     }
     

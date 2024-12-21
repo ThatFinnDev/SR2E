@@ -555,7 +555,7 @@ namespace SR2E
             if(syncedSetuped) SetupConsoleSync();
         }
 
-        static MultiKey openKey = new MultiKey(new Key[] { Key.LeftControl, Key.Tab });
+        static MultiKey openKey = new MultiKey( Key.Tab,Key.LeftControl);
         static TMP_InputField commandInput;
         static GameObject autoCompleteEntryPrefab;
         static GameObject consoleBlock;
