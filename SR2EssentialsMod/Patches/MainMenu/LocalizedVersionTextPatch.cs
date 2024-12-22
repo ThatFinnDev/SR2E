@@ -9,7 +9,7 @@ public static class LocalizedVersionTextPatch
 {
     public static void Postfix(LocalizedVersionText __instance)
     {
-        if (EnableLocalizedVersionPatch.HasFlag()) return;
+        if (!EnableLocalizedVersionPatch.HasFlag()) return;
         try
         {
             TextMeshProUGUI versionLabel = __instance.GetComponent<TextMeshProUGUI>();

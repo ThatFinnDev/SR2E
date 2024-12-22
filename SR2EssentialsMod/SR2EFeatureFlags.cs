@@ -260,8 +260,8 @@ public enum FeatureFlag : long
     DevMode = 1L << 1,
     DebugLogging = 1L << 2,
     ShowUnityErrors = 1L << 3,
-    ExperimentalSettingsInjection = 1L << 4,
-    Experiments = 1L << 5,
+    Experiments = 1L << 4,
+    ExperimentalSettingsInjection = 1L << 5,
     
     //Commands+Dev
     CommandsLoadDevOnly = 1L << 6, 
