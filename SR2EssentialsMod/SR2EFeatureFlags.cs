@@ -43,8 +43,9 @@ public static class SR2EFeatureFlags
     private static FeatureFlag enabledFlags = None;
     
     static bool initialized = false;
-    internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
+    //internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
 
+    internal static string flagfile_path => Application.persistentDataPath + "/.sr2eflags.xml";
     static void SaveToFlagFile()
     {
         XmlDocument xmlDoc = new XmlDocument();
@@ -103,6 +104,7 @@ public static class SR2EFeatureFlags
             xmlElement.SetAttribute("default", value.GetDefault().ToLower());
         }
         // Save the XML document to a file
+        
         xmlDoc.Save(flagfile_path);
         File.SetAttributes(flagfile_path, FileAttributes.Hidden);
     }
