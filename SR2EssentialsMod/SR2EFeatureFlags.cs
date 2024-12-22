@@ -22,7 +22,7 @@ public static class SR2EFeatureFlags
             InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
             AddCheatMenuButton | AddModMenuButton |
             CheckForUpdates | AllowAutoUpdate | 
-            EnableInfHealth | EnableInfEnergy | EnableCheatMenu;
+            EnableInfHealth | EnableInfEnergy | EnableCheatMenu | EnableLocalizedVersionPatch;
     static FeatureFlag flagsToForceOff;
     private static Dictionary<FeatureIntegerValue, int> defaultFeatureInts = new Dictionary<FeatureIntegerValue, int>()
     {
@@ -286,7 +286,7 @@ public enum FeatureFlag : long
     //Misc
     AddModMenuButton = 1L << 20, //
     AllowExpansions = 1L << 21, //
-    DisableLocalizedVersionPatch = 1L << 22,
+    EnableLocalizedVersionPatch = 1L << 22, //
     InjectSR2Translations = 1L << 23, //
     EnableIl2CppDetourExceptionReporting = 1L << 24, //
     
