@@ -140,6 +140,7 @@ namespace SR2E
             
         }
 
+        internal static bool updatedSR2E = false;
         IEnumerator UpdateVersion()
         {
             UnityWebRequest uwr = UnityWebRequest.Get("https://github.com/ThatFinnDev/SR2E/releases/latest/download/SR2E.dll");
@@ -151,7 +152,8 @@ namespace SR2E
                     string path = MelonAssembly.Assembly.Location;
                     if (File.Exists(path)) File.Move(path, path+".old");
                     File.WriteAllBytes(path, uwr.downloadHandler.data);
-                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Restart for updates version");
+                    updatedSR2E = true;
+                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Need restart for updates version");
                 }
             
         }

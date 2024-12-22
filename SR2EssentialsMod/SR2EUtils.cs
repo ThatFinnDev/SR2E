@@ -15,6 +15,7 @@ using SR2E.Storage;
 using Unity.Mathematics;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.Playables;
 using Enumerable = Il2CppSystem.Linq.Enumerable;
 
 namespace SR2E
@@ -70,6 +71,11 @@ namespace SR2E
         internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new Dictionary<string, LocalizedString>();
         public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
         {
+            if (!InjectSR2Translations.HasFlag())
+            {
+                var tutorial = LocalizationUtil.GetTable("Tutorial");
+                foreach (var pair in tutorial.m_TableEntries) return new LocalizedString(tutorial.SharedData.TableCollectionName, pair.Value.SharedEntry.Id);
+            }
             StringTable table2 = LocalizationUtil.GetTable(table);
 
             System.Collections.Generic.Dictionary<string, string> dictionary;
@@ -79,7 +85,6 @@ namespace SR2E
 
                 addedTranslations.Add(table, dictionary);
             }
-
             string? key0 = null;
 
             if (key == "l.SR2E.LibraryTest")

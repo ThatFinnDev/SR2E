@@ -215,9 +215,10 @@ public static class SR2EFeatureFlags
         {CommandsLoadMiscellaneous,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadFun,new []{new FFRActivated(CommandsLoadCommands)}},
         {ExperimentalSettingsInjection,new []{new FFRActivated(Experiments)}},
-        {AddCheatMenuButton,new []{new FFRActivated(EnableModMenu), new FFRActivated(InjectPauseButtons)}},
+        {EnableCheatMenu,new []{new FFRActivated(AllowCheats)}},
+        {AddCheatMenuButton,new []{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
         {AddModMenuButton,new []{new FFRActivated(AllowCheats), new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
-        {EnableCheatMenu,new []{new FFRActivated(AllowCheats)}}
+
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {
