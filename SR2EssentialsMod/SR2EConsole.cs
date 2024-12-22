@@ -472,8 +472,8 @@ namespace SR2E
                     if(sr2Command!=null) 
                         if((enabledCommands & sr2Command.type) == sr2Command.type)
                         {
-                            if (sr2Command is InfiniteHealthCommand && DisableInfHealth.HasFlag()) continue;
-                            if (sr2Command is InfiniteEnergyCommand && DisableInfEnergy.HasFlag()) continue;
+                            if (sr2Command is InfiniteHealthCommand && EnableInfHealth.HasFlag()) continue;
+                            if (sr2Command is InfiniteEnergyCommand && EnableInfEnergy.HasFlag()) continue;
                             RegisterCommand(sr2Command);
                         }
             }
