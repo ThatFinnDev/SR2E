@@ -148,24 +148,35 @@ namespace SR2E
             }
             catch { }
         }
+
         /// <summary>
         /// Check if console is open
         /// </summary>
         public static bool isOpen
-        { get { return gameObject.activeSelf; } }
+        {
+            get
+            {
+                if (!EnableConsole.HasFlag()) return false;
+                if(gameObject==null) return false;
+                return gameObject.activeSelf;
+            }
+        }
 
         /// <summary>
         /// Closes the console
         /// </summary>
         public static void Close()
         {
-            for (int i = 0; i < autoCompleteContent.childCount; i++)
-            { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
+            if (!EnableConsole.HasFlag()) return;
 
             consoleBlock.SetActive(false);
             gameObject.SetActive(false);
-            try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch  { }
-            Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
+            for (int i = 0; i < autoCompleteContent.childCount; i++)
+            { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
+            
+
+            TryUnPauseGame(false);
+            TryEnableSR2Input();
 
         }
 
@@ -175,14 +186,13 @@ namespace SR2E
         public static void Open()
         {
             if (!EnableConsole.HasFlag()) return;
-            if (SR2EModMenu.isOpen) return;
-            if (SR2ECheatMenu.isOpen) return;
+            if (isAnyMenuOpen) return;
             if (SR2ESaveManager.WarpManager.warpTo != null) return;
-
             consoleBlock.SetActive(true);
             gameObject.SetActive(true);
-            try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch  { }
-            Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
+            TryPauseGame(false);
+
+            TryDisableSR2Input();
             RefreshAutoComplete(commandInput.text);
         }
         /// <summary>
@@ -190,6 +200,7 @@ namespace SR2E
         /// </summary>
         public static void Toggle()
         {
+            if (!EnableConsole.HasFlag()) return;
             if (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "StandaloneStart" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "CompanyLogo" &&
                 SystemContext.Instance.SceneLoader.CurrentSceneGroup.name != "LoadScene")
@@ -330,10 +341,11 @@ namespace SR2E
                         }
                     }
                     else
-                        if (isOpen)
-                            if (!SR2EModMenu.isOpen)
-                                if (!SR2ECheatMenu.isOpen)
-                                    SendError(translation("cmd.unknowncommand"));
+                        if(!silent)
+                            if (isOpen)
+                                if (!SR2EModMenu.isOpen)
+                                    if (!SR2ECheatMenu.isOpen)
+                                        SendError(translation("cmd.unknowncommand"));
                 }
             }
                 
@@ -460,8 +472,8 @@ namespace SR2E
                     if(sr2Command!=null) 
                         if((enabledCommands & sr2Command.type) == sr2Command.type)
                         {
-                            if (sr2Command is InfiniteHealthCommand && DisableInfHealth.HasFlag()) continue;
-                            if (sr2Command is InfiniteEnergyCommand && DisableInfEnergy.HasFlag()) continue;
+                            if (sr2Command is InfiniteHealthCommand && EnableInfHealth.HasFlag()) continue;
+                            if (sr2Command is InfiniteEnergyCommand && EnableInfEnergy.HasFlag()) continue;
                             RegisterCommand(sr2Command);
                         }
             }
@@ -544,7 +556,7 @@ namespace SR2E
             if(syncedSetuped) SetupConsoleSync();
         }
 
-        static MultiKey openKey = new MultiKey(new Key[] { Key.LeftCtrl, Key.Tab });
+        static MultiKey openKey = new MultiKey( Key.Tab,Key.LeftControl);
         static TMP_InputField commandInput;
         static GameObject autoCompleteEntryPrefab;
         static GameObject consoleBlock;
@@ -569,7 +581,7 @@ namespace SR2E
                             scrollCompletlyDown = false;
                         }
 
-                    if (Key.Tab.kc().wasPressedThisFrame)
+                    if (Key.Tab.OnKeyPressed())
                     {
                         if (autoCompleteContent.childCount != 0)
                             try
@@ -585,13 +597,13 @@ namespace SR2E
                     }
                 }
 
-                if (Key.Enter.kc().wasPressedThisFrame)
+                if (Key.Enter.OnKeyPressed())
                     if (commandInput.text != "")
                         Execute();
 
                 if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
                 {
-                    if (Key.UpArrow.kc().wasPressedThisFrame)
+                    if (Key.UpArrow.OnKeyPressed())
                     {
                         commandInput.text = commandHistory[commandHistoryIdx];
                         commandInput.MoveToEndOfLine(false, false);
@@ -601,7 +613,7 @@ namespace SR2E
                     }
                 }
 
-                if(openKey.wasPressedThisFrame)
+                if(openKey.OnKeyPressed())
                     Toggle();
                 /*
                 if (Keyboard.current.ctrlKey.wasPressedThisFrame)
@@ -612,10 +624,10 @@ namespace SR2E
                         Toggle();*/
                 if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
                 {
-                    if (Key.DownArrow.kc().wasPressedThisFrame)
+                    if (Key.DownArrow.OnKeyPressed())
                         NextAutoComplete();
 
-                    if (Key.UpArrow.kc().wasPressedThisFrame)
+                    if (Key.UpArrow.OnKeyPressed())
                         PrevAutoComplete();
                 }
 

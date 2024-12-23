@@ -10,7 +10,7 @@ public enum FeatureIntegerValue
 }
 public enum FeatureStringValue
 {
-    TEST_STRING
+    DEFAULT_LANGUAGECODE
 }
 public static class SR2EFeatureFlags
 {
@@ -21,7 +21,9 @@ public static class SR2EFeatureFlags
             EnableModMenu | EnableConsole | EnableIl2CppDetourExceptionReporting |
             InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
             AddCheatMenuButton | AddModMenuButton |
-            CheckForUpdates | AllowAutoUpdate;
+            CheckForUpdates | AllowAutoUpdate | 
+            EnableInfHealth | EnableInfEnergy | EnableCheatMenu | EnableLocalizedVersionPatch;
+    static FeatureFlag flagsToForceOff;
     private static Dictionary<FeatureIntegerValue, int> defaultFeatureInts = new Dictionary<FeatureIntegerValue, int>()
     {
         {MAX_AUTOCOMPLETE,55},
@@ -31,7 +33,7 @@ public static class SR2EFeatureFlags
     };
     private static Dictionary<FeatureStringValue, string> defaultFeatureStrings = new Dictionary<FeatureStringValue, string>()
     {
-        {TEST_STRING,"test"}
+        {DEFAULT_LANGUAGECODE,"en"}
     };
     
     
@@ -41,14 +43,11 @@ public static class SR2EFeatureFlags
     private static FeatureFlag enabledFlags = None;
     
     static bool initialized = false;
-    internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
+    //internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
 
+    internal static string flagfile_path => Application.persistentDataPath + "/.sr2eflags.xml";
     static void SaveToFlagFile()
     {
-        if (!File.Exists(flagfile_path))
-        {
-            File.Create(flagfile_path).Close();
-        }
         XmlDocument xmlDoc = new XmlDocument();
         
         XmlElement root = xmlDoc.CreateElement("SR2EFeatureFlags");
@@ -65,8 +64,28 @@ public static class SR2EFeatureFlags
             if (flag == None) continue;
             XmlElement xmlElement = xmlDoc.CreateElement(flag.ToString());
             flags.AppendChild(xmlElement);
-            xmlElement.SetAttribute("value",flag.HasFlag().ToString().ToLower());
+            if(!flagsToForceOff.HasFlag(flag)) xmlElement.SetAttribute("value",flag.HasFlag().ToString().ToLower());
+            else xmlElement.SetAttribute("value","false");
             xmlElement.SetAttribute("default", defaultFlags.HasFlag(flag).ToString().ToLower());
+            
+            if (_requirementsMap.ContainsKey(flag)) if(_requirementsMap[flag]!=null) if(_requirementsMap[flag].Length!=0)
+                foreach (FFR req in _requirementsMap[flag])
+                {
+                    if (req == null) continue;
+                    string name = req.GetType().Name;
+                    if (req is FFRString ffrString)
+                    {
+                        string exist = xmlElement.GetAttribute(name);
+                        if (!String.IsNullOrEmpty(exist)) exist += ",";
+                        xmlElement.SetAttribute(name, exist+ffrString.String);
+                    }
+                    else if (req is FFRFlag ffrFlag)
+                    {
+                        string exist = xmlElement.GetAttribute(name);
+                        if (!String.IsNullOrEmpty(exist)) exist += ",";
+                        xmlElement.SetAttribute(name, exist+ffrFlag.Flag);
+                    }
+                }
         }
         foreach (FeatureIntegerValue value in Enum.GetValues(typeof(FeatureIntegerValue)))
         {
@@ -84,43 +103,30 @@ public static class SR2EFeatureFlags
             xmlElement.SetAttribute("value",value.Get().ToLower());
             xmlElement.SetAttribute("default", value.GetDefault().ToLower());
         }
+        // Save the XML document to a file
         
-        File.SetAttributes(flagfile_path, FileAttributes.Normal);
         xmlDoc.Save(flagfile_path);
         File.SetAttributes(flagfile_path, FileAttributes.Hidden);
-
     }
 
     static void LoadFromFlagFile()
     {
-        if (!File.Exists(flagfile_path))
-        {
-            SaveToFlagFile();
-            return;
-        }
-
+        flagsToForceOff = 0;
+        if (!File.Exists(flagfile_path)) { SaveToFlagFile(); return; }
+        
         XmlDocument xmlDoc = new XmlDocument();
-        try
-        {
-            xmlDoc.Load(flagfile_path);
-        }
-        catch
-        {
-        }
+        try { xmlDoc.Load(flagfile_path); }
+        catch {}
 
         XmlElement root = xmlDoc["SR2EFeatureFlags"];
-        if (root == null)
-        {
-            SaveToFlagFile();
-            return;
-        }
+        if (root == null) { SaveToFlagFile(); return; }
 
         XmlElement flags = root["FeatureFlags"];
         if (flags != null)
             foreach (XmlElement flagElement in flags.ChildNodes)
                 if (Enum.TryParse(flagElement.Name, out FeatureFlag flag))
                     if (bool.TryParse(flagElement.GetAttribute("value"), out bool isEnabled))
-                        if (isEnabled) enabledFlags |= flag;
+                        if(isEnabled) enabledFlags |= flag;
                         else enabledFlags &= ~flag;
         XmlElement ints = root["FeatureIntegerValues"];
         if (ints != null)
@@ -133,6 +139,14 @@ public static class SR2EFeatureFlags
             foreach (XmlElement stringElement in strings.ChildNodes)
                 if (Enum.TryParse(stringElement.Name, out FeatureStringValue intValue))
                     featurestrings[intValue] = stringElement.GetAttribute("value");
+
+        
+        foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
+        {
+            if(flag.requirementsMet()) continue;
+            enabledFlags &= ~flag;
+            flagsToForceOff |= flag;
+        }
         
         SaveToFlagFile();
     }
@@ -146,41 +160,18 @@ public static class SR2EFeatureFlags
         featurestrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
         if (File.Exists(flagfile_path)) LoadFromFlagFile();
         else SaveToFlagFile();
+
         
-        if (DevMode.HasFlag())
-        {
-            enabledFlags &= ~CheckForUpdates;
-            enabledFlags &= ~AllowAutoUpdate;
-        }
-        if (CommandsLoadCommands.HasFlag())
-        {
-            if (DevMode.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.DevOnly;
-            if (CommandsLoadExperimental.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Experimental;
-            if(AllowCheats.HasFlag())
-                if (CommandsLoadCheat.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Cheat;
-            if (CommandsLoadBinding.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Binding;
-            if (CommandsLoadWarp.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Warp;
-            if (CommandsLoadCommon.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Common;
-            if (CommandsLoadCommon.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Common;
-            if (CommandsLoadMenu.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Menu;
-            if (CommandsLoadMiscellaneous.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Miscellaneous;
-            if (CommandsLoadFun.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Fun;
-        }
-        foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
-        {  
-            switch (melonBase.Info.Name)
-            {
-                case "InfiniteEnergy":
-                    enabledFlags |= DisableInfEnergy;
-                    break;
-                case "InfiniteHealth":
-                    enabledFlags |= DisableInfHealth;
-                    break;
-                case "mSRML":
-                    enabledFlags &= ~EnableConsole;
-                    break;
-            }
-        }
+        if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.DevOnly;
+        if (CommandsLoadExperimental.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Experimental;
+        if (CommandsLoadCheat.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Cheat;
+        if (CommandsLoadBinding.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Binding;
+        if (CommandsLoadWarp.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Warp;
+        if (CommandsLoadCommon.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Common;
+        if (CommandsLoadCommon.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Common;
+        if (CommandsLoadMenu.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Menu;
+        if (CommandsLoadMiscellaneous.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Miscellaneous;
+        if(CommandsLoadFun.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Fun;
     }
     
     public static SR2ECommand.CommandType enabledCommands => enabledCMDs;
@@ -207,39 +198,143 @@ public static class SR2EFeatureFlags
         if (!defaultFeatureStrings.ContainsKey(featureStringValue)) return "";
         return defaultFeatureStrings[featureStringValue];
     }
+    static Dictionary<FeatureFlag,FFR[]> _requirementsMap = new Dictionary<FeatureFlag, FFR[]>()
+    {
+        {CheckForUpdates,new []{new FFRDeactivated(DevMode)}},
+        {AllowAutoUpdate,new []{new FFRDeactivated(DevMode)}},
+        {EnableConsole,new []{new FFRMelonUnInstalled("mSRML")}},
+        {EnableInfHealth,new []{new FFRMelonUnInstalled("InfiniteHealth")}},
+        {EnableInfEnergy,new []{new FFRMelonUnInstalled("InfiniteEnergy")}},
+        {CommandsLoadExperimental,new []{new FFRActivated(CommandsLoadCommands), new FFRActivated(Experiments)}},
+        {CommandsLoadDevOnly,new []{new FFRActivated(CommandsLoadCommands), new FFRActivated(DevMode)}},
+        {CommandsLoadCheat,new []{new FFRActivated(CommandsLoadCommands),new FFRActivated(AllowCheats)}},
+        {CommandsLoadBinding,new []{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadWarp,new []{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadCommon,new []{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadMenu,new []{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadMiscellaneous,new []{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadFun,new []{new FFRActivated(CommandsLoadCommands)}},
+        {ExperimentalSettingsInjection,new []{new FFRActivated(Experiments)}},
+        {EnableCheatMenu,new []{new FFRActivated(AllowCheats)}},
+        {AddCheatMenuButton,new []{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
+        {AddModMenuButton,new []{new FFRActivated(AllowCheats), new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
+
+    };
+    static bool requirementsMet(this FeatureFlag featureFlag)
+    {
+        if (!_requirementsMap.ContainsKey(featureFlag)) return true;
+        if(_requirementsMap[featureFlag]==null) return true;
+        if(_requirementsMap[featureFlag].Length==0) return true;
+        foreach (FFR req in _requirementsMap[featureFlag])
+        {
+            if(req==null) continue;
+            if (req is FFRActivated activated)
+            {
+                if (!activated.Flag.HasFlag()) return false;
+            }
+            else if (req is FFRDeactivated deactivated)
+            {
+                if (deactivated.Flag.HasFlag()) return false;
+            }
+            else if (req is FFRMelonInstalled melonInstalled)
+            {
+                bool installed = false;
+                foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+                {
+                    if (melonBase.Info.Name == melonInstalled.String) { installed=true; break; }
+                }
+                if(!installed) return false;
+            }
+            else if (req is FFRMelonUnInstalled melonUninstalled)
+            {
+                foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+                    if(melonBase.Info.Name==melonUninstalled.String) return false;
+            }
+        }
+        return true;
+    }
 }
 
 [Flags]
-public enum FeatureFlag
+public enum FeatureFlag : long
 {
     None = 0,
-    DevMode = 1 << 1,
-    CommandsLoadCommands = 1 << 2, //
-    CommandsLoadExperimental = 1 << 3, //
-    CommandsLoadCheat = 1 << 4, //
-    CommandsLoadBinding = 1 << 5, //
-    CommandsLoadWarp = 1 << 6, //
-    CommandsLoadCommon = 1 << 7, //
-    CommandsLoadMenu = 1 << 8, //
-    CommandsLoadMiscellaneous = 1 << 9, //
-    CommandsLoadFun = 1 << 10, //
-    ExperimentalSettingsInjection = 1 << 11,
-    DebugLogging = 1 << 12,
-    ShowUnityErrors = 1 << 13,
-    AllowCheats = 1 << 14, //
-    EnableModMenu = 1 << 15, //
-    EnableConsole = 1 << 16, //
-    InjectMainMenuButtons = 1 << 17, //
-    InjectRanchUIButtons = 1 << 18, //
-    InjectPauseButtons = 1 << 19, //
-    AddCheatMenuButton = 1 << 20, //
-    AddModMenuButton = 1 << 21, //
-    AllowExpansions = 1 << 22, //
-    InjectSR2Translations = 1 << 23, //
-    EnableIl2CppDetourExceptionReporting = 1 << 24, //
-    DisableLocalizedVersionPatch = 1 << 25,
-    DisableInfHealth = 1 << 26,
-    DisableInfEnergy = 1 << 27,
-    CheckForUpdates = 1 << 28, //
-    AllowAutoUpdate = 1 << 29, //
+    //Dev
+    DevMode = 1L << 1,
+    DebugLogging = 1L << 2,
+    ShowUnityErrors = 1L << 3,
+    Experiments = 1L << 4,
+    ExperimentalSettingsInjection = 1L << 5,
+    
+    //Commands+Dev
+    CommandsLoadDevOnly = 1L << 6, 
+    CommandsLoadExperimental = 1L << 7, 
+    
+    //Commands
+    CommandsLoadCommands = 1L << 8, //
+    CommandsLoadCheat = 1L << 9, //
+    CommandsLoadBinding = 1L << 10, //
+    CommandsLoadWarp = 1L << 11, //
+    CommandsLoadCommon = 1L << 12, //
+    CommandsLoadMenu = 1L << 13, //
+    CommandsLoadMiscellaneous = 1L << 14, //
+    CommandsLoadFun = 1L << 15, //
+
+    //Cheats and Mods
+    AllowCheats = 1L << 16, //
+    AddCheatMenuButton = 1L << 17, //
+    EnableInfHealth = 1L << 18, //
+    EnableInfEnergy = 1L << 19, //
+    
+    //Misc
+    AddModMenuButton = 1L << 20, //
+    AllowExpansions = 1L << 21, //
+    EnableLocalizedVersionPatch = 1L << 22, //
+    InjectSR2Translations = 1L << 23, //
+    EnableIl2CppDetourExceptionReporting = 1L << 24, //
+    
+    //Menus
+    EnableModMenu = 1L << 25, //
+    EnableCheatMenu = 1L << 26, //
+    EnableConsole = 1L << 27, //
+    
+    //UI
+    InjectMainMenuButtons = 1L << 28, //
+    InjectRanchUIButtons = 1L << 29, //
+    InjectPauseButtons = 1L << 30, //
+
+    //Updates and Patches
+    CheckForUpdates = 1L << 31, //
+    AllowAutoUpdate = 1L << 32, //
+
+}
+internal class FFR //FeatureFlagRequirement
+{ } 
+internal class FFRString : FFR //FeatureFlagRequirementString
+{ 
+    public string String;
+} 
+internal class FFRFlag : FFR  //FeatureFlagRequirementFlag
+{ 
+    public FeatureFlag Flag;
+} 
+internal class FFRDeactivated : FFRFlag //FeatureFlagRequirementDeactivated
+{
+    public FFRDeactivated(FeatureFlag Flag)
+    { this.Flag = Flag; }
+}
+internal class FFRActivated : FFRFlag //FeatureFlagRequirementActivated
+{
+    public FFRActivated(FeatureFlag Flag)
+    { this.Flag = Flag; }
+}
+internal class FFRMelonInstalled : FFRString //FeatureFlagRequirementMelonInstalled
+{
+    public FFRMelonInstalled(string MelonName)
+    { this.String = MelonName; }
+}
+internal class FFRMelonUnInstalled : FFRString //FeatureFlagRequirementMelonInstalled
+{
+    public FFRMelonUnInstalled(string MelonName)
+    { this.String = MelonName; }
 }

@@ -5,7 +5,6 @@ namespace SR2E;
 
 public static class SR2ELanguageManger
 {
-    internal const string defaultLanguageCode = "en";
     internal static Dictionary<string, List<string>> languages = new Dictionary<string, List<string>>();
     static Dictionary<string, string> loadedLanguage = new Dictionary<string, string>();
     public static string translation(string key)

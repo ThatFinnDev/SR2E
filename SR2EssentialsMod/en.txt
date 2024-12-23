@@ -343,3 +343,7 @@ setting.gamesettingtest.desc=This is a SR2E test option.
 setting.gamesettingtest.value1=Value 1
 setting.gamesettingtest.value2=Value B
 setting.gamesettingtest.value3=Value 03
+
+patches.localizedversionpatch.downloadedversion=Just downloaded SR2E update (version $1)\nPlease restart to take effect!\n$1\n\n
+patches.localizedversionpatch.newversion=New SR2E version available: $1\n$2\n\n
+patches.localizedversionpatch.default=MelonLoader $1\n$2\n\n\n

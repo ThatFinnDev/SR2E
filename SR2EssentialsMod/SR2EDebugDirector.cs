@@ -80,19 +80,18 @@ internal class SR2EDebugDirector : MonoBehaviour
 		if (SR2EConsole.isOpen) return;
 		if (SR2EModMenu.isOpen) return;
 		if (Time.timeScale == 0)  return;
-		
-		if (Key.Digit0.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("upgrade set * 10", true);
-		if (Key.Digit7.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("infenergy true", true);
-		if (Key.Digit8.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("infhealth", true);
-		if (Key.Digit9.kc().wasPressedThisFrame) GameContext.Instance.AutoSaveDirector.SaveGame();
-		if (Key.P.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("pedia unlock * false", true);
-		if (Key.K.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("clearinv", true);
-		if (Key.L.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("refillinv", true);
-		if (Key.N.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("noclip", true);
-		if (Key.NumpadPlus.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks 1000", true);
-		if (Key.NumpadMinus.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("newbucks -1000", true);
-		if (Key.LeftBracket.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("fastforward -1", true);
-		if (Key.RightBracket.kc().wasPressedThisFrame) SR2EConsole.ExecuteByString("fastforward 1", true);
+		if (Key.Digit0.OnKeyPressed()) SR2EConsole.ExecuteByString("upgrade set * 10", true);
+		if (Key.Digit7.OnKeyPressed()) SR2EConsole.ExecuteByString("infenergy true", true);
+		if (Key.Digit8.OnKeyPressed()) SR2EConsole.ExecuteByString("infhealth", true);
+		if(CommandsLoadExperimental.HasFlag()) if (Key.Digit9.OnKeyPressed()) GameContext.Instance.AutoSaveDirector.SaveGame();
+		if (Key.P.OnKeyPressed()) SR2EConsole.ExecuteByString("pedia unlock * false", true);
+		if (Key.K.OnKeyPressed()) SR2EConsole.ExecuteByString("clearinv", true);
+		if (Key.L.OnKeyPressed()) SR2EConsole.ExecuteByString("refillinv", true);
+		if (Key.N.OnKeyPressed()) SR2EConsole.ExecuteByString("noclip", true);
+		if (Key.KeypadPlus.OnKeyPressed()) SR2EConsole.ExecuteByString("newbucks 1000", true);
+		if (Key.KeypadMinus.OnKeyPressed()) SR2EConsole.ExecuteByString("newbucks -1000", true);
+		if (Key.LeftBracket.OnKeyPressed()) SR2EConsole.ExecuteByString("fastforward -1", true);
+		if (Key.RightBracket.OnKeyPressed()) SR2EConsole.ExecuteByString("fastforward 1", true);
 
 	}
 
@@ -103,18 +102,20 @@ internal class SR2EDebugDirector : MonoBehaviour
 			GUI.skin.label.font = _helpFont;
 			GUI.skin.label.alignment = TextAnchor.UpperRight;
 			string text = "<b>DEBUG MODE INFO" +
-			              " \n\nGIVE ALL PERSONAL UPGRADES     0 " +
-			              "\nGIVE ALL PEDIA ENTRIES     P " +
-			              "\nTOGGLE INFINITE ENERGY     7 " +
-			              "\nTOGGLE INFINITE HEALTH     8 " +
-			              "\nFORCE SAVE     9 " +
-			              "\n\nCLEAR INVENTORY     K " +
-			              "\nREFILL INVENTORY     L " +
-			              "\nTOGGLE NOCLIP     N " +
-			              "\n\nADD 1000 CREDITS     + " +
-			              "\nREMOVE 1000 CREDITS     - " +
-			              "\nDECREMENT TIME OF DAY     [ " +
-			              "\nINCREMENT TIME OF DAY     ] </b>";
+			              " \n\nGIVE ALL PERSONAL UPGRADES     0 ";
+
+			if (CommandsLoadExperimental.HasFlag())
+				text += "\nGIVE ALL PEDIA ENTRIES     P ";
+			text+=              "\nTOGGLE INFINITE ENERGY     7 " +
+				                    "\nTOGGLE INFINITE HEALTH     8 " +
+				                    "\nFORCE SAVE     9 " +
+				                    "\n\nCLEAR INVENTORY     K " +
+				                    "\nREFILL INVENTORY     L " +
+				                    "\nTOGGLE NOCLIP     N " +
+				                    "\n\nADD 1000 CREDITS     + " +
+				                    "\nREMOVE 1000 CREDITS     - " +
+				                    "\nDECREMENT TIME OF DAY     [ " +
+				                    "\nINCREMENT TIME OF DAY     ] </b>";
 			for (int i = -2; i <= 2; i += 2)
 				for (int j = -2; j <= 2; j += 2)
 				{

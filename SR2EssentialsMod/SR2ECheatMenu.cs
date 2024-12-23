@@ -38,12 +38,16 @@ public class SR2ECheatMenu
     /// </summary>
     public static void Close()
     {
+        if (!isOpen) return;
         if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
         cheatMenuBlock.SetActive(false);
         gameObject.SetActive(false);
         gameObject.getObjRec<Button>("CheatMenuMainSelectionButtonRec").onClick.Invoke();
 
-        SystemContext.Instance.SceneLoader.UnpauseGame();
+
+        TryUnHideMenus();
+        TryUnPauseGame();
+        TryEnableSR2Input();
     }
 
 
@@ -53,25 +57,11 @@ public class SR2ECheatMenu
     public static void Open()
     {
         if(!AllowCheats.HasFlag()) return;
-        if (SR2EConsole.isOpen) return;
-        if (SR2EModMenu.isOpen) return;
+        if (isAnyMenuOpen) return;
         cheatMenuBlock.SetActive(true);
         gameObject.SetActive(true);
-
-        try
-        {
-            PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>(); 
-            pauseMenuRoot.Close();
-        }catch { }
-        try
-        {
-            SystemContext.Instance.SceneLoader.TryPauseGame();
-        }catch { }
-        try
-        {
-            PauseMenuDirector pauseMenuDirector = Object.FindObjectOfType<PauseMenuDirector>(); 
-            pauseMenuDirector.PauseGame();
-        }catch { }
+        TryPauseAndHide();
+        //TryDisableSR2Input();
         //Refinery
         
         refineryContent.DestroyAllChildren();
@@ -117,8 +107,8 @@ public class SR2ECheatMenu
 
 
         noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SceneContext.Instance.Camera.GetComponent<NoClipComponent>() == null ? "off" : "on"));
-        if (!DisableInfHealth.HasFlag()) infHealthButton.textInstance.text = translation("cheatmenu.cheatbuttons.infhealth" + (InfiniteHealthCommand.infHealth? "on" : "off"));
-        if (!DisableInfEnergy.HasFlag()) infEnergyButton.textInstance.text = translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off"));
+        if (EnableInfHealth.HasFlag()) infHealthButton.textInstance.text = translation("cheatmenu.cheatbuttons.infhealth" + (InfiniteHealthCommand.infHealth? "on" : "off"));
+        if (EnableInfEnergy.HasFlag()) infEnergyButton.textInstance.text = translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off"));
         removeFogButton.textInstance.text = translation("cheatmenu.cheatbuttons.removeFog" + (removeFog? "on" : "off"));
         betterScreenshotButton.textInstance.text = translation("cheatmenu.cheatbuttons.betterScreenshot" + (betterScreenshot? "on" : "off"));
 
@@ -165,7 +155,7 @@ public class SR2ECheatMenu
     {
         if (isOpen)
         {
-            if (Key.Escape.kc().wasPressedThisFrame)
+            if (Key.Escape.OnKeyPressed())
                 Close();
         }
     }
@@ -209,13 +199,13 @@ public class SR2ECheatMenu
     internal static bool betterScreenshot = false;
     static void CheatButtons()
     {
-        if (!DisableInfEnergy.HasFlag()) infEnergyButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infenergyoff"),
+        if (EnableInfEnergy.HasFlag()) infEnergyButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infenergyoff"),
             () =>
         {
             SR2EConsole.ExecuteByString("infenergy", true,true);
             infEnergyButton.textInstance.text = translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off"));
         });
-        if (!DisableInfHealth.HasFlag()) infHealthButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infhealthoff"),
+        if (EnableInfHealth.HasFlag()) infHealthButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infhealthoff"),
             () =>
         {
             SR2EConsole.ExecuteByString("infhealth", true,true);

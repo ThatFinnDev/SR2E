@@ -80,10 +80,6 @@
       <HintPath>Libs\Il2CppInterop.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Il2CppLogger">
-      <HintPath>Libs\Il2CppLogger.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Il2CppMono.Security">
       <HintPath>Libs\Il2CppMono.Security.dll</HintPath>
       <Private>False</Private>

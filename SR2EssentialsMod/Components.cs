@@ -288,11 +288,11 @@ public class IdentifiableObjectDragger : MonoBehaviour
     }
     public void Update()
     {
-        if (Key.Q.kc().isPressed)
+        if (Key.Q.OnKey())
         {
             distanceFromCamera -= Time.deltaTime * distanceChangeSpeed;
         }
-        if (Key.E.kc().isPressed)
+        if (Key.E.OnKey())
         {
             distanceFromCamera += Time.deltaTime * distanceChangeSpeed;
         }
@@ -343,7 +343,7 @@ public class NoClipComponent : MonoBehaviour
             return baseSpeed;
         }
     }
-    bool isSprint => Key.LeftShift.kc().isPressed;
+    bool isSprint => Key.LeftShift.OnKey();
     public static Transform player;
     public static SRCharacterController playerController;
     public static KinematicCharacterMotor playerMotor;
@@ -387,13 +387,13 @@ public class NoClipComponent : MonoBehaviour
         }
         else
         {
-            if (Key.A.kc().isPressed || Key.LeftArrow.kc().isPressed)
+            if (Key.A.OnKey() || Key.LeftArrow.OnKey())
                 player.position += -transform.right * (speed * Time.deltaTime);
-            if (Key.D.kc().isPressed || Key.RightArrow.kc().isPressed)
+            if (Key.D.OnKey() || Key.RightArrow.OnKey())
                 player.position += transform.right * (speed * Time.deltaTime);
-            if (Key.W.kc().isPressed || Key.UpArrow.kc().isPressed)
+            if (Key.W.OnKey() || Key.UpArrow.OnKey())
                 player.position += transform.forward * (speed * Time.deltaTime);
-            if (Key.S.kc().isPressed || Key.DownArrow.kc().isPressed)
+            if (Key.S.OnKey() || Key.DownArrow.OnKey())
                 player.position += -transform.forward * (speed * Time.deltaTime);
         }
             

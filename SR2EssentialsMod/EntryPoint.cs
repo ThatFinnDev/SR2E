@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using Il2CppKinematicCharacterController;
 using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.Player.FirstPersonScreenEffects;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
@@ -89,10 +90,13 @@ namespace SR2E
                 prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).disableWarning((System.Action)(
                     () =>
                     {
-                        if (!enableCheatMenuButton)
-                            cheatMenuButton.Remove();
-                        if (enableCheatMenuButton)
-                            cheatMenuButton.AddAgain();
+                        if(cheatMenuButton!=null)
+                        {
+                            if (!enableCheatMenuButton)
+                                cheatMenuButton.Remove();
+                            if (enableCheatMenuButton)
+                                cheatMenuButton.AddAgain();
+                        }
                     }));
 
             if (!prefs.HasEntry("doesConsoleSync"))
@@ -127,6 +131,7 @@ namespace SR2E
         public static bool isLatestVersion => newVersion == BuildInfo.Version;
         IEnumerator CheckForNewVersion()
         {
+            
             UnityWebRequest uwr = UnityWebRequest.Get("https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt");
             yield return uwr.SendWebRequest();
 
@@ -135,6 +140,7 @@ namespace SR2E
             
         }
 
+        internal static bool updatedSR2E = false;
         IEnumerator UpdateVersion()
         {
             UnityWebRequest uwr = UnityWebRequest.Get("https://github.com/ThatFinnDev/SR2E/releases/latest/download/SR2E.dll");
@@ -146,7 +152,8 @@ namespace SR2E
                     string path = MelonAssembly.Assembly.Location;
                     if (File.Exists(path)) File.Move(path, path+".old");
                     File.WriteAllBytes(path, uwr.downloadHandler.data);
-                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Restart for updates version");
+                    updatedSR2E = true;
+                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Need restart for updates version");
                 }
             
         }
@@ -219,7 +226,7 @@ namespace SR2E
                 try { expansion.OnNormalInitializeMelon(); }
                 catch (Exception e) { MelonLogger.Error(e); }
             
-            LoadLanguage(defaultLanguageCode);
+            LoadLanguage(DEFAULT_LANGUAGECODE.Get());
         }
 
         public override void OnApplicationQuit()
@@ -237,8 +244,7 @@ namespace SR2E
             switch (sceneName)
             {
                 case "SystemCore":
-                    System.IO.Stream stream = Assembly.GetExecutingAssembly()
-                        .GetManifestResourceStream("SR2E.srtwoessentials.assetbundle");
+                    System.IO.Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SR2E.srtwoessentials.assetbundle");
                     byte[] buffer = new byte[16 * 1024];
                     System.IO.MemoryStream ms = new System.IO.MemoryStream();
                     int read;
@@ -249,115 +255,54 @@ namespace SR2E
                     foreach (var obj in bundle.LoadAllAssets())
                     {
                         if (obj != null)
-                            if (obj.name == "AllMightyMenus")
+                            if(obj.name=="AllMightyMenus")
                             {
                                 Object.Instantiate(obj);
                                 break;
                             }
                     }
-
+                    
                     break;
                 case "MainMenuUI":
-
-                    if (ExperimentalSettingsInjection.HasFlag())
+                    
+                    if(ExperimentalSettingsInjection.HasFlag())
                     {
-
-                        RegisterOptionMenuButtons += (_, _) =>
-                        {
-                            var scriptedValue = CustomSettingsCreator.CreateScriptedInt(0);
-
-                            List<ScriptedValuePresetOptionDefinition> options =
-                                new List<ScriptedValuePresetOptionDefinition>();
-
-                            options.Add(CustomSettingsCreator.Create(
-                                CustomSettingsCreator.BuiltinSettingsCategory.ManualOrCustom,
-                                AddTranslationFromSR2E("setting.gamesettingtest", "b.testsetting", "UI"),
-                                AddTranslationFromSR2E("setting.gamesettingtest.desc", "l.testsettingdescription",
-                                    "UI"),
-                                0,
-                                "testButton1",
-                                true,
-                                false,
-
-                                new CustomSettingsCreator.OptionValue("val1",
-                                    AddTranslationFromSR2E("setting.gamesettingtest.value1", "l.testsettingvalue1",
-                                        "UI"), scriptedValue),
-                                new CustomSettingsCreator.OptionValue("val2",
-                                    AddTranslationFromSR2E("setting.gamesettingtest.value2", "l.testsettingvalue2",
-                                        "UI"), scriptedValue),
-                                new CustomSettingsCreator.OptionValue("val3",
-                                    AddTranslationFromSR2E("setting.gamesettingtest.value3", "l.testsettingvalue3",
-                                        "UI"), scriptedValue)
-                            ));
-                            CustomSettingsCreator.CreateCategory(
-                                AddTranslationFromSR2E("setting.categoryname", "l.sr2ecategory", "UI"), null,
-                                options.ToArray());
-                        };
-
-                        if (AddModMenuButton.HasFlag())
-                        {
-                            LocalizedString label =
-                                AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
-                                (System.Action)(() => { SR2EModMenu.Open(); }));
-                            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
-                        }
-
-                        if (!AllowCheats.HasFlag())
-                        {
-                            if (AddCheatMenuButton.HasFlag())
-                            {
-                                cheatMenuButton = new CustomPauseMenuButton(
-                                    AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"),
-                                    4,
-                                    (System.Action)(() => { SR2ECheatMenu.Open(); }));
-                                if (!enableCheatMenuButton) cheatMenuButton.Remove();
-                            }
-                        }
-
-                        if (DevMode.HasFlag())
-                            new CustomPauseMenuButton(
-                                AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3,
-                                (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI(); }));
-
-                        RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
-
                         var optionCategories = Resources.FindObjectsOfTypeAll<OptionsItemCategory>();
                         foreach (var category in optionCategories)
                         {
                             switch (category.name)
                             {
                                 case "GameSettings":
-                                    CustomSettingsCreator.ApplyButtons(
-                                        CustomSettingsCreator.BuiltinSettingsCategory.GameSettings, category);
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.GameSettings, category);
                                     break;
                                 case "Display":
-                                    CustomSettingsCreator.ApplyButtons(
-                                        CustomSettingsCreator.BuiltinSettingsCategory.Display, category);
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Display,
+                                        category);
                                     break;
                                 case "Audio":
-                                    CustomSettingsCreator.ApplyButtons(
-                                        CustomSettingsCreator.BuiltinSettingsCategory.Audio, category);
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Audio,
+                                        category);
                                     break;
                                 case "BindingsGamepad":
-                                    CustomSettingsCreator.ApplyButtons(
-                                        CustomSettingsCreator.BuiltinSettingsCategory.Bindings_Controller, category);
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Bindings_Controller, category);
                                     break;
                                 case "Input":
-                                    CustomSettingsCreator.ApplyButtons(
-                                        CustomSettingsCreator.BuiltinSettingsCategory.Input, category);
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Input,
+                                        category);
                                     break;
                                 case "Gameplay_MainMenu":
-                                    CustomSettingsCreator.ApplyButtons(
-                                        CustomSettingsCreator.BuiltinSettingsCategory.Gameplay_MainMenu, category);
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Gameplay_MainMenu, category);
                                     break;
                                 case "BindingsKbm":
-                                    CustomSettingsCreator.ApplyButtons(
-                                        CustomSettingsCreator.BuiltinSettingsCategory.Bindings_Keyboard, category);
+                                    CustomSettingsButton.ApplyButtons(
+                                        CustomSettingsButton.SettingsCategory.Bindings_Keyboard, category);
                                     break;
                                 case "Video":
-                                    CustomSettingsCreator.ApplyButtons(
-                                        CustomSettingsCreator.BuiltinSettingsCategory.Graphics, category);
+                                    CustomSettingsButton.ApplyButtons(CustomSettingsButton.SettingsCategory.Graphics,
+                                        category);
                                     break;
                                 default:
                                     // There are 2 other categories, but they are console only. 
@@ -368,7 +313,6 @@ namespace SR2E
                             MelonLogger.BigError("SR2E TODO", "PLEASE IMPLEMENT THE GAMEPLAY_INGAME SETTINGS CATEGORY");
                         }
                     }
-
                     Time.timeScale = 1f;
                     try
                     {
@@ -379,33 +323,29 @@ namespace SR2E
                         foreach (InputActionMap map in GameContext.Instance.InputDirector._inputActions.actionMaps)
                             actionMaps.Add(map.name, map);
                         foreach (InputAction action in actionMaps["MainGame"].actions)
-                            MainGameActions.Add(action.name, action);
+                            MainGameActions.Add(action.name,action); 
                         foreach (InputAction action in actionMaps["Paused"].actions)
-                            PausedActions.Add(action.name, action);
+                            PausedActions.Add(action.name,action); 
                         foreach (InputAction action in actionMaps["Debug"].actions)
-                            DebugActions.Add(action.name, action);
+                            DebugActions.Add(action.name,action); 
                     }
                     catch (Exception e)
                     {
                         MelonLogger.Error(e);
                         MelonLogger.Error("There was a problem loading SR2 action maps!");
                     }
-
+                    
                     break;
                 case "StandaloneEngagementPrompt":
                     Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
                     break;
                 case "GameCore":
-                    killDamage = new Damage
-                    {
-                        Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
-                    };
+                    killDamage = new Damage { Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(), };
                     killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
                     AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
                     autoSaveDirector.saveSlotCount = SAVESLOT_COUNT.Get();
-
-                    foreach (ParticleSystemRenderer particle in
-                             Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
+                    
+                    foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
                     {
                         var pname = particle.gameObject.name.Replace(' ', '_');
                         if (!FXLibrary.ContainsKey(particle.gameObject))
@@ -415,15 +355,15 @@ namespace SR2E
                     }
 
                     vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
-
-
+                    
+                    
                     foreach (KeyValuePair<string, string> pair in teleportersToAdd)
                         AddTeleporter(pair.Key, pair.Value);
-
-
+                    
+                    
                     break;
                 case "UICore":
-                    if (SceneContext.Instance.Player.GetComponent<SR2EDebugDirector>() == null)
+                    if(SceneContext.Instance.Player.GetComponent<SR2EDebugDirector>()==null)
                         SceneContext.Instance.Player.AddComponent<SR2EDebugDirector>();
                     break;
                 case "PlayerCore":
@@ -434,7 +374,7 @@ namespace SR2E
                     player = Get<GameObject>("PlayerControllerKCC");
                     break;
             }
-
+            
             switch (sceneName)
             {
                 case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
@@ -507,7 +447,45 @@ namespace SR2E
             isSaveDirectorLoaded = true;
             
             
+            var scriptedValue = CustomSettingsButton.CreateScriptedInt(0);
 
+            RegisterOptionMenuButtons += (_, _) =>
+            {
+                CustomSettingsButton.Create(
+                    CustomSettingsButton.SettingsCategory.Gameplay_MainMenu,
+                    AddTranslationFromSR2E("setting.gamesettingtest", "b.testsetting", "UI"),
+                    AddTranslationFromSR2E("setting.gamesettingtest.desc", "l.testsettingdescription", "UI"),
+                    0,
+                    "testButton1",
+                    true,
+                    false,
+
+                    new CustomSettingsButton.OptionValue("val1", AddTranslationFromSR2E("setting.gamesettingtest.value1", "l.testsettingvalue1", "UI"), scriptedValue),
+                    new CustomSettingsButton.OptionValue("val2", AddTranslationFromSR2E("setting.gamesettingtest.value2", "l.testsettingvalue2", "UI"), scriptedValue),
+                    new CustomSettingsButton.OptionValue("val3", AddTranslationFromSR2E("setting.gamesettingtest.value3", "l.testsettingvalue3", "UI"), scriptedValue)
+                );
+            };
+            
+            if(AddModMenuButton.HasFlag())
+            {
+                LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
+                new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
+                    (System.Action)(() => { SR2EModMenu.Open(); }));
+                new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
+            }
+            if(AllowCheats.HasFlag())
+            {
+                if(AddCheatMenuButton.HasFlag())
+                {
+                    cheatMenuButton = new CustomPauseMenuButton(
+                        AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4,
+                        (System.Action)(() => { SR2ECheatMenu.Open(); }));
+                    if (!enableCheatMenuButton) cheatMenuButton.Remove();
+                }
+            } 
+            if (DevMode.HasFlag()) new CustomPauseMenuButton( AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI();}));
+
+            RegisterOptionMenuButtons?.Invoke(SR2EEntryPoint.instance, EventArgs.Empty);
             
             foreach (var expansion in expansions)
                 try { expansion.SaveDirectorLoaded(GameContext.Instance.AutoSaveDirector); }
@@ -572,7 +550,6 @@ namespace SR2E
                     baseUIAddSliders.Remove(ui);
                 }
             }
-
             if (!consoleFinishedCreating)
             {
                 GameObject obj = GameObject.FindGameObjectWithTag("Respawn");
@@ -589,6 +566,7 @@ namespace SR2E
             }
             else
             {
+                try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EConsole.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }

@@ -27,11 +27,24 @@ public static class SR2ESaveManager
     {
         BindingManger.Update();
     }
+    internal static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+    {
+        Error = (sender, args) =>
+        {
+            if(DebugLogging.HasFlag())
+                MelonLogger.Msg($"Error: {args.ErrorContext.Error.Message}");
+            args.ErrorContext.Handled = true;
+        }
+    };
     internal static void Load()
     {
-            if (File.Exists(path)) data = JsonConvert.DeserializeObject<SR2ESaveData>(File.ReadAllText(path));
-            else data = new SR2ESaveData();
-        
+        if (File.Exists(path))
+        {
+            data = JsonConvert.DeserializeObject<SR2ESaveData>(File.ReadAllText(path), jsonSerializerSettings);
+            if (data.keyBinds == null) data.keyBinds = new Dictionary<Key, string>();
+            if (data.warps == null) data.warps = new Dictionary<string, Warp>();
+        }
+        else data = new SR2ESaveData();
     }
     internal static void Save() { File.WriteAllText(path,JsonConvert.SerializeObject(data, Formatting.Indented)); }
     static string path { get { FileStorageProvider provider = SystemContext.Instance.GetStorageProvider().TryCast<FileStorageProvider>(); if (provider==null) return Application.persistentDataPath + "/SR2E.data"; return provider.savePath + "/SR2E.data"; } }
@@ -40,7 +53,6 @@ public static class SR2ESaveManager
     {
         public Dictionary<string, Warp> warps = new Dictionary<string, Warp>();
         public Dictionary<Key, string> keyBinds = new Dictionary<Key, string>();
-
     }
     
     public static class WarpManager
@@ -209,7 +221,7 @@ public static class SR2ESaveManager
             try
             {
                 foreach (KeyValuePair<Key,string> keyValuePair in data.keyBinds)
-                    if (keyValuePair.Key.kc().wasPressedThisFrame)
+                    if (keyValuePair.Key.OnKeyPressed())
                         if(WarpManager.warpTo==null)
                             SR2EConsole.ExecuteByString(keyValuePair.Value,true);
             }

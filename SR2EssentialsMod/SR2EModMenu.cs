@@ -26,25 +26,16 @@ public static class SR2EModMenu
     /// </summary>
     public static void Close()
     {
+        if (!EnableModMenu.HasFlag()) return;
         if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
         modMenuBlock.SetActive(false);
         gameObject.SetActive(false);
         gameObject.getObjRec<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
-
-        if (SR2EEntryPoint.mainMenuLoaded)
-        {
-            foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
-                if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
-                    loader.parentTransform.name == "MainMenuRoot")
-                {
-                    loader.Start();
-                    break;
-                }
-        }
-        else SystemContext.Instance.SceneLoader.UnpauseGame();
-
-
-
+        
+        TryUnPauseGame();
+        TryUnHideMenus();
+        TryEnableSR2Input();
+        
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         for (int i = 0; i < modContent.childCount; i++)
             Object.Destroy(modContent.GetChild(i).gameObject);
@@ -58,42 +49,12 @@ public static class SR2EModMenu
     public static void Open()
     {
         if (!EnableModMenu.HasFlag()) return;
-        if (SR2EConsole.isOpen) return;
-        if (SR2ECheatMenu.isOpen) return;
+        if (isAnyMenuOpen) return;
         modMenuBlock.SetActive(true);
         gameObject.SetActive(true);
-
-        if (SR2EEntryPoint.mainMenuLoaded)
-            try
-            {
-                _mainMenuLandingRootUI = Object.FindObjectOfType<MainMenuLandingRootUI>();
-                _mainMenuLandingRootUI.gameObject.SetActive(false);
-                _mainMenuLandingRootUI.enabled = false;
-                _mainMenuLandingRootUI.Close(true, null);
-            }
-            catch
-            {
-            }
-        else
-        {
-            try
-            {
-                PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>(); 
-                pauseMenuRoot.Close();
-            }catch { }
-            try
-            {
-                SystemContext.Instance.SceneLoader.TryPauseGame();
-            }catch { }
-            try
-            {
-                PauseMenuDirector pauseMenuDirector = Object.FindObjectOfType<PauseMenuDirector>(); 
-                pauseMenuDirector.PauseGame();
-            }catch { }
-        }
-
-
-
+        TryPauseAndHide();
+        //TryDisableSR2Input();
+        
         GameObject buttonPrefab = transform.getObjRec<GameObject>("ModMenuModMenuTemplateButtonRec");
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (RottenMelon rotten in loadedAssembly.RottenMelons)
@@ -134,9 +95,7 @@ public static class SR2EModMenu
 
                 }));
             }
-            catch (Exception e)
-            {
-            }
+            catch {}
 
         }
         
@@ -192,14 +151,19 @@ public static class SR2EModMenu
     /// </summary>
     public static void Toggle()
     {
-
+        if (!EnableModMenu.HasFlag()) return;
         if (isOpen) Close();
         else Open();
     }
 
-    internal static bool isOpen
+    public static bool isOpen
     {
-        get { return gameObject == null ? false : gameObject.activeSelf; }
+        get
+        {
+            if (!EnableModMenu.HasFlag()) return false;
+            if(gameObject==null) return false;
+            return gameObject.activeSelf;
+        }
     }
 
     static GameObject entryTemplate;
@@ -229,7 +193,7 @@ public static class SR2EModMenu
         allPossibleKeys.Remove(Key.LeftCommand);
         allPossibleKeys.Remove(Key.RightCommand);
         allPossibleKeys.Remove(Key.LeftWindows);
-        allPossibleKeys.Remove(Key.RightCommand);
+        allPossibleKeys.Remove(Key.RightWindows);
         
         transform.getObjRec<Image>("ModMenuModMenuSelectionButtonRec").sprite = whitePillBg;
         transform.getObjRec<Image>("ModMenuConfigurationSelectionButtonRec").sprite = whitePillBg;
@@ -401,8 +365,7 @@ public static class SR2EModMenu
                             }
                         }));
                     }
-                    //KeyCode Conversion doesnt work (because of different keyboard layouts, this is why it is disabled
-                    else if (entry.BoxedEditedValue is Key /*||entry.BoxedEditedValue is KeyCode*/)
+                    else if (entry.BoxedEditedValue is Key)
                     {
                         obj.transform.GetChild(1).gameObject.SetActive(false);
                         obj.transform.GetChild(4).gameObject.SetActive(true);
@@ -435,19 +398,6 @@ public static class SR2EModMenu
                                                 action.Invoke();
                                         }
                                     }
-                                    else if (entry.BoxedEditedValue is KeyCode)
-                                    {
-                                        textMesh.text = KeyToKeyCode(key.Value).ToString();
-                                        entry.BoxedEditedValue = KeyToKeyCode(key.Value);
-                                        if (!entriesWithoutWarning.ContainsKey(entry))
-                                            warningText.SetActive(true);
-                                        else
-                                        {
-                                            System.Action action = entriesWithoutWarning[entry];
-                                            if (action != null)
-                                                action.Invoke();
-                                        }
-                                    }
                                 }
 
                                 listeninAction = null;
@@ -464,9 +414,7 @@ public static class SR2EModMenu
     static void keyWasPressed(Key key)
     {
         if (listeninAction != null)
-        {
             listeninAction.Invoke(key);
-        }
     }
 
     internal static void Update()
@@ -474,22 +422,12 @@ public static class SR2EModMenu
         if (isOpen)
         {
             if (listeninAction == null)
-                if (Key.Escape.kc().wasPressedThisFrame)
+                if (Key.Escape.OnKeyPressed())
                     Close();
-
-
             foreach (Key key in allPossibleKeys)
             {
-                try
-                {
-                    if(key.kc().wasPressedThisFrame)
-                    {
-                        keyWasPressed(key);
-                    }
-                }
-                catch (Exception ignored)
-                {
-                }
+                try { if(key.OnKeyPressed()) keyWasPressed(key); }
+                catch { }
             }
 
             if (Mouse.current.leftButton.wasPressedThisFrame ||
@@ -501,9 +439,7 @@ public static class SR2EModMenu
                 Mouse.current.leftButton.wasPressedThisFrame)
             {
                 if (listeninAction != null)
-                {
                     listeninAction.Invoke(null);
-                }
             }
 
 
