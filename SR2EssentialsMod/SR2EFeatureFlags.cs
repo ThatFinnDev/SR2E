@@ -45,6 +45,10 @@ public static class SR2EFeatureFlags
 
     static void SaveToFlagFile()
     {
+        if (!File.Exists(flagfile_path))
+        {
+            File.Create(flagfile_path).Close();
+        }
         XmlDocument xmlDoc = new XmlDocument();
         
         XmlElement root = xmlDoc.CreateElement("SR2EFeatureFlags");
@@ -80,28 +84,43 @@ public static class SR2EFeatureFlags
             xmlElement.SetAttribute("value",value.Get().ToLower());
             xmlElement.SetAttribute("default", value.GetDefault().ToLower());
         }
-        // Save the XML document to a file
+        
+        File.SetAttributes(flagfile_path, FileAttributes.Normal);
         xmlDoc.Save(flagfile_path);
         File.SetAttributes(flagfile_path, FileAttributes.Hidden);
+
     }
 
     static void LoadFromFlagFile()
     {
-        if (!File.Exists(flagfile_path)) { SaveToFlagFile(); return; }
-        
+        if (!File.Exists(flagfile_path))
+        {
+            SaveToFlagFile();
+            return;
+        }
+
         XmlDocument xmlDoc = new XmlDocument();
-        try { xmlDoc.Load(flagfile_path); }
-        catch {}
+        try
+        {
+            xmlDoc.Load(flagfile_path);
+        }
+        catch
+        {
+        }
 
         XmlElement root = xmlDoc["SR2EFeatureFlags"];
-        if (root == null) { SaveToFlagFile(); return; }
+        if (root == null)
+        {
+            SaveToFlagFile();
+            return;
+        }
 
         XmlElement flags = root["FeatureFlags"];
         if (flags != null)
             foreach (XmlElement flagElement in flags.ChildNodes)
                 if (Enum.TryParse(flagElement.Name, out FeatureFlag flag))
                     if (bool.TryParse(flagElement.GetAttribute("value"), out bool isEnabled))
-                        if(isEnabled) enabledFlags |= flag;
+                        if (isEnabled) enabledFlags |= flag;
                         else enabledFlags &= ~flag;
         XmlElement ints = root["FeatureIntegerValues"];
         if (ints != null)
@@ -114,7 +133,7 @@ public static class SR2EFeatureFlags
             foreach (XmlElement stringElement in strings.ChildNodes)
                 if (Enum.TryParse(stringElement.Name, out FeatureStringValue intValue))
                     featurestrings[intValue] = stringElement.GetAttribute("value");
-
+        
         SaveToFlagFile();
     }
 
