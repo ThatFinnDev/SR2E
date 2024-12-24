@@ -1,3 +1,4 @@
+using System;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 
@@ -25,12 +26,35 @@ public class WeatherCommand : SR2ECommand
 
         if (argIndex == 2) if (args[0] == "modify")
                 return new List<string> { "start", "stop", "toggle" };
+
+        switch (argIndex)
+        {
+            case 0:
+                return new List<string> { "list", "modify" };
+            case 1:
+                switch (args[0])
+                {
+                    case "list":
+                        return new List<string> { "all", "running" };
+                    case "modify":
+                        var list = new List<string>();
+                        foreach (var state in weatherStateDefinitions) list.Add(state.name.Replace(" ", ""));
+                        return list;
+                }
+                break;
+            case 2:
+                if (args[0] == "modify")
+                    return new List<string> { "start", "stop", "toggle" };
+                break;
+        }
         
         return null;
     }
     
     public override bool Execute(string[] args)
     {
+        throw new NotImplementedException("Please tell finn or pinktarr to implement the weather command in a better way.");
+        
         if (!args.IsBetween(0,3)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         

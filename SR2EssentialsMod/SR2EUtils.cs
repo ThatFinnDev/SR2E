@@ -69,6 +69,7 @@ namespace SR2E
         public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
 
         internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new Dictionary<string, LocalizedString>();
+        internal static Dictionary<string, (string, string)> sr2eReplaceOnLanguageChange = new Dictionary<string, (string, string)>();
         public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
         {
             if (!InjectSR2Translations.HasFlag())
@@ -106,8 +107,24 @@ namespace SR2E
         public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
         {
             LocalizedString localizedString = AddTranslation(translation(sr2eTranslationID), key, table);
+            
             sr2etosrlanguage.Add(sr2eTranslationID,localizedString);
+            sr2eReplaceOnLanguageChange.Add(sr2eTranslationID, (key, table));
+            
             return localizedString;
+        }
+        
+        public static void SetTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
+        {
+            if (!InjectSR2Translations.HasFlag()) return;
+            
+            StringTable table2 = LocalizationUtil.GetTable(table);
+            
+            table2.GetEntry(key).Value = localized;
+        }
+        public static void SetTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
+        {
+            SetTranslation(translation(sr2eTranslationID), key, table);
         }
 
         public static GameObject SpawnActor(this GameObject obj, Vector3 pos) => SpawnActor(obj, pos, Quaternion.identity);

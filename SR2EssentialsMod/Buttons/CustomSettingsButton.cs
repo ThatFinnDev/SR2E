@@ -12,7 +12,10 @@ using Il2CppAssets.Script.Util.Extensions;
 using Il2CppMono.Security.X509;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Platform;
-using Il2CppMonomiPark.SlimeRancher.UI.Options;namespace SR2E.Buttons;
+using Il2CppMonomiPark.SlimeRancher.UI.Options;
+using QualityLevel = Il2CppMonomiPark.ScriptedValue.QualityLevel;
+
+namespace SR2E.Buttons;
 
 public static class CustomSettingsCreator
 {
@@ -165,22 +168,44 @@ public static class CustomSettingsCreator
             if (value.valueBool)
             {
                 var scripedOption = new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>();
+                
                 var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(1);
+                
+                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(1);
+                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(1);           
+                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(1);
+
+                
                 scriptedOptions[0] = scripedOption;
+                
                 scriptedOptions[0]._scriptedValue = value.valueBool;
                 scriptedOptions[0]._value = value.actualBool;
+                
                 preset._scriptedBoolSettings = scriptedOptions;
+                preset._scriptedFloatSettings = scriptedOptionsU1;
+                preset._scriptedIntSettings = scriptedOptionsU2;
+                preset._scriptedQualitySettings = scriptedOptionsU3;
             }
             else if (value.valueInt)
             {
                 var scripedOption = new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>();
+                
                 var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(1);
                 
+                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(1);
+                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(1);         
+                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(1);
+
+                
                 scriptedOptions[0] = scripedOption;
+                
                 scriptedOptions[0]._scriptedValue = value.valueInt;
                 scriptedOptions[0]._value = value.actualInt;
 
                 preset._scriptedIntSettings = scriptedOptions;
+                preset._scriptedBoolSettings = scriptedOptionsU2;
+                preset._scriptedFloatSettings = scriptedOptionsU1;
+                preset._scriptedQualitySettings = scriptedOptionsU3;
             }
             else if (value.valueFloat)
             {
@@ -188,6 +213,10 @@ public static class CustomSettingsCreator
                 var scripedOption = new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>();
 
                 var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(1);
+                
+                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(1);
+                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(1);
+                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(1);
 
                 scriptedOptions[0] = scripedOption;
 
@@ -196,6 +225,9 @@ public static class CustomSettingsCreator
 
 
                 preset._scriptedFloatSettings = scriptedOptions;
+                preset._scriptedBoolSettings = scriptedOptionsU1;
+                preset._scriptedIntSettings = scriptedOptionsU2;
+                preset._scriptedQualitySettings = scriptedOptionsU3;
             }
             else throw new InvalidCastException($"Value type for {id} isn't supported. valid types are: bool, float, and int.");
 

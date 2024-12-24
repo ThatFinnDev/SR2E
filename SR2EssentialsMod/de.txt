@@ -1,0 +1,354 @@
+buttons.mods.label=(In DE) Mods
+buttons.mods.label=(In DE) Mods
+buttons.mods.label=(In DE) Mods
+buttons.cheatmenu.label=(In DE) Cheat Menu
+buttons.debugplayer.label=(In DE) Debug Player
+
+cheatmenu.cheatbuttons.refillinv=(In DE) Refill Inventory
+cheatmenu.cheatbuttons.noclipon=(In DE) NoClip [On]
+cheatmenu.cheatbuttons.noclipoff=(In DE) NoClip [Off]
+cheatmenu.cheatbuttons.infenergyon=(In DE) Infinite Energy [On]
+cheatmenu.cheatbuttons.infenergyoff=(In DE) Infinite Energy [Off]
+cheatmenu.cheatbuttons.infhealthon=(In DE) Infinite Health [On]
+cheatmenu.cheatbuttons.infhealthoff=(In DE) Infinite Health [Off]
+cheatmenu.cheatbuttons.removeFogon=(In DE) Remove Fog [On]
+cheatmenu.cheatbuttons.removeFogoff=(In DE) Remove Fog [Off]
+cheatmenu.cheatbuttons.betterScreenshoton=(In DE) BetterScreenshot [On]
+cheatmenu.cheatbuttons.betterScreenshotoff=(In DE) BetterScreenshot [Off]
+
+modmenu.modinfo.expansion=(In DE) Expansion: $1
+modmenu.modinfo.brokenexpansion=(In DE) Broken expansion: $1
+modmenu.modinfo.brokenexpansiontitle=(In DE) Broken mod
+modmenu.modinfo.path=(In DE) Path: $1
+modmenu.modinfo.exception=(In DE) Exception: $1
+modmenu.modinfo.errorMessage=(In DE) Error message: $1
+modmenu.modinfo.mod=(In DE) Mod: $1
+modmenu.modinfo.brokenmodtitle=(In DE) Broken mod
+modmenu.modinfo.mod=(In DE) Mod: $1
+modmenu.modinfo.author=(In DE) by: $1
+modmenu.modinfo.version=(In DE) Version: $1
+modmenu.modinfo.link=(In DE) Link: $1
+modmenu.modinfo.unknown=(In DE) Unknown
+modmenu.modinfo.isuniversal=(In DE) Is Universal Mod: $1
+modmenu.modinfo.description=(In DE) Description: $1
+
+modmenu.modconfig.enterint=(In DE) Please enter a non decimal number
+modmenu.modconfig.enterfloat=(In DE) Please enter a decimal number
+modmenu.modconfig.enterdouble=(In DE) Please enter a decimal number
+modmenu.modconfig.entertext=(In DE) Please enter text
+
+modmenu.modconfig.keylistening=(In DE) Listening...
+
+cmd.loadasavefirst=(In DE) Load a save first!
+cmd.usage=(In DE) Usage: $1
+cmd.noarguments=(In DE) The '<color=(In DE) white>$1</color>' command takes no arguments
+cmd.unknowncommand=(In DE) Unknown command. Please use '<color=(In DE) white>help</color>' for available commands
+cmd.alreadyregistered=(In DE) Trying to register command with id '<color=(In DE) white>$1</color>' but the ID is already registered!
+cmd.notregistered=(In DE) Trying to unregister command with id '<color=(In DE) white>$1</color>' but the ID is not registered!
+
+
+cmd.error.notvalidpedia=(In DE) $1 is not a valid pedia entry!
+cmd.error.notvalidvacmode=(In DE) $1 is not a valid VACMODE!
+cmd.error.notvalidweather=(In DE) $1 is not a valid weather!
+cmd.error.notvalidkeycode=(In DE) $1 is not a valid KeyCode!
+cmd.error.notvalidint=(In DE) $1 is not a valid integer!
+cmd.error.notvalidfloat=(In DE) $1 is not a valid float!
+cmd.error.notvaliddouble=(In DE) $1 is not a valid double-float!
+cmd.error.notvalidbool=(In DE) $1 is not a valid boolean!
+cmd.error.notvalidtrool=(In DE) $1 has to be true, false or toggle!
+cmd.error.notvalidvector3=(In DE) ($1, $2, $3) is not a valid Vector3!
+cmd.error.notvalididenttype=(In DE) $1 is not a valid actor type!
+cmd.error.notvalidgadget=(In DE) $1 is not a valid gadget!
+cmd.error.notvalidupgrade=(In DE) $1 is not a valid upgrade!
+cmd.error.notintabove=(In DE) $1 is not an integer above $2!
+cmd.error.notintbelow=(In DE) $1 is not an integer below $2!
+cmd.error.notfloatabove=(In DE) $1 is not a float above $2!
+cmd.error.notdoubleabove=(In DE) $1 is not a double-float above $2!
+cmd.error.notintatleast=(In DE) $1 is not a int with at least $2!
+cmd.error.notfloatatleast=(In DE) $1 is not a float with at least $2!
+cmd.error.notdoubleatleast=(In DE) $1 is not a double-float with at least above $2!
+
+cmd.error.srccnull=(In DE) An error occured, SRCharacterController component couldn't be found!
+cmd.error.teleportableplayernull=(In DE) An error occured, TeleportablePlayer component couldn't be found!
+cmd.error.kinematiccharactermotornull=(In DE) An error occured, KinematicCharacterMotor component couldn't be found!
+cmd.error.scenegroupnotsupported=(In DE) The scene group "$1" is not supported!
+
+cmd.error.nocamera=(In DE) Couldn't find player camera!
+cmd.error.notlookingatvalidobject=(In DE) You're not looking at a valid object!
+cmd.error.notlookingatanything=(In DE) You're not looking at anything!
+
+
+
+cmd.bind.success=(In DE) Successfully bound command '$1' to key $2!
+cmd.bind.description=(In DE) Binds a key to a specific command
+cmd.bind.extendeddescription=(In DE) Binds a key to a specific command, you can even bind multiple.To remove the binding, use the "unbind" command
+
+cmd.clear.success=(In DE) Successfully cleared the console!
+cmd.clear.description=(In DE) Clears the console
+
+cmd.clearinv.success=(In DE) Successfully cleared your inventory!
+cmd.clearinv.successsingle=(In DE) Successfully cleared slot number $1!
+cmd.clearinv.error.slotdoesntexist=(In DE) There are only $1 number of slots!
+cmd.clearinv.error.slotnotunlocked=(In DE) Slot $1 hasn't been unlocked!
+cmd.clearinv.description=(In DE) Clears your inventory
+cmd.clearinv.extendeddescription=(In DE) Clears your inventory or if you want to, just a single slot
+
+cmd.openconsole.description=(In DE) Opens the console
+cmd.closeconsole.description=(In DE) Closes the console
+cmd.toggleconsole.description=(In DE) Toggles the console
+
+cmd.warpstuff.nowarpwithname=(In DE) There is no warp point with the name: $1!
+cmd.warpstuff.alreadywarpwithname=(In DE) There is already a warp point with the name: $1!
+
+cmd.delwarp.success=(In DE) Successfully deleted the warp point: $1!
+cmd.delwarp.description=(In DE) Deletes a warp point
+cmd.delwarp.extendeddescription=(In DE) Deletes a warp point from the <u>warp</u> command
+
+cmd.fastforward.success=(In DE) Successfully fast-forwarded $1 hours!
+cmd.fastforward.description=(In DE) Fast-forwards to next morning, or the amount of hours you request
+
+cmd.fling.success=(In DE) Successfully flinged the object with a string of $1!
+cmd.fling.description=(In DE) Flings any object you are looking at
+
+cmd.floaty.success=(In DE) The object will float for $1 seconds!
+cmd.floaty.description=(In DE) Temporarily disables gravity for the object you're looking at
+cmd.floaty.extendeddescription=(In DE) Temporarily disables gravity for the object you're looking at for the specified duration in seconds
+
+cmd.freeze.successunfroze=(In DE) Successfully unfroze the actor!
+cmd.freeze.successfroze=(In DE) Successfully froze the actor!
+cmd.freeze.description=(In DE) Freezes an object in time
+cmd.freeze.extendeddescription=(In DE) Freezes an object in time. It cannot move or fall until you unfreeze it
+
+cmd.fxplayer.success=(In DE) Successfully playing FX!
+cmd.fxplayer.waitforstop=(In DE) Please wait for the current FX to stop!
+cmd.fxplayer.invalidfxname=(In DE) Invalid FX Name!
+cmd.fxplayer.description=(In DE) Plays an effect in front of you
+
+cmd.give.success=(In DE) Successfully gave $1 $2!
+cmd.give.description=(In DE) Gives you items
+cmd.give.isgadgetnotitem=(In DE) $1 is a gadget, not an item!
+
+cmd.gadget.successadd=(In DE) Successfully added $1 to $2!
+cmd.gadget.successalladd=(In DE) Successfully added $1 to everything!
+cmd.gadget.successremove=(In DE) Successfully removed $1 of $2!
+cmd.gadget.successallremove=(In DE) Successfully removed $1 of everything!
+cmd.gadget.successset=(In DE) Successfully set $1 to $2!
+cmd.gadget.successallset=(In DE) Successfully set everything to $1!
+cmd.gadget.successget=(In DE) You currently have $1 of $2!
+cmd.gadget.successlock=(In DE) Successfully locked the blueprint for $1!
+cmd.gadget.successalllock=(In DE) Successfully locked the blueprint for everything!
+cmd.gadget.successunlock=(In DE) Successfully unlocked the blueprint for $1!
+cmd.gadget.successallunlock=(In DE) Successfully unlocked the blueprint for everything!
+cmd.gadget.errorlock=(In DE) The blueprint for $1 is already locked!
+cmd.gadget.errorunlock=(In DE) The blueprint for $1 is already unlocked!
+cmd.gadget.errortoomanyargs=(In DE) Too many arguments for '§1'!
+cmd.gadget.description=(In DE) Gives/Removes/Unlocks/Gets gadgets!
+cmd.gadget.notvalidoption=(In DE) $1 is not a valid option!
+
+cmd.upgrade.successadd=(In DE) Successfully increased $1 by $2 level(s)!
+cmd.upgrade.successalladd=(In DE) Successfully increased all by $1 levels!
+cmd.upgrade.successremove=(In DE) Successfully decreased $1 by $2 level(s)!
+cmd.upgrade.successallremove=(In DE) Successfully decreased all by $1 level(s)!
+cmd.upgrade.successset=(In DE) Successfully set $1 to level $2!
+cmd.upgrade.successallset=(In DE) Successfully set all to level $1!
+cmd.upgrade.successget=(In DE) $1 is currently on level $2!!
+cmd.upgrade.errortoomanyargs=(In DE) Too many arguments for '§1'!
+cmd.upgrade.description=(In DE) Manage updates!
+cmd.upgrade.notvalidoption=(In DE) $1 is not a valid option!
+
+cmd.pedia.descripton=(In DE) Manage your pedia!
+cmd.pedia.notvalidoption=(In DE) $1 is not a valid option!
+cmd.pedia.successlock=(In DE) Successfully locked the pedia entry for $1!
+cmd.pedia.successalllock=(In DE) Successfully locked the pedia entry for everything!
+cmd.pedia.successunlock=(In DE) Successfully unlocked the pedia entry for $1!
+cmd.pedia.successallunlock=(In DE) Successfully unlocked the pedia entry for everything!
+cmd.pedia.errorlock=(In DE) The pedia entry for $1 is already locked!
+cmd.pedia.errorunlock=(In DE) The pedia entry for $1 is already unlocked!
+
+
+cmd.ranch.descripton=(In DE) Manage your ranch expansions!
+cmd.ranch.notvalidoption=(In DE) $1 is not a valid option!
+cmd.ranch.successlock=(In DE) Successfully locked the expansion $1!
+cmd.ranch.successalllock=(In DE) Successfully locked all expansions!
+cmd.ranch.successunlock=(In DE) Successfully unlocked the expansion $1!
+cmd.ranch.successallunlock=(In DE) Successfully unlocked all expansions!
+cmd.ranch.errorlock=(In DE) The expansion $1 is already locked!
+cmd.ranch.errorunlock=(In DE) The expansion $1 is already unlocked!
+
+
+cmd.graphics.success=(In DE) Successfully set graphics type to $1!
+cmd.graphics.description=(In DE) Makes your game look... like something...
+cmd.graphics.extendeddescription=(In DE) Changes the look of your game. It may make your experience better or worse
+cmd.graphics.norangelights=(In DE) An error occured, 'rangelights' couldn't be found!
+
+cmd.gravity.success=(In DE) Successfully changed the gravity to $1 $2 $3!
+cmd.gravity.description=(In DE) Changes the gravity!
+cmd.gravity.description=(In DE) It changes the gravity for every single physics object (except player, use the util command for that)
+
+cmd.help.success=(In DE) <color=(In DE) #45d192>List of all currently registered commands:</color>\n<color=(In DE) #45d192><> is a required argument; [] is an optional argument</color>
+cmd.help.successspecific=(In DE) Usage: $1\nDescription: $2
+cmd.help.description=(In DE) Displays all commands available and their usage
+cmd.help.extendeddescription=(In DE) Displays all commands available and their usage, can also take a command as a input to display it by itself
+cmd.help.notvalidcommand=(In DE) The key '<color=(In DE) white>$1</color>' is not a valid command!
+
+cmd.infenergy.success=(In DE) Energy is now infinite
+cmd.infenergy.successnolonger=(In DE) Energy is no longer infinite
+cmd.infenergy.description=(In DE) Removes energy from the game
+cmd.infenergy.extendeddescription=(In DE) Gives you infinite energy. It can also remove it of course
+
+cmd.infhealth.success=(In DE) You're invincible now!
+cmd.infhealth.successnolonger=(In DE) You're no longer invincible!
+cmd.infhealth.description=(In DE) Makes you invincible
+cmd.infhealth.extendeddescription=(In DE) Gives you infinite health. It can also remove it of course
+
+cmd.killall.success=(In DE) Successfully killed all actors!
+cmd.killall.successspecific=(In DE) Successfully killed all actors with type $1!
+cmd.killall.description=(In DE) Kills everything or only everything with a specified id
+
+cmd.kill.success=(In DE) Successfully killed the actor!
+cmd.kill.description=(In DE) Kills what you're looking at
+
+cmd.toggleui.success=(In DE) Successfully toggled the hud!
+cmd.toggleui.description=(In DE) Toggles the hud.
+
+cmd.mods.success=(In DE) <color=(In DE) blue>List of Mods Loaded:</color>
+cmd.mods.successdesc=(In DE) $1 by $2
+cmd.mods.description=(In DE) Displays all mods loaded
+
+cmd.move.success=(In DE) Successfully moved the object!
+cmd.move.description=(In DE) Moves a gadget/slime/largo/fruit/ etc.
+
+cmd.scale.success=(In DE) Succesfully changed the scale of the object!
+cmd.scale.description=(In DE) Changes the scale of a gadget/slime/largo/fruit etc.
+
+cmd.newbucks.success=(In DE) Successfully added $1 newbucks!
+cmd.newbucks.description=(In DE) Adds or removes newbucks
+
+cmd.noclip.success=(In DE) Successfully activated noclip!
+cmd.noclip.success2=(In DE) Successfully deactivated noclip!
+cmd.noclip.description=(In DE) Activates or deactivates noclip
+
+cmd.party.success=(In DE) Successfully enabled party mode!
+cmd.party.success2=(In DE) Successfully disabled party mode!
+cmd.party.description=(In DE) Enables or disables party mode
+cmd.party.novolume=(In DE) An error occured, couldn't find volume!
+
+cmd.resolution.success=(In DE) Successfully changed your resolution to $1x$2!
+cmd.resolution.description=(In DE) Allows you to change the game resolution
+
+cmd.refillinv.success=(In DE) Successfully refilled your inventory!
+cmd.refillinv.successsingle=(In DE) Successfully refilled slot number $1!
+cmd.refillinv.error.slotdoesntexist=(In DE) There are only $1 slots!
+cmd.refillinv.error.slotempty=(In DE) Slot $1 is empty!
+cmd.refillinv.error.slotnotunlocked=(In DE) Slot $1 hasn't been unlocked!
+cmd.refillinv.description=(In DE) Refills your inventory
+cmd.refillinv.extendeddescription=(In DE) Refills your inventory or if you want, just a single slot
+
+cmd.replace.success=(In DE) Successfully replaced $1 with $2!
+cmd.replace.description=(In DE) Replaces the thing you're looking at
+
+cmd.rotate.success=(In DE) Successfully rotated the object!
+cmd.rotate.description=(In DE) Rotates a gadget/slime/largo/fruit/ etc.
+
+cmd.setwarp.success=(In DE) Successfully added the Warp point "$1"!
+cmd.setwarp.description=(In DE) Saves your location, so you can teleport to it later!
+
+cmd.spawn.success=(In DE) Successfully spawned $1 $2!
+cmd.spawn.description=(In DE) Spawns an actor in front of your face
+cmd.spawn.isgadgetnotitem=(In DE) $1 is a gadget, not an item!
+
+cmd.speed.success=(In DE) Set speed to $1!
+cmd.speed.description=(In DE) Changes the player speed
+cmd.speed.unknownerror=(In DE) An unknown error occured!
+
+cmd.strike.success=(In DE) Summoned lightning!
+cmd.strike.description=(In DE) Summons a lightning strike
+
+cmd.unbind.success=(In DE) Successfully unbound key $1!
+cmd.unbind.notbound=(In DE) Key $1 is not bound to anything!
+cmd.unbind.description=(In DE) Unbinds a key that was previously bound to a command/multiple commands
+cmd.unbind.extendeddescription=(In DE) Unbinds a key that was previously bound to a command/multiple commands. For multiple commands, use 'unbind <key> <command>;<command>;<command>;....'
+
+cmd.warp.success=(In DE) Successfully warped to the warp point $1!
+cmd.warp.description=(In DE) Warps you to a saved warp point
+cmd.warp.extendeddescription=(In DE) Warps you to a saved warp point, use <u>setwarp</u> to create more
+cmd.warp.unknownerror=(In DE) An unknown error occured!
+
+cmd.warplist.success=(In DE) <color=(In DE) blue>List of all warp points:</color>
+cmd.warplist.sucessdesc=(In DE) '$1' in '$2' at '$3 $4 $5'
+cmd.warplist.error=(In DE) There aren't any warp points yet!
+cmd.warplist.description=(In DE) Displays all warp points.
+
+cmd.weather.successlist=(In DE) All weathers are: $1
+cmd.weather.successlistrunning=(In DE) Currently running weathers are: $1
+cmd.weather.successstart=(In DE) Successfully started the weather "$1"!
+cmd.weather.successstop=(In DE) Successfully stopped the weather "$1"!
+cmd.weather.notvalidargument=(In DE) '$1' is not a valid argument!
+cmd.weather.requiresmore=(In DE) '$1' requires more arguments!
+cmd.weather.requiresless=(In DE) '$1' less more arguments!
+cmd.weather.currentlyrunning=(In DE) The weather $1 is currently running!
+cmd.weather.currentlynotrunning=(In DE) The weather $1 is currently not running!
+cmd.weather.alreadyrunning=(In DE) The weather $1 is already running!
+cmd.weather.alreadynotrunning=(In DE) The weather $1 is already stopped!
+cmd.weather.description=(In DE) Manage the weather
+cmd.weather.extendeddescription=(In DE) Allows you to toggle weathers as well as to view every weather
+cmd.weather.nodirector=(In DE) An error occured, cannot find WeatherDirector component!
+
+cmd.timescale.success=(In DE) Timescale is now $1!
+cmd.timescale.description=(In DE) Modifies game speed
+cmd.timescale.between=(In DE) The scale has to be between $1 and $2!
+
+cmd.util.description=(In DE) Utility Command
+cmd.util.requiresmore=(In DE) '$1' requires more arguments!
+cmd.util.invalidtype=(In DE) $1 is not a valid type!
+cmd.util.invalidparameter=(In DE) $1 is not a valid parameter!
+com.util.gordosize.edit=(In DE) The $1 gordo's size is now $2!
+com.util.gordosize.show=(In DE) The $1 gordo's size is currently $2
+com.util.gordoeat.edit=(In DE) The $1 gordo's eating count is now $2!
+com.util.gordoeat.show=(In DE) The $1 gordo's size is currently $2
+cmd.util.actorgravity.editenable=(In DE) Gravity for the actor $1 is now enabled!
+cmd.util.actorgravity.showenable=(In DE) Gravity for the actor $1 is enabled
+cmd.util.actorgravity.editdisable=(In DE) Gravity for the actor $1 is now disabled!
+cmd.util.actorgravity.showdisable=(In DE) Gravity for the actor $1 is disabled
+cmd.util.emotion.fear.show=(In DE) The fear of $1 is currently $2
+cmd.util.emotion.fear.edit=(In DE) The fear of $1 is now $2!
+cmd.util.emotion.hunger.show=(In DE) The hunger of $1 is currently $2
+cmd.util.emotion.hunger.edit=(In DE) The hunger of $1 is now $2!
+cmd.util.emotion.agitation.show=(In DE) The agitation of $1 is currently $2
+cmd.util.emotion.agitation.edit=(In DE) The agitation of $1 is now $2!
+cmd.util.emotion.sleepiness.show=(In DE) The sleepiness of $1 is currently $2
+cmd.util.emotion.sleepiness.edit=(In DE) The sleepiness of $1 is now $2!
+cmd.util.actor.showenable=(In DE) The actor type $1 is currently enabled
+cmd.util.actor.showdisable=(In DE) The actor type $1 is currently disabled
+cmd.util.actor.editenable=(In DE) The actor type $1 is now enabled!
+cmd.util.actor.editdisable=(In DE) The actor type $1 is now disabled!
+cmd.util.actor.alreadyenabled=(In DE) The actor type $1 is already enabled!
+cmd.util.actor.alreadydisabled=(In DE) The actor type $1 is already enabled!
+cmd.util.player.size.show=(In DE) The current size of the player is $1
+cmd.util.player.size.edit=(In DE) The new size of the player is $1!
+cmd.util.player.gravity.show=(In DE) The current gravity level of the player is $1
+cmd.util.player.gravity.edit=(In DE) The new gravity level of the player is $1!
+cmd.util.vacmode.success=(In DE) The VACMODE is now $1!
+cmd.util.vacmode.show=(In DE) The VACMODE is currently $1
+cmd.util.gadget.pos.show=(In DE) The gadget $1 is currently at ($2, $3, $4)
+cmd.util.gadget.pos.edit=(In DE) The gadget $1 is now at ($2, $3, $4)!
+
+cmd.recentercamera.description=(In DE) Recenters your camera to look at the center of an object you're looking at
+cmd.recentercamera.success=(In DE) Successfully recentered the camera! Make sure to screenshot before unpausing.
+cmd.recentercamera.needtolook=(In DE) You need to lock at something!
+cmd.recentercamera.nocamera=(In DE) There was no main camera found!
+
+setting.allowcheats=(In DE) Allow Cheating
+setting.allowcheats.desc=(In DE) Give yourself the ability to spawn objects and edit your inventory.
+setting.allowcheats.on=(In DE) Yes
+setting.allowcheats.off=(In DE) No
+setting.gamesettingtest=(In DE) Test Option
+setting.gamesettingtest.desc=(In DE) This is a SR2E test option.
+setting.gamesettingtest.value1=(In DE) Value 1
+setting.gamesettingtest.value2=(In DE) Value B
+setting.gamesettingtest.value3=(In DE) Value 03
+setting.categoryname=(In DE) SR2E Settings
+
+patches.localizedversionpatch.downloadedversion=(In DE) Just downloaded SR2E update (version $1)\nPlease restart to take effect!\n$1\n\n
+patches.localizedversionpatch.newversion=(In DE) New SR2E version available: $1\n$2\n\n
+patches.localizedversionpatch.default=(In DE) MelonLoader $1\n$2\n\n\n

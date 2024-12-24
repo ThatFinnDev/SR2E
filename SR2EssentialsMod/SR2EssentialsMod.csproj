@@ -27,6 +27,7 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="de.txt" />
     <EmbeddedResource Include="srtwoessentials.assetbundle" />
     <EmbeddedResource Include="en.txt" />
     <EmbeddedResource Remove="Libs\**" />
