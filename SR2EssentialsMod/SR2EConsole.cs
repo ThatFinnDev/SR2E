@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Il2CppMonomiPark.ScriptedValue;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -319,25 +320,48 @@ namespace SR2E
                                 {
                                     string[] stringArray = split.ToArray();
                                     SR2ECommand command = commands[cmd];
-                                    command.silent = silent;
-                                    successful = command.Execute(stringArray);
-                                    command.silent = false;
+                                    if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && cheatsEnabledOnSave._value)
+                                    {
+                                        command.SendError(translation("cmd.cheatsdisabled"));
+                                        successful = false;
+                                    }
+                                    else
+                                    {
+                                        command.silent = silent;
+                                        successful = command.Execute(stringArray);
+                                        command.silent = false;
+                                    }
                                 }
                                 else
                                 {
-                                    SR2ECommand command = commands[cmd];
-                                    command.silent = silent;
-                                    successful = command.Execute(null);
-                                    command.silent = false;
+                                    SR2ECommand command = commands[cmd];if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && cheatsEnabledOnSave._value)
+                                    {
+                                        command.SendError(translation("cmd.cheatsdisabled"));
+                                        successful = false;
+                                    }
+                                    else
+                                    {
+                                        command.silent = silent;
+                                        successful = command.Execute(null);
+                                        command.silent = false;
+                                    }
                                 }
                             }
                         }
                         else if(canPlay)
                         {
                             SR2ECommand command = commands[cmd];
-                            command.silent = silent;
-                            successful = command.Execute(null);
-                            command.silent = false;
+                            if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && cheatsEnabledOnSave._value)
+                            {
+                                command.SendError(translation("cmd.cheatsdisabled"));
+                                successful = false;
+                            }
+                            else
+                            {
+                                command.silent = silent;
+                                successful = command.Execute(null);
+                                command.silent = false;
+                            }
                         }
                     }
                     else
@@ -486,6 +510,8 @@ namespace SR2E
                 
         }
 
+        public static ScriptedBool cheatsEnabledOnSave;
+        
         internal static bool syncedSetuped = false;
         
         static void SetupConsoleSync()
@@ -569,6 +595,7 @@ namespace SR2E
         {
             if (EnableConsole.HasFlag())
             {
+                
                 if (SR2EEntryPoint.consoleFinishedCreating != true)
                     return;
                 commandInput.ActivateInputField();

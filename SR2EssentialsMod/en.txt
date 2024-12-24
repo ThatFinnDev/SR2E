@@ -46,6 +46,8 @@ cmd.unknowncommand=Unknown command. Please use '<color=white>help</color>' for a
 cmd.alreadyregistered=Trying to register command with id '<color=white>$1</color>' but the ID is already registered!
 cmd.notregistered=Trying to unregister command with id '<color=white>$1</color>' but the ID is not registered!
 
+cmd.cheatsdisabled=You cannot run this command while cheats are disabled!
+
 
 cmd.error.notvalidpedia=$1 is not a valid pedia entry!
 cmd.error.notvalidvacmode=$1 is not a valid VACMODE!
@@ -338,15 +340,20 @@ cmd.recentercamera.success=Successfully recentered the camera! Make sure to scre
 cmd.recentercamera.needtolook=You need to lock at something!
 cmd.recentercamera.nocamera=There was no main camera found!
 
+setting.skipintro=Skip Intro
+setting.skipintro.desc=Whether or not to skip the intro cutscene when you begin the world.
+
 setting.allowcheats=Allow Cheating
 setting.allowcheats.desc=Give yourself the ability to spawn objects and edit your inventory.
 setting.allowcheats.on=Yes
 setting.allowcheats.off=No
+
 setting.gamesettingtest=Test Option
 setting.gamesettingtest.desc=This is a SR2E test option.
 setting.gamesettingtest.value1=Value 1
 setting.gamesettingtest.value2=Value B
 setting.gamesettingtest.value3=Value 03
+
 setting.categoryname=SR2E Settings
 
 patches.localizedversionpatch.downloadedversion=Just downloaded SR2E update (version $1)\nPlease restart to take effect!\n$1\n\n

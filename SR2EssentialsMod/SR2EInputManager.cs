@@ -11,11 +11,10 @@ public enum KeyState
 }
 public static class SR2EInputManager
 {
-    
     [DllImport("user32.dll")]
     public static extern short GetAsyncKeyState(int vKey);
-
-    private static KeyState[] keyStates = new KeyState[512];
+    
+    static KeyState[] keyStates = new KeyState[512];
 
     internal static void Update()
     {

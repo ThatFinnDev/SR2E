@@ -11,6 +11,7 @@ using Il2CppTMPro;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Il2CppKinematicCharacterController;
+using Il2CppMonomiPark.ScriptedValue;
 using MelonLoader.Utils;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Options;
@@ -222,12 +223,7 @@ namespace SR2E
                 try { expansion.OnNormalInitializeMelon(); }
                 catch (Exception e) { MelonLogger.Error(e); }
             
-            var lang = SystemContext.Instance.LocalizationDirector.GetCurrentLocaleCode();
-        
-            if (languages.TryGetValue(lang, out var _))
-                LoadLanguage(lang);
-            else
-                LoadLanguage("en");
+            
         }
 
         public override void OnApplicationQuit()
@@ -239,12 +235,16 @@ namespace SR2E
         }
 
         internal static Damage killDamage;
+
+        public static ScriptedBool saveSkipIntro;
+        
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if(DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: "+sceneName);
             switch (sceneName)
             {
                 case "SystemCore":
+                    
                     System.IO.Stream stream = Assembly.GetExecutingAssembly()
                         .GetManifestResourceStream("SR2E.srtwoessentials.assetbundle");
                     byte[] buffer = new byte[16 * 1024];
@@ -260,10 +260,17 @@ namespace SR2E
                             if (obj.name == "AllMightyMenus")
                             {
                                 Object.Instantiate(obj);
+                                
                                 break;
                             }
                     }
 
+                    var lang = SystemContext.Instance.LocalizationDirector.GetCurrentLocaleCode();
+        
+                    if (languages.TryGetValue(lang, out var _))
+                        LoadLanguage(lang);
+                    else
+                        LoadLanguage("en");
                     break;
                 case "MainMenuUI":
 
@@ -301,30 +308,50 @@ namespace SR2E
                                 options.ToArray());
                             
                             
-                            var cheatsVal = CustomSettingsCreator.CreateScruptedBool(true);
-                            
+                            SR2EConsole.cheatsEnabledOnSave = CustomSettingsCreator.CreateScruptedBool(true);
+                            saveSkipIntro = CustomSettingsCreator.CreateScruptedBool(false);
+
                             CustomSettingsCreator.Create(
                                 CustomSettingsCreator.BuiltinSettingsCategory.GameSettings,
                                 AddTranslationFromSR2E("setting.allowcheats", "b.cheatingsetting", "UI"),
-                                AddTranslationFromSR2E("setting.allowcheats.desc", "l.cheatingsettingdescription",
+                                AddTranslationFromSR2E("setting.allowcheats.desc",
+                                    "l.cheatingsettingdescription",
                                     "UI"),
                                 "allowCheating",
                                 true,
                                 false,
-                                (def, idx, _) => { MelonLogger.Msg($"Cheating gamerule edited! New value index: {idx}.");},
+                                (def, idx, _) => {},
                                 new CustomSettingsCreator.OptionValue("off",
                                     AddTranslationFromSR2E(
                                         "setting.allowcheats.off",
                                         "l.settingvalueno",
-                                        "UI"), 
-                                    cheatsVal,
+                                        "UI"),
+                                    SR2EConsole.cheatsEnabledOnSave,
                                     false),
                                 new CustomSettingsCreator.OptionValue("on",
-                                    AddTranslationFromSR2E
-                                    ("setting.allowcheats.on", 
+                                    AddTranslationFromSR2E("setting.allowcheats.on",
                                         "l.settingvalueyes",
-                                        "UI"), 
-                                    cheatsVal,
+                                        "UI"),
+                                    SR2EConsole.cheatsEnabledOnSave,
+                                    true)
+                            );
+                            
+                            CustomSettingsCreator.Create(
+                                CustomSettingsCreator.BuiltinSettingsCategory.GameSettings,
+                                AddTranslationFromSR2E("setting.skipintro", "b.skipintrosetting", "UI"),
+                                AddTranslationFromSR2E("setting.skipintro.desc", "l.skipintrosettingdescription",
+                                    "UI"),
+                                "skipIntro",
+                                true,
+                                false,
+                                (_,_,_) => { },
+                                new CustomSettingsCreator.OptionValue("off",
+                                    sr2etosrlanguage["setting.allowcheats.off"],
+                                    saveSkipIntro,
+                                    false),
+                                new CustomSettingsCreator.OptionValue("on",
+                                    sr2etosrlanguage["setting.allowcheats.on"],
+                                    saveSkipIntro,
                                     true)
                             );
                         };
@@ -589,6 +616,7 @@ namespace SR2E
 
         public override void OnUpdate()
         {
+            SR2EInputManager.Update();
             if (mainMenuLoaded)
             {
                 foreach (BaseUI ui in new List<BaseUI>(baseUIAddSliders))

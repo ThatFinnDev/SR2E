@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 
 namespace SR2E.Patches.General;
 
-//[HarmonyPatch(typeof(ButtonBehaviorViewHolder), nameof(ButtonBehaviorViewHolder.OnEnable))]
+// DO NOT DISABLE THIS
+[HarmonyPatch(typeof(ButtonBehaviorViewHolder), nameof(ButtonBehaviorViewHolder.OnEnable))]
 public static class ButtonBehaviorViewHolderFontGetPatch
 {
     public static void Postfix(ButtonBehaviorViewHolder __instance)
