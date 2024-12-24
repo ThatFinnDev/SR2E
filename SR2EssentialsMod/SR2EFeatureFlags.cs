@@ -105,7 +105,7 @@ public static class SR2EFeatureFlags
         }
         // Save the XML document to a file
         
-        File.SetAttributes(flagfile_path, FileAttributes.Normal);
+        if (File.Exists(flagfile_path)) File.SetAttributes(flagfile_path, FileAttributes.Normal);
         xmlDoc.Save(flagfile_path);
         File.SetAttributes(flagfile_path, FileAttributes.Hidden);
     }

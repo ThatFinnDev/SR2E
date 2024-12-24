@@ -109,7 +109,7 @@ namespace SR2E
             LocalizedString localizedString = AddTranslation(translation(sr2eTranslationID), key, table);
             
             sr2etosrlanguage.Add(sr2eTranslationID,localizedString);
-            sr2eReplaceOnLanguageChange.Add(sr2eTranslationID, (key, table));
+            sr2eReplaceOnLanguageChange.TryAdd(sr2eTranslationID, (key, table));
             
             return localizedString;
         }

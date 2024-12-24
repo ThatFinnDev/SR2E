@@ -171,9 +171,9 @@ public static class CustomSettingsCreator
                 
                 var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(1);
                 
-                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(1);
-                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(1);           
-                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(1);
+                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(0);
+                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(0);           
+                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(0);
 
                 
                 scriptedOptions[0] = scripedOption;
@@ -192,9 +192,9 @@ public static class CustomSettingsCreator
                 
                 var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(1);
                 
-                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(1);
-                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(1);         
-                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(1);
+                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(0);
+                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(0);         
+                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(0);
 
                 
                 scriptedOptions[0] = scripedOption;
@@ -214,9 +214,9 @@ public static class CustomSettingsCreator
 
                 var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(1);
                 
-                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(1);
-                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(1);
-                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(1);
+                var scriptedOptionsU1 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(0);
+                var scriptedOptionsU2 = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(0);
+                var scriptedOptionsU3 = new Il2CppSystem.Collections.Generic.List<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedQuality, QualityLevel>>(0);
 
                 scriptedOptions[0] = scripedOption;
 

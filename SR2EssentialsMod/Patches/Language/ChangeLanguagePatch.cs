@@ -16,6 +16,7 @@ public class ChangeLanguagePatch
             LoadLanguage("en");
 
         sr2etosrlanguage.Clear();
+        addedTranslations.Clear();
         foreach (var str in sr2eReplaceOnLanguageChange)
             AddTranslationFromSR2E(str.Key, str.Value.Item1, str.Value.Item2);
     }
