@@ -38,8 +38,8 @@ public static class SR2EFeatureFlags
     
     
     private static SR2ECommand.CommandType enabledCMDs;
-    private static Dictionary<FeatureIntegerValue, int> featureints = new Dictionary<FeatureIntegerValue, int>();
-    private static Dictionary<FeatureStringValue, string> featurestrings = new Dictionary<FeatureStringValue, string>();
+    private static Dictionary<FeatureIntegerValue, int> featureInts = new Dictionary<FeatureIntegerValue, int>();
+    private static Dictionary<FeatureStringValue, string> featureStrings = new Dictionary<FeatureStringValue, string>();
     private static FeatureFlag enabledFlags = None;
     
     static bool initialized = false;
@@ -105,6 +105,7 @@ public static class SR2EFeatureFlags
         }
         // Save the XML document to a file
         
+        File.SetAttributes(flagfile_path, FileAttributes.Normal);
         xmlDoc.Save(flagfile_path);
         File.SetAttributes(flagfile_path, FileAttributes.Hidden);
     }
@@ -133,12 +134,12 @@ public static class SR2EFeatureFlags
             foreach (XmlElement intElement in ints.ChildNodes)
                 if (Enum.TryParse(intElement.Name, out FeatureIntegerValue intValue))
                     if (int.TryParse(intElement.GetAttribute("value"), out int intResult))
-                        featureints[intValue] = intResult;
+                        featureInts[intValue] = intResult;
         XmlElement strings = root["FeatureStringValue"];
         if (strings != null)
             foreach (XmlElement stringElement in strings.ChildNodes)
                 if (Enum.TryParse(stringElement.Name, out FeatureStringValue intValue))
-                    featurestrings[intValue] = stringElement.GetAttribute("value");
+                    featureStrings[intValue] = stringElement.GetAttribute("value");
 
         
         foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
@@ -156,8 +157,8 @@ public static class SR2EFeatureFlags
         if (initialized) return;
         initialized = true;
         enabledFlags = defaultFlags;
-        featureints = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
-        featurestrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
+        featureInts = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
+        featureStrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
         if (File.Exists(flagfile_path)) LoadFromFlagFile();
         else SaveToFlagFile();
 
@@ -180,13 +181,13 @@ public static class SR2EFeatureFlags
 
     public static int Get(this FeatureIntegerValue featureIntegerValue)
     {
-        if (!featureints.ContainsKey(featureIntegerValue)) return 0;
-        return featureints[featureIntegerValue];
+        if (!featureInts.ContainsKey(featureIntegerValue)) return 0;
+        return featureInts[featureIntegerValue];
     }
     public static string Get(this FeatureStringValue featureStringValue)
     {
-        if (!featurestrings.ContainsKey(featureStringValue)) return "";
-        return featurestrings[featureStringValue];
+        if (!featureStrings.ContainsKey(featureStringValue)) return "";
+        return featureStrings[featureStringValue];
     }
     public static int GetDefault(this FeatureIntegerValue featureIntegerValue)
     {

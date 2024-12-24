@@ -12,65 +12,88 @@ using Il2CppAssets.Script.Util.Extensions;
 using Il2CppMono.Security.X509;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Platform;
-using Il2CppMonomiPark.SlimeRancher.UI.Options;namespace SR2E.Buttons;[HarmonyPatch(typeof(OptionsViewModel),nameof(OptionsViewModel.GetOptionsItemsForCategory))]
-public static class DetSettingsDefinitionsPatch
-{
-    public static void Prefix(OptionsViewModel __instance, OptionsConfiguration optionsConfiguration, OptionsItemCategory category )
-    {
-        foreach (var o in category.items)
-        {
-            if (CustomSettingsCreator.models.TryGetValue(o._referenceId, out OptionsItemModel model))
-            {
-             
-                if (__instance.ProfileSpecificOptions != null)
-                    __instance.ProfileSpecificOptions.optionsById.TryAdd(o._referenceId, model);
-        
-                if (__instance.GameSpecificOptions != null)
-                    __instance.GameSpecificOptions.optionsById.TryAdd(o._referenceId, model);
-            }
-        }
-    }
-} 
+using Il2CppMonomiPark.SlimeRancher.UI.Options;namespace SR2E.Buttons;
+
 public static class CustomSettingsCreator
 {
-    internal static Dictionary<string, OptionsItemModel> models = new Dictionary<string, OptionsItemModel>();
+    public delegate void OnSettingEdited(ScriptedValuePresetOptionDefinition option, int valueIndex, bool savedChange = false);
     
+    internal static void ApplyModel()
+    {
+        foreach (var setting in settingModels)
+        {
+            GameContext.Instance.OptionsDirector._optionsModel.optionsById.Add(setting.Key, setting.Value);
+        }
+
+        var newGameUI = Resources.FindObjectsOfTypeAll<NewGameRootUI>().First();
+        foreach (var setting in gameModels)
+        {
+            newGameUI._optionsItemDefinitionsProvider.GetAssetForCurrentPlatform()._gameBasedOptionItems.Add(setting.Value.optionsItemDefinition);
+        }
+    }
+
+    static Dictionary<string, OptionsItemModel> settingModels = new Dictionary<string, OptionsItemModel>();
+    static Dictionary<string, OptionsItemModel> gameModels = new Dictionary<string, OptionsItemModel>();
+
     public struct OptionValue
     {
-        public string id;
-        public LocalizedString name;
+        public readonly string id;
+        public readonly LocalizedString name;
         public ScriptedInt valueInt = null;
         public ScriptedFloat valueFloat = null;
-        public ScriptedBool valueBool = null;        public OptionValue(string id, LocalizedString name, ScriptedBool storedValue)
+        public ScriptedBool valueBool = null;
+
+        public int actualInt = int.MinValue;
+        public float actualFloat = float.MinValue;
+        public bool actualBool = false;
+        
+        public OptionValue(string id, LocalizedString name, ScriptedBool storedValue, bool value)
         {
             this.id = id;
             this.name = name;
             valueBool = storedValue;
-        }        public OptionValue(string id, LocalizedString name, ScriptedFloat storedValue)
+            actualBool = value;
+        }
+
+        public OptionValue(string id, LocalizedString name, ScriptedFloat storedValue, float value)
         {
             this.id = id;
             this.name = name;
-            valueFloat = storedValue;        }        public OptionValue(string id, LocalizedString name, ScriptedInt storedValue)
+            valueFloat = storedValue;
+            actualFloat = value;
+        }
+
+        public OptionValue(string id, LocalizedString name, ScriptedInt storedValue, int value)
         {
             this.id = id;
             this.name = name;
-            valueInt = storedValue;        }
-    }    public static ScriptedInt CreateScriptedInt(int value)
+            valueInt = storedValue;
+            actualInt = value;
+        }
+    }
+
+    public static ScriptedInt CreateScriptedInt(int value)
     {
         var scripted = ScriptableObject.CreateInstance<ScriptedInt>();
         scripted.Value = value;
         return scripted;
-    }    public static ScriptedFloat CreateScriptedFloat(float value)
+    }
+
+    public static ScriptedFloat CreateScriptedFloat(float value)
     {
         var scripted = ScriptableObject.CreateInstance<ScriptedFloat>();
         scripted.Value = value;
         return scripted;
-    }    public static ScriptedBool CreateScruptedBool(bool value)
+    }
+
+    public static ScriptedBool CreateScruptedBool(bool value)
     {
         var scripted = ScriptableObject.CreateInstance<ScriptedBool>();
         scripted.Value = value;
         return scripted;
-    }    public static Dictionary<string, List<ScriptedValuePresetOptionDefinition>> AllSettingsButtons =
+    }
+
+    public static Dictionary<string, List<ScriptedValuePresetOptionDefinition>> AllSettingsButtons =
         new Dictionary<string, List<ScriptedValuePresetOptionDefinition>>()
         {
             { "GameSettings", new List<ScriptedValuePresetOptionDefinition>() },
@@ -82,7 +105,11 @@ public static class CustomSettingsCreator
             { "Gameplay_InGame", new List<ScriptedValuePresetOptionDefinition>() },
             { "Gameplay_MainMenu", new List<ScriptedValuePresetOptionDefinition>() },
             { "Graphics", new List<ScriptedValuePresetOptionDefinition>() },
-        };    static List<string> allUsedIDs = new List<string>();    public enum BuiltinSettingsCategory
+        };
+
+    static List<string> allUsedIDs = new List<string>();
+
+    public enum BuiltinSettingsCategory
     {
         GameSettings,
         Display,
@@ -92,83 +119,146 @@ public static class CustomSettingsCreator
         Gameplay_MainMenu,
         Gameplay_InGame,
         Bindings_Keyboard,
-        Graphics,        /// <summary>
+        Graphics,
+
+        /// <summary>
         /// This requires you to add it to the category yourself. Use this for custom categories
         /// </summary>
         ManualOrCustom,
-    }    public static void ApplyButtons(BuiltinSettingsCategory categoryEnum, OptionsItemCategory categoryObject)
+    }
+
+    public static void ApplyButtons(BuiltinSettingsCategory categoryEnum, OptionsItemCategory categoryObject)
     {
         foreach (var settingsButton in AllSettingsButtons[categoryEnum.ToString()])
         {
             categoryObject.items.Add(settingsButton);
         }
     }
-    public static ScriptedValuePresetOptionDefinition Create(BuiltinSettingsCategory category, LocalizedString label, LocalizedString description, int insertIndex, string id, bool applyImmediately, bool confirm, params OptionValue[] values)
+
+    public static ScriptedValuePresetOptionDefinition Create(BuiltinSettingsCategory category, 
+        LocalizedString label, 
+        LocalizedString description,
+        string id, 
+        bool applyImmediately, 
+        bool confirm, 
+        OnSettingEdited modifyCallback,
+        params OptionValue[] values)
     {
-        var button = Object.Instantiate(Resources.FindObjectsOfTypeAll<ScriptedValuePresetOptionDefinition>().First());        if (allUsedIDs.Contains(id))
-        {
+        var button = Object.Instantiate(Resources.FindObjectsOfTypeAll<ScriptedValuePresetOptionDefinition>().First());
+        
+        if (allUsedIDs.Contains(id))
             throw new Exception("A custom settings button already has this id: " + id);
-        }        button._wrapAround = true;
+
+        button._wrapAround = true;
         button._referenceId = $"setting.{id}";
         button._label = label;
         button._detailsText = description;
         button._applyImmediately = applyImmediately;
-        button._requireConfirmation = confirm;  
-        Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValuePreset> presets = 
-            new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValuePreset>(values.Length);        int i = 0;
+        button._requireConfirmation = confirm;
+        Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValuePreset> presets = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValuePreset>(values.Length);
+        int i = 0;
         foreach (var value in values)
         {
-            var preset = new ScriptedValuePresetOptionDefinition.ScriptedValuePreset();            preset._presetLabel = value.name;
-            preset._referenceId = value.id;            if (value.valueBool)
+            var preset = new ScriptedValuePresetOptionDefinition.ScriptedValuePreset();
+            preset._presetLabel = value.name;
+            preset._referenceId = value.id;
+            if (value.valueBool)
             {
-                var scripedOption = new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>();                var scriptedOptions =
-                    new Il2CppReferenceArray<
-                        ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(1);                scriptedOptions[0] = scripedOption;                scriptedOptions[0]._scriptedValue = value.valueBool;                preset._scriptedBoolSettings = scriptedOptions;
+                var scripedOption = new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>();
+                var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(1);
+                scriptedOptions[0] = scripedOption;
+                scriptedOptions[0]._scriptedValue = value.valueBool;
+                scriptedOptions[0]._value = value.actualBool;
+                preset._scriptedBoolSettings = scriptedOptions;
             }
             else if (value.valueInt)
-            {                var scripedOption = new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>();                var scriptedOptions =
-                    new Il2CppReferenceArray<
-                        ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(1)
-                    {
-                    };                scriptedOptions[0] = scripedOption;                scriptedOptions[0]._scriptedValue = value.valueInt;                preset._scriptedIntSettings = scriptedOptions;
+            {
+                var scripedOption = new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>();
+                var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedInt, int>>(1);
+                
+                scriptedOptions[0] = scripedOption;
+                scriptedOptions[0]._scriptedValue = value.valueInt;
+                scriptedOptions[0]._value = value.actualInt;
+
+                preset._scriptedIntSettings = scriptedOptions;
             }
             else if (value.valueFloat)
             {
-                var scripedOption =
-                    new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>();                var scriptedOptions =
-                    new Il2CppReferenceArray<
-                        ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(1);                scriptedOptions[0] = scripedOption;                scriptedOptions[0]._scriptedValue = value.valueFloat;                preset._scriptedFloatSettings = scriptedOptions;
+
+                var scripedOption = new ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>();
+
+                var scriptedOptions = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedFloat, float>>(1);
+
+                scriptedOptions[0] = scripedOption;
+
+                scriptedOptions[0]._scriptedValue = value.valueFloat;   
+                scriptedOptions[0]._value = value.actualFloat;
+
+
+                preset._scriptedFloatSettings = scriptedOptions;
             }
-            else
-                throw new InvalidCastException(
-                    $"Value type for {id} isn't supported. valid types are: bool, float, and int.");            presets[i] = preset;
+            else throw new InvalidCastException($"Value type for {id} isn't supported. valid types are: bool, float, and int.");
+
+            presets[i] = preset;
+
             i++;
-        }        button.CreateOptionItemModel();        button._optionsPresets = presets;
-        
+        }
+
+        button.CreateOptionItemModel();
+        button._optionsPresets = presets;
+
         var presets2 = new Il2CppSystem.Collections.Generic.List<OptionPresetSet.OptionPreset>();
-        
+
         foreach (var preset in presets)
             presets2.Add(new OptionPresetSet.OptionPreset(preset._referenceId, preset._presetLabel));
+        
         var presetsSet = new OptionPresetSet(presets2.Cast<Il2CppSystem.Collections.Generic.IEnumerable<OptionPresetSet.OptionPreset>>());
+        
         button._optionsItemModels._items[0].presets = presetsSet;
+        
+        button._optionsItemModels._items[0].OnSelectionChanged += new System.Action<int>(i =>
+        {
+            modifyCallback.Invoke(button, i, true);
+        });
+        button._optionsItemModels._items[0].OnTempSelectionChanged += new System.Action<int>(i =>
+        {
+            modifyCallback.Invoke(button, i);
+        });
+        
         allUsedIDs.Add(id);
         if (category != BuiltinSettingsCategory.ManualOrCustom)
-            AllSettingsButtons[category.ToString()].Add(button);        models.Add(button._referenceId, button._optionsItemModels._items[0]);
+            AllSettingsButtons[category.ToString()].Add(button);
+        
+        button._isProfileSetting = category != BuiltinSettingsCategory.GameSettings;
+
+        button._optionsItemModels._items[0].id = $"moddedSetting.{id}";
+        
+        if (button._isProfileSetting)
+            settingModels.Add(button._referenceId, button._optionsItemModels._items[0]);
+        else 
+            gameModels.Add(button._referenceId, button._optionsItemModels._items[0]);
+        
         return button;
-    }    public static OptionsItemCategory CreateCategory(LocalizedString label, Sprite icon, params ScriptedValuePresetOptionDefinition[] options)
+    }
+
+    public static OptionsItemCategory CreateCategory(LocalizedString label, Sprite icon,
+        params ScriptedValuePresetOptionDefinition[] options)
     {
-        var category = Object.Instantiate(Resources.FindObjectsOfTypeAll<OptionsItemCategory>().First());        category._title = label;
+        var category = Object.Instantiate(Resources.FindObjectsOfTypeAll<OptionsItemCategory>().First());
+        category._title = label;
         category.name = label.GetLocalizedString().Replace(" ", "");
         category._icon = icon;
         category.items = new Il2CppSystem.Collections.Generic.List<OptionsItemDefinition>();
         foreach (var o in options)
         {
             category.items.Add(o);
-        }        foreach (var provier in Resources.FindObjectsOfTypeAll<PlatformOptionsConfigurationProvider>())
+        }
+
+        foreach (var provier in Resources.FindObjectsOfTypeAll<PlatformOptionsConfigurationProvider>())
         {
             provier.defaultAsset.items.Add(category);
         }
-        
+
         return category;
     }
 }

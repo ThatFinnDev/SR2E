@@ -338,11 +338,16 @@ cmd.recentercamera.success=Successfully recentered the camera! Make sure to scre
 cmd.recentercamera.needtolook=You need to lock at something!
 cmd.recentercamera.nocamera=There was no main camera found!
 
+setting.allowcheats=Allow Cheating
+setting.allowcheats.desc=Give yourself the ability to spawn objects and edit your inventory.
+setting.allowcheats.on=Yes
+setting.allowcheats.off=No
 setting.gamesettingtest=Test Option
 setting.gamesettingtest.desc=This is a SR2E test option.
 setting.gamesettingtest.value1=Value 1
 setting.gamesettingtest.value2=Value B
 setting.gamesettingtest.value3=Value 03
+setting.categoryname=SR2E Settings
 
 patches.localizedversionpatch.downloadedversion=Just downloaded SR2E update (version $1)\nPlease restart to take effect!\n$1\n\n
 patches.localizedversionpatch.newversion=New SR2E version available: $1\n$2\n\n
