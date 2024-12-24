@@ -320,7 +320,7 @@ namespace SR2E
                                 {
                                     string[] stringArray = split.ToArray();
                                     SR2ECommand command = commands[cmd];
-                                    if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && cheatsEnabledOnSave._value)
+                                    if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && !cheatsEnabledOnSave.Value)
                                     {
                                         command.SendError(translation("cmd.cheatsdisabled"));
                                         successful = false;
@@ -334,7 +334,7 @@ namespace SR2E
                                 }
                                 else
                                 {
-                                    SR2ECommand command = commands[cmd];if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && cheatsEnabledOnSave._value)
+                                    SR2ECommand command = commands[cmd];if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && !cheatsEnabledOnSave.Value)
                                     {
                                         command.SendError(translation("cmd.cheatsdisabled"));
                                         successful = false;
@@ -351,7 +351,7 @@ namespace SR2E
                         else if(canPlay)
                         {
                             SR2ECommand command = commands[cmd];
-                            if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && cheatsEnabledOnSave._value)
+                            if (command.type.HasFlag(SR2ECommand.CommandType.Cheat) && !cheatsEnabledOnSave.Value)
                             {
                                 command.SendError(translation("cmd.cheatsdisabled"));
                                 successful = false;
