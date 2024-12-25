@@ -34,8 +34,13 @@ namespace SR2E
         public const string Name = "SR2E";
         public const string Description = "Essential stuff for Slime Rancher 2";
         public const string Author = "ThatFinn & PinkTarr";
-        public const string Version = "3.0.0b1";
+        public const string Version = "3.0.0";
         public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60";
+        
+        /// <summary>
+        /// Should be the same as Version unless this is a special build. For beta please use [version]b[beta-number]. For alpha use [version]a[alpha-number]. For development builds please use [version]DEV[build-number | commit-id]
+        /// </summary>
+        public const string DisplayVersion = "3.0.0b1";
     }
 
     public class SR2EEntryPoint : MelonMod

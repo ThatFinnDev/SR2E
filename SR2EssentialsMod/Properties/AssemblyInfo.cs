@@ -10,7 +10,7 @@
 [assembly: AssemblyVersion(SR2E.BuildInfo.Version)]
 [assembly: MelonPriority(-10000)]
 [assembly: AssemblyFileVersion(SR2E.BuildInfo.Version)]
-[assembly: MelonInfo(typeof(SR2E.SR2EEntryPoint), SR2E.BuildInfo.Name, SR2E.BuildInfo.Version, SR2E.BuildInfo.Author, SR2E.BuildInfo.DownloadLink)]
+[assembly: MelonInfo(typeof(SR2E.SR2EEntryPoint), SR2E.BuildInfo.Name, SR2E.BuildInfo.DisplayVersion, SR2E.BuildInfo.Author, SR2E.BuildInfo.DownloadLink)]
 [assembly: MelonGame("MonomiPark", "SlimeRancher2")]
 [assembly: MelonColor(255, 35, 255, 35)]
 
