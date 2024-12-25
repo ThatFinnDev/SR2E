@@ -19,7 +19,7 @@ public static class SR2EFeatureFlags
             CommandsLoadCommands | CommandsLoadCheat | CommandsLoadBinding | CommandsLoadWarp | CommandsLoadCommon | CommandsLoadMenu | CommandsLoadMiscellaneous | CommandsLoadFun | 
             AllowExpansions |
             EnableModMenu | EnableConsole | EnableIl2CppDetourExceptionReporting |
-            InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
+            InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations | CustomSettingsInjection |
             AddCheatMenuButton | AddModMenuButton |
             CheckForUpdates | AllowAutoUpdate | 
             EnableInfHealth | EnableInfEnergy | EnableCheatMenu | EnableLocalizedVersionPatch;
@@ -215,7 +215,6 @@ public static class SR2EFeatureFlags
         {CommandsLoadMenu,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadMiscellaneous,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadFun,new []{new FFRActivated(CommandsLoadCommands)}},
-        {ExperimentalSettingsInjection,new []{new FFRActivated(Experiments)}},
         {AddCheatMenuButton,new []{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
         {AddModMenuButton,new []{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
 
@@ -264,7 +263,7 @@ public enum FeatureFlag : long
     DebugLogging = 1L << 2,
     ShowUnityErrors = 1L << 3,
     Experiments = 1L << 4,
-    ExperimentalSettingsInjection = 1L << 5,
+    CustomSettingsInjection = 1L << 5,
     
     //Commands+Dev
     CommandsLoadDevOnly = 1L << 6, 

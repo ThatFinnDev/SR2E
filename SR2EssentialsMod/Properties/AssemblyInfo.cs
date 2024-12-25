@@ -2,10 +2,10 @@
 
 [assembly: AssemblyTitle(SR2E.BuildInfo.Name)]
 [assembly: AssemblyDescription(SR2E.BuildInfo.Description)]
-[assembly: AssemblyCompany(SR2E.BuildInfo.Company)]
+[assembly: AssemblyCompany(null)]
 [assembly: AssemblyProduct(SR2E.BuildInfo.Name)]
 [assembly: AssemblyCopyright($"Created by {SR2E.BuildInfo.Author}")]
-[assembly: AssemblyTrademark(SR2E.BuildInfo.Company)]
+[assembly: AssemblyTrademark(null)]
 [assembly: VerifyLoaderVersion(0,6,2, true)]
 [assembly: AssemblyVersion(SR2E.BuildInfo.Version)]
 [assembly: MelonPriority(-10000)]

@@ -26,14 +26,16 @@ using UnityEngine.Networking;
 
 namespace SR2E
 {
+    /// <summary>
+    /// SR2E Build information
+    /// </summary>
     public static class BuildInfo
     {
-        public const string Name = "SR2E"; // Name of the Mod.  (MUST BE SET)
-        public const string Description = "Essentials for Slime Rancher 2"; // Description for the Mod.  (Set as null if none)
-        public const string Author = "ThatFinn"; // Author of the Mod.  (MUST BE SET)
-        public const string Company = null; // Company that made the Mod.  (Set as null if none)
-        public const string Version = "2.4.8"; // Version of the Mod.  (MUST BE SET)
-        public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Mod.  (Set as null if none)
+        public const string Name = "SR2E";
+        public const string Description = "Essential stuff for Slime Rancher 2";
+        public const string Author = "ThatFinn & PinkTarr";
+        public const string Version = "3.0.0b1";
+        public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60";
     }
 
     public class SR2EEntryPoint : MelonMod
@@ -276,7 +278,7 @@ namespace SR2E
                     break;
                 case "MainMenuUI":
 
-                    if (ExperimentalSettingsInjection.HasFlag())
+                    if (CustomSettingsInjection.HasFlag())
                     {
                         bool tempLoad = alreadyLoadedSettings;
 
