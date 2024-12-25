@@ -27,7 +27,7 @@ using UnityEngine.Networking;
 namespace SR2E
 {
     /// <summary>
-    /// SR2E Build information
+    /// SR2E Build information. Please do not edit anything other than version numbers.
     /// </summary>
     public static class BuildInfo
     {
