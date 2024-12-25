@@ -20,9 +20,17 @@ namespace SR2E.Buttons;
 public static class CustomSettingsCreator
 {
     public delegate void OnSettingEdited(ScriptedValuePresetOptionDefinition option, int valueIndex, bool savedChange = false);
+
+    // Using this to reset the options model each main menu load.
+    static Il2CppSystem.Collections.Generic.IEnumerable<OptionsItemDefinition> optionsItemDefinitions;
     
     internal static void ApplyModel()
     {
+        if (optionsItemDefinitions == null)
+            optionsItemDefinitions = GameContext.Instance.OptionsDirector._optionsItemDefinitionsProvider.defaultAsset.ProfileBasedDefinitions;
+
+        GameContext.Instance.OptionsDirector._optionsModel = new OptionsModel(optionsItemDefinitions);
+        
         foreach (var setting in settingModels)
         {
             GameContext.Instance.OptionsDirector._optionsModel.optionsById.Add(setting.Key, setting.Value);
@@ -136,6 +144,14 @@ public static class CustomSettingsCreator
         {
             categoryObject.items.Add(settingsButton);
         }
+    }
+
+    /// <summary>
+    /// Only run before injecting buttons!!!
+    /// </summary>
+    internal static void ClearUsedIDs()
+    {
+        allUsedIDs.Clear();
     }
 
     public static ScriptedValuePresetOptionDefinition Create(BuiltinSettingsCategory category, 

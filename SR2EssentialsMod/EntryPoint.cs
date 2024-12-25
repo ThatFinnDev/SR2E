@@ -86,7 +86,7 @@ namespace SR2E
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).disableWarning((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
             
-            if(AllowCheats.HasFlag()) if (!prefs.HasEntry("enableCheatMenuButton"))
+             if (!prefs.HasEntry("enableCheatMenuButton"))
                 prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).disableWarning((System.Action)(
                     () =>
                     {
@@ -238,6 +238,8 @@ namespace SR2E
 
         public static ScriptedBool saveSkipIntro;
         
+        bool alreadyLoadedSettings = false;
+        
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if(DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: "+sceneName);
@@ -276,7 +278,47 @@ namespace SR2E
 
                     if (ExperimentalSettingsInjection.HasFlag())
                     {
+                        bool tempLoad = alreadyLoadedSettings;
 
+                        if (tempLoad)
+                        {
+                            CustomSettingsCreator.ClearUsedIDs();
+                            CustomSettingsCreator.AllSettingsButtons =
+                                new Dictionary<string, List<ScriptedValuePresetOptionDefinition>>()
+                                {
+                                    {
+                                        "GameSettings", new List<ScriptedValuePresetOptionDefinition>()
+                                    },
+                                    {
+                                        "Display", new List<ScriptedValuePresetOptionDefinition>()
+                                    },
+                                    {
+                                        "Audio", new List<ScriptedValuePresetOptionDefinition>()
+                                    },
+                                    {
+                                        "Bindings_Controller", new List<ScriptedValuePresetOptionDefinition>()
+                                    },
+                                    {
+                                        "Bindings_Keyboard", new List<ScriptedValuePresetOptionDefinition>()
+                                    },
+                                    {
+                                        "Input", new List<ScriptedValuePresetOptionDefinition>()
+                                    },
+                                    {
+                                        "Gameplay_InGame", new List<ScriptedValuePresetOptionDefinition>()
+                                    },
+                                    {
+                                        "Gameplay_MainMenu", new List<ScriptedValuePresetOptionDefinition>()
+                                    },
+                                    {
+                                        "Graphics", new List<ScriptedValuePresetOptionDefinition>()
+                                    }
+                                };
+                            
+                        }
+                        
+                        alreadyLoadedSettings = true;
+                        
                         RegisterOptionMenuButtons += (_, _) =>
                         {
                             var testVal = CustomSettingsCreator.CreateScriptedInt(0);
@@ -416,7 +458,7 @@ namespace SR2E
                         new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
                     }
 
-                    if (!AllowCheats.HasFlag())
+                    if (!SR2EConsole.cheatsEnabledOnSave)
                     {
                         if (AddCheatMenuButton.HasFlag())
                         {
@@ -657,7 +699,7 @@ namespace SR2E
                 try { SR2EConsole.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-                if(AllowCheats.HasFlag()) try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                if(SR2EConsole.cheatsEnabledOnSave) try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 if(DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
             }
         }
