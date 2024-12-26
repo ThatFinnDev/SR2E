@@ -667,7 +667,6 @@ namespace SR2E
 
         public override void OnUpdate()
         {
-            SR2EInputManager.Update();
             if (mainMenuLoaded)
             {
                 foreach (BaseUI ui in new List<BaseUI>(baseUIAddSliders))
