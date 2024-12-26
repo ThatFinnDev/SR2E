@@ -45,22 +45,23 @@ cmd.alreadyregistered=Die ID '<color=white>$1</color>' ist bereits besetzt!
 cmd.notregistered=Kein Befehl unter '<color=white>$1</color>' registriert!
 
 
-cmd.error.notvalidpedia=(In DE) $1 is not a valid pedia entry!
-cmd.error.notvalidvacmode=(In DE) $1 is not a valid VACMODE!
-cmd.error.notvalidweather=(In DE) $1 is not a valid weather!
-cmd.error.notvalidkeycode=(In DE) $1 is not a valid KeyCode!
-cmd.error.notvalidint=(In DE) $1 is not a valid integer!
-cmd.error.notvalidfloat=(In DE) $1 is not a valid float!
-cmd.error.notvaliddouble=(In DE) $1 is not a valid double-float!
-cmd.error.notvalidbool=(In DE) $1 is not a valid boolean!
-cmd.error.notvalidtrool=(In DE) $1 has to be true, false or toggle!
-cmd.error.notvalidvector3=(In DE) ($1, $2, $3) is not a valid Vector3!
-cmd.error.notvalididenttype=(In DE) $1 is not a valid actor type!
-cmd.error.notvalidgadget=(In DE) $1 is not a valid gadget!
-cmd.error.notvalidupgrade=(In DE) $1 is not a valid upgrade!
-cmd.error.notintabove=(In DE) $1 is not an integer above $2!
-cmd.error.notintbelow=(In DE) $1 is not an integer below $2!
-cmd.error.notfloatabove=(In DE) $1 is not a float above $2!
+cmd.error.notvalidpedia=$1 is kein valider Pedia-Eintrag
+cmd.error.notvalidvacmode=$1 ist kein valider VACMODE!
+cmd.error.notvalidweather=$1 ist kein valides Wetter!
+cmd.error.notvalidkeycode=$1 ist kein valider Tasten-Code!
+
+cmd.error.notvalidint=$1 ist kein valider Int!
+cmd.error.notvalidfloat=$1 ist kein valider float!
+cmd.error.notvaliddouble=$1 ist kein valider double-float!
+cmd.error.notvalidbool=$1 ist kein valider boolean!
+cmd.error.notvalidtrool=$1 muss entweder true, false oder toggle sein!
+cmd.error.notvalidvector3=($1, $2, $3) ist kein Vector3!
+cmd.error.notvalididenttype=$1 ist kein valider Typ!
+cmd.error.notvalidgadget=$1 ist kein valides Gadget!
+cmd.error.notvalidupgrade=$1 ist kein valides Upgrade!
+cmd.error.notintabove=$1 darf nicht kleiner als $2 sein!
+cmd.error.notintbelow=$1 darf nicht größer als $2 sein!
+cmd.error.notfloatabove=$1 is not a float above $2!
 cmd.error.notdoubleabove=(In DE) $1 is not a double-float above $2!
 cmd.error.notintatleast=(In DE) $1 is not a int with at least $2!
 cmd.error.notfloatatleast=(In DE) $1 is not a float with at least $2!
