@@ -13,19 +13,16 @@ using UnityEngine.UI;
 
 namespace SR2E
 {
-    //Changed transform to parent
-    //transform to consoleMenu
-    //no fix every get child :/
     public static class SR2EConsole
     {
         /// <summary>
         /// Display a message in the console
         /// </summary>
-
         public static void SendMessage(string message)
         {
             SendMessage(message, SR2EEntryPoint.syncConsole);
         }
+        
         /// <summary>
         /// Display a message in the console
         /// </summary>
@@ -62,6 +59,7 @@ namespace SR2E
             }
             catch { }
         }
+        
         /// <summary>
         /// Display an error in the console
         /// </summary>
@@ -69,6 +67,7 @@ namespace SR2E
         {
             SendError(message, SR2EEntryPoint.syncConsole);
         }
+        
         /// <summary>
         /// Display an error in the console
         /// </summary>
@@ -113,6 +112,7 @@ namespace SR2E
         {
             SendWarning(message, SR2EEntryPoint.syncConsole);
         }
+        
         /// <summary>
         /// Display an error in the console
         /// </summary>
@@ -196,6 +196,7 @@ namespace SR2E
             TryDisableSR2Input();
             RefreshAutoComplete(commandInput.text);
         }
+        
         /// <summary>
         /// Toggles the console
         /// </summary>
@@ -212,6 +213,7 @@ namespace SR2E
                     Open();
             }
         }
+        
         /// <summary>
         /// Registers a command to be used in the console
         /// </summary>
@@ -230,6 +232,7 @@ namespace SR2E
             commands = myList.ToDictionary(x => x.Key, x => x.Value);
             return true;
         }
+        
         /// <summary>
         /// Registers multiple commands to be used in the console
         /// </summary>
@@ -244,9 +247,11 @@ namespace SR2E
             }
             return successful;
         }
+        
         /// <summary>
         /// Unregisters a command
         /// </summary>
+        [Obsolete("Use RegisterCommands(string) instead")]
         public static bool UnRegisterCommand(SR2ECommand cmd)
         {
             return UnRegisterCommand(cmd.ID);
@@ -394,7 +399,8 @@ namespace SR2E
         {
             if (!EnableConsole.HasFlag()) return;
             
-            // autoCompleteContent.position = new Vector3(autoCompleteContent.position.x, ((744f/1080f)*Screen.height), autoCompleteContent.position.z);
+            autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = true; // Make sure that the component is enabled            
+            
             if (selectedAutoComplete > autoCompleteContent.childCount - 1)
                 selectedAutoComplete = 0;
             for (int i = 0; i < autoCompleteContent.childCount; i++)
@@ -415,7 +421,6 @@ namespace SR2E
                         args = split.ToArray();
                     List<string> possibleAutoCompletes = (commands[cmd].GetAutoComplete(argIndex, args));
                     if (possibleAutoCompletes != null) if (possibleAutoCompletes.Count == 0) possibleAutoCompletes = null;
-                    Color textColor = new Color(0.75f, 0.75f, 0.75f, 1f);
                     if (possibleAutoCompletes != null)
                     {
                         int maxPredictions = MAX_AUTOCOMPLETE.Get(); 
@@ -423,7 +428,7 @@ namespace SR2E
                         foreach (string argument in possibleAutoCompletes)
                         {
                             if (predicted > maxPredictions)
-                                return;
+                                break;
                             string containing = "";
                             if (args != null) containing = split[split.Count - 1];
                             if (args != null)
@@ -432,9 +437,8 @@ namespace SR2E
                             predicted++;
                             GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
                             TextMeshProUGUI textMesh = instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-                            textMesh.color = textColor;
-                            if (args == null) textMesh.text = "<color=white>"+argument+"</color>";
-                            else textMesh.text = new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(argument, "<color=white>" + argument.Substring(argument.ToLower().IndexOf(containing.ToLower()),containing.Length) + "</color>", 1);
+                            if (args == null) textMesh.text = "<alpha=#FF>"+argument+"<alpha=#65>"; // "alpha=#FF" is the normal argument, and the "alhpa=#65" is the uncompleted part. DO NOT CHANGE THE SYSTEM, ONLY THE ALPHA VALUES!!!
+                            else textMesh.text = new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(argument, "<alpha=#6F>" + argument.Substring(argument.ToLower().IndexOf(containing.ToLower()),containing.Length) + "<alpha=#45>", 1);
                             
                             instance.SetActive(true);
                             instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
@@ -593,6 +597,8 @@ namespace SR2E
         private static int selectedAutoComplete = 0;
         internal static void Update()
         {
+            SR2EInputManager.Update();
+            
             if (EnableConsole.HasFlag())
             {
                 

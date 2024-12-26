@@ -1,5 +1,7 @@
+![logo](https://github.com/ThatFinnDev/SR2E/blob/experimental/SR2EssentialsMod/category.png?raw=true)
+
 # SR2E
- A mod for SlimeRancher 2 that adds a ModMenu to the Main Menu and a InGameConsole with commands (expandable by other mods).
+ A mod for Slime Rancher 2 that adds a mod menu to the main menu and a in-game console with commands (expandable by other mods).
 
  # Installation:
   1. Install MelonLoader 0.6.2 or higher https://github.com/LavaGang/MelonLoader/releases (BUT NOT 0.6.5 OR 0.6.6!)
@@ -7,18 +9,18 @@
   3. Put the SR2E.dll in your Mods Folder
 
 # Usage:
- Open the console wih Ctrl+Tab
+ Open the console wih Ctrl+Tab, type in commands, and press enter. There is also auto complete for commands and a keybinding system.
 
+# Gamerules
+
+There are 2 gamerules right now. They are: **Enable Cheats (Default is 'No')**, **Skip Intro (Defualt is 'Yes')** 
 
 # Special thanks
  Special thanks to SlimeRancherModding for SRML
  because it gave me good starting point for a lot of stuff.
  Link: https://github.com/SlimeRancherModding/SRML
 
- Special thanks to MadMincraftr for helping me fix and implement some stuff.
- Link: https://github.com/MadMincraftr
-
- Special thanks to AureumApes for a few extra weather commands.
+ Special thanks to AureumApes for helping with translating to `DE` and adjusting the weather commands
  Link: https://github.com/AureumApes
  
  Special thanks to LavaGang for MelonLoader
