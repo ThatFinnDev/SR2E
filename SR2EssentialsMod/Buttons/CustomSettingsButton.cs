@@ -13,6 +13,7 @@ using Il2CppMono.Security.X509;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Platform;
 using Il2CppMonomiPark.SlimeRancher.UI.Options;
+using Il2CppMonomiPark.SlimeRancher.Util;
 using QualityLevel = Il2CppMonomiPark.ScriptedValue.QualityLevel;
 
 namespace SR2E.Buttons;
@@ -154,26 +155,44 @@ public static class CustomSettingsCreator
         allUsedIDs.Clear();
     }
 
-    public static ScriptedValuePresetOptionDefinition Create(BuiltinSettingsCategory category, 
+    /// <summary>
+    /// Create a custom settings option that gets injected into the game.
+    /// </summary>
+    /// <param name="category">The category to inject the setting into. There are 2 special values. The first is GameSettings, which gets injected into the new save ui, the other is ManualOrCustom which doesnt inject into anything</param>
+    /// <param name="label">The name of the option that gets shown</param>
+    /// <param name="description">The description shown while the setting is selected</param>
+    /// <param name="id">The reference ID of the setting</param>
+    /// <param name="defaultOptionIndex"> The default option index when the user hasnt chosen an option yet</param>
+    /// <param name="applyImmediately">Whether or not to apply as soon as the value is changed</param> // please fact check this
+    /// <param name="confirm">Whether or not to use a confirmation prompt for this option</param> // and this too
+    /// <param name="modifyCallback">The action you want to run when the value is changed or the category containing the option is opened</param>
+    /// <param name="values">params Array of SR2E option value structs</param>
+    /// <returns>A custom settings option</returns>
+    public static ScriptedValuePresetOptionDefinition Create(
+        BuiltinSettingsCategory category, 
         LocalizedString label, 
         LocalizedString description,
         string id, 
+        int defaultOptionIndex, 
         bool applyImmediately, 
         bool confirm, 
         OnSettingEdited modifyCallback,
         params OptionValue[] values)
     {
         var button = Object.Instantiate(Resources.FindObjectsOfTypeAll<ScriptedValuePresetOptionDefinition>().First());
-        
-        if (allUsedIDs.Contains(id))
-            throw new Exception("A custom settings button already has this id: " + id);
 
+        if (allUsedIDs.Contains(id))
+            return null;
+
+        button.name = label.GetLocalizedString().Replace(" ", "");
         button._wrapAround = true;
         button._referenceId = $"setting.{id}";
         button._label = label;
         button._detailsText = description;
         button._applyImmediately = applyImmediately;
         button._requireConfirmation = confirm;
+        button._defaultValueIndex = defaultOptionIndex;
+        
         Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValuePreset> presets = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValuePreset>(values.Length);
         int i = 0;
         foreach (var value in values)
@@ -273,6 +292,7 @@ public static class CustomSettingsCreator
             modifyCallback.Invoke(button, i);
         });
         
+        
         allUsedIDs.Add(id);
         if (category != BuiltinSettingsCategory.ManualOrCustom)
             AllSettingsButtons[category.ToString()].Add(button);
@@ -289,6 +309,35 @@ public static class CustomSettingsCreator
         return button;
     }
 
+    /// <summary>
+    /// Creates a custom setting category that gets injected into the options menu.
+    /// </summary>
+    /// <param name="label">The category name</param>
+    /// <param name="icon">The sprite used as the category icon shown when the category is not selected</param>
+    /// <param name="options">
+    /// The array of settings that gets injected. To get a good array, follow this example
+    /// <code>
+    /// List&lt;ScriptedValuePresetOptionDefinition&gt; options =
+    ///     new List&lt;ScriptedValuePresetOptionDefinition&gt;();
+    /// 
+    /// options.Add(CustomSettingsCreator.Create(
+    ///     CustomSettingsCreator.BuiltinSettingsCategory.ManualOrCustom,
+    ///     /* input rest of parameters */
+    /// ));
+    /// 
+    /// // second option
+    /// options.Add(CustomSettingsCreator.Create(
+    ///     CustomSettingsCreator.BuiltinSettingsCategory.ManualOrCustom,
+    ///     /* input rest of parameters */
+    /// ));
+    ///
+    /// // Category
+    /// CustomSettingsCreator.CreateCategory(
+    ///     AddTranslationFromSR2E("setting.categoryname", "l.sr2ecategory", "UI"), SR2EUtils.ConvertToSprite(SR2EUtils.LoadImage("category")),
+    /// options.ToArray());
+    /// </code>
+    /// </param>
+    /// <returns></returns>
     public static OptionsItemCategory CreateCategory(LocalizedString label, Sprite icon,
         params ScriptedValuePresetOptionDefinition[] options)
     {

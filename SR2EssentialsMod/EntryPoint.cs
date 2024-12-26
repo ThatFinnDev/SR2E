@@ -339,6 +339,7 @@ namespace SR2E
                                 AddTranslationFromSR2E("setting.gamesettingtest.desc", "l.testsettingdescription",
                                     "UI"),
                                 "testButton1",
+                                1,
                                 true,
                                 false,
                                 (def, idx, _) => { MelonLogger.Msg($"Test button edited! New value index: {idx}.");},
@@ -356,7 +357,6 @@ namespace SR2E
                                 AddTranslationFromSR2E("setting.categoryname", "l.sr2ecategory", "UI"), SR2EUtils.ConvertToSprite(SR2EUtils.LoadImage("category")),
                                 options.ToArray());
                             
-                            
                             SR2EConsole.cheatsEnabledOnSave = CustomSettingsCreator.CreateScruptedBool(true);
                             saveSkipIntro = CustomSettingsCreator.CreateScruptedBool(false);
 
@@ -367,6 +367,7 @@ namespace SR2E
                                     "l.cheatingsettingdescription",
                                     "UI"),
                                 "allowCheating",
+                                0,
                                 true,
                                 false,
                                 (def, idx, _) => {},
@@ -391,6 +392,7 @@ namespace SR2E
                                 AddTranslationFromSR2E("setting.skipintro.desc", "l.skipintrosettingdescription",
                                     "UI"),
                                 "skipIntro",
+                                1,
                                 true,
                                 false,
                                 (_,_,_) => { },
