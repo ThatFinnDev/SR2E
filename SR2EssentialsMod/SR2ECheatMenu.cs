@@ -56,7 +56,7 @@ public class SR2ECheatMenu
     /// </summary>
     public static void Open()
     {
-        if(!AllowCheats.HasFlag()) return;
+        if(!SR2EConsole.cheatsEnabledOnSave) return;
         if (isAnyMenuOpen) return;
         cheatMenuBlock.SetActive(true);
         gameObject.SetActive(true);

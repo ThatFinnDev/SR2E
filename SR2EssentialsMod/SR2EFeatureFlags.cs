@@ -17,9 +17,9 @@ public static class SR2EFeatureFlags
     
     const FeatureFlag defaultFlags =
             CommandsLoadCommands | CommandsLoadCheat | CommandsLoadBinding | CommandsLoadWarp | CommandsLoadCommon | CommandsLoadMenu | CommandsLoadMiscellaneous | CommandsLoadFun | 
-            AllowCheats | AllowExpansions |
+            AllowExpansions |
             EnableModMenu | EnableConsole | EnableIl2CppDetourExceptionReporting |
-            InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
+            InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations | CustomSettingsInjection |
             AddCheatMenuButton | AddModMenuButton |
             CheckForUpdates | AllowAutoUpdate | 
             EnableInfHealth | EnableInfEnergy | EnableCheatMenu | EnableLocalizedVersionPatch;
@@ -208,17 +208,15 @@ public static class SR2EFeatureFlags
         {EnableInfEnergy,new []{new FFRMelonUnInstalled("InfiniteEnergy")}},
         {CommandsLoadExperimental,new []{new FFRActivated(CommandsLoadCommands), new FFRActivated(Experiments)}},
         {CommandsLoadDevOnly,new []{new FFRActivated(CommandsLoadCommands), new FFRActivated(DevMode)}},
-        {CommandsLoadCheat,new []{new FFRActivated(CommandsLoadCommands),new FFRActivated(AllowCheats)}},
+        {CommandsLoadCheat,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadBinding,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadWarp,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadCommon,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadMenu,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadMiscellaneous,new []{new FFRActivated(CommandsLoadCommands)}},
         {CommandsLoadFun,new []{new FFRActivated(CommandsLoadCommands)}},
-        {ExperimentalSettingsInjection,new []{new FFRActivated(Experiments)}},
-        {EnableCheatMenu,new []{new FFRActivated(AllowCheats)}},
         {AddCheatMenuButton,new []{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
-        {AddModMenuButton,new []{new FFRActivated(AllowCheats), new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
+        {AddModMenuButton,new []{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
 
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
@@ -265,7 +263,7 @@ public enum FeatureFlag : long
     DebugLogging = 1L << 2,
     ShowUnityErrors = 1L << 3,
     Experiments = 1L << 4,
-    ExperimentalSettingsInjection = 1L << 5,
+    CustomSettingsInjection = 1L << 5,
     
     //Commands+Dev
     CommandsLoadDevOnly = 1L << 6, 
@@ -282,31 +280,30 @@ public enum FeatureFlag : long
     CommandsLoadFun = 1L << 15, //
 
     //Cheats and Mods
-    AllowCheats = 1L << 16, //
-    AddCheatMenuButton = 1L << 17, //
-    EnableInfHealth = 1L << 18, //
-    EnableInfEnergy = 1L << 19, //
+    AddCheatMenuButton = 1L << 16, //
+    EnableInfHealth = 1L << 17, //
+    EnableInfEnergy = 1L << 18, //
     
     //Misc
-    AddModMenuButton = 1L << 20, //
-    AllowExpansions = 1L << 21, //
-    EnableLocalizedVersionPatch = 1L << 22, //
-    InjectSR2Translations = 1L << 23, //
-    EnableIl2CppDetourExceptionReporting = 1L << 24, //
+    AddModMenuButton = 1L << 19, //
+    AllowExpansions = 1L << 20, //
+    EnableLocalizedVersionPatch = 1L << 21, //
+    InjectSR2Translations = 1L << 22, //
+    EnableIl2CppDetourExceptionReporting = 1L << 23, //
     
     //Menus
-    EnableModMenu = 1L << 25, //
-    EnableCheatMenu = 1L << 26, //
-    EnableConsole = 1L << 27, //
+    EnableModMenu = 1L << 24, //
+    EnableCheatMenu = 1L << 25, //
+    EnableConsole = 1L << 26, //
     
     //UI
-    InjectMainMenuButtons = 1L << 28, //
-    InjectRanchUIButtons = 1L << 29, //
-    InjectPauseButtons = 1L << 30, //
+    InjectMainMenuButtons = 1L << 27, //
+    InjectRanchUIButtons = 1L << 28, //
+    InjectPauseButtons = 1L << 29, //
 
     //Updates and Patches
-    CheckForUpdates = 1L << 31, //
-    AllowAutoUpdate = 1L << 32, //
+    CheckForUpdates = 1L << 30, //
+    AllowAutoUpdate = 1L << 31, //
 
 }
 internal class FFR //FeatureFlagRequirement

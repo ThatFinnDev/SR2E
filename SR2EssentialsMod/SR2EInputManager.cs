@@ -20,6 +20,11 @@ public static class SR2EInputManager
     {
         foreach (Key key in Enum.GetValues(typeof(Key)))
         {
+            if (!Application.isFocused)
+            {
+                keyStates[(int)key] = KeyState.Released;
+                continue;
+            }
             KeyState state = keyStates[(int)key];
             bool isPressed = (GetAsyncKeyState((int)key) & 0x8000) != 0;
             if (isPressed && state == KeyState.Released) state=KeyState.JustPressed;

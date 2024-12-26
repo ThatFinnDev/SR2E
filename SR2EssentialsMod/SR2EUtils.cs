@@ -79,6 +79,10 @@ namespace SR2E
             }
             StringTable table2 = LocalizationUtil.GetTable(table);
 
+
+            var existing = table2.GetEntry(key);
+            if (existing != null) return new LocalizedString(table2.SharedData.TableCollectionName, existing.SharedEntry.Id);
+            
             System.Collections.Generic.Dictionary<string, string> dictionary;
             if (!addedTranslations.TryGetValue(table, out dictionary))
             {
@@ -106,9 +110,10 @@ namespace SR2E
         }
         public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
         {
+            
             LocalizedString localizedString = AddTranslation(translation(sr2eTranslationID), key, table);
             
-            sr2etosrlanguage.Add(sr2eTranslationID,localizedString);
+            sr2etosrlanguage.TryAdd(sr2eTranslationID,localizedString);
             sr2eReplaceOnLanguageChange.TryAdd(sr2eTranslationID, (key, table));
             
             return localizedString;
