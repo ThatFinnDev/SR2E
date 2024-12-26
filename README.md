@@ -9,16 +9,12 @@
 # Usage:
  Open the console wih Ctrl+Tab
 
-
 # Special thanks
  Special thanks to SlimeRancherModding for SRML
  because it gave me good starting point for a lot of stuff.
  Link: https://github.com/SlimeRancherModding/SRML
 
- Special thanks to MadMincraftr for helping me fix and implement some stuff.
- Link: https://github.com/MadMincraftr
-
- Special thanks to AureumApes for a few extra weather commands.
+ Special thanks to AureumApes for helping with translating to `DE` and adjusting the weather commands
  Link: https://github.com/AureumApes
  
  Special thanks to LavaGang for MelonLoader
