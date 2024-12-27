@@ -550,11 +550,38 @@ namespace SR2E
                     break;
             }
         }
+        
+        /// <summary>
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
+        /// </summary>
         internal static void Start()
         {
-            gameObject = parent.getObjRec<GameObject>("consoleMenu");
-            transform = parent.getObjRec<Transform>("consoleMenu");
-            
+            // im assigning this to finn (i dont want to create a new config rn)
+            if (true)
+            {
+                gameObject = parent.getObjRec<GameObject>("console");
+                transform = parent.getObjRec<Transform>("console");
+            }
+            else
+            {
+                gameObject = parent.getObjRec<GameObject>("consoleOld");
+                transform = parent.getObjRec<Transform>("consoleOld");
+            }
             commandHistory = new List<string>();
             if (EnableConsole.HasFlag())
                 if (SR2EEntryPoint.syncConsole)
