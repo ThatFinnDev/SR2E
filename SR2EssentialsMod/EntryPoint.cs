@@ -40,7 +40,7 @@ namespace SR2E
         /// <summary>
         /// Should be the same as Version unless this is a special build. For beta please use [version]b[beta-number].
         /// For alpha use [version]a[alpha-number].
-        /// For development builds please use [version]d[build-number | commit-id]
+        /// For development builds please use [version]d[build-number | commit-id | time]
         /// </summary>
         public const string DisplayVersion = "3.0.0b2";
     }
