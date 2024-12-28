@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 
 class Program
 {
+    //Install tool via:
+    //dotnet tool install -g XMLDoc2Markdown
     private static string docGen = "xmldoc2md \"bin/Debug/net6.0/SR2E.dll\" --output ../XMLToMD/ --member-accessibility-level public"; 
     static void Main(string[] args)
     {
