@@ -37,7 +37,7 @@ public static class SR2EFeatureFlags
     };
     
     
-    private static SR2ECommand.CommandType enabledCMDs;
+    private static CommandType enabledCMDs;
     private static Dictionary<FeatureIntegerValue, int> featureInts = new Dictionary<FeatureIntegerValue, int>();
     private static Dictionary<FeatureStringValue, string> featureStrings = new Dictionary<FeatureStringValue, string>();
     private static FeatureFlag enabledFlags = None;
@@ -163,19 +163,19 @@ public static class SR2EFeatureFlags
         else SaveToFlagFile();
 
         
-        if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.DevOnly;
-        if (CommandsLoadExperimental.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Experimental;
-        if (CommandsLoadCheat.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Cheat;
-        if (CommandsLoadBinding.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Binding;
-        if (CommandsLoadWarp.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Warp;
-        if (CommandsLoadCommon.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Common;
-        if (CommandsLoadCommon.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Common;
-        if (CommandsLoadMenu.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Menu;
-        if (CommandsLoadMiscellaneous.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Miscellaneous;
-        if(CommandsLoadFun.HasFlag()) enabledCMDs |= SR2ECommand.CommandType.Fun;
+        if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= CommandType.DevOnly;
+        if (CommandsLoadExperimental.HasFlag()) enabledCMDs |= CommandType.Experimental;
+        if (CommandsLoadCheat.HasFlag()) enabledCMDs |= CommandType.Cheat;
+        if (CommandsLoadBinding.HasFlag()) enabledCMDs |= CommandType.Binding;
+        if (CommandsLoadWarp.HasFlag()) enabledCMDs |= CommandType.Warp;
+        if (CommandsLoadCommon.HasFlag()) enabledCMDs |= CommandType.Common;
+        if (CommandsLoadCommon.HasFlag()) enabledCMDs |= CommandType.Common;
+        if (CommandsLoadMenu.HasFlag()) enabledCMDs |= CommandType.Menu;
+        if (CommandsLoadMiscellaneous.HasFlag()) enabledCMDs |= CommandType.Miscellaneous;
+        if(CommandsLoadFun.HasFlag()) enabledCMDs |= CommandType.Fun;
     }
     
-    public static SR2ECommand.CommandType enabledCommands => enabledCMDs;
+    public static CommandType enabledCommands => enabledCMDs;
     public static FeatureFlag flags => enabledFlags;
     public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags.HasFlag(featureFlag);
 

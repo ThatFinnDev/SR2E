@@ -154,18 +154,19 @@ public abstract class SR2ECommand
 
     public bool silent = false;
 
-    [Flags]
-    public enum CommandType
-    {
-        DontLoad = 0,
-        DevOnly = 1 << 0,
-        Cheat = 1 << 1,
-        Binding = 1 << 2,
-        Warp = 1 << 3,
-        Common = 1 << 4,
-        Menu = 1 << 5,
-        Miscellaneous = 1 << 6,
-        Fun = 1 << 7,
-        Experimental = 1 << 8
-    }
+
+}
+[Flags]
+public enum CommandType
+{
+    DontLoad = 0,
+    DevOnly = 1 << 1,
+    Cheat = 1 << 2,
+    Binding = 1 << 3,
+    Warp = 1 << 4,
+    Common = 1 << 5,
+    Menu = 1 << 6,
+    Miscellaneous = 1 << 7,
+    Fun = 1 << 8,
+    Experimental = 1 << 9
 }

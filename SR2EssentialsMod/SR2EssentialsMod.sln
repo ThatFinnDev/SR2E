@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SR2EssentialsMod", "SR2Esse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SR2EExampleExpansion", "..\SR2EExampleExpansion\SR2EExampleExpansion.csproj", "{AFF725DA-DB96-4B90-A050-6782EBF9F520}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGenerator", "..\DocGenerator\DocGenerator.csproj", "{E3BC1747-3857-46D4-9275-81FD04B99ADE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{AFF725DA-DB96-4B90-A050-6782EBF9F520}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFF725DA-DB96-4B90-A050-6782EBF9F520}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFF725DA-DB96-4B90-A050-6782EBF9F520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3BC1747-3857-46D4-9275-81FD04B99ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3BC1747-3857-46D4-9275-81FD04B99ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3BC1747-3857-46D4-9275-81FD04B99ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3BC1747-3857-46D4-9275-81FD04B99ADE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

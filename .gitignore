@@ -498,3 +498,7 @@ SR2EExampleExpansion/start.bat
 SR2EExampleExpansion/start.sh
 tempreleasenotes.txt
 !SR2EssentialsMod.sln
+DocGenerator/bin
+DocGenerator/obj
+XMLToMD/*.md
+*.kate-swp
