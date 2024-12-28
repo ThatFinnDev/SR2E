@@ -147,7 +147,7 @@ class Program
     {
         string categoryContent = 
             "{" + "\n" +
-            "\"label\": \"API\"," + "\n" +
+            "\"label\": \"API "+SR2E.BuildInfo.DisplayVersion+"\"," + "\n" +
             "\"position\": 25," + "\n" +
             "\"link\": {" + "\n" +
             "\"type\": \"generated-index\"," + "\n" +

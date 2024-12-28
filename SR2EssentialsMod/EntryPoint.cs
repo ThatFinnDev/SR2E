@@ -35,12 +35,14 @@ namespace SR2E
         public const string Description = "Essential stuff for Slime Rancher 2";
         public const string Author = "ThatFinn & PinkTarr";
         public const string Version = "3.0.0";
-        public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60";
+        public const string DownloadLink = "https://github.com/ThatFinnDev/SR2E";
         
         /// <summary>
-        /// Should be the same as Version unless this is a special build. For beta please use [version]b[beta-number]. For alpha use [version]a[alpha-number]. For development builds please use [version]DEV[build-number | commit-id]
+        /// Should be the same as Version unless this is a special build. For beta please use [version]b[beta-number].
+        /// For alpha use [version]a[alpha-number].
+        /// For development builds please use [version]d[build-number | commit-id]
         /// </summary>
-        public const string DisplayVersion = "3.0.0b1";
+        public const string DisplayVersion = "3.0.0b2";
     }
 
     public class SR2EEntryPoint : MelonMod
@@ -115,7 +117,7 @@ namespace SR2E
                 prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
         }
 
-         public override void OnLateInitializeMelon()
+        public override void OnLateInitializeMelon()
         {
             if (Get<GameObject>("SR2EPrefabHolder")) { rootOBJ = Get<GameObject>("SR2EPrefabHolder"); }
             else
@@ -159,6 +161,10 @@ namespace SR2E
         }
         internal static string MLVERSION = MelonLoader.BuildInfo.Version;
         internal static string newVersion = null;
+        /// <summary>
+        /// Is true, if no new version of SR2E has been found. It's also true, if
+        /// the user has no internet or the github servers blocked.
+        /// </summary>
         public static bool isLatestVersion => newVersion == BuildInfo.Version;
         
         //Logging code from Atmudia
@@ -243,7 +249,7 @@ namespace SR2E
 
         internal static Damage killDamage;
 
-        public static ScriptedBool saveSkipIntro;
+        internal static ScriptedBool saveSkipIntro;
         
         bool alreadyLoadedSettings = false;
         
