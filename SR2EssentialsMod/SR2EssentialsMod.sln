@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SR2EssentialsMod", "SR2Esse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SR2EExampleExpansion", "..\SR2EExampleExpansion\SR2EExampleExpansion.csproj", "{AFF725DA-DB96-4B90-A050-6782EBF9F520}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGenerator", "DocGenerator\DocGenerator.csproj", "{DAC303E2-8B18-4AE9-B047-45B5155B0614}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGenerator", "..\DocGenerator\DocGenerator.csproj", "{DAC303E2-8B18-4AE9-B047-45B5155B0614}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

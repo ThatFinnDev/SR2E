@@ -308,7 +308,7 @@ class Program
         {
             if (file == "index.md") continue;
             string content = File.ReadAllText(file);
-            string fixedContent = Regex.Replace(content, @"<br>(?!<\/br>)", "<br></br>");
+            string fixedContent = Regex.Replace(content, @"<br>(?!<\/br>)", "<br />");
             File.WriteAllText(file, fixedContent);
             Console.WriteLine($"Fixed <br> tags in {file}");
         }
