@@ -23,6 +23,10 @@ public static class SR2EFeatureFlags
             AddCheatMenuButton | AddModMenuButton |
             CheckForUpdates | AllowAutoUpdate | 
             EnableInfHealth | EnableInfEnergy | EnableCheatMenu | EnableLocalizedVersionPatch;
+
+    private const FeatureFlag extraDevFlags = DevMode | Experiments | CommandsLoadDevOnly | CommandsLoadExperimental;
+    private const FeatureFlag extraBetaFlags = None;
+    private const FeatureFlag extraAlphaFlags = None;
     static FeatureFlag flagsToForceOff;
     private static Dictionary<FeatureIntegerValue, int> defaultFeatureInts = new Dictionary<FeatureIntegerValue, int>()
     {
@@ -162,7 +166,20 @@ public static class SR2EFeatureFlags
         if (File.Exists(flagfile_path)) LoadFromFlagFile();
         else SaveToFlagFile();
 
-        
+        FeatureFlag addedFlags = None;
+        switch (SR2EEntryPoint.updateBranch)
+        {
+            case "dev": addedFlags = extraDevFlags; break;
+            case "alpha": addedFlags = extraAlphaFlags; break;
+            case "beta": addedFlags= extraBetaFlags; break;
+        }
+
+        foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
+        {
+            if(addedFlags.HasFlag(flag));
+            enabledFlags &= ~flag;
+        }
+
         if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= CommandType.DevOnly;
         if (CommandsLoadExperimental.HasFlag()) enabledCMDs |= CommandType.Experimental;
         if (CommandsLoadCheat.HasFlag()) enabledCMDs |= CommandType.Cheat;
@@ -173,6 +190,7 @@ public static class SR2EFeatureFlags
         if (CommandsLoadMenu.HasFlag()) enabledCMDs |= CommandType.Menu;
         if (CommandsLoadMiscellaneous.HasFlag()) enabledCMDs |= CommandType.Miscellaneous;
         if(CommandsLoadFun.HasFlag()) enabledCMDs |= CommandType.Fun;
+        
     }
     
     public static CommandType enabledCommands => enabledCMDs;

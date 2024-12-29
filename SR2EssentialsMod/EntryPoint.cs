@@ -85,7 +85,7 @@ namespace SR2E
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
         internal static bool enableCheatMenuButton { get { return prefs.GetEntry<bool>("enableCheatMenuButton").Value; } }
 
-        private static string updateBranch = "release";    
+        internal static string updateBranch = "release";    
         internal static bool IsDisplayVersionValid(string version)
         {
             //Semver2 Regex
@@ -274,6 +274,8 @@ namespace SR2E
         public override void OnEarlyInitializeMelon()
         {
             instance = this;
+            if(!IsDisplayVersionValid(BuildInfo.DisplayVersion))
+                Application.Quit();
             InitFlagManager();
         }
 
@@ -307,8 +309,6 @@ namespace SR2E
             foreach (var expansion in expansions)
                 try { expansion.OnNormalInitializeMelon(); }
                 catch (Exception e) { MelonLogger.Error(e); }
-            if(!IsDisplayVersionValid(BuildInfo.DisplayVersion))
-                Application.Quit();
             
         }
 
