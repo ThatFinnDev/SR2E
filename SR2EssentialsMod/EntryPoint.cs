@@ -49,7 +49,7 @@ namespace SR2E
         /// For dev versions, use "-dev". Do not add a build number!
         /// Add "+metadata" only in dev builds!
         /// </summary>
-        public const string DisplayVersion = "3.0.0-dev+finn";
+        public const string DisplayVersion = "3.0.0-dev";
 
         //pre, allowmetadata, checkupdatelink,
         internal static TripleDictionary<string,bool,string> getPreInfo()
