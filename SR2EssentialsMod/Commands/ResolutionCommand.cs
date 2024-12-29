@@ -1,6 +1,6 @@
 namespace SR2E.Commands;
 
-public class ResolutionCommand : SR2ECommand
+internal class ResolutionCommand : SR2ECommand
 {
     public override string ID => "resolution";
     public override string Usage => "resolution <x> <y> [fullscreen(true/false)]";

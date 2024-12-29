@@ -2,7 +2,7 @@
 
 namespace SR2E.Commands;
 
-public class FreezeCommand : SR2ECommand
+internal class FreezeCommand : SR2ECommand
 {
     public override string ID => "freeze";
     public override string Usage => "freeze";

@@ -4,9 +4,9 @@ using SR2E.Commands;
 using SR2E.Saving;
 
 [HarmonyPatch(typeof(SRCharacterController), nameof(SRCharacterController.Start))]
-public static class PlayerDataLoadPatch
+internal static class PlayerDataLoadPatch
 {
-    public static void Postfix(SRCharacterController __instance)
+    internal static void Postfix(SRCharacterController __instance)
     {
         try
         {

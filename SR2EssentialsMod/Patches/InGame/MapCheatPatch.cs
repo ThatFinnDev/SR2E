@@ -3,9 +3,9 @@ using Il2CppMonomiPark.SlimeRancher.UI.Map;
 namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(MapUI), nameof(MapUI.Start))]
-public static class MapCheatPatch
+internal static class MapCheatPatch
 {
-    public static void Postfix(MapUI __instance)
+    internal static void Postfix(MapUI __instance)
     {
         if (SR2ECheatMenu.removeFog)
         {

@@ -274,9 +274,13 @@ namespace SR2E
         {
             ExecuteByString(input, silent, false);
         }
+        
         /// <summary>
         /// Execute a string as if it was a commandId with args
         /// </summary>
+        /// <param name="input">The string as the console command input</param>
+        /// <param name="silent">If the command is supposed to be silent</param>
+        /// <param name="alwaysPlay">If the command should NOT be silent</param>
         public static void ExecuteByString(string input, bool silent, bool alwaysPlay)
         {
             string[] cmds = input.Split(';');

@@ -1,8 +1,8 @@
 ﻿namespace SR2E.Commands;
 
-public class ConsoleVisibilityCommands
+internal class ConsoleVisibilityCommands
 {
-    public class OpenCommand : SR2ECommand
+    internal class OpenCommand : SR2ECommand
     {
         public override string ID => "openconsole";
         public override string Usage => "openconsole";
@@ -20,7 +20,7 @@ public class ConsoleVisibilityCommands
             return true;
         }
     }
-    public class CloseCommand : SR2ECommand
+    internal class CloseCommand : SR2ECommand
     {
         public override string ID => "closeconsole";
         public override string Usage => "closeconsole";
@@ -38,7 +38,7 @@ public class ConsoleVisibilityCommands
             return true;
         }
     }
-    public class ToggleCommand : SR2ECommand
+    internal class ToggleCommand : SR2ECommand
     {
         public override string ID => "toggleconsole";
         public override string Usage => "toggleconsole";

@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace SR2E.Commands;
 
-public class UpgradeCommand : SR2ECommand
+internal class UpgradeCommand : SR2ECommand
 {
     public override string ID => "upgrade";
     public override string Usage => "upgrade <increment/set/decrement/get> <id> [amount]";

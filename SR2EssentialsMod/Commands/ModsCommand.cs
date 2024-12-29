@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class ModsCommand : SR2ECommand
+internal class ModsCommand : SR2ECommand
 {
     public override string ID => "mods";
     public override string Usage => "mods";

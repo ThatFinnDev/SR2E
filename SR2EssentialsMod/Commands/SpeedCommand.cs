@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 
 namespace SR2E.Commands;
 
-public class SpeedCommand : SR2ECommand
+internal class SpeedCommand : SR2ECommand
 {
     public override string ID { get; } = "speed";
     public override string Usage { get; } = "speed <speed>";

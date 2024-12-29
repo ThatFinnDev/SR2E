@@ -3,7 +3,7 @@
 namespace SR2E;
 
 [Serializable]
-public enum VacModes
+internal enum VacModes
 {
     AUTO_SHOOT,
     AUTO_VAC,
@@ -13,12 +13,18 @@ public enum VacModes
     LAUNCH,
 }
 
+/// <summary>
+/// A three-way boolean
+/// </summary>
 [Serializable]
 public enum Trool
 {
     False, True, Toggle
 }
 
+/// <summary>
+/// Every key on a keyboard (en_us layout) and some other buttons
+/// </summary>
 public enum Key
 {
     None = 0,

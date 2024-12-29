@@ -1,7 +1,7 @@
 ﻿using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 namespace SR2E.Commands;
-public class PartyCommand : SR2ECommand
+internal class PartyCommand : SR2ECommand
 {
     public override string ID => "party";
     public override string Usage => "party";

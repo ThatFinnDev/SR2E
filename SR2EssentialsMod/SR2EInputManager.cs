@@ -41,6 +41,10 @@ public static class SR2EInputManager
     public static bool OnKeyUnpressed(this Key key) => keyStates[(int)key]==KeyState.JustReleased;
     public static bool OnKey(this Key key) => keyStates[(int)key]==KeyState.Pressed;
     
+    /// <summary>
+    /// Run this every Update to get whether the key was pressed this frame
+    /// </summary>
+    /// <returns>If the key was pressed this frame</returns>
     public static bool OnKeyPressed(this MultiKey multiKey)
     {
         foreach (Key key in multiKey.requiredKeys)

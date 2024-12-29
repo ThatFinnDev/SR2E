@@ -12,7 +12,7 @@ using UnityEngine.UI;
 namespace SR2E;
 
 [RegisterTypeInIl2Cpp(false)]
-public class ObjectBlocker : MonoBehaviour
+internal class ObjectBlocker : MonoBehaviour
 {
     public void Start()
     {
@@ -21,7 +21,7 @@ public class ObjectBlocker : MonoBehaviour
 }
 
 [RegisterTypeInIl2Cpp(false)]
-public class FlingMode : MonoBehaviour
+internal class FlingMode : MonoBehaviour
 {
     public void Update()
     {
@@ -37,7 +37,7 @@ public class FlingMode : MonoBehaviour
 }
 
 [RegisterTypeInIl2Cpp(false)]
-public class CustomMainMenuButtonPressHandler : MonoBehaviour
+internal class CustomMainMenuButtonPressHandler : MonoBehaviour
 {
     public void OnEnable()
     {
@@ -51,7 +51,7 @@ public class CustomMainMenuButtonPressHandler : MonoBehaviour
     }
 }
 [RegisterTypeInIl2Cpp(false)]
-public class CheatMenuRefineryEntry : MonoBehaviour
+internal class CheatMenuRefineryEntry : MonoBehaviour
 {
     public IdentifiableType item;
     public Image icon;
@@ -108,7 +108,7 @@ public class CheatMenuRefineryEntry : MonoBehaviour
 
 
 [RegisterTypeInIl2Cpp(false)]
-public class CheatMenuGadgetEntry : MonoBehaviour
+internal class CheatMenuGadgetEntry : MonoBehaviour
 {
     public IdentifiableType item;
     public Image icon;
@@ -168,7 +168,7 @@ public class CheatMenuGadgetEntry : MonoBehaviour
 
 
 [RegisterTypeInIl2Cpp(false)]
-public class CheatMenuSlot : MonoBehaviour
+internal class CheatMenuSlot : MonoBehaviour
 {
     public int slotID;
     public Button applyButton;
@@ -223,7 +223,7 @@ public class CheatMenuSlot : MonoBehaviour
     }
 }
 [RegisterTypeInIl2Cpp(false)]
-public class CheatMenuNewbucks : MonoBehaviour
+internal class CheatMenuNewbucks : MonoBehaviour
 {
     public Slider amountSlider;
     public TextMeshProUGUI handleText;
@@ -271,7 +271,7 @@ public class CheatMenuNewbucks : MonoBehaviour
 /// Currently bugged...
 /// </summary>
 [RegisterTypeInIl2Cpp(false)]
-public class IdentifiableObjectDragger : MonoBehaviour
+internal class IdentifiableObjectDragger : MonoBehaviour
 {
     public GameObject draggedObject;
     public bool isDragging;
@@ -330,7 +330,7 @@ public class IdentifiableObjectDragger : MonoBehaviour
     }
 }
 [RegisterTypeInIl2Cpp(false)]
-public class NoClipComponent : MonoBehaviour
+internal class NoClipComponent : MonoBehaviour
 {
     public float baseSpeed = 15f;
     public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;

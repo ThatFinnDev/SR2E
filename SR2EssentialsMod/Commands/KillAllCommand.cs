@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class KillAllCommand : SR2ECommand
+internal class KillAllCommand : SR2ECommand
 {
     public override string ID => "killall";
     public override string Usage => "killall [id]";

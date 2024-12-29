@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class FlingCommand : SR2ECommand
+internal class FlingCommand : SR2ECommand
 {
     public override string ID => "fling";
     public override string Usage => "fling <strength>";

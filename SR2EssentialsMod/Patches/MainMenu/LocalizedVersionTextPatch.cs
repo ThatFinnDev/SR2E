@@ -5,9 +5,9 @@ using UnityEngine.Localization;
 namespace SR2E.Patches.MainMenu;
 
 [HarmonyPatch(typeof(LocalizedVersionText), nameof(LocalizedVersionText.OnEnable))]
-public static class LocalizedVersionTextPatch
+internal static class LocalizedVersionTextPatch
 {
-    public static void Postfix(LocalizedVersionText __instance)
+    internal static void Postfix(LocalizedVersionText __instance)
     {
         if (!EnableLocalizedVersionPatch.HasFlag()) return;
         try

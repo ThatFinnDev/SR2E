@@ -1,9 +1,9 @@
 namespace SR2E.Commands;
 
-public class ModMenuVisibilityCommands
+internal class ModMenuVisibilityCommands
 {
     
-    public class OpenCommand : SR2ECommand
+    internal class OpenCommand : SR2ECommand
     {
         public override string ID => "openmodmenu";
         public override string Usage => "openmodmenu";
@@ -21,7 +21,7 @@ public class ModMenuVisibilityCommands
             return true;
         }
     }
-    public class CloseCommand : SR2ECommand
+    internal class CloseCommand : SR2ECommand
     {
         public override string ID => "closemodmenu";
         public override string Usage => "closemodmenu";
@@ -39,7 +39,7 @@ public class ModMenuVisibilityCommands
             return true;
         }
     }
-    public class ToggleCommand : SR2ECommand
+    internal class ToggleCommand : SR2ECommand
     {
         public override string ID => "togglemodmenu";
         public override string Usage => "togglemodmenu";

@@ -2,7 +2,7 @@
 
 namespace SR2E.Commands;
 
-public class FXPlayCommand : SR2ECommand
+internal class FXPlayCommand : SR2ECommand
 {
     public override string ID => "fxplayer";
     public override string Usage => "fxplayer <FX> [speed] [playandpause]";
@@ -92,7 +92,7 @@ public class FXPlayCommand : SR2ECommand
 }
 
 [RegisterTypeInIl2Cpp(false)]
-public class FXPlayPauseFunction : MonoBehaviour
+internal class FXPlayPauseFunction : MonoBehaviour
 {
     public ParticleSystem sys;
 

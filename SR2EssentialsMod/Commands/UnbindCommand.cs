@@ -1,7 +1,7 @@
 ﻿using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;
-public class UnbindCommand : SR2ECommand
+internal class UnbindCommand : SR2ECommand
 {
     public override string ID => "unbind";
     public override string Usage => "unbind <key>";

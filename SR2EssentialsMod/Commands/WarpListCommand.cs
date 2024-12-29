@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class WarpListCommand : SR2ECommand
+internal class WarpListCommand : SR2ECommand
 {
     public override string ID => "warplist";
     public override string Usage => "warplist";

@@ -4,7 +4,7 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 
 namespace SR2E.Commands;
 
-public class PediaCommand : SR2ECommand
+internal class PediaCommand : SR2ECommand
 {
     public override string ID => "pedia";
     public override string Usage => "pedia <lock/unlock> <gadget> [show popup(true/false)]";

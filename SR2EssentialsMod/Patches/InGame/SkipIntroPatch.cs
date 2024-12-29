@@ -2,9 +2,9 @@ using Il2CppMonomiPark.SlimeRancher.UI.IntroSequence;
 namespace SR2E.Patches.InGame
 {
     [HarmonyPatch(typeof(IntroSequenceUIRoot), nameof(IntroSequenceUIRoot.Start))]
-    public class SkipIntroPatch
+    internal class SkipIntroPatch
     {
-        public static void Postfix(IntroSequenceUIRoot __instance)
+        internal static void Postfix(IntroSequenceUIRoot __instance)
         {
             if (SR2EEntryPoint.saveSkipIntro)
             {

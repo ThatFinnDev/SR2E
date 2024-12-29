@@ -4,9 +4,9 @@ using Il2CppSystem.Globalization;
 namespace SR2E.Patches.Language;
 
 [HarmonyPatch(typeof(LocalizationDirector), nameof(LocalizationDirector.SetLocale))]
-public class ChangeLanguagePatch
+internal class ChangeLanguagePatch
 {
-    public static void Prefix(LocalizationDirector __instance, UnityEngine.Localization.Locale locale)
+    internal static void Prefix(LocalizationDirector __instance, UnityEngine.Localization.Locale locale)
     {
         var code = locale.Formatter.Cast<CultureInfo>()._name;
         

@@ -2,7 +2,7 @@
 
 namespace SR2E.Commands;
 
-public class SetWarpCommand : SR2ECommand
+internal class SetWarpCommand : SR2ECommand
 {
     public override string ID => "setwarp";
     public override string Usage => "setwarp <name>";

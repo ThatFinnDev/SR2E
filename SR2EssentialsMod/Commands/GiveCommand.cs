@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class GiveCommand : SR2ECommand
+internal class GiveCommand : SR2ECommand
 {
     public override string ID => "give";
     public override string Usage => "give <item> [amount]";

@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class RefillInvCommand : SR2ECommand
+internal class RefillInvCommand : SR2ECommand
 {
     public override string ID => "refillinv";
     public override string Usage => "refillinv [slot]";

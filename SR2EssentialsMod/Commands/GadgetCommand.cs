@@ -2,7 +2,7 @@
 
 namespace SR2E.Commands;
 
-public class GadgetCommand : SR2ECommand
+internal class GadgetCommand : SR2ECommand
 {
     public override string ID => "gadget";
     public override string Usage => "gadget <add/set/remove/unlock/get> <gadget> [amount]";

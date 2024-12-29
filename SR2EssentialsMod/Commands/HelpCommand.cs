@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class HelpCommand : SR2ECommand
+internal class HelpCommand : SR2ECommand
 {
     public override string ID => "help";
     public override string Usage => "help [cmdName]";

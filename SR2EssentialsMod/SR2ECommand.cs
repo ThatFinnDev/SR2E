@@ -2,6 +2,9 @@
 
 namespace SR2E;
 
+/// <summary>
+/// Abstract console command class
+/// </summary>
 public abstract class SR2ECommand
 {
     /// <summary>

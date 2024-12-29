@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class ClearCommand : SR2ECommand
+internal class ClearCommand : SR2ECommand
 {
     public override string ID => "clear";
     public override string Usage => "clear";

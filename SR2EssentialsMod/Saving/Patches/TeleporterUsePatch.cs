@@ -10,7 +10,7 @@ namespace SR2E.Saving.Patches;
 [HarmonyPatch(typeof(TeleporterNode), nameof(TeleporterNode.OnTriggerEnter))]
 internal class TeleporterUsePatch
 {
-    public static void Prefix(Collider collider)
+    internal static void Prefix(Collider collider)
     {
         if (collider.gameObject == SceneContext.Instance.player)
             GameContext.Instance.AutoSaveDirector.SaveGame();

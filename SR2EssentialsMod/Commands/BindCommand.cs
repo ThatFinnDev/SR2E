@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;
 
-public class BindCommand : SR2ECommand
+internal class BindCommand : SR2ECommand
 {
     public override string ID => "bind";
     public override string Usage => "bind <key> <command>";

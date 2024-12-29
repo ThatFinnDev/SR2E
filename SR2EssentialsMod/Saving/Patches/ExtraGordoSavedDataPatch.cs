@@ -3,9 +3,9 @@ using SR2E.Saving;
 using SR2E;
 
 [HarmonyPatch(typeof(GordoEat), nameof(GordoEat.Start))]
-public static class ExtraGordoSavedDataPatch
+internal static class ExtraGordoSavedDataPatch
 {
-    public static void Postfix(GordoEat __instance)
+    internal static void Postfix(GordoEat __instance)
     {
         if (SR2EEntryPoint.debugLogging)
             SR2EConsole.SendMessage($"debug log gordo {__instance.gameObject.name}");

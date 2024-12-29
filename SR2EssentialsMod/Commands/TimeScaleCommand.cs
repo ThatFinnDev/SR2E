@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class TimeScaleCommand : SR2ECommand
+internal class TimeScaleCommand : SR2ECommand
 {
     public override string ID => "timescale";
     public override string Usage => "timescale <scale>";

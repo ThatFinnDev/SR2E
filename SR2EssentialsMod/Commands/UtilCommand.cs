@@ -10,7 +10,7 @@ using Unity.Mathematics;
 
 namespace SR2E.Commands;
 
-public class UtilCommand : SR2ECommand
+internal class UtilCommand : SR2ECommand
 {
     public override string ID => "util";
     public override string Usage => "util <type> <parameter [value] [value2] [value3]";

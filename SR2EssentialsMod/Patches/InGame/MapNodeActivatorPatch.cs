@@ -3,10 +3,10 @@
 namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(MapNodeActivator), nameof(MapNodeActivator.Start))]
-public static class MapNodeActivatorPatch
+internal static class MapNodeActivatorPatch
 {
-    public static List<MapNodeActivator> mapNodeActivators = new List<MapNodeActivator>();
-    public static void Postfix(MapNodeActivator __instance)
+    internal static List<MapNodeActivator> mapNodeActivators = new List<MapNodeActivator>();
+    internal static void Postfix(MapNodeActivator __instance)
     {
         MelonLogger.Msg(__instance.name);
         mapNodeActivators.Add(__instance);

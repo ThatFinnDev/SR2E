@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
-public class KillCommand : SR2ECommand
+internal class KillCommand : SR2ECommand
 {
     public override string ID => "kill";
     public override string Usage => "kill";

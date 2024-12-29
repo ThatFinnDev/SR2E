@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 
 namespace SR2E.Commands;
 
-public class InfiniteHealthCommand : SR2ECommand
+internal class InfiniteHealthCommand : SR2ECommand
 {
     public override string ID => "infhealth";
     public override string Usage => "infhealth";
@@ -47,7 +47,7 @@ public class InfiniteHealthCommand : SR2ECommand
         healthMeter = Get<HealthMeter>("Health Meter");
     }
     [HarmonyPatch(typeof(PlayerModel), nameof(PlayerModel.LoseHealth))]
-    public class PlayerModelLoseHealthPatch
+    internal class PlayerModelLoseHealthPatch
     {
         public static bool Prefix(PlayerState __instance, float health)
         {

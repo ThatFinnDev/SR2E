@@ -4,7 +4,7 @@ using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
-public class ReplaceCommand : SR2ECommand
+internal class ReplaceCommand : SR2ECommand
 {
     public override string ID => "replace";
     public override string Usage => "replace <object>";

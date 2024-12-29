@@ -6,9 +6,9 @@ using Il2CppMonomiPark.SlimeRancher.DataModel;
 namespace SR2E.Patches.General;
 //Experimental
 [HarmonyPatch(typeof(SavedGame), nameof(SavedGame.Push), typeof(GameModel))]
-public static class SavedGamePatch
+internal static class SavedGamePatch
 {
-	public static void Prefix(SavedGame __instance)
+	internal static void Prefix(SavedGame __instance)
 	{
 		if (SR2EEntryPoint.fixSaves)
 		{
@@ -20,7 +20,7 @@ public static class SavedGamePatch
 		}
 	}
 
-	public static void FixActors(SavedGame savedGame)
+	internal static void FixActors(SavedGame savedGame)
 	{
 		//Remove invalid Actors
 		foreach (var actor in savedGame.gameState.Actors)
@@ -30,14 +30,14 @@ public static class SavedGamePatch
 				savedGame.gameState.Actors.Remove(actor);
 		}
 	}
-	public static void FixPedia(SavedGame savedGame)
+	internal static void FixPedia(SavedGame savedGame)
 	{
 		//Remove invalid unlocked pedia entries
 		foreach (string unlockedID in savedGame.gameState.Pedia.UnlockedIds)
 			if (!savedGame.pediaEntryLookup.ContainsKey(unlockedID))
 				savedGame.gameState.Pedia.UnlockedIds.Remove(unlockedID);
 	}
-	public static void FixLandPlots(SavedGame savedGame)
+	internal static void FixLandPlots(SavedGame savedGame)
 	{
 		foreach(var plot in savedGame.gameState.Ranch.Plots)
 		{
@@ -52,7 +52,7 @@ public static class SavedGamePatch
 		}
 	}
 
-	public static void FixWeatherPatterns(SavedGame savedGame)
+	internal static void FixWeatherPatterns(SavedGame savedGame)
 	{
 		var reverseLookup = savedGame._weatherPatternTranslation.ReverseLookupTable;
 		var lookup = savedGame._weatherPatternTranslation.InstanceLookupTable;
@@ -81,7 +81,7 @@ public static class SavedGamePatch
 		reverseLookup._indexTable = table.ToArray();
 		savedGame.gameState.WeatherIndex.PatternIndexTable = table.ToArray();
 	}
-	public static void FixWeatherStates(SavedGame savedGame)
+	internal static void FixWeatherStates(SavedGame savedGame)
 	{
 		var reverseLookup = savedGame._weatherStateTranslation.ReverseLookupTable;
 		var lookup = savedGame._weatherStateTranslation.InstanceLookupTable;

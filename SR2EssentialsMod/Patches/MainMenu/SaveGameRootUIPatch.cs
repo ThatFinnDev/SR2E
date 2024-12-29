@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace SR2E.Patches.MainMenu;
 
 [HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.FocusUI))]
-public static class SaveGameRootUIPatch
+internal static class SaveGameRootUIPatch
 {
-    public static void Postfix(SaveGamesRootUI __instance)
+    internal static void Postfix(SaveGamesRootUI __instance)
     {
         SR2EEntryPoint.baseUIAddSliders.Add(__instance);
     }

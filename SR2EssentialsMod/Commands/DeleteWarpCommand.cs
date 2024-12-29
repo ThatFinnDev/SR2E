@@ -1,6 +1,6 @@
 ﻿namespace SR2E.Commands;
 
-public class DeleteWarpCommand : SR2ECommand
+internal class DeleteWarpCommand : SR2ECommand
 {
     public override string ID => "delwarp";
     public override string Usage => "delwarp <name>";

@@ -4,7 +4,7 @@ using Il2CppMonomiPark.SlimeRancher.Weather;
 
 namespace SR2E.Commands;
 
-public class WeatherCommand : SR2ECommand
+internal class WeatherCommand : SR2ECommand
 {
     public override string ID => "weather";
     public override string Usage => "weather <action> <action> <action>";

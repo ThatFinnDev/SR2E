@@ -7,9 +7,9 @@ namespace SR2E.Patches.General;
 
 // DO NOT DISABLE THIS
 [HarmonyPatch(typeof(ButtonBehaviorViewHolder), nameof(ButtonBehaviorViewHolder.OnEnable))]
-public static class ButtonBehaviorViewHolderFontGetPatch
+internal static class ButtonBehaviorViewHolderFontGetPatch
 {
-    public static void Postfix(ButtonBehaviorViewHolder __instance)
+    internal static void Postfix(ButtonBehaviorViewHolder __instance)
     {
         if (SR2EEntryPoint.SR2Font != null) return;
         TextMeshProUGUI label = __instance.gameObject.getObjRec<TextMeshProUGUI>("Button_Label");

@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Rendering;
 
 namespace SR2E.Commands;
 
-public class GraphicsCommand : SR2ECommand
+internal class GraphicsCommand : SR2ECommand
 {
     public override string ID => "graphics";
     public override string Usage => "graphics <mode>";

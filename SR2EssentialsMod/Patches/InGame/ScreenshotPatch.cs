@@ -4,9 +4,9 @@ using Il2CppMonomiPark.SlimeRancher.UI.Pause;
 namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(GameContext), nameof(GameContext.TakeScreenshot))]
-public static class ScreenshotPatch
+internal static class ScreenshotPatch
 {
-    public static System.Collections.IEnumerator WaitForUnpause()
+    internal static System.Collections.IEnumerator WaitForUnpause()
     {
         while (Time.timeScale == 0)
         {
@@ -15,7 +15,7 @@ public static class ScreenshotPatch
         SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
     }
     
-    public static void Prefix(ScreenshotPauseItemModel __instance)
+    internal static void Prefix(ScreenshotPauseItemModel __instance)
     {
         if (SR2ECheatMenu.betterScreenshot)
         {

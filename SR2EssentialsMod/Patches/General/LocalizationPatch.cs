@@ -4,9 +4,9 @@ using System.Collections;
 namespace SR2E.Patches.General;
 
 [HarmonyPatch(typeof(LocalizationDirector), nameof(LocalizationDirector.LoadTables))]
-public static class LocalizationDirectorLoadTablePatch
+internal static class LocalizationDirectorLoadTablePatch
 {
-    public static void Postfix(LocalizationDirector __instance)
+    internal static void Postfix(LocalizationDirector __instance)
     {
         if(InjectSR2Translations.HasFlag())
             MelonCoroutines.Start(LoadTable(__instance));

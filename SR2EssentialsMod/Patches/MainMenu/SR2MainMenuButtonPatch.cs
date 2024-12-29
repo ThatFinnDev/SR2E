@@ -7,12 +7,12 @@ namespace SR2E.Patches.MainMenu;
 
 
 [HarmonyPatch(typeof(MainMenuLandingRootUI), nameof(MainMenuLandingRootUI.CreateModels))]
-public static class SR2MainMenuButtonPatch
+internal static class SR2MainMenuButtonPatch
 {
     internal static List<CustomMainMenuButton> buttons = new List<CustomMainMenuButton>();
     internal static bool safeLock;
     internal static bool postSafeLock;
-    public static void Prefix(MainMenuLandingRootUI __instance)
+    internal static void Prefix(MainMenuLandingRootUI __instance)
     {
         if (!InjectMainMenuButtons.HasFlag()) return;
         foreach (CustomMainMenuButton button in buttons)

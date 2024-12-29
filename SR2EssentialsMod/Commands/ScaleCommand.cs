@@ -2,7 +2,7 @@ using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
 
-public class ScaleCommand: SR2ECommand
+internal class ScaleCommand: SR2ECommand
 {
     public override string ID => "scale";
     public override string Usage => "scale <x> <y> <z>";

@@ -20,6 +20,11 @@ namespace SR2E.Buttons;
 
 public static class CustomSettingsCreator
 {
+    
+
+    /// <summary>
+    /// Delegate that is called when a setting is either loaded into frame or edited
+    /// </summary>
     public delegate void OnSettingEdited(ScriptedValuePresetOptionDefinition option, int valueIndex, bool savedChange = false);
 
     // Using this to reset the options model each main menu load.
@@ -47,18 +52,61 @@ public static class CustomSettingsCreator
     static Dictionary<string, OptionsItemModel> settingModels = new Dictionary<string, OptionsItemModel>();
     static Dictionary<string, OptionsItemModel> gameModels = new Dictionary<string, OptionsItemModel>();
 
+    /// <summary>
+    /// Struct for an option's preset value.
+    /// </summary>
     public struct OptionValue
     {
+        /// <summary>
+        /// Preset value ID
+        /// </summary>
         public readonly string id;
+        
+        /// <summary>
+        /// Localized name for the value
+        /// </summary>
         public readonly LocalizedString name;
+        
+        /// <summary>
+        /// Scripted integer value (if any)
+        /// </summary>
         public ScriptedInt valueInt = null;
+        
+        
+        /// <summary>
+        /// Scripted float value (if any)
+        /// </summary>
         public ScriptedFloat valueFloat = null;
+        
+        
+        /// <summary>
+        /// Scripted boolean value (if any)
+        /// </summary>
         public ScriptedBool valueBool = null;
 
+        
+        /// <summary>
+        /// Actual integer value (if any)
+        /// </summary>
         public int actualInt = int.MinValue;
+        
+        /// <summary>
+        /// Actual float value (if any)
+        /// </summary>
         public float actualFloat = float.MinValue;
+        
+        /// <summary>
+        /// Actual boolean value (if any)
+        /// </summary>
         public bool actualBool = false;
         
+        /// <summary>
+        /// Constructor for a boolean option value
+        /// </summary>
+        /// <param name="id">The value's ID</param>
+        /// <param name="name">The value's localized name</param>
+        /// <param name="storedValue">The variable to edit</param>
+        /// <param name="value">The actual value for this option</param>
         public OptionValue(string id, LocalizedString name, ScriptedBool storedValue, bool value)
         {
             this.id = id;
@@ -67,6 +115,13 @@ public static class CustomSettingsCreator
             actualBool = value;
         }
 
+        /// <summary>
+        /// Constructor for a floating point option value
+        /// </summary>
+        /// <param name="id">The value's ID</param>
+        /// <param name="name">The value's localized name</param>
+        /// <param name="storedValue">The variable to edit</param>
+        /// <param name="value">The actual value for this option</param>
         public OptionValue(string id, LocalizedString name, ScriptedFloat storedValue, float value)
         {
             this.id = id;
@@ -75,6 +130,13 @@ public static class CustomSettingsCreator
             actualFloat = value;
         }
 
+        /// <summary>
+        /// Constructor for a integer option value
+        /// </summary>
+        /// <param name="id">The value's ID</param>
+        /// <param name="name">The value's localized name</param>
+        /// <param name="storedValue">The variable to edit</param>
+        /// <param name="value">The actual value for this option</param>
         public OptionValue(string id, LocalizedString name, ScriptedInt storedValue, int value)
         {
             this.id = id;
