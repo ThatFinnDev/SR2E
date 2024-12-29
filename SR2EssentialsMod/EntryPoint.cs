@@ -46,7 +46,7 @@ namespace SR2E
         /// For dev versions, use "-dev". Do not add a build number!
         /// Add "+metadata" only in dev builds!
         /// </summary>
-        public const string DisplayVersion = "3.0.0-beta.2";
+        public const string DisplayVersion = "3.0.0-dev";
 
         //pre, allowmetadata, checkupdatelink, updatelink
         internal static QuadrupleDictionary<string,bool,string,string> getPreInfo()
