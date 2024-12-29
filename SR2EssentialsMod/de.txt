@@ -343,11 +343,19 @@ setting.allowcheats=(In DE) Allow Cheating
 setting.allowcheats.desc=(In DE) Give yourself the ability to spawn objects and edit your inventory.
 setting.allowcheats.on=(In DE) Yes
 setting.allowcheats.off=(In DE) No
+
 setting.gamesettingtest=(In DE) Test Option
 setting.gamesettingtest.desc=(In DE) This is a SR2E test option.
 setting.gamesettingtest.value1=(In DE) Value 1
 setting.gamesettingtest.value2=(In DE) Value B
 setting.gamesettingtest.value3=(In DE) Value 03
+
+setting.updatebranch=(In DE) Update Branch
+setting.updatebranch.desc=(In DE) Allows you, to switch to alpha or beta builds of SR2
+setting.updatebranch.value1=(In DE) Release
+setting.updatebranch.value2=(In DE) Beta
+setting.updatebranch.value3=(In DE) Alpha
+
 setting.categoryname=(In DE) SR2E Settings
 
 patches.localizedversionpatch.downloadedversion=(In DE) Just downloaded SR2E update (version $1)\nPlease restart to take effect!\n$1\n\n

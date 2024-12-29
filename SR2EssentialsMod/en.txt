@@ -355,6 +355,12 @@ setting.gamesettingtest.value1=Value 1
 setting.gamesettingtest.value2=Value B
 setting.gamesettingtest.value3=Value 03
 
+setting.updatebranch=Update Branch
+setting.updatebranch.desc=Allows you, to switch to alpha or beta builds of SR2
+setting.updatebranch.value1=Release
+setting.updatebranch.value2=Beta
+setting.updatebranch.value3=Alpha
+
 setting.categoryname=SR2E Settings
 
 patches.localizedversionpatch.downloadedversion=Just downloaded SR2E update (version $1)\nPlease restart to take effect!\n$1\n\n

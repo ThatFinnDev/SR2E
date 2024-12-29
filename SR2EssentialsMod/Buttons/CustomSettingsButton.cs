@@ -237,6 +237,7 @@ public static class CustomSettingsCreator
         string id, 
         int defaultOptionIndex, 
         bool applyImmediately, 
+        bool wrapAround,
         bool confirm, 
         OnSettingEdited modifyCallback,
         params OptionValue[] values)
@@ -247,7 +248,7 @@ public static class CustomSettingsCreator
             return null;
 
         button.name = label.GetLocalizedString().Replace(" ", "");
-        button._wrapAround = true;
+        button._wrapAround = wrapAround;
         button._referenceId = $"setting.{id}";
         button._label = label;
         button._detailsText = description;

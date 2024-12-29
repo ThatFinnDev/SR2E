@@ -324,7 +324,20 @@ namespace SR2E
         internal static ScriptedBool saveSkipIntro;
         
         bool alreadyLoadedSettings = false;
-        
+
+        void OnUpdateBranchChanged(int id)
+        {
+            switch (id)
+            {
+                case 0: updateBranch="release"; break;
+                case 1: updateBranch="beta"; break;
+                case 2: updateBranch = "alpha"; break;
+                default: return;
+            }
+            MelonLogger.Msg("New UpdaTE bRANCH "+updateBranch);
+            return;
+            MelonCoroutines.Start(UpdateVersion());
+        }
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if(DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: "+sceneName);
@@ -419,6 +432,7 @@ namespace SR2E
                                 "testButton1",
                                 1,
                                 true,
+                                true,
                                 false,
                                 (def, idx, _) => { MelonLogger.Msg($"Test button edited! New value index: {idx}.");},
                             new CustomSettingsCreator.OptionValue("val1",
@@ -431,6 +445,27 @@ namespace SR2E
                                     AddTranslationFromSR2E("setting.gamesettingtest.value3", "l.testsettingvalue3",
                                         "UI"), testVal,2)
                             ));
+                            /*options.Add(CustomSettingsCreator.Create(
+                                CustomSettingsCreator.BuiltinSettingsCategory.ManualOrCustom,
+                                AddTranslationFromSR2E("setting.updatebranch", "b.sr2eupdatebranch", "UI"),
+                                AddTranslationFromSR2E("setting.updatebranch.desc", "l.sr2eupdatebranchdescription",
+                                    "UI"),
+                                "updatebranch",
+                                2,
+                                true,
+                                false,
+                                true,
+                                (def, idx, _) => { OnUpdateBranchChanged(idx); },
+                                new CustomSettingsCreator.OptionValue("val1",
+                                    AddTranslationFromSR2E("setting.updatebranch.value1", "l.sr2eupdatebranchvalue1",
+                                        "UI"), testVal,0),
+                                new CustomSettingsCreator.OptionValue("val2",
+                                    AddTranslationFromSR2E("setting.updatebranch.value2", "l.sr2eupdatebranchvalue2",
+                                        "UI"), testVal,1),
+                                new CustomSettingsCreator.OptionValue("val3",
+                                    AddTranslationFromSR2E("setting.updatebranch.value3", "l.sr2eupdatebranchvalue3",
+                                        "UI"), testVal,2)
+                            ));*/
                             CustomSettingsCreator.CreateCategory(
                                 AddTranslationFromSR2E("setting.categoryname", "l.sr2ecategory", "UI"), SR2EUtils.ConvertToSprite(SR2EUtils.LoadImage("category")),
                                 options.ToArray());
@@ -446,6 +481,7 @@ namespace SR2E
                                     "UI"),
                                 "allowCheating",
                                 0,
+                                true,
                                 true,
                                 false,
                                 (def, idx, _) => {},
@@ -471,6 +507,7 @@ namespace SR2E
                                     "UI"),
                                 "skipIntro",
                                 1,
+                                true,
                                 true,
                                 false,
                                 (_,_,_) => { },
@@ -530,7 +567,7 @@ namespace SR2E
                                     break;
                             }
 
-                            MelonLogger.BigError("SR2E TODO", "PLEASE IMPLEMENT THE GAMEPLAY_INGAME SETTINGS CATEGORY");
+                            //MelonLogger.BigError("SR2E TODO", "PLEASE IMPLEMENT THE GAMEPLAY_INGAME SETTINGS CATEGORY");
                         }
                         
                         CustomSettingsCreator.ApplyModel();
