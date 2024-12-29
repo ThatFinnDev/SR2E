@@ -32,14 +32,11 @@
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="de.txt" />
+    <EmbeddedResource Include="*.csv" />
     <EmbeddedResource Include="srtwoessentials.assetbundle" />
-    <EmbeddedResource Include="en.txt" />
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />
-    <None Remove="modsMenuIcon.png" />
     <EmbeddedResource Include="modsMenuIcon.png" />
-    <None Remove="category.png" />
     <EmbeddedResource Include="category.png" />
   </ItemGroup>
   <ItemGroup>

@@ -27,10 +27,10 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="*.csv" />
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />
     <EmbeddedResource Include="Languages\**" />
-    <None Remove="modsMenuIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Libs\**" />

@@ -336,8 +336,7 @@ namespace SR2E
                 Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
             try
             {
-                foreach (var code in new List<string> { "en", "de"})
-                    AddLanguage(code,LoadTextFile("SR2E."+code+".txt"));
+                AddLanguages(LoadTextFile("SR2E.translations.csv"));
             }
             catch (Exception e) { MelonLogger.Error(e); }
 
@@ -411,8 +410,8 @@ namespace SR2E
                     }
 
                     var lang = SystemContext.Instance.LocalizationDirector.GetCurrentLocaleCode();
-        
-                    if (languages.TryGetValue(lang, out var _))
+                    
+                    if (languages.ContainsKey(lang))
                         LoadLanguage(lang);
                     else
                         LoadLanguage("en");

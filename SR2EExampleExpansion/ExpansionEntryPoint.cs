@@ -16,8 +16,7 @@ namespace SR2EExampleExpansion
     {
         public override void OnNormalInitializeMelon()
         {
-            foreach (var code in new List<string> { "en" })
-                AddLanguage(code,LoadTextFile("SR2EExampleExpansion.Languages."+code+".txt"));
+            AddLanguages(LoadTextFile("SR2EExampleExpansion.translations.csv"));
         }
 
         public override void OnSR2FontLoad()
