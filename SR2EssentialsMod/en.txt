@@ -26,6 +26,7 @@ modmenu.modinfo.mod=Mod: $1
 modmenu.modinfo.brokenmodtitle=Broken mod
 modmenu.modinfo.mod=Mod: $1
 modmenu.modinfo.author=by: $1
+modmenu.modinfo.coauthor=Co-Author: $1
 modmenu.modinfo.version=Version: $1
 modmenu.modinfo.link=Link: $1
 modmenu.modinfo.unknown=Unknown

@@ -12,7 +12,7 @@
     {
         public TripleDictionary(int capacity = 0) : base(capacity)
         {
-
+    
         }
 
         public void AddItems(TKey key, TValue1 value1, TValue2 value2)

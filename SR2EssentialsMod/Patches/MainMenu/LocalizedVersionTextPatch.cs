@@ -14,7 +14,7 @@ internal static class LocalizedVersionTextPatch
         {
             TextMeshProUGUI versionLabel = __instance.GetComponent<TextMeshProUGUI>();
             if (SR2EEntryPoint.newVersion != null)
-                if(SR2EEntryPoint.newVersion!=BuildInfo.Version)
+                if(SR2EEntryPoint.newVersion!=BuildInfo.DisplayVersion)
                 {
                     if (SR2EEntryPoint.updatedSR2E) 
                         versionLabel.text = translation("patches.localizedversionpatch.downloadedversion",SR2EEntryPoint.newVersion,versionLabel.text);

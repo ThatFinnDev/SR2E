@@ -22,6 +22,7 @@ using UnityEngine.Localization;
 using SR2E.Buttons;
 using SR2E.Commands;
 using SR2E.Patches.General;
+using SR2E.Storage;
 using UnityEngine.Networking;
 
 namespace SR2E
@@ -33,16 +34,30 @@ namespace SR2E
     {
         public const string Name = "SR2E";
         public const string Description = "Essential stuff for Slime Rancher 2";
-        public const string Author = "ThatFinn & PinkTarr";
-        public const string Version = "3.0.0";
+        public const string Author = "ThatFinn";
+        public const string CoAuthor = "PinkTarr";
+        public const string CodeVersion = "3.0.0";
         public const string DownloadLink = "https://github.com/ThatFinnDev/SR2E";
         
         /// <summary>
-        /// Should be the same as Version unless this is a special build. For beta please use [version]b[beta-number].
-        /// For alpha use [version]a[alpha-number].
-        /// For development builds please use [version]d[build-number | commit-id | time]
+        /// Should be the same as CodeVersion unless this is non release build.
+        /// For alpha versions, add "-alpha.buildnumber" e.g 3.0.0-alpha.5
+        /// For beta versions, add "-beta.buildnumber" e.g 3.0.0-beta.12
+        /// For dev versions, use "-dev". Do not add a build number!
+        /// Add "+metadata" only in dev builds!
         /// </summary>
-        public const string DisplayVersion = "3.0.0b2";
+        public const string DisplayVersion = "3.0.0-beta.2";
+
+        //pre, allowmetadata, checkupdatelink, updatelink
+        internal static QuadrupleDictionary<string,bool,string,string> getPreInfo()
+        {
+            return new QuadrupleDictionary<string, bool, string,string>()
+            {
+                { "alpha", (false, "https://raw.githubusercontent.com/ThatFinnDev/SR2E/experimental/Latestvers/alpha.txt","") },
+                { "beta", (false, "https://raw.githubusercontent.com/ThatFinnDev/SR2E/experimental/Latestvers/beta.txt","") },
+                { "dev", (true, "","") },
+            };
+        }
     }
 
     public class SR2EEntryPoint : MelonMod
@@ -68,6 +83,53 @@ namespace SR2E
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
         internal static bool enableCheatMenuButton { get { return prefs.GetEntry<bool>("enableCheatMenuButton").Value; } }
+
+        private static string updateBranch = "release";    
+        internal static bool IsDisplayVersionValid(string version)
+        {
+            //Semver2 Regex
+            var semVerRegex = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+(?<build>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$");
+            var match = semVerRegex.Match(version);
+            if (!match.Success) return false; //not semverv2
+            string major = match.Groups["major"].Value;
+            string minor = match.Groups["minor"].Value;
+            string patch = match.Groups["patch"].Value;
+            string metadata = match.Groups["build"].Value;
+            bool hasMetadata = !string.IsNullOrEmpty(metadata);
+            string preReleaseAndBuild = match.Groups["prerelease"].Value;
+            MelonLogger.Msg(major+" "+minor+" "+patch+" "+metadata+" "+preReleaseAndBuild);
+            if (string.IsNullOrEmpty(preReleaseAndBuild))
+                return !hasMetadata; //Release, return true if no meta
+            
+            //No release -> continue
+            int dotIndex = preReleaseAndBuild.IndexOf('.');
+            if (!(dotIndex != -1 && preReleaseAndBuild.LastIndexOf('.') == dotIndex && dotIndex != 0 &&
+                  dotIndex != preReleaseAndBuild.Length - 1))
+                return false; //Has no dot to indicate buildnumber
+            
+            string preRelease = preReleaseAndBuild.Substring(0, dotIndex);
+            
+            //Check pre and meta
+            bool valid = false;
+            foreach (var pair in BuildInfo.getPreInfo())
+            {
+                var pre = pair.Key;
+                var allowMeta = pair.Value.Item1;
+                if (preRelease == pre)
+                {
+                    if(!allowMeta && hasMetadata) return false; //Has meta even though it's not allowed
+                    valid = true;
+                    updateBranch = pre;
+                    break;
+                }
+            }
+            if (!valid) return false;
+            
+            //Check buildnumber
+            string buildnumber = preReleaseAndBuild.Substring(dotIndex + 1);
+            if (int.TryParse(buildnumber, out int value)) return true;
+            return false; //buildnumber is no int.
+        }
 
         internal static void RefreshPrefs()
         {
@@ -95,7 +157,7 @@ namespace SR2E
                 prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).disableWarning((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
             
-             if (!prefs.HasEntry("enableCheatMenuButton"))
+            if (!prefs.HasEntry("enableCheatMenuButton"))
                 prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).disableWarning((System.Action)(
                     () =>
                     {
@@ -133,8 +195,11 @@ namespace SR2E
         }
         IEnumerator CheckForNewVersion()
         {
-            
-            UnityWebRequest uwr = UnityWebRequest.Get("https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt");
+            string checkLink = "https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt";
+            if (updateBranch != "release")
+                checkLink = BuildInfo.getPreInfo()[updateBranch].Item2;
+            if (string.IsNullOrEmpty(checkLink)) yield break;
+            UnityWebRequest uwr = UnityWebRequest.Get(checkLink);
             yield return uwr.SendWebRequest();
 
             if (!uwr.isNetworkError && !uwr.isHttpError)
@@ -145,7 +210,11 @@ namespace SR2E
         internal static bool updatedSR2E = false;
         IEnumerator UpdateVersion()
         {
-            UnityWebRequest uwr = UnityWebRequest.Get("https://github.com/ThatFinnDev/SR2E/releases/latest/download/SR2E.dll");
+            string updateLink = "https://github.com/ThatFinnDev/SR2E/releases/latest/download/SR2E.dll";
+            if (updateBranch != "release")
+                updateLink = BuildInfo.getPreInfo()[updateBranch].Item3;
+            if (string.IsNullOrEmpty(updateLink)) yield break;
+            UnityWebRequest uwr = UnityWebRequest.Get(updateLink);
             yield return uwr.SendWebRequest();
             if (!uwr.isNetworkError && !uwr.isHttpError)
                 if (uwr.result == UnityWebRequest.Result.Success)
@@ -165,7 +234,7 @@ namespace SR2E
         /// Is true, if no new version of SR2E has been found. It's also true, if
         /// the user has no internet or the github servers blocked.
         /// </summary>
-        public static bool isLatestVersion => newVersion == BuildInfo.Version;
+        public static bool isLatestVersion => newVersion == BuildInfo.DisplayVersion;
         
         //Logging code from Atmudia
         private static void AppLogUnity(string message, string trace, LogType type)
@@ -235,16 +304,19 @@ namespace SR2E
             foreach (var expansion in expansions)
                 try { expansion.OnNormalInitializeMelon(); }
                 catch (Exception e) { MelonLogger.Error(e); }
-            
+            if(!IsDisplayVersionValid(BuildInfo.DisplayVersion))
+                Application.Quit();
             
         }
 
         public override void OnApplicationQuit()
         {
-            if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay())
+            try
             {
-                GameContext.Instance.AutoSaveDirector.SaveGame();
+                if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay())
+                    GameContext.Instance.AutoSaveDirector.SaveGame();
             }
+            catch { }
         }
 
         internal static Damage killDamage;

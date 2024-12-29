@@ -122,7 +122,14 @@ public static class SR2EModMenu
                 if(isSR2EExpansion) 
                     modInfoText.text = translation("modmenu.modinfo.expansion",melonBase.Info.Name);
                 modInfoText.text += "\n" + translation("modmenu.modinfo.author",melonBase.Info.Author);
-                modInfoText.text += "\n" + translation("modmenu.modinfo.version",melonBase.Info.Version);
+                if (melonBase is SR2EEntryPoint)
+                {
+                    modInfoText.text += "\n" + translation("modmenu.modinfo.coauthor",BuildInfo.CoAuthor);
+                    modInfoText.text += "\n" + translation("modmenu.modinfo.version",BuildInfo.DisplayVersion);
+                }
+                else
+                    modInfoText.text += "\n" + translation("modmenu.modinfo.version",melonBase.Info.Version);
+                
                 modInfoText.text += "\n";
 
                 if (!String.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
