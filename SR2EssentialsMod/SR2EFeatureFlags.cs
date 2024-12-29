@@ -177,7 +177,7 @@ public static class SR2EFeatureFlags
         foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
         {
             if(addedFlags.HasFlag(flag));
-            enabledFlags &= ~flag;
+            enabledFlags |= flag;
         }
 
         if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= CommandType.DevOnly;

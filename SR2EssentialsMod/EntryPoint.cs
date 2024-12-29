@@ -17,6 +17,9 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.Player.FirstPersonScreenEffects;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
+using Il2CppSystem.Linq.Expressions.Interpreter;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using UnityEngine.Localization;
 using SR2E.Buttons;
@@ -48,14 +51,14 @@ namespace SR2E
         /// </summary>
         public const string DisplayVersion = "3.0.0-dev";
 
-        //pre, allowmetadata, checkupdatelink, updatelink
-        internal static QuadrupleDictionary<string,bool,string,string> getPreInfo()
+        //pre, allowmetadata, checkupdatelink,
+        internal static TripleDictionary<string,bool,string> getPreInfo()
         {
-            return new QuadrupleDictionary<string, bool, string,string>()
+            return new TripleDictionary<string, bool, string>()
             {
-                { "alpha", (false, "https://raw.githubusercontent.com/ThatFinnDev/SR2E/experimental/Latestvers/alpha.txt","") },
-                { "beta", (false, "https://raw.githubusercontent.com/ThatFinnDev/SR2E/experimental/Latestvers/beta.txt","") },
-                { "dev", (true, "","") },
+                { "alpha", (false, "https://api.sr2e.thatfinn.dev/downloads/sr2e/alpha.json") },
+                { "beta", (false, "https://api.sr2e.thatfinn.dev/downloads/sr2e/beta.json") },
+                { "dev", (true, "") },
             };
         }
     }
@@ -98,7 +101,6 @@ namespace SR2E
             string metadata = match.Groups["build"].Value;
             bool hasMetadata = !string.IsNullOrEmpty(metadata);
             string preReleaseAndBuild = match.Groups["prerelease"].Value;
-            MelonLogger.Msg(major+" "+minor+" "+patch+" "+metadata+" "+preReleaseAndBuild);
             if (string.IsNullOrEmpty(preReleaseAndBuild))
                 return !hasMetadata; //Release, return true if no meta
             
@@ -196,26 +198,62 @@ namespace SR2E
             if(CheckForUpdates.HasFlag())
                 MelonCoroutines.Start(CheckForNewVersion());
         }
-        IEnumerator CheckForNewVersion()
+        static string branchJson = "";
+        IEnumerator GetBranchJson()
         {
-            string checkLink = "https://raw.githubusercontent.com/ThatFinnDev/SR2E/main/latestver.txt";
+            string checkLink = "https://api.sr2e.thatfinn.dev/downloads/sr2e/release.json";
             if (updateBranch != "release")
                 checkLink = BuildInfo.getPreInfo()[updateBranch].Item2;
             if (string.IsNullOrEmpty(checkLink)) yield break;
             UnityWebRequest uwr = UnityWebRequest.Get(checkLink);
             yield return uwr.SendWebRequest();
-
-            if (!uwr.isNetworkError && !uwr.isHttpError)
-                newVersion = uwr.downloadHandler.text.Replace(" ","").Replace("\n","");
+            if (uwr.isNetworkError || uwr.isHttpError) yield break;
             
+            string json = uwr.downloadHandler.text;
+            try { JObject.Parse(json); }
+            catch
+            {
+                /*JSON is invalid, can't continue*/
+                MelonLogger.Msg("SR2E API either changed or is broken.");
+            }
+            //Application.Quit();
+        }
+        IEnumerator CheckForNewVersion()
+        {
+            if (string.IsNullOrWhiteSpace(branchJson)) yield return GetBranchJson();
+            if (string.IsNullOrWhiteSpace(branchJson)) yield break;
+            try 
+            { 
+                var jobject = JObject.Parse(branchJson); 
+                string latest = jobject["latest"].ToObject<string>();;
+                newVersion = latest;
+            }
+            catch
+            {
+                /*JSON is invalid, can't continue*/
+                MelonLogger.Msg("SR2E API either changed or is broken.");
+            }
         }
 
         internal static bool updatedSR2E = false;
         IEnumerator UpdateVersion()
         {
-            string updateLink = "https://github.com/ThatFinnDev/SR2E/releases/latest/download/SR2E.dll";
-            if (updateBranch != "release")
-                updateLink = BuildInfo.getPreInfo()[updateBranch].Item3;
+            if (string.IsNullOrWhiteSpace(branchJson)) yield return GetBranchJson();
+            if (string.IsNullOrWhiteSpace(branchJson)) yield break;
+            string updateLink = "";
+            try 
+            { 
+                var jobject = JObject.Parse(branchJson); 
+                string latest = jobject["latest"].ToObject<string>();;
+                var versions = jobject["versions"].ToObject<Dictionary<string, string>>();
+                updateLink = versions[latest];
+            }
+            catch
+            {
+                /*JSON is invalid, can't continue*/
+                MelonLogger.Msg("SR2E API either changed or is broken.");
+                yield break;
+            }
             if (string.IsNullOrEmpty(updateLink)) yield break;
             UnityWebRequest uwr = UnityWebRequest.Get(updateLink);
             yield return uwr.SendWebRequest();
@@ -227,7 +265,7 @@ namespace SR2E
                     if (File.Exists(path)) File.Move(path, path+".old");
                     File.WriteAllBytes(path, uwr.downloadHandler.data);
                     updatedSR2E = true;
-                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Need restart for updates version");
+                    if(DebugLogging.HasFlag()) MelonLogger.Msg("Restart needed for applying SR2E update");
                 }
             
         }
@@ -299,7 +337,7 @@ namespace SR2E
             }
             catch (Exception e) { MelonLogger.Error(e); }
 
-            foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+            foreach (MelonBase melonBase in new List<MelonBase>(MelonBase.RegisteredMelons))
             {
                 if (melonBase is SR2EExpansionV1)
                     if(AllowExpansions.HasFlag())
