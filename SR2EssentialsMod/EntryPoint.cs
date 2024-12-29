@@ -49,7 +49,7 @@ namespace SR2E
         /// For dev versions, use "-dev". Do not add a build number!
         /// Add "+metadata" only in dev builds!
         /// </summary>
-        public const string DisplayVersion = "3.0.0-dev";
+        public const string DisplayVersion = "3.0.0-dev+finn";
 
         //pre, allowmetadata, checkupdatelink,
         internal static TripleDictionary<string,bool,string> getPreInfo()
@@ -196,13 +196,11 @@ namespace SR2E
                 rootOBJ.name = "SR2EPrefabHolder";
                 Object.DontDestroyOnLoad(rootOBJ);
             }
-
-            if(CheckForUpdates.HasFlag())
-                MelonCoroutines.Start(CheckForNewVersion());
+            MelonCoroutines.Start(GetBranchJson());
         }
         static string branchJson = "";
         IEnumerator GetBranchJson()
-        {
+        {  
             string checkLink = "https://api.sr2e.thatfinn.dev/downloads/sr2e/release.json";
             if (updateBranch != "release")
                 checkLink = BuildInfo.getPreInfo()[updateBranch].Item2;
@@ -217,18 +215,24 @@ namespace SR2E
             {
                 /*JSON is invalid, can't continue*/
                 MelonLogger.Msg("SR2E API either changed or is broken.");
+                yield break;
             }
-            //Application.Quit();
+            branchJson=json;
+            if(CheckForUpdates.HasFlag())
+                MelonCoroutines.Start(CheckForNewVersion());
         }
         IEnumerator CheckForNewVersion()
         {
-            if (string.IsNullOrWhiteSpace(branchJson)) yield return GetBranchJson();
             if (string.IsNullOrWhiteSpace(branchJson)) yield break;
-            try 
-            { 
+            try
+            {
                 var jobject = JObject.Parse(branchJson); 
                 string latest = jobject["latest"].ToObject<string>();;
                 newVersion = latest;
+                if(!isLatestVersion)
+                    if(AllowAutoUpdate.HasFlag())
+                        if(autoUpdate) 
+                            MelonCoroutines.Start(UpdateVersion());
             }
             catch
             {
@@ -240,8 +244,6 @@ namespace SR2E
         internal static bool updatedSR2E = false;
         IEnumerator UpdateVersion()
         {
-            yield break;
-            if (string.IsNullOrWhiteSpace(branchJson)) yield return GetBranchJson();
             if (string.IsNullOrWhiteSpace(branchJson)) yield break;
             string updateLink = "";
             try 
@@ -317,7 +319,7 @@ namespace SR2E
             instance = this;
             if(!IsDisplayVersionValid(BuildInfo.DisplayVersion))
             {
-                MelonLogger.BigError("SR2E","Version Code is broken!");
+                MelonLogger.Msg("Version Code is broken!");
                 Application.Quit();
             }
             InitFlagManager();
@@ -330,10 +332,6 @@ namespace SR2E
             if (File.Exists(path)) File.Delete(path);
             RefreshPrefs();
             
-            if(AllowAutoUpdate.HasFlag())
-                if(autoUpdate) 
-                    if(!isLatestVersion)
-                        MelonCoroutines.Start(UpdateVersion());
             if (ShowUnityErrors.HasFlag())
                 Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
             try

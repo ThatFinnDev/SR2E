@@ -49,7 +49,7 @@ public static class SR2EFeatureFlags
     static bool initialized = false;
     //internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
 
-    internal static string flagfile_path => Application.persistentDataPath + "/.sr2eflags.xml";
+    internal static string flagfile_path => Application.persistentDataPath + "/"+SR2EEntryPoint.updateBranch+".sr2eflags.xml";
     static void SaveToFlagFile()
     {
         XmlDocument xmlDoc = new XmlDocument();
@@ -107,6 +107,15 @@ public static class SR2EFeatureFlags
             xmlElement.SetAttribute("value",value.Get().ToLower());
             xmlElement.SetAttribute("default", value.GetDefault().ToLower());
         }
+
+        if (true) //Save Version
+        {
+            XmlElement xmlElement = xmlDoc.CreateElement("LAST_SR2EVERSION");
+            strings.AppendChild(xmlElement);
+            xmlElement.SetAttribute("value",BuildInfo.DisplayVersion);
+            xmlElement.SetAttribute("default", BuildInfo.DisplayVersion);
+            xmlElement.SetAttribute("DO_NOT_EDIT", "please");
+        }
         // Save the XML document to a file
         
         if (File.Exists(flagfile_path)) File.SetAttributes(flagfile_path, FileAttributes.Normal);
@@ -125,6 +134,20 @@ public static class SR2EFeatureFlags
 
         XmlElement root = xmlDoc["SR2EFeatureFlags"];
         if (root == null) { SaveToFlagFile(); return; }
+        
+        XmlElement strings = root["FeatureStringValue"];
+        if (strings != null)
+        {
+            if(strings["LAST_SR2EVERSION"]!=null)
+            {
+                if (strings["LAST_SR2EVERSION"].GetAttribute("value") != BuildInfo.DisplayVersion)
+                { SaveToFlagFile(); return; }
+            }
+            foreach (XmlElement stringElement in strings.ChildNodes)
+                if(stringElement.Name!="FeatureStringValue")
+                    if (Enum.TryParse(stringElement.Name, out FeatureStringValue intValue))
+                        featureStrings[intValue] = stringElement.GetAttribute("value");
+        }
 
         XmlElement flags = root["FeatureFlags"];
         if (flags != null)
@@ -139,11 +162,6 @@ public static class SR2EFeatureFlags
                 if (Enum.TryParse(intElement.Name, out FeatureIntegerValue intValue))
                     if (int.TryParse(intElement.GetAttribute("value"), out int intResult))
                         featureInts[intValue] = intResult;
-        XmlElement strings = root["FeatureStringValue"];
-        if (strings != null)
-            foreach (XmlElement stringElement in strings.ChildNodes)
-                if (Enum.TryParse(stringElement.Name, out FeatureStringValue intValue))
-                    featureStrings[intValue] = stringElement.GetAttribute("value");
 
         
         foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
