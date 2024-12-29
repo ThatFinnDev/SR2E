@@ -19,7 +19,7 @@ public static class SR2EFeatureFlags
             CommandsLoadCommands | CommandsLoadCheat | CommandsLoadBinding | CommandsLoadWarp | CommandsLoadCommon | CommandsLoadMenu | CommandsLoadMiscellaneous | CommandsLoadFun | 
             AllowExpansions |
             EnableModMenu | EnableConsole | EnableIl2CppDetourExceptionReporting |
-            InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations | CustomSettingsInjection |
+            InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
             AddCheatMenuButton | AddModMenuButton |
             CheckForUpdates | AllowAutoUpdate | 
             EnableInfHealth | EnableInfEnergy | EnableCheatMenu | EnableLocalizedVersionPatch;
@@ -263,7 +263,7 @@ public enum FeatureFlag : long
     DebugLogging = 1L << 2,
     ShowUnityErrors = 1L << 3,
     Experiments = 1L << 4,
-    CustomSettingsInjection = 1L << 5,
+    ExperimentalSettingsInjection = 1L << 5,
     
     //Commands+Dev
     CommandsLoadDevOnly = 1L << 6, 

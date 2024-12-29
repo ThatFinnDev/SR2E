@@ -79,6 +79,7 @@ namespace SR2E
         internal static bool autoUpdate { get { return prefs.GetEntry<bool>("autoUpdate").Value; } }
         internal static bool quickStart { get { return prefs.GetEntry<bool>("quickStart").Value; } }
         internal static bool consoleUsesSR2Font { get { return prefs.GetEntry<bool>("consoleUsesSR2Font").Value; } } 
+        internal static bool consoleUsesSR2Style { get { return prefs.GetEntry<bool>("consoleUsesSR2Style").Value; } } 
         internal static bool fixSaves { get { return prefs.GetEntry<bool>("fixSaves").Value; } }
         internal static float noclipSpeedMultiplier { get { return prefs.GetEntry<float>("noclipSprintMultiply").Value; } }
         internal static bool enableDebugDirector { get { return prefs.GetEntry<bool>("enableDebugDirector").Value; } }
@@ -150,6 +151,8 @@ namespace SR2E
             if (!prefs.HasEntry("consoleUsesSR2Font"))
                 prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).disableWarning((System.Action)(
                     () => { SetupFonts(); }));
+            if (!prefs.HasEntry("consoleUsesSR2Style"))
+                prefs.CreateEntry("consoleUsesSR2Style", (bool)false, "Console uses SR2 style", false);
             if (!prefs.HasEntry("quickStart"))
                 prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
 
@@ -373,8 +376,7 @@ namespace SR2E
                         LoadLanguage("en");
                     break;
                 case "MainMenuUI":
-
-                    if (CustomSettingsInjection.HasFlag())
+                    if (ExperimentalSettingsInjection.HasFlag())
                     {
                         bool tempLoad = alreadyLoadedSettings;
 

@@ -576,7 +576,7 @@ namespace SR2E
         internal static void Start()
         {
             // im assigning this to finn (i dont want to create a new config rn)
-            if (true)
+            if (SR2EEntryPoint.consoleUsesSR2Style)
             {
                 gameObject = parent.getObjRec<GameObject>("console");
                 transform = parent.getObjRec<Transform>("console");
