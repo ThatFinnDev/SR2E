@@ -174,11 +174,10 @@ public static class SR2EFeatureFlags
             case "beta": addedFlags= extraBetaFlags; break;
         }
 
-        foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
-        {
-            if(addedFlags.HasFlag(flag));
-            enabledFlags |= flag;
-        }
+       // foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
+        //    if(addedFlags.HasFlag(flag)) 
+        //        enabledFlags |= flag;
+        
 
         if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= CommandType.DevOnly;
         if (CommandsLoadExperimental.HasFlag()) enabledCMDs |= CommandType.Experimental;

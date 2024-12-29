@@ -108,9 +108,10 @@ namespace SR2E
             int dotIndex = preReleaseAndBuild.IndexOf('.');
             if (!(dotIndex != -1 && preReleaseAndBuild.LastIndexOf('.') == dotIndex && dotIndex != 0 &&
                   dotIndex != preReleaseAndBuild.Length - 1))
-                return false; //Has no dot to indicate buildnumber
+                if(preReleaseAndBuild!="dev")
+                    return false; //Has no dot to indicate buildnumber
             
-            string preRelease = preReleaseAndBuild.Substring(0, dotIndex);
+            string preRelease = preReleaseAndBuild!="dev"?preReleaseAndBuild.Substring(0, dotIndex):"dev";
             
             //Check pre and meta
             bool valid = false;
@@ -127,7 +128,8 @@ namespace SR2E
                 }
             }
             if (!valid) return false;
-            
+
+            if (preRelease == "dev") return true;
             //Check buildnumber
             string buildnumber = preReleaseAndBuild.Substring(dotIndex + 1);
             if (int.TryParse(buildnumber, out int value)) return true;
@@ -238,6 +240,7 @@ namespace SR2E
         internal static bool updatedSR2E = false;
         IEnumerator UpdateVersion()
         {
+            yield break;
             if (string.IsNullOrWhiteSpace(branchJson)) yield return GetBranchJson();
             if (string.IsNullOrWhiteSpace(branchJson)) yield break;
             string updateLink = "";
@@ -313,7 +316,10 @@ namespace SR2E
         {
             instance = this;
             if(!IsDisplayVersionValid(BuildInfo.DisplayVersion))
+            {
+                MelonLogger.BigError("SR2E","Version Code is broken!");
                 Application.Quit();
+            }
             InitFlagManager();
         }
 
