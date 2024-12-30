@@ -35,7 +35,7 @@ modmenu.modconfig.enterdouble,"Please enter a decimal number",Gib bitte eine Dez
 modmenu.modconfig.entertext,"Please enter text",Gib bitte Text ein!
 modmenu.modconfig.keylistening,"Listening...",Warten auf Eingabe...
 cmd.loadasavefirst,"Load a save first!",Du musst zuerst ein Speicherstand laden!
-cmd.usage,"Usage: $1",Benützung: $1
+cmd.usage,"Usage: $1",Benutzung: $1
 cmd.noarguments,"The '<color=white>$1</color>' command takes no arguments","Der Befehl '<color=white>$1</color>' nimmt keine Argumente!"
 cmd.unknowncommand,Unknown command. Please use '<color=white>help</color>' for available commands,"Unbekannter Befehl! Bitte benütze '<color=white>help</color>', um alle möglichen Befehle anzuzeigen!"
 cmd.alreadyregistered,"Trying to register command with id '<color=white>$1</color>' but the ID is already registered!","Es wurde bereits ein Befehl mit der ID '<color=white>$1</color>' registriert!"
@@ -119,7 +119,7 @@ cmd.gadget.successallunlock,"Successfully unlocked the blueprint for everything!
 cmd.gadget.errorlock,"The blueprint for $1 is already locked!","Der Bauplan für $1 kann nicht entzogen werden, weil du ihn nicht besitzt!"
 cmd.gadget.errorunlock,"The blueprint for $1 is already unlocked!","Der Bauplan für $1 kann nicht gegeben werden, weil du ihn bereits besitzt!"
 cmd.gadget.errortoomanyargs,"Too many arguments for '$1'!","Zu viele Argumente für $1!"
-cmd.gadget.description,"Gives/Removes/Unlocks/Gets gadgets","Gibt/Entfernt/Entsperrt Gadgets!"
+cmd.gadget.description,"Gives/Removes/Unlocks/Gets gadgets","Verwaltet Gadgets!"
 cmd.gadget.notvalidoption,"$1 is not a valid option!","'$1' ist kein gültiges Argument!"
 cmd.upgrade.successadd,"Successfully increased $1 by $2 level(s)!","Das Level wurde für $1 erfolgreich um $2 erhöht!"
 cmd.upgrade.successalladd,"Successfully increased all by $1 levels!","Das Level wurde für alle Upgrades erfolgreich um $2 erhöht!"
@@ -127,37 +127,37 @@ cmd.upgrade.successremove,"Successfully decreased $1 by $2 level(s)!","Das Level
 cmd.upgrade.successallremove,"Successfully decreased all by $1 level(s)!","Das Level wurde für alle Upgrades erfolgreich um $2 gesenkt!"
 cmd.upgrade.successset,"Successfully set $1 to level $2!",Das Level wurde für $1 erfolgreich auf $2 gesetzt!
 cmd.upgrade.successallset,"Successfully set all to level $1!",Das Level wurde für alle Upgrades erfolgreich auf $2 gesetzt!
-cmd.upgrade.successget,"$1 is currently on level $2!!",
-cmd.upgrade.errortoomanyargs,"Too many arguments for '$1'!",
-cmd.upgrade.description,"Manage updates!",
-cmd.upgrade.notvalidoption,"$1 is not a valid option!",
-cmd.pedia.descripton,"Manage your pedia!",
-cmd.pedia.notvalidoption,"$1 is not a valid option!",
-cmd.pedia.successlock,"Successfully locked the pedia entry for $1!",
-cmd.pedia.successalllock,"Successfully locked the pedia entry for everything!",
-cmd.pedia.successunlock,"Successfully unlocked the pedia entry for $1!",
-cmd.pedia.successallunlock,"Successfully unlocked the pedia entry for everything!",
-cmd.pedia.errorlock,"The pedia entry for $1 is already locked!",
-cmd.pedia.errorunlock,"The pedia entry for $1 is already unlocked!",
-cmd.ranch.descripton,"Manage your ranch expansions!",
-cmd.ranch.notvalidoption,"$1 is not a valid option!",
-cmd.ranch.successlock,"Successfully locked the expansion $1!",
-cmd.ranch.successalllock,"Successfully locked all expansions!",
-cmd.ranch.successunlock,"Successfully unlocked the expansion $1!",
-cmd.ranch.successallunlock,"Successfully unlocked all expansions!",
-cmd.ranch.errorlock,"The expansion $1 is already locked!",
-cmd.ranch.errorunlock,"The expansion $1 is already unlocked!",
-cmd.graphics.success,"Successfully set graphics type to $1!",
-cmd.graphics.description,"Makes your game look... like something...",
-cmd.graphics.extendeddescription,"Changes the look of your game. It may make your experience better or worse",
-cmd.graphics.norangelights,"An error occured, 'rangelights' couldn't be found!",
-cmd.gravity.success,"Successfully changed the gravity to $1 $2 $3!",
-cmd.gravity.description,"Changes the gravity!",
-cmd.gravity.description,"It changes the gravity for every single physics object (except player, use the util command for that)",
-cmd.help.success,"<color=#45d192>List of all currently registered commands:</color>\n<color=#45d192><> is a required argument; [] is an optional argument</color>",
-cmd.help.successspecific,"Usage: $1\nDescription: $2",
-cmd.help.description,"Displays all commands available and their usage",
-cmd.help.extendeddescription,"Displays all commands available and their usage, can also take a command as a input to display it by itself",
+cmd.upgrade.successget,"$1 is currently on level $2!","Das Upgrade namens $1 ist gerade auf Level $2!"
+cmd.upgrade.errortoomanyargs,"Too many arguments for '$1'!","Zu viele Argumente für $1!"
+cmd.upgrade.description,"Manage updates","Verwaltet Upgrades"
+cmd.upgrade.notvalidoption,"$1 is not a valid option!","$1 ist kein gültiges Argument!"
+cmd.pedia.descripton,"Manage your pedia!","Verwaltet das Pedia"
+cmd.pedia.notvalidoption,"$1 is not a valid option!","$1 ist kein gültiges Argument!"
+cmd.pedia.successlock,"Successfully locked the pedia entry for $1!","Der Pediaeintag für '$1' wurde erfolgreich gesperrt!"
+cmd.pedia.successalllock,"Successfully locked the pedia entry for everything!","Alle Pediaeinträge wurde erfolgreich gesperrt!"
+cmd.pedia.successunlock,"Successfully unlocked the pedia entry for $1!","Der Pediaeintag für '$1' wurde erfolgreich entsperrt!"
+cmd.pedia.successallunlock,"Successfully unlocked the pedia entry for everything!","Alle Pediaeinträge wurde erfolgreich entsperrt!"
+cmd.pedia.errorlock,"The pedia entry for $1 is already locked!","Der Pediaeintrag für '$1' ist bereits gesperrt!"
+cmd.pedia.errorunlock,"The pedia entry for $1 is already unlocked!","Der Pediaeintrag für '$1' ist bereits entsperrt!"
+cmd.ranch.descripton,"Manage your ranch expansions!","Verwaltet deine Rancherweiterungen"
+cmd.ranch.notvalidoption,"$1 is not a valid option!","$1 ist kein gültiges Argument!"
+cmd.ranch.successlock,"Successfully locked the expansion $1!","Die Rancherweiterung namens '$1' wurde erfolgreich gesperrt!"
+cmd.ranch.successalllock,"Successfully locked all expansions!","Alle Rancherweiterungen wurden erfolgreich gesperrt!"
+cmd.ranch.successunlock,"Successfully unlocked the expansion $1!","Die Rancherweiterung namens '$1'wurde erfolgreich entsperrt!"
+cmd.ranch.successallunlock,"Successfully unlocked all expansions!","Alle Rancherweiterungen wurden erfolgreich entsperrt!"
+cmd.ranch.errorlock,"The expansion $1 is already locked!","Die Rancherweiterung namens '$1' ist bereits gesperrt!"
+cmd.ranch.errorunlock,"The expansion $1 is already unlocked!","Die Rancherweiterung namens '$1' ist bereits entsperrt!"
+cmd.graphics.success,"Successfully set graphics type to $1!","Die Grafikeinstellungen wurden auf $1 gestetzt!"
+cmd.graphics.description,"Makes your game look... like something...","Verändert die Grafikeinstellungen auf...  ...interessante Weise.."
+cmd.graphics.extendeddescription,"Changes the look of your game. It may make your experience better or worse","Verändert die Grafikeinstellungen. Es kann sein, dass du es magst (oder auch nicht)"
+cmd.graphics.norangelights,"An error occured, 'rangelights' couldn't be found!","Ein Fehler  aufgetreten! Die Fernlichter konnten nicht gefunden werden!"
+cmd.gravity.success,"Successfully changed the gravity to ($1,$2,$3)!","Die Gravitation wurde auf ($1,$2,$3) gesetzt" 
+cmd.gravity.description,"Changes the gravity!","Verändert die Gravitation"
+cmd.gravity.description,"It changes the gravity for every single physics object (except player, use the util command for that)","Verändert die Gravitation für jedes Physikobjekt (außer den Spieler, nutze den 'util'-Befehl dafür)"
+cmd.help.success,"<color=#45d192>List of all currently registered commands:</color>\n<color=#45d192><> is a required argument; [] is an optional argument</color>","<color=#45d192>Alle registrierten Befehle:</color>\n<color=#45d192><> ist ein notwendiges Argument; [] ist ein optionales Argument</color>",
+cmd.help.successspecific,"Usage: $1\nDescription: $2","Benutzung: $1\nBeschreibung: $2",
+cmd.help.description,"Displays all commands available and their usage","Zeigt alle Befehle und deren Benutzung an"
+cmd.help.extendeddescription,"Displays all commands available and their usage, can also take a command as a input to display it by itself","Zeigt alle Befehle und deren Benutzung an. Es kann auch ein Befehl als Argument benutzt werden, um genauere Details zu zeigen"
 cmd.help.notvalidcommand,"The key '<color=white>$1</color>' is not a valid command!",
 cmd.infenergy.success,"Energy is now infinite",
 cmd.infenergy.successnolonger,"Energy is no longer infinite",
@@ -272,12 +272,12 @@ cmd.util.player.size.show,"The current size of the player is $1",
 cmd.util.player.size.edit,"The new size of the player is $1!",
 cmd.util.player.gravity.show,"The current gravity level of the player is $1",
 cmd.util.player.gravity.edit,"The new gravity level of the player is $1!",
-cmd.util.vacmode.success,"The VACMODE is now $1!",
-cmd.util.vacmode.show,"The VACMODE is currently $1",
-cmd.util.gadget.pos.show,"The gadget $1 is currently at ($2, $3, $4)",
-cmd.util.gadget.pos.edit,"The gadget $1 is now at ($2, $3, $4)!",
-cmd.recentercamera.description,"Recenters your camera to look at the center of an object you're looking at",
-cmd.recentercamera.success,"Successfully recentered the camera! Make sure to screenshot before unpausing.",
+cmd.util.vacmode.success,"The VACMODE is now $1!","Der Vacmodus $1 ist nun $1"
+cmd.util.vacmode.show,"The VACMODE is currently $1","Im Moment ist der Vacmodus $1"
+cmd.util.gadget.pos.show,"The gadget $1 is currently at ($2, $3, $4)","Das Gadget $1 befindet sich im Moment bei ($2, $3, $4)!"
+cmd.util.gadget.pos.edit,"The gadget $1 is now at ($2, $3, $4)!","Das Gadget $1 befindet sich nun bei ($2, $3, $4)!"
+cmd.recentercamera.description,"Recenters your camera to look at the center of an object you're looking at","Zentriert die Kamera neu, damit du in die Mitte des Objekts vor dir anschaust"
+cmd.recentercamera.success,"Successfully recentered the camera! Make sure to screenshot before unpausing.","Die Kamera wurder erfolgreich neu zentriert. Mache ein Bildschirmfoto bevor du das Spiel fortsetzt"
 cmd.recentercamera.needtolook,"You need to lock at something!","Du musst etwas anschauen"
 cmd.recentercamera.nocamera,"There was no main camera found!","Es wurde keine Hauptkamera gefunden!"
 setting.skipintro,"Skip Intro","Intro überspringen"

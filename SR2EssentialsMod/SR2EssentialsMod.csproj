@@ -40,12 +40,10 @@
     <EmbeddedResource Remove="packages\**" />
     <EmbeddedResource Include="modsMenuIcon.png" />
     <EmbeddedResource Include="category.png" />
-    <EmbeddedResource Remove="DocGenerator\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Libs\**" />
     <Compile Remove="packages\**" />
-    <Compile Remove="DocGenerator\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Libs\**" />
@@ -57,7 +55,6 @@
     <None Remove="NOTICE.txt" />
     <None Remove="README.md" />
     <None Remove="packages\**" />
-    <None Remove="DocGenerator\**" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
