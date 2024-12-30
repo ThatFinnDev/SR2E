@@ -41,6 +41,7 @@ cmd.unknowncommand,Unknown command. Please use '<color=white>help</color>' for a
 cmd.alreadyregistered,"Trying to register command with id '<color=white>$1</color>' but the ID is already registered!","Es wurde bereits ein Befehl mit der ID '<color=white>$1</color>' registriert!"
 cmd.notregistered,"Trying to unregister command with id '<color=white>$1</color>' but the ID is not registered!","Es konnte kein Befehl mit der ID '<color=white>$1</color>' entfernt werden, da keiner mit dieser ID existiert!"
 cmd.cheatsdisabled,"You cannot run this command while cheats are disabled!","Du kannst diesen Befehl nicht benützen, weil Cheats deaktiviert wurden!"
+cmd.error.maintance, "This command is currently undergoing maintance!","Dieser Befehl wird gerade gewartet!"
 cmd.error.notvalidpedia,"$1 is not a valid pedia entry!",Es gibt keinen Pediaeintrag namens '$1'!
 cmd.error.notvalidvacmode,"$1 is not a valid VACMODE!",Es gibt keinen Vacmodus namens '$1'!
 cmd.error.notvalidweather,"$1 is not a valid weather!",Es gibt kein Wetter namens '$1'!
@@ -150,7 +151,7 @@ cmd.ranch.errorunlock,"The expansion $1 is already unlocked!","Die Rancherweiter
 cmd.graphics.success,"Successfully set graphics type to $1!","Die Grafikeinstellungen wurden auf $1 gestetzt!"
 cmd.graphics.description,"Makes your game look... like something...","Verändert die Grafikeinstellungen auf...  ...interessante Weise.."
 cmd.graphics.extendeddescription,"Changes the look of your game. It may make your experience better or worse","Verändert die Grafikeinstellungen. Es kann sein, dass du es magst (oder auch nicht)"
-cmd.graphics.norangelights,"An error occured, 'rangelights' couldn't be found!","Ein Fehler  aufgetreten! Die Fernlichter konnten nicht gefunden werden!"
+cmd.graphics.norangelights,"An error occured, 'rangelights' couldn't be found!","Ein Fehler aufgetreten! Die Fernlichter konnten nicht gefunden werden!"
 cmd.gravity.success,"Successfully changed the gravity to ($1,$2,$3)!","Die Gravitation wurde auf ($1,$2,$3) gesetzt" 
 cmd.gravity.description,"Changes the gravity!","Verändert die Gravitation"
 cmd.gravity.description,"It changes the gravity for every single physics object (except player, use the util command for that)","Verändert die Gravitation für jedes Physikobjekt (außer den Spieler, nutze den 'util'-Befehl dafür)"
@@ -205,43 +206,43 @@ cmd.rotate.success,"Successfully rotated the actor!","Der Charakter, den du ansc
 cmd.rotate.description,"Rotates an actor","Dreht einen Charakter"
 cmd.setwarp.success,"Successfully added the Warp point '$1'","Es wurde erfolgreich ein Warppunkt namens '$1' hinzugefügt!"
 cmd.setwarp.description,"Saves your location, so you can teleport to it later!","Sichert deinen Standort in Form eines Warppunkts, damit du dich später wieder hinteleportieren kannst!"
-cmd.spawn.success,"Successfully spawned $1 $2!",
-cmd.spawn.description,"Spawns an actor in front of your face",
-cmd.spawn.isgadgetnotitem,"$1 is a gadget, not an item!",
-cmd.speed.success,"Set speed to $1!",
-cmd.speed.description,"Changes the player speed",
-cmd.speed.unknownerror,"An unknown error occured!",
-cmd.strike.success,"Summoned lightning!",
-cmd.strike.description,"Summons a lightning strike",
-cmd.unbind.success,"Successfully unbound key $1!",
-cmd.unbind.notbound,"Key $1 is not bound to anything!",
-cmd.unbind.description,"Unbinds a key that was previously bound to a command/multiple commands",
-cmd.unbind.extendeddescription,"Unbinds a key that was previously bound to a command/multiple commands. For multiple commands, use 'unbind <key> <command>;<command>;<command>;....'",
-cmd.warp.success,"Successfully warped to the warp point $1!",
-cmd.warp.description,"Warps you to a saved warp point",
-cmd.warp.extendeddescription,"Warps you to a saved warp point, use <u>setwarp</u> to create more",
-cmd.warp.unknownerror,"An unknown error occured!",
-cmd.warplist.success,"<color=blue>List of all warp points:</color>",
-cmd.warplist.sucessdesc,"'$1' in '$2' at '$3 $4 $5'",
-cmd.warplist.error,"There aren't any warp points yet!",
-cmd.warplist.description,"Displays all warp points.",
-cmd.weather.successlist,"All weathers are: $1",
-cmd.weather.successlistrunning,"Currently running weathers are: $1",
-cmd.weather.successstart,"Successfully started the weather '$1'!",
-cmd.weather.successstop,"Successfully stopped the weather '$1'!",
-cmd.weather.notvalidargument,"'$1' is not a valid argument!",
-cmd.weather.requiresmore,"'$1' requires more arguments!",
-cmd.weather.requiresless,"'$1' less more arguments!",
-cmd.weather.currentlyrunning,"The weather $1 is currently running!",
-cmd.weather.currentlynotrunning,"The weather $1 is currently not running!",
-cmd.weather.alreadyrunning,"The weather $1 is already running!",
-cmd.weather.alreadynotrunning,"The weather $1 is already stopped!",
-cmd.weather.description,"Manage the weather",
-cmd.weather.extendeddescription,"Allows you to toggle weathers as well as to view every weather",
-cmd.weather.nodirector,"An error occured, cannot find WeatherDirector component!",
-cmd.timescale.success,"Timescale is now $1!",
-cmd.timescale.description,"Modifies game speed",
-cmd.timescale.between,"The scale has to be between $1 and $2!",
+cmd.spawn.success,"Successfully spawned $1 $2!","Es wurde(n) erfolgreich $1 '$2'(s/n/en) vor dir erschafft!"
+cmd.spawn.description,"Spawns an actor in front of your face","Erschafft vor dir einen Charakter!"
+cmd.spawn.isgadgetnotitem,"$1 is a gadget, not an item!","$1 ist ein Gadget und kein Item!"
+cmd.speed.success,"Set speed to $1!","Die Spielergeschwindigkeit ist nun $1!"
+cmd.speed.description,"Changes the player speed","Verändert die Spielergeschwindigkeit"
+cmd.speed.unknownerror,"An unknown error occured!","Ein unbekannter Fehler ist unterlaufen!"
+cmd.strike.success,"Summoned lightning!","Ein Blitz wurde erfolgreich erschaffen!"
+cmd.strike.description,"Summons a lightning strike","Erschafft einen Blitz"
+cmd.unbind.success,"Successfully unbound key $1!","Die Bindung der Taste '$1' wurde erfolgreich entfernt!"
+cmd.unbind.notbound,"Key $1 is not bound to anything!","Die Taste '$1' ist mit nichts gebunden!"
+cmd.unbind.description,"Unbinds a key that was previously bound to a command/multiple commands","Entfernt Bindungen von Tasten, die zuvor zu Befehlen gebunden waren"
+cmd.unbind.extendeddescription,"Unbinds a key that was previously bound to a command/multiple commands. For multiple commands, use 'unbind <key> <command>;<command>;<command>;....'","Entfernt Bindungen von Tasten, die zuvor zu Befehlen gebunden waren. Für mehrere Befehle, benütze 'unbind <Taste> <Befehl>;<Befehl>;<Befehl>;....'"
+cmd.warp.success,"Successfully warped to the warp point $1!",Du wurdest erfolgreich zu dem Warppunkt '$1' teleportiert!
+cmd.warp.description,"Warps you to a saved warp point","Teleportiert dich zu einem gesetzten Warppunkt"
+cmd.warp.extendeddescription,"Warps you to a saved warp point, use <u>setwarp</u> to create more","Teleportiert dich zu einem gesetzten Warppunkt, benutze <u>setwarp</u> um welche zu setzen"
+cmd.warp.unknownerror,"An unknown error occured!",Ein unbekannter Fehler ist unterlaufen!
+cmd.warplist.success,"<color=blue>List of all warp points:</color>","<color=blue>Alle Warppunkte:</color>"
+cmd.warplist.sucessdesc,"'$1' in '$2' at ($3,$4,$5)","Der Warppunkt '$1' ist in der Szenengruppe '$2' bei ($3,$4,$5)!"
+cmd.warplist.error,"There aren't any warp points yet!","Du hast noch keine Warppunkte gesetzt!"
+cmd.warplist.description,"Displays all warp points","Zeigt alle Warppunkte an"
+cmd.weather.successlist,"All weathers are: $1","Alle Wetter:"
+cmd.weather.successlistrunning,"Currently running weathers are: $1","Alle Wetter, die gerade laufen:"
+cmd.weather.successstart,"Successfully started the weather '$1'!","Das Wetter '$1' wurde erfolgreich gestartet!"
+cmd.weather.successstop,"Successfully stopped the weather '$1'!","Das Wetter '$1' wurde erfolgreich gestoppt!"
+cmd.weather.notvalidargument,"'$1' is not a valid argument!","'$1' ist kein gültiges Argument!"
+cmd.weather.requiresmore,"'$1' requires more arguments!","'$1' braucht mehr Argumente!"
+cmd.weather.requiresless,"'$1' less more arguments!","'$1' braucht weniger Argumente!"
+cmd.weather.currentlyrunning,"The weather $1 is currently running!","Das Wetter $1 ist bereits aktiv!"
+cmd.weather.currentlynotrunning,"The weather $1 is currently not running!","Das Wetter $1 ist bereits gestoppt!"
+cmd.weather.alreadyrunning,"The weather $1 is already running!","Das Wetter $1 ist bereits aktiv!"
+cmd.weather.alreadynotrunning,"The weather $1 is already stopped!","Das Wetter $1 hat bereits gestoppt!"
+cmd.weather.description,"Manage the weather","Verwaltet das Wetter"
+cmd.weather.extendeddescription,"Allows you to toggle weathers as well as to view every weather","Erlaubt das Wetter umzuschalten und das jetztige zu sehen"
+cmd.weather.nodirector,"An error occured, cannot find WeatherDirector component!","Ein Fehler ist aufgetreten, der Wettersteurungskomponent konnte nicht gefunden werden!"
+cmd.timescale.success,"Timescale is now $1!",Die Spielgeschwindigkeit ist nun $1!
+cmd.timescale.description,"Modifies game speed","Verändet die Spielgeschwindigkeit"
+cmd.timescale.between,"The scale has to be between $1 and $2!",Die Spielgeschwindigkeit muss zwischen $1 und $2 liegen!
 cmd.util.description,"Utility Command","Werkzeugbefehl"
 cmd.util.requiresmore,"'$1' requires more arguments!","'$1' braucht mehr Argumente!"
 cmd.util.invalidtype,"$1 is not a valid type!","$1 ist kein gültiger Typ"
@@ -283,7 +284,7 @@ cmd.recentercamera.nocamera,"There was no main camera found!","Es wurde keine Ha
 setting.skipintro,"Skip Intro","Intro überspringen"
 setting.skipintro.desc,"Whether or not to skip the intro cutscene when you begin the world.","Ob die Introeinführungssequenz übersprungen werden soll"
 setting.allowcheats,"Allow Cheating","Schummeln erlauben"
-setting.allowcheats.desc,"Give yourself the ability to spawn objects and edit your inventory.","Gibt dir die Möglichkeit, Objekte zu spawnen und dein Inventar zu bearbeiten"
+setting.allowcheats.desc,"Give yourself the ability to spawn objects and edit your inventory.","Gibt dir die Möglichkeit, Objekte zu erschaffen und dein Inventar zu bearbeiten"
 setting.allowcheats.on,"Yes","Ja"
 setting.allowcheats.off,"No","Nein"
 setting.gamesettingtest,"Test Option","Testoption"

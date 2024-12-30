@@ -53,8 +53,7 @@ internal class WeatherCommand : SR2ECommand
     
     public override bool Execute(string[] args)
     {
-        throw new NotImplementedException("Please tell finn or pinktarr to implement the weather command in a better way.");
-        
+        return SendError("cmd.error.maintance");
         if (!args.IsBetween(0,3)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         
