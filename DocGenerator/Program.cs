@@ -25,7 +25,7 @@ class Program
         {
             rootDir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.Parent.FullName;
             gitDir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName;
-            string sr2eWebDir = Path.Combine(rootDir, "sr2e-web");
+            string sr2eWebDir = "D:\\sr2e-site\\";
             SR2EWeb = new DirectoryInfo(sr2eWebDir);
             string xmltomdDir = Path.Combine(gitDir, "XMLToMD");
             XMLToMD = new DirectoryInfo(xmltomdDir);

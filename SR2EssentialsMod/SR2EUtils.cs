@@ -66,10 +66,12 @@ namespace SR2E
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
 
+        public static List<LocalizedString> createdTranslations = new List<LocalizedString>();
+        
         public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
 
         internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new Dictionary<string, LocalizedString>();
-        internal static Dictionary<string, (string, string)> sr2eReplaceOnLanguageChange = new Dictionary<string, (string, string)>();
+        internal static Dictionary<string, (string, string, LocalizedString)> sr2eReplaceOnLanguageChange = new Dictionary<string, (string, string, LocalizedString)>();
         public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
         {
             if (!InjectSR2Translations.HasFlag())
@@ -90,31 +92,17 @@ namespace SR2E
 
                 addedTranslations.Add(table, dictionary);
             }
-            string? key0 = null;
 
-            if (key == "l.SR2E.LibraryTest")
-            {
-                key0 = $"{key}.{UnityEngine.Random.RandomRange(10000, 99999)}.{UnityEngine.Random.RandomRange(10, 99)}";
-                while (table2.GetEntry(key0) != null)
-                {
-                    key0 = $"{key}.{UnityEngine.Random.RandomRange(10000, 99999)}.{UnityEngine.Random.RandomRange(10, 99)}";
-                }
-
-            }
-            else
-                key0 = key;
-
-            dictionary.Add(key0, localized);
+            dictionary.Add(key, localized);
             StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
             return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
         public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
         {
-            
             LocalizedString localizedString = AddTranslation(translation(sr2eTranslationID), key, table);
             
             sr2etosrlanguage.TryAdd(sr2eTranslationID,localizedString);
-            sr2eReplaceOnLanguageChange.TryAdd(sr2eTranslationID, (key, table));
+            sr2eReplaceOnLanguageChange.TryAdd(sr2eTranslationID, (key, table, localizedString));
             
             return localizedString;
         }

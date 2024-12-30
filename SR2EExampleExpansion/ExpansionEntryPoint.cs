@@ -9,7 +9,7 @@ namespace SR2EExampleExpansion
         public const string Author = "ThatFinn"; // Author of the Expansion.  (MUST BE SET)
         public const string Company = null; // Company that made the Expansion.  (Set as null if none)
         public const string Version = "1.0.0"; // Version of the Expansion.  (MUST BE SET)
-        public const string DownloadLink = "https://www.nexusmods.com/slimerancher2/mods/60"; // Download Link for the Expansion.  (Set as null if none)
+        public const string DownloadLink = null; // Download Link for the Expansion.  (Set as null if none)
     }
 
     public class ExpansionEntryPoint : SR2EExpansionV1

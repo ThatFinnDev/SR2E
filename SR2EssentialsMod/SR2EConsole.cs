@@ -15,6 +15,18 @@ namespace SR2E
 {
     public static class SR2EConsole
     {
+        public static bool CheatsEnabled
+        {
+            get
+            {
+                if (cheatsEnabledOnSave)
+                    return cheatsEnabledOnSave.Value;
+                else
+                    return true;
+            }
+        }
+        
+        
         /// <summary>
         /// Display a message in the console
         /// </summary>
@@ -329,7 +341,7 @@ namespace SR2E
                                 {
                                     string[] stringArray = split.ToArray();
                                     SR2ECommand command = commands[cmd];
-                                    if (command.type.HasFlag(CommandType.Cheat) && !cheatsEnabledOnSave.Value)
+                                    if (command.type.HasFlag(CommandType.Cheat) && !CheatsEnabled)
                                     {
                                         command.SendError(translation("cmd.cheatsdisabled"));
                                         successful = false;
@@ -343,7 +355,7 @@ namespace SR2E
                                 }
                                 else
                                 {
-                                    SR2ECommand command = commands[cmd];if (command.type.HasFlag(CommandType.Cheat) && !cheatsEnabledOnSave.Value)
+                                    SR2ECommand command = commands[cmd];if (command.type.HasFlag(CommandType.Cheat) && !CheatsEnabled)
                                     {
                                         command.SendError(translation("cmd.cheatsdisabled"));
                                         successful = false;
@@ -360,7 +372,7 @@ namespace SR2E
                         else if(canPlay)
                         {
                             SR2ECommand command = commands[cmd];
-                            if (command.type.HasFlag(CommandType.Cheat) && !cheatsEnabledOnSave.Value)
+                            if (command.type.HasFlag(CommandType.Cheat) && !CheatsEnabled)
                             {
                                 command.SendError(translation("cmd.cheatsdisabled"));
                                 successful = false;
