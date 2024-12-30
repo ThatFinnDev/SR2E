@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace SR2E;
@@ -15,18 +16,22 @@ public enum FeatureStringValue
 public static class SR2EFeatureFlags
 {
     
-    const FeatureFlag defaultFlags =
-            CommandsLoadCommands | CommandsLoadCheat | CommandsLoadBinding | CommandsLoadWarp | CommandsLoadCommon | CommandsLoadMenu | CommandsLoadMiscellaneous | CommandsLoadFun | 
-            AllowExpansions |
-            EnableModMenu | EnableConsole | EnableIl2CppDetourExceptionReporting |
-            InjectMainMenuButtons | InjectRanchUIButtons | InjectPauseButtons | InjectSR2Translations |
-            AddCheatMenuButton | AddModMenuButton |
-            CheckForUpdates | AllowAutoUpdate | 
-            EnableInfHealth | EnableInfEnergy | EnableCheatMenu | EnableLocalizedVersionPatch;
+    static FeatureFlag[] defaultFlags => new [] {
+        CommandsLoadCommands,CommandsLoadCheat,CommandsLoadBinding,CommandsLoadWarp,
+        CommandsLoadCommon,CommandsLoadMenu,CommandsLoadMiscellaneous,CommandsLoadFun, 
+        AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
+        InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectSR2Translations,
+        AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
+        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch
+        
+    };
 
-    private const FeatureFlag extraDevFlags = DevMode | Experiments | CommandsLoadDevOnly | CommandsLoadExperimental;
-    private const FeatureFlag extraBetaFlags = None;
-    private const FeatureFlag extraAlphaFlags = None;
+    private static FeatureFlag[] extraDevFlags => new[] {
+        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental 
+    };
+    private static FeatureFlag[] extraBetaFlags => new []{None};
+    private static FeatureFlag[] extraAlphaFlags => new []{None};
+    
     static FeatureFlag flagsToForceOff;
     private static Dictionary<FeatureIntegerValue, int> defaultFeatureInts = new Dictionary<FeatureIntegerValue, int>()
     {
@@ -44,7 +49,7 @@ public static class SR2EFeatureFlags
     private static CommandType enabledCMDs;
     private static Dictionary<FeatureIntegerValue, int> featureInts = new Dictionary<FeatureIntegerValue, int>();
     private static Dictionary<FeatureStringValue, string> featureStrings = new Dictionary<FeatureStringValue, string>();
-    private static FeatureFlag enabledFlags = None;
+    private static bool[] enabledFlags = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
     
     static bool initialized = false;
     //internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
@@ -72,7 +77,7 @@ public static class SR2EFeatureFlags
             else xmlElement.SetAttribute("value","false");
             xmlElement.SetAttribute("default", defaultFlags.HasFlag(flag).ToString().ToLower());
             
-            if (_requirementsMap.ContainsKey(flag)) if(_requirementsMap[flag]!=null) if(_requirementsMap[flag].Length!=0)
+            if (_requirementsMap.ContainsKey(flag)) if(_requirementsMap[flag].Length!=0)
                 foreach (FFR req in _requirementsMap[flag])
                 {
                     if (req == null) continue;
@@ -154,8 +159,7 @@ public static class SR2EFeatureFlags
             foreach (XmlElement flagElement in flags.ChildNodes)
                 if (Enum.TryParse(flagElement.Name, out FeatureFlag flag))
                     if (bool.TryParse(flagElement.GetAttribute("value"), out bool isEnabled))
-                        if(isEnabled) enabledFlags |= flag;
-                        else enabledFlags &= ~flag;
+                        flag.SetFlag(isEnabled);
         XmlElement ints = root["FeatureIntegerValues"];
         if (ints != null)
             foreach (XmlElement intElement in ints.ChildNodes)
@@ -167,7 +171,7 @@ public static class SR2EFeatureFlags
         foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
         {
             if(flag.requirementsMet()) continue;
-            enabledFlags &= ~flag;
+            flag.DisableFlag();
             flagsToForceOff |= flag;
         }
         
@@ -178,23 +182,24 @@ public static class SR2EFeatureFlags
     {
         if (initialized) return;
         initialized = true;
-        enabledFlags = defaultFlags;
+        enabledFlags = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
+        foreach (FeatureFlag flag in defaultFlags)
+            flag.EnableFlag();
         featureInts = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
         featureStrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
-        if (File.Exists(flagfile_path)) LoadFromFlagFile();
-        else SaveToFlagFile();
-
-        FeatureFlag addedFlags = None;
+        FeatureFlag[] addedFlags = null;
         switch (SR2EEntryPoint.updateBranch)
         {
             case "dev": addedFlags = extraDevFlags; break;
             case "alpha": addedFlags = extraAlphaFlags; break;
             case "beta": addedFlags= extraBetaFlags; break;
         }
+        if(addedFlags!=null)
+            foreach (FeatureFlag flag in addedFlags)
+                flag.EnableFlag();
+        if (File.Exists(flagfile_path)) LoadFromFlagFile();
+        else SaveToFlagFile();
 
-       // foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
-        //    if(addedFlags.HasFlag(flag)) 
-        //        enabledFlags |= flag;
         
 
         if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= CommandType.DevOnly;
@@ -211,8 +216,13 @@ public static class SR2EFeatureFlags
     }
     
     public static CommandType enabledCommands => enabledCMDs;
-    public static FeatureFlag flags => enabledFlags;
-    public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags.HasFlag(featureFlag);
+    public static bool[] flags => enabledFlags;
+    public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)];
+    public static bool HasFlag(this bool[] array,FeatureFlag featureFlag) => array[Convert.ToInt32(featureFlag)];
+    public static bool HasFlag(this FeatureFlag[] array,FeatureFlag featureFlag) => array.Contains(featureFlag);
+    static void SetFlag(this FeatureFlag featureFlag, bool state) => enabledFlags[Convert.ToInt32(featureFlag)]=state;
+    static bool EnableFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)]=true;
+    static bool DisableFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)]=false;
 
     public static int Get(this FeatureIntegerValue featureIntegerValue)
     {
@@ -291,56 +301,59 @@ public static class SR2EFeatureFlags
 }
 
 [Flags]
-public enum FeatureFlag : long
+public enum FeatureFlag
 {
-    None = 0,
+    None,
     //Dev
-    DevMode = 1L << 1,
-    DebugLogging = 1L << 2,
-    ShowUnityErrors = 1L << 3,
-    Experiments = 1L << 4,
-    ExperimentalSettingsInjection = 1L << 5,
+    /// <summary>
+    /// Activates Devmode
+    /// </summary>
+    DevMode,
+    DebugLogging,
+    ShowUnityErrors,
+    Experiments,
+    ExperimentalSettingsInjection,
     
     //Commands+Dev
-    CommandsLoadDevOnly = 1L << 6, 
-    CommandsLoadExperimental = 1L << 7, 
+    CommandsLoadDevOnly, 
+    CommandsLoadExperimental, 
     
     //Commands
-    CommandsLoadCommands = 1L << 8, //
-    CommandsLoadCheat = 1L << 9, //
-    CommandsLoadBinding = 1L << 10, //
-    CommandsLoadWarp = 1L << 11, //
-    CommandsLoadCommon = 1L << 12, //
-    CommandsLoadMenu = 1L << 13, //
-    CommandsLoadMiscellaneous = 1L << 14, //
-    CommandsLoadFun = 1L << 15, //
+    CommandsLoadCommands, //
+    CommandsLoadCheat, //
+    CommandsLoadBinding, //
+    CommandsLoadWarp, //
+    CommandsLoadCommon, //
+    CommandsLoadMenu, //
+    CommandsLoadMiscellaneous, //
+    CommandsLoadFun, //
 
     //Cheats and Mods
-    DisableCheats = 1L << 32,
-    AddCheatMenuButton = 1L << 16, //
-    EnableInfHealth = 1L << 17, //
-    EnableInfEnergy = 1L << 18, //
+    DisableCheats,
+    AddCheatMenuButton, //
+    EnableInfHealth, //
+    EnableInfEnergy, //
     
     //Misc
-    AddModMenuButton = 1L << 19, //
-    AllowExpansions = 1L << 20, //
-    EnableLocalizedVersionPatch = 1L << 21, //
-    InjectSR2Translations = 1L << 22, //
-    EnableIl2CppDetourExceptionReporting = 1L << 23, //
+    AddModMenuButton, //
+    AllowExpansions, //
+    EnableLocalizedVersionPatch, //
+    InjectSR2Translations, //
+    EnableIl2CppDetourExceptionReporting, //
     
     //Menus
-    EnableModMenu = 1L << 24, //
-    EnableCheatMenu = 1L << 25, //
-    EnableConsole = 1L << 26, //
+    EnableModMenu, //
+    EnableCheatMenu, //
+    EnableConsole, //
     
     //UI
-    InjectMainMenuButtons = 1L << 27, //
-    InjectRanchUIButtons = 1L << 28, //
-    InjectPauseButtons = 1L << 29, //
+    InjectMainMenuButtons, //
+    InjectRanchUIButtons, //
+    InjectPauseButtons, //
 
     //Updates and Patches
-    CheckForUpdates = 1L << 30, //
-    AllowAutoUpdate = 1L << 31, //
+    CheckForUpdates, //
+    AllowAutoUpdate, //
 
 }
 internal class FFR //FeatureFlagRequirement

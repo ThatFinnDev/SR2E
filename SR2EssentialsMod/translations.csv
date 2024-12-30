@@ -155,7 +155,7 @@ cmd.graphics.norangelights,"An error occured, 'rangelights' couldn't be found!",
 cmd.gravity.success,"Successfully changed the gravity to ($1,$2,$3)!","Die Gravitation wurde auf ($1,$2,$3) gesetzt" 
 cmd.gravity.description,"Changes the gravity!","Verändert die Gravitation"
 cmd.gravity.description,"It changes the gravity for every single physics object (except player, use the util command for that)","Verändert die Gravitation für jedes Physikobjekt (außer den Spieler, nutze den 'util'-Befehl dafür)"
-cmd.help.success,"<color=#45d192>List of all currently registered commands:</color>\n<color=#45d192><> is a required argument; [] is an optional argument</color>","<color=#45d192>Alle registrierten Befehle:</color>\n<color=#45d192><> ist ein notwendiges Argument; [] ist ein optionales Argument</color>",
+cmd.help.success,"<color=#45d192>List of all currently registered commands:</color>\n<color=#45d192><> is a required argument; [] is an optional argument</color>","<color=#45d192>Alle registrierten Befehle:</color>\n<color=#45d192><> ist ein notwendiges Argument; [] ist ein optionales Argument</color>"
 cmd.help.successspecific,"Usage: $1\nDescription: $2","Benutzung: $1\nBeschreibung: $2",
 cmd.help.description,"Displays all commands available and their usage","Zeigt alle Befehle und deren Benutzung an"
 cmd.help.extendeddescription,"Displays all commands available and their usage, can also take a command as a input to display it by itself","Zeigt alle Befehle und deren Benutzung an. Es kann auch ein Befehl als Argument benutzt werden, um genauere Details zu zeigen"

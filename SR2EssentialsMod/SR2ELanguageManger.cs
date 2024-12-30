@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.VisualBasic.FileIO;
 
@@ -76,7 +77,8 @@ public static class SR2ELanguageManger
                         if (isKey) isKey = false;
                         else
                         {
-                            newLanguages[codeIndexes[i]][key] = translation.Replace("\\n","\n");
+                            if(codeIndexes.Count>i)
+                                    newLanguages[codeIndexes[i]][key] = translation.Replace("\\n", "\n");
                             i++;
                         }
                     }
@@ -86,8 +88,8 @@ public static class SR2ELanguageManger
         foreach (var newLanguage in newLanguages)
         {
             var langCode=newLanguage.Key;
-            if (!languages.ContainsKey(langCode)) languages.Add(langCode, new List<Dictionary<string, string>>() { newLanguage.Value });
-            else languages[langCode].Add(newLanguage.Value);
+            if (!languages.ContainsKey(langCode)) languages.Add(langCode, new List<Dictionary<string, string>>());
+            languages[langCode].Add(newLanguage.Value);
         }
     }
     public static void LoadLanguage(string code)
@@ -97,7 +99,6 @@ public static class SR2ELanguageManger
         foreach (var languageDicts in languages[code])
             foreach (var translation in languageDicts)
                 loadedLanguage[translation.Key] = translation.Value;
-            
     }
     
 }

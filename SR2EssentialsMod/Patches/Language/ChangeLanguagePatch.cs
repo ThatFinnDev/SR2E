@@ -10,7 +10,7 @@ internal class ChangeLanguagePatch
     {
         var code = locale.Formatter.Cast<CultureInfo>()._name;
         
-        if (languages.TryGetValue(code, out var _))
+        if (languages.ContainsKey(code))
             LoadLanguage(code);
         else
             LoadLanguage("en");

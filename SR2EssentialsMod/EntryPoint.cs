@@ -620,8 +620,7 @@ namespace SR2E
                     {
                         LocalizedString label =
                             AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                        new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2,
-                            (System.Action)(() => { SR2EModMenu.Open(); }));
+                        new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
                         new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
                     }
 
