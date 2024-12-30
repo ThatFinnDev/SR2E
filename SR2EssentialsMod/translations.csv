@@ -158,38 +158,38 @@ cmd.help.success,"<color=#45d192>List of all currently registered commands:</col
 cmd.help.successspecific,"Usage: $1\nDescription: $2","Benutzung: $1\nBeschreibung: $2",
 cmd.help.description,"Displays all commands available and their usage","Zeigt alle Befehle und deren Benutzung an"
 cmd.help.extendeddescription,"Displays all commands available and their usage, can also take a command as a input to display it by itself","Zeigt alle Befehle und deren Benutzung an. Es kann auch ein Befehl als Argument benutzt werden, um genauere Details zu zeigen"
-cmd.help.notvalidcommand,"The key '<color=white>$1</color>' is not a valid command!",
-cmd.infenergy.success,"Energy is now infinite",
-cmd.infenergy.successnolonger,"Energy is no longer infinite",
-cmd.infenergy.description,"Removes energy from the game",
-cmd.infenergy.extendeddescription,"Gives you infinite energy. It can also remove it of course",
-cmd.infhealth.success,"You're invincible now!",
-cmd.infhealth.successnolonger,"You're no longer invincible!",
-cmd.infhealth.description,"Makes you invincible",
-cmd.infhealth.extendeddescription,"Gives you infinite health. It can also remove it of course",
-cmd.killall.success,"Successfully killed all actors!",
-cmd.killall.successspecific,"Successfully killed all actors with type $1!",
-cmd.killall.description,"Kills everything or only everything with a specified id",
-cmd.kill.success,"Successfully killed the actor!",
-cmd.kill.description,"Kills what you're looking at",
-cmd.toggleui.success,"Successfully toggled the hud!",
-cmd.toggleui.description,"Toggles the hud.",
-cmd.mods.success,"<color=blue>List of Mods Loaded:</color>",
-cmd.mods.successdesc,"$1 by $2",
-cmd.mods.description,"Displays all mods loaded",
-cmd.move.success,"Successfully moved the object!",
-cmd.move.description,"Moves a gadget/slime/largo/fruit/ etc.",
-cmd.scale.success,"Successfully changed the scale of the object!",
-cmd.scale.description,"Changes the scale of a gadget/slime/largo/fruit etc.",
-cmd.newbucks.success,"Successfully added $1 newbucks!",
-cmd.newbucks.description,"Adds or removes newbucks",
-cmd.noclip.success,"Successfully activated noclip!",
-cmd.noclip.success2,"Successfully deactivated noclip!",
-cmd.noclip.description,"Activates or deactivates noclip",
-cmd.party.success,"Successfully enabled party mode!",
-cmd.party.success2,"Successfully disabled party mode!",
-cmd.party.description,"Enables or disables party mode",
-cmd.party.novolume,"An error occured, couldn't find volume!",
+cmd.help.notvalidcommand,"The argument '<color=white>$1</color>' is not a valid command!","Es gibt kein Befehl unter dem Namen '<color=white>$1</color>'!"
+cmd.infenergy.success,"Energy is now infinite!","Du hast nun unendlich Energie!"
+cmd.infenergy.successnolonger,"Energy is no longer infinite!","Du hast nun keine unendlich Energie mehr!"
+cmd.infenergy.description,"Removes energy from the game","Entfernt Energiekosten vom Spiel"
+cmd.infenergy.extendeddescription,"Gives you infinite energy. It can also remove it of course","Gibt dir unendlich Energie. Du kannst es natürlich auch wieder deaktivieren"
+cmd.infhealth.success,"You're invincible now!","Du bist nun unsterblich!"
+cmd.infhealth.successnolonger,"You're no longer invincible!","Du bist nun nicht mehr unsterblich!"
+cmd.infhealth.description,"Makes you invincible","Macht dich unsterblich"
+cmd.infhealth.extendeddescription,"Gives you infinite health. It can also remove it of course","Macht dich unsterblich. Du kannst es natürlich auch wieder deaktivieren"
+cmd.killall.success,"Successfully killed all actors!","Es wurden erfolgreich alle Charaktere entfernt!"
+cmd.killall.successspecific,"Successfully killed all actors with type $1!","Es wurden erfolgreich alle Charaktere mit der ID '$1' entfernt!"
+cmd.killall.description,"Kills everything or only everything with a specified id","Entfernt alle Charakter oder nur welche mit einer bestimmten ID"
+cmd.kill.success,"Successfully killed the actor!","Es wurde erfolgreich der Charakter entfernt!"
+cmd.kill.description,"Kills what you're looking at","Entfernt, was du gerade anschaust!"
+cmd.toggleui.success,"Successfully toggled the hud!","Das HUD wurde erfolgreich umgeschaltet!"
+cmd.toggleui.description,"Toggles the hud","Blendet das HUD aus oder ein"
+cmd.mods.success,"<color=blue>List of Mods Loaded:</color>","<color=blue>All geladenen Modifikationen:</color>"
+cmd.mods.successdesc,"$1 by $2","$1 ist von $2"
+cmd.mods.description,"Displays all mods loaded","Zeit alle geladenen Modifikationen an!"
+cmd.move.success,"Successfully moved the actor!","Das Objekt wurde erfolgreich bewegt!"
+cmd.move.description,"Moves an actor.","Bewegt einen Charakter"
+cmd.scale.success,"Successfully changed the scale of the actor!","Die Charaktergröße wurde erfolgreich verändert"
+cmd.scale.description,"Changes the scale of an actor","Verändert die Größe eines Charakters"
+cmd.newbucks.success,"Successfully added $1 newbucks!","Du hast nun $1 Newbucks mehr!"
+cmd.newbucks.description,"Adds or removes newbucks","Gibt oder entfernt Newbucks"
+cmd.noclip.success,"Successfully activated noclip!","Noclip wurde erfolgreich aktiviert"
+cmd.noclip.success2,"Successfully deactivated noclip!","Noclip wurde erfolgreich deaktiviert"
+cmd.noclip.description,"Activates or deactivates noclip","Aktiviert oder deaktiviert Noclip"
+cmd.party.success,"Successfully enabled party mode!","Der Partymodus wurde erfolgreich aktiviert!"
+cmd.party.success2,"Successfully disabled party mode!","Der Partymodus wurde erfolgreich deaktiviert!"
+cmd.party.description,"Enables or disables party mode","Aktiviert oder deaktiviert den Partymodus"
+cmd.party.novolume,"An error occured, couldn't find volume!","Ein Fehler ist aufgetreten, das Volumen konnte nicht gefunden werden!"
 cmd.resolution.success,"Successfully changed your resolution to $1x$2!",
 cmd.resolution.description,"Allows you to change the game resolution",
 cmd.refillinv.success,"Successfully refilled your inventory!",
