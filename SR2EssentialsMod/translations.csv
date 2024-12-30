@@ -51,7 +51,7 @@ cmd.error.notvaliddouble,"$1 is not a valid double-float!",'$1' ist keine Dezima
 cmd.error.notvalidbool,"$1 is not a valid boolean!",'$1' muss entweder 'true' oder 'false' sein!
 cmd.error.notvalidtrool,"$1 has to be true, false or toggle!","'$1''$1' muss entweder 'true', 'false' oder 'toggle' sein!"
 cmd.error.notvalidvector3,"($1, $2, $3) is not a valid Vector3!","($1, $2, $3) ist kein dreidimensionaler Vektor!"
-cmd.error.notvalididenttype,"$1 is not a valid actor type!",Es gibt keinen Actortyp namens '$1'!
+cmd.error.notvalididenttype,"$1 is not a valid actor type!",Es gibt keinen Charaktertyp namens '$1'!
 cmd.error.notvalidgadget,"$1 is not a valid gadget!",Es gibt kein Gadget namens '$1'!
 cmd.error.notvalidupgrade,"$1 is not a valid upgrade!",Es gibt kein Upgrade namens '$1'!
 cmd.error.notintabove,"$1 is not an integer above $2!",$1 ist keine nicht-dezimale Zahl über $2!
@@ -87,18 +87,18 @@ cmd.warpstuff.alreadywarpwithname,"There is already a warp point with the name: 
 cmd.delwarp.success,"Successfully deleted the warp point: $1!",Der Warppunkt namens '$1' wurde erfolgreich gelöscht!
 cmd.delwarp.description,"Deletes a warp point",Löscht einen Warppunkt
 cmd.delwarp.extendeddescription,"Deletes a warp point from the <u>warp</u> command",Löscht einen Warppunkt aus dem Befehl namens <u>warp</u>
-cmd.fastforward.success,"Successfully fast-forwarded $1 hours!",
-cmd.fastforward.description,"Fast-forwards to next morning, or the amount of hours you request",
-cmd.fling.success,"Successfully flinged the object with a string of $1!",
-cmd.fling.description,"Flings any object you are looking at",
-cmd.floaty.success,"The object will float for $1 seconds!",
-cmd.floaty.description,"Temporarily disables gravity for the object you're looking at",
-cmd.floaty.extendeddescription,"Temporarily disables gravity for the object you're looking at for the specified duration in seconds",
-cmd.freeze.successunfroze,"Successfully unfroze the actor!",
-cmd.freeze.successfroze,"Successfully froze the actor!",
-cmd.freeze.description,"Freezes an object in time",
-cmd.freeze.extendeddescription,"Freezes an object in time. It cannot move or fall until you unfreeze it",
-cmd.fxplayer.success,"Successfully playing FX!",
+cmd.fastforward.success,"Successfully fast-forwarded $1 hours!",Es wurde erfolgreich $1 Stunde(n) vorgespult!
+cmd.fastforward.description,"Fast-forwards to next morning, or the amount of hours you request",Spult entweder zum nächsten Morgen or beliebig viele Stunden for
+cmd.fling.success,"Successfully flinged the object with a strength of $1!",Der Charakter wurde erfolgreich mit einer Stärke von $1 weggeschleudert.
+cmd.fling.description,"Flings any object you are looking at","Schleudert den Charakter, dass du anschaust weg"
+cmd.floaty.success,"The actor will float for $1 seconds!",Der Charakter wird für $1 Sekunde(n) schwerelos sein
+cmd.floaty.description,"Temporarily disables gravity for an actor you're looking at","Deaktiviert Gravitation temporär für den Charakter, den du anschaust" 
+cmd.floaty.extendeddescription,"Temporarily disables gravity for an actor you're looking at for the specified duration in seconds","Deaktiviert Gravitation temporär für den Charakter, den du anschaust, für eine spezifische Dauer" 
+cmd.freeze.successunfroze,"Successfully thaw the actor!",Die Zeit wurde für den Charakter erfolgreich aufgetaut.
+cmd.freeze.successfroze,"Successfully froze the actor!",Die Zeit wurde für den Charakter erfolgreich eingefroren.
+cmd.freeze.description,"Freezes an object in time","Friert die Zeit für einen Charakter,den du anschaust"
+cmd.freeze.extendeddescription,"Freezes an object in time. It cannot move or fall until you unfreeze it","Friert die Zeit für einen Charakter,den du anschaust. Es kann sich dann weder bewegen noch runterfallen"
+cmd.fxplayer.success,"Successfully playing FX!","Der Effekt wurde erfolgreich abgespielt"
 cmd.fxplayer.waitforstop,"Please wait for the current FX to stop!",
 cmd.fxplayer.invalidfxname,"Invalid FX Name!",
 cmd.fxplayer.description,"Plays an effect in front of you",
