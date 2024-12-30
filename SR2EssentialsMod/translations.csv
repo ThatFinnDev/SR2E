@@ -178,7 +178,7 @@ cmd.mods.success,"<color=blue>List of Mods Loaded:</color>","<color=blue>All gel
 cmd.mods.successdesc,"$1 by $2","$1 ist von $2"
 cmd.mods.description,"Displays all mods loaded","Zeit alle geladenen Modifikationen an!"
 cmd.move.success,"Successfully moved the actor!","Das Objekt wurde erfolgreich bewegt!"
-cmd.move.description,"Moves an actor.","Bewegt einen Charakter"
+cmd.move.description,"Moves an actor","Bewegt einen Charakter"
 cmd.scale.success,"Successfully changed the scale of the actor!","Die Charaktergröße wurde erfolgreich verändert"
 cmd.scale.description,"Changes the scale of an actor","Verändert die Größe eines Charakters"
 cmd.newbucks.success,"Successfully added $1 newbucks!","Du hast nun $1 Newbucks mehr!"
@@ -190,21 +190,21 @@ cmd.party.success,"Successfully enabled party mode!","Der Partymodus wurde erfol
 cmd.party.success2,"Successfully disabled party mode!","Der Partymodus wurde erfolgreich deaktiviert!"
 cmd.party.description,"Enables or disables party mode","Aktiviert oder deaktiviert den Partymodus"
 cmd.party.novolume,"An error occured, couldn't find volume!","Ein Fehler ist aufgetreten, das Volumen konnte nicht gefunden werden!"
-cmd.resolution.success,"Successfully changed your resolution to $1x$2!",
-cmd.resolution.description,"Allows you to change the game resolution",
-cmd.refillinv.success,"Successfully refilled your inventory!",
-cmd.refillinv.successsingle,"Successfully refilled slot number $1!",
-cmd.refillinv.error.slotdoesntexist,"There are only $1 slots!",
-cmd.refillinv.error.slotempty,"Slot $1 is empty!",
-cmd.refillinv.error.slotnotunlocked,"Slot $1 hasn't been unlocked!",
-cmd.refillinv.description,"Refills your inventory",
-cmd.refillinv.extendeddescription,"Refills your inventory or if you want, just a single slot",
-cmd.replace.success,"Successfully replaced $1 with $2!",
-cmd.replace.description,"Replaces the thing you're looking at",
-cmd.rotate.success,"Successfully rotated the object!",
-cmd.rotate.description,"Rotates a gadget/slime/largo/fruit/ etc.",
-cmd.setwarp.success,"Successfully added the Warp point '$1'",
-cmd.setwarp.description,"Saves your location, so you can teleport to it later!",
+cmd.resolution.success,"Successfully changed your resolution to $1x$2!","Die Auflösung ist nun $1x$2!"
+cmd.resolution.description,"Allows you to change the game resolution","Erlaubt dir die Spielauflösung zu verändern"
+cmd.refillinv.success,"Successfully refilled your inventory!","Dein Inventar wurde erfolgreich aufgefüllt!"
+cmd.refillinv.successsingle,"Successfully refilled slot number $1!","Der $1te Slot wurde erfolgreich aufgefüllt!"
+cmd.refillinv.error.slotdoesntexist,"There are only $1 slots!","Es gibt nur $1 Slots!"
+cmd.refillinv.error.slotempty,"Slot $1 is empty!","Der $1te slot ist leer!"
+cmd.refillinv.error.slotnotunlocked,"Slot $1 hasn't been unlocked!",Der $1te Slot wurde noch nicht entsperrt!
+cmd.refillinv.description,"Refills your inventory",Füllt dein Inventar auf
+cmd.refillinv.extendeddescription,"Refills your inventory or if you want, just a single slot",Füllt das ganze Inventar oder nur einen Slot auf
+cmd.replace.success,"Successfully replaced $1 with $2!",$1 wurde erfolgreich mit $2 ersetzt!
+cmd.replace.description,"Replaces the thing you're looking at","Ersetzt das Objekt, das du anschaust"
+cmd.rotate.success,"Successfully rotated the actor!","Der Charakter, den du anschaust, wurde erfolgreich gedreht!"
+cmd.rotate.description,"Rotates an actor","Dreht einen Charakter"
+cmd.setwarp.success,"Successfully added the Warp point '$1'","Es wurde erfolgreich ein Warppunkt namens '$1' hinzugefügt!"
+cmd.setwarp.description,"Saves your location, so you can teleport to it later!","Sichert deinen Standort in Form eines Warppunkts, damit du dich später wieder hinteleportieren kannst!"
 cmd.spawn.success,"Successfully spawned $1 $2!",
 cmd.spawn.description,"Spawns an actor in front of your face",
 cmd.spawn.isgadgetnotitem,"$1 is a gadget, not an item!",
