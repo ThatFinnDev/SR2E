@@ -19,6 +19,7 @@ namespace SR2E
         {
             get
             {
+                return !DisableCheats.HasFlag();
                 if (cheatsEnabledOnSave)
                     return cheatsEnabledOnSave.Value;
                 else

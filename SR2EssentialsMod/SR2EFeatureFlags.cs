@@ -236,22 +236,23 @@ public static class SR2EFeatureFlags
     }
     static Dictionary<FeatureFlag,FFR[]> _requirementsMap = new Dictionary<FeatureFlag, FFR[]>()
     {
-        {CheckForUpdates,new []{new FFRDeactivated(DevMode)}},
-        {AllowAutoUpdate,new []{new FFRDeactivated(DevMode)}},
-        {EnableConsole,new []{new FFRMelonUnInstalled("mSRML")}},
-        {EnableInfHealth,new []{new FFRMelonUnInstalled("InfiniteHealth")}},
-        {EnableInfEnergy,new []{new FFRMelonUnInstalled("InfiniteEnergy")}},
-        {CommandsLoadExperimental,new []{new FFRActivated(CommandsLoadCommands), new FFRActivated(Experiments)}},
-        {CommandsLoadDevOnly,new []{new FFRActivated(CommandsLoadCommands), new FFRActivated(DevMode)}},
-        {CommandsLoadCheat,new []{new FFRActivated(CommandsLoadCommands)}},
-        {CommandsLoadBinding,new []{new FFRActivated(CommandsLoadCommands)}},
-        {CommandsLoadWarp,new []{new FFRActivated(CommandsLoadCommands)}},
-        {CommandsLoadCommon,new []{new FFRActivated(CommandsLoadCommands)}},
-        {CommandsLoadMenu,new []{new FFRActivated(CommandsLoadCommands)}},
-        {CommandsLoadMiscellaneous,new []{new FFRActivated(CommandsLoadCommands)}},
-        {CommandsLoadFun,new []{new FFRActivated(CommandsLoadCommands)}},
-        {AddCheatMenuButton,new []{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
-        {AddModMenuButton,new []{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
+        {CheckForUpdates,new FFR[]{new FFRDeactivated(DevMode)}},
+        {AllowAutoUpdate,new FFR[]{new FFRDeactivated(DevMode)}},
+        {EnableConsole,new FFR[]{new FFRMelonUnInstalled("mSRML")}},
+        {EnableInfHealth,new FFR[]{new FFRMelonUnInstalled("InfiniteHealth")}},
+        {EnableInfEnergy,new FFR[]{new FFRMelonUnInstalled("InfiniteEnergy")}},
+        {CommandsLoadExperimental,new FFR[]{new FFRActivated(CommandsLoadCommands), new FFRActivated(Experiments)}},
+        {CommandsLoadDevOnly,new FFR[]{new FFRActivated(CommandsLoadCommands), new FFRActivated(DevMode)}},
+        {CommandsLoadCheat,new FFR[]{new FFRActivated(CommandsLoadCommands),new FFRDeactivated(DisableCheats)}},
+        {CommandsLoadBinding,new FFR[]{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadWarp,new FFR[]{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadCommon,new FFR[]{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadMenu,new FFR[]{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadMiscellaneous,new FFR[]{new FFRActivated(CommandsLoadCommands)}},
+        {CommandsLoadFun,new FFR[]{new FFRActivated(CommandsLoadCommands)}},
+        {EnableCheatMenu, new FFR[]{new FFRDeactivated(DisableCheats)}},
+        {AddCheatMenuButton,new FFR[]{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
+        {AddModMenuButton,new FFR[]{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
 
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
@@ -315,6 +316,7 @@ public enum FeatureFlag : long
     CommandsLoadFun = 1L << 15, //
 
     //Cheats and Mods
+    DisableCheats = 1L << 32,
     AddCheatMenuButton = 1L << 16, //
     EnableInfHealth = 1L << 17, //
     EnableInfEnergy = 1L << 18, //
