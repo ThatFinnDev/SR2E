@@ -32,7 +32,7 @@ public static class SR2EFeatureFlags
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};
     
-    static FeatureFlag flagsToForceOff;
+    private static bool[] flagsToForceOff = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
     private static Dictionary<FeatureIntegerValue, int> defaultFeatureInts = new Dictionary<FeatureIntegerValue, int>()
     {
         {MAX_AUTOCOMPLETE,55},
@@ -130,7 +130,7 @@ public static class SR2EFeatureFlags
 
     static void LoadFromFlagFile()
     {
-        flagsToForceOff = 0;
+        flagsToForceOff = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];;
         if (!File.Exists(flagfile_path)) { SaveToFlagFile(); return; }
         
         XmlDocument xmlDoc = new XmlDocument();
@@ -172,7 +172,7 @@ public static class SR2EFeatureFlags
         {
             if(flag.requirementsMet()) continue;
             flag.DisableFlag();
-            flagsToForceOff |= flag;
+            flagsToForceOff[Convert.ToInt32(flag)]=true;
         }
         
         SaveToFlagFile();
@@ -183,6 +183,7 @@ public static class SR2EFeatureFlags
         if (initialized) return;
         initialized = true;
         enabledFlags = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
+        flagsToForceOff = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
         foreach (FeatureFlag flag in defaultFlags)
             flag.EnableFlag();
         featureInts = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
