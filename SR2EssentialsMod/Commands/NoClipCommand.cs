@@ -1,4 +1,5 @@
-﻿using UnityEngine.InputSystem;
+﻿using SR2E.Components;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;
 

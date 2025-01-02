@@ -10,6 +10,7 @@ using Il2CppSystem.Linq;
 using Il2CppTMPro;
 using SR2E.Buttons;
 using SR2E.Commands;
+using SR2E.Components;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 

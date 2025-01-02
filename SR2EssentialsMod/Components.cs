@@ -9,7 +9,7 @@ using SR2E.Patches.MainMenu;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace SR2E;
+namespace SR2E.Components;
 
 [RegisterTypeInIl2Cpp(false)]
 internal class ObjectBlocker : MonoBehaviour
@@ -42,7 +42,7 @@ internal class CustomMainMenuButtonPressHandler : MonoBehaviour
     public void OnEnable()
     {
         foreach (CustomMainMenuButton button in SR2MainMenuButtonPatch.buttons)
-            if (button.label.GetLocalizedString()+"ButtonStarter(Clone)" == gameObject.name)
+            if (button.label.TableEntryReference.Key+"ButtonStarter(Clone)" == gameObject.name)
             {
                 button.action.Invoke();
                 break;

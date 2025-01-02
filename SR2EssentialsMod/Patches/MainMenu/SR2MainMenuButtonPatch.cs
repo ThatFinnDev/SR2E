@@ -2,6 +2,7 @@
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using SR2E.Buttons;
+using SR2E.Components;
 
 namespace SR2E.Patches.MainMenu;
 
@@ -24,7 +25,7 @@ internal static class SR2MainMenuButtonPatch
                 {
                     var obj = new GameObject();
                     UnityEngine.Object.DontDestroyOnLoad(obj);
-                    obj.name = button.label.GetLocalizedString() + "ButtonStarter";
+                    obj.name = button.label.TableEntryReference.Key + "ButtonStarter";
                     obj.transform.parent = rootOBJ.transform;
                     obj.AddComponent<CustomMainMenuButtonPressHandler>();
                     button._prefabToSpawn = obj;
@@ -40,7 +41,7 @@ internal static class SR2MainMenuButtonPatch
                 }
                 button._definition = ScriptableObject.CreateInstance<CreateNewUIItemDefinition>();
                 button._definition.label = button.label;
-                button._definition.name = button.label.GetLocalizedString();
+                button._definition.name = button.label.TableEntryReference.Key;
                 button._definition.icon = button.icon;
                 button._definition.hideFlags |= HideFlags.HideAndDontSave;
                 button._definition.prefabToSpawn = button._prefabToSpawn;

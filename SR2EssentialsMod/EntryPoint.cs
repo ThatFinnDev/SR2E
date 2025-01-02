@@ -24,6 +24,7 @@ using SR2E.Expansion;
 using UnityEngine.Localization;
 using SR2E.Buttons;
 using SR2E.Commands;
+using SR2E.Components;
 using SR2E.Patches.General;
 using SR2E.Patches.Language;
 using SR2E.Storage;
