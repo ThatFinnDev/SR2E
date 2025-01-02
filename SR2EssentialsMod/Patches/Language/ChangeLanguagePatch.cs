@@ -6,10 +6,22 @@ namespace SR2E.Patches.Language;
 [HarmonyPatch(typeof(LocalizationDirector), nameof(LocalizationDirector.SetLocale))]
 internal class ChangeLanguagePatch
 {
+    internal static bool reAdd = false;
+    static LocalizationDirector director;
+    static UnityEngine.Localization.Locale curLocale;
+
     internal static void Postfix(LocalizationDirector __instance, UnityEngine.Localization.Locale locale)
     {
-        var code = locale.Formatter.Cast<CultureInfo>()._name;
-        
+        reAdd = true;
+        director = __instance;
+        curLocale = locale;
+        return;
+    }
+
+    internal static void FixLanguage()
+    {
+        var code = curLocale.Formatter.Cast<CultureInfo>()._name;
+
         if (languages.ContainsKey(code))
             LoadLanguage(code);
         else
@@ -22,9 +34,9 @@ internal class ChangeLanguagePatch
             var localized = AddTranslation(translation(str.Key), str.Value.Item1, str.Value.Item2);
 
             var original = str.Value.Item3;
-            
-            original.TableEntryReference = localized.TableEntryReference;
-            original.TableReference = localized.TableReference;
+
+            original.m_TableEntryReference = localized.TableEntryReference;
+            original.m_TableReference = localized.TableReference;
         }
     }
 }

@@ -25,6 +25,7 @@ using UnityEngine.Localization;
 using SR2E.Buttons;
 using SR2E.Commands;
 using SR2E.Patches.General;
+using SR2E.Patches.Language;
 using SR2E.Storage;
 using UnityEngine.Networking;
 
@@ -619,7 +620,7 @@ namespace SR2E
 
                     if (!addedButtons)
                     {
-                        addedButtons = false;
+                        addedButtons = true;
                         if (AddModMenuButton.HasFlag())
                         {
                             LocalizedString label =
@@ -872,7 +873,20 @@ namespace SR2E
                 if(SR2EConsole.cheatsEnabledOnSave) try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 if(DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
             }
+
+            if (ChangeLanguagePatch.reAdd)
+            {
+                reAddTicks++;
+                if (reAddTicks > 1)
+                {
+                    reAddTicks = 0;
+                    ChangeLanguagePatch.reAdd = false;
+                    ChangeLanguagePatch.FixLanguage();
+                }
+                
+            }
         }
-        
+
+        private int reAddTicks = 0;
     }
 }
