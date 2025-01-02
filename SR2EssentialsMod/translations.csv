@@ -95,7 +95,7 @@ cmd.fling.description,"Flings any object you are looking at","Schleudert den Cha
 cmd.floaty.success,"The actor will float for $1 seconds!",Der Charakter wird für $1 Sekunde(n) schwerelos sein!
 cmd.floaty.description,"Temporarily disables gravity for an actor you're looking at","Deaktiviert Gravitation temporär für den Charakter, den du anschaust" 
 cmd.floaty.extendeddescription,"Temporarily disables gravity for an actor you're looking at for the specified duration in seconds","Deaktiviert Gravitation temporär für den Charakter, den du anschaust, für eine spezifische Dauer" 
-cmd.freeze.successunfroze,"Successfully thaw the actor!",Die Zeit wurde für den Charakter erfolgreich aufgetaut!
+cmd.freeze.successunfroze,"Successfully thawed the actor!",Die Zeit wurde für den Charakter erfolgreich aufgetaut!
 cmd.freeze.successfroze,"Successfully froze the actor!",Die Zeit wurde für den Charakter erfolgreich eingefroren!
 cmd.freeze.description,"Freezes an object in time","Friert die Zeit für einen Charakter,den du anschaust"
 cmd.freeze.extendeddescription,"Freezes an object in time. It cannot move or fall until you unfreeze it","Friert die Zeit für einen Charakter,den du anschaust. Es kann sich dann weder bewegen noch runterfallen"
