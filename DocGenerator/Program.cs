@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using SR2E;
 
 class Program
 {
@@ -21,11 +22,12 @@ class Program
         DirectoryInfo XMLToMD = null;
         string rootDir = "";
         string gitDir = "";
+        string apiDir = "api-"+BuildInfo.DisplayVersion;
         try
         {
             rootDir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.Parent.FullName;
             gitDir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.FullName;
-            string sr2eWebDir = "D:\\sr2e-site\\";
+            string sr2eWebDir = Path.Combine(rootDir, "sr2e-web");
             SR2EWeb = new DirectoryInfo(sr2eWebDir);
             string xmltomdDir = Path.Combine(gitDir, "XMLToMD");
             XMLToMD = new DirectoryInfo(xmltomdDir);
@@ -33,7 +35,7 @@ class Program
             docs = new DirectoryInfo(docsDir);
             string devDocsDir = Path.Combine(docsDir, "dev");
             devDocs = new DirectoryInfo(devDocsDir);
-            string apiDocsDir = Path.Combine(devDocsDir, "api");
+            string apiDocsDir = Path.Combine(devDocsDir, apiDir);
             apiDocs = new DirectoryInfo(apiDocsDir);
         }
         catch 
@@ -42,7 +44,6 @@ class Program
             Console.WriteLine("Are you running this program in the ide?");
             Console.WriteLine("Is the sr2e-web cloned next to this git repo?");
             Console.WriteLine("Does docs/dev exist in sr2e-web?");
-            Console.WriteLine("Does docs/dev/api exist in sr2e-web?");
             Console.WriteLine("Is the XMLToMD folder in this git repo?");
             Console.WriteLine("Please check everything?");
             return;
@@ -51,7 +52,7 @@ class Program
         if (!XMLToMD.Exists) { Console.WriteLine("XMLToMD missing?"); return; }
         if (!docs.Exists) { Console.WriteLine("docs missing?"); return; }
         if (!devDocs.Exists) { Console.WriteLine("docs/dev missing?"); return; }
-        if (!apiDocs.Exists) { Console.WriteLine("docs/dev/api missing?"); return; }
+        if (!apiDocs.Exists) { apiDocs.Create();}
 
         string sourceDir = XMLToMD.FullName;
         string workingDir = apiDocs.FullName;
@@ -66,7 +67,7 @@ class Program
         MoveFiles(workingDir);  
         ProcessDirectories(workingDir);  
         FixBrTags(workingDir);  
-        FixMarkDownLinks(workingDir,"/docs/dev/api");  
+        FixMarkDownLinks(workingDir,"/docs/dev/"+apiDir);  
         DeleteMdFilesInWorkingDir(workingDir); 
         //Cleanup
         ClearDirectory(sourceDir);

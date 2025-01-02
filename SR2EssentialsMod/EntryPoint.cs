@@ -51,7 +51,7 @@ namespace SR2E
         /// For dev versions, use "-dev". Do not add a build number!
         /// Add "+metadata" only in dev builds!
         /// </summary>
-        public const string DisplayVersion = "3.0.0-dev";
+        public const string DisplayVersion = "3.0.0-alpha.1";
 
         //pre, allowmetadata, checkupdatelink,
         internal static TripleDictionary<string,bool,string> getPreInfo()
@@ -366,7 +366,7 @@ namespace SR2E
         internal static ScriptedBool saveSkipIntro;
         
         bool alreadyLoadedSettings = false;
-        private bool addedButtons = false;
+        internal static bool addedButtons = false;
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if(DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: "+sceneName);
@@ -571,58 +571,6 @@ namespace SR2E
                         
                         CustomSettingsCreator.ApplyModel();
                     }
-
-                    if (!addedButtons)
-                    {
-                        addedButtons = true;
-                        if (AddModMenuButton.HasFlag())
-                        {
-                            LocalizedString label =
-                                AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
-                            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
-                        }
-
-                        if (!SR2EConsole.cheatsEnabledOnSave)
-                        {
-                            if (AddCheatMenuButton.HasFlag())
-                            {
-                                cheatMenuButton = new CustomPauseMenuButton(
-                                    AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"),
-                                    4,
-                                    (System.Action)(() => { SR2ECheatMenu.Open(); }));
-                                if (!enableCheatMenuButton) cheatMenuButton.Remove();
-                            }
-                        }
-
-                        if (DevMode.HasFlag())
-                            new CustomPauseMenuButton(
-                                AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3,
-                                (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI(); }));
-
-                    }
-                    Time.timeScale = 1f;
-                    try
-                    {
-                        actionMaps = new Dictionary<string, InputActionMap>();
-                        MainGameActions = new Dictionary<string, InputAction>();
-                        PausedActions = new Dictionary<string, InputAction>();
-                        DebugActions = new Dictionary<string, InputAction>();
-                        foreach (InputActionMap map in GameContext.Instance.InputDirector._inputActions.actionMaps)
-                            actionMaps.Add(map.name, map);
-                        foreach (InputAction action in actionMaps["MainGame"].actions)
-                            MainGameActions.Add(action.name, action);
-                        foreach (InputAction action in actionMaps["Paused"].actions)
-                            PausedActions.Add(action.name, action);
-                        foreach (InputAction action in actionMaps["Debug"].actions)
-                            DebugActions.Add(action.name, action);
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                        MelonLogger.Error("There was a problem loading SR2 action maps!");
-                    }
-
                     break;
                 case "StandaloneEngagementPrompt":
                     Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
