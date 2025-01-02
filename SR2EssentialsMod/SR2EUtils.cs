@@ -2,6 +2,7 @@
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Linq;
 using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -36,6 +37,8 @@ namespace SR2E
         public static SystemContext systemContext => SystemContext.Instance;
         public static GameContext gameContext => GameContext.Instance;
         public static SceneContext sceneContext => SceneContext.Instance;
+        internal static Damage _killDamage;
+        public static Damage killDamage => _killDamage;
 
         public static WeatherStateDefinition getWeatherStateByName(string name)
         {

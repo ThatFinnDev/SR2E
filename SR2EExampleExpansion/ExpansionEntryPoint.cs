@@ -34,9 +34,19 @@ namespace SR2EExampleExpansion
 
         public override void LoadCommands()
         {
-            ///SR2EConsole.RegisterCommand(new Command());
+            // Used to register commands
+            // SR2EConsole.RegisterCommand(new Command());
         }
 
+        public override void OnGameContext(GameContext gameContext)
+        {
+            
+        }
+
+        public override void OnSystemContext(SystemContext systemContext)
+        {
+            
+        }
     }
 
 }

@@ -43,7 +43,7 @@ internal class KillCommand : SR2ECommand
         }
         else if (gameObject.GetComponent<Identifiable>())
         {
-            DeathHandler.Kill(gameObject, SR2EEntryPoint.killDamage);
+            DeathHandler.Kill(gameObject, killDamage);
             didAThing = true;
         }
         else if (gameObject.GetComponent<GordoEat>())

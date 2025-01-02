@@ -38,17 +38,9 @@ public abstract class SR2EExpansionV1 : MelonMod
     public virtual void LoadCommands() { }
     
     /// <summary>
-    /// Gets executed every time the scene "SystemCore" gets loaded.
+    /// Gets executed once SystemContext loads. In Postfix of the Start method
     /// </summary>
-    public virtual void OnSystemCoreLoad() { }
-    /// <summary>
-    /// Gets executed every time the scene "SystemCore" gets unloaded.
-    /// </summary>
-    public virtual void OnSystemCoreUnload() { }
-    /// <summary>
-    /// Gets executed every time the scene "SystemCore" gets initialized.
-    /// </summary>
-    public virtual void OnSystemCoreInitialize() { }
+    public virtual void OnSystemContext(SystemContext systemContext) { }
     
     /// <summary>
     /// Gets executed every time the scene "StandaloneEngagementPrompt" gets loaded.
@@ -64,17 +56,9 @@ public abstract class SR2EExpansionV1 : MelonMod
     public virtual void OnStandaloneEngagementPromptInitialize() { }
     
     /// <summary>
-    /// Gets executed every time the scene "GameCore" gets loaded.
+    /// Gets executed once GameContext loads. In Postfix of the Start method
     /// </summary>
-    public virtual void OnGameCoreLoad() { }
-    /// <summary>
-    /// Gets executed every time the scene "GameCore" gets unloaded.
-    /// </summary>
-    public virtual void OnGameCoreUnload() { }
-    /// <summary>
-    /// Gets executed every time the scene "GameCore" gets initialized.
-    /// </summary>
-    public virtual void OnGameCoreInitialize() { }
+    public virtual void OnGameContext(GameContext gameContext) { }
     
     /// <summary>
     /// Gets executed every time the scene "PlayerCore" gets loaded.

@@ -73,9 +73,6 @@ namespace SR2E
         internal static bool consoleFinishedCreating = false;
         internal static bool mainMenuLoaded = false;
 
-        static AssetBundle bundle;
-
-
         internal static MelonPreferences_Category prefs;
         internal static float noclipAdjustSpeed { get { return prefs.GetEntry<float>("noclipAdjustSpeed").Value; } }
         internal static string onSaveLoadCommand { get { return prefs.GetEntry<string>("onSaveLoadCommand").Value; } }
@@ -366,59 +363,15 @@ namespace SR2E
             catch { }
         }
 
-        internal static Damage killDamage;
-
         internal static ScriptedBool saveSkipIntro;
         
         bool alreadyLoadedSettings = false;
         private bool addedButtons = false;
-        void OnUpdateBranchChanged(int id)
-        {
-            switch (id)
-            {
-                case 0: updateBranch="release"; break;
-                case 1: updateBranch="beta"; break;
-                case 2: updateBranch = "alpha"; break;
-                default: return;
-            }
-            MelonLogger.Msg("New UpdaTE bRANCH "+updateBranch);
-            return;
-            MelonCoroutines.Start(UpdateVersion());
-        }
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if(DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: "+sceneName);
             switch (sceneName)
             {
-                case "SystemCore":
-                    
-                    System.IO.Stream stream = Assembly.GetExecutingAssembly()
-                        .GetManifestResourceStream("SR2E.srtwoessentials.assetbundle");
-                    byte[] buffer = new byte[16 * 1024];
-                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                    int read;
-                    while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                        ms.Write(buffer, 0, read);
-
-                    bundle = AssetBundle.LoadFromMemory(ms.ToArray());
-                    foreach (var obj in bundle.LoadAllAssets())
-                    {
-                        if (obj != null)
-                            if (obj.name == "AllMightyMenus")
-                            {
-                                Object.Instantiate(obj);
-                                
-                                break;
-                            }
-                    }
-
-                    var lang = SystemContext.Instance.LocalizationDirector.GetCurrentLocaleCode();
-                    
-                    if (languages.ContainsKey(lang))
-                        LoadLanguage(lang);
-                    else
-                        LoadLanguage("en");
-                    break;
                 case "MainMenuUI":
                     if (ExperimentalSettingsInjection.HasFlag())
                     {
@@ -674,37 +627,6 @@ namespace SR2E
                 case "StandaloneEngagementPrompt":
                     Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
                     break;
-                case "GameCore":
-                    killDamage = new Damage
-                    {
-                        Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
-                    };
-                    killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
-                    AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
-                    autoSaveDirector.saveSlotCount = SAVESLOT_COUNT.Get();
-
-                    foreach (ParticleSystemRenderer particle in
-                             Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
-                    {
-                        var pname = particle.gameObject.name.Replace(' ', '_');
-                        if (!FXLibrary.ContainsKey(particle.gameObject))
-                            FXLibrary.AddItems(particle.gameObject, particle, pname);
-                        if (!FXLibraryReversable.ContainsKey(pname))
-                            FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
-                    }
-
-                    vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
-
-
-                    foreach (KeyValuePair<string, string> pair in teleportersToAdd)
-                        AddTeleporter(pair.Key, pair.Value);
-
-
-                    break;
-                case "UICore":
-                    if (SceneContext.Instance.Player.GetComponent<SR2EDebugDirector>() == null)
-                        SceneContext.Instance.Player.AddComponent<SR2EDebugDirector>();
-                    break;
                 case "PlayerCore":
                     NoClipComponent.playerSettings = Get<KCCSettings>("");
                     NoClipComponent.player = SceneContext.Instance.player.transform;
@@ -716,9 +638,7 @@ namespace SR2E
 
             switch (sceneName)
             {
-                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
@@ -726,22 +646,6 @@ namespace SR2E
             }
             SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
         }
-
-        internal static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
-        {
-            {"SceneGroup.ConservatoryFields", "TeleporterHomeBlue"},
-            {"SceneGroup.RumblingGorge", "TeleporterZoneGorge"},
-            {"SceneGroup.LuminousStrand", "TeleporterZoneStrand"},
-            {"SceneGroup.PowderfallBluffs", "TeleporterZoneBluffs"},
-            {"SceneGroup.Labyrinth", "TeleporterZoneLabyrinth"},
-        };
-        internal static void AddTeleporter(string sceneGroup, string gadgetName)
-        {
-            StaticTeleporterNode teleporter = GameObject.Instantiate(getGadgetDefByName(gadgetName).prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-            teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
-            SR2ESaveManager.WarpManager.teleporters.TryAdd(sceneGroup, teleporter);
-        }
-
         public static event EventHandler RegisterOptionMenuButtons;  
         
         internal static void SetupFonts()
@@ -799,9 +703,7 @@ namespace SR2E
             if(sceneName=="MainMenuUI") mainMenuLoaded = true;
             switch (sceneName)
             {
-                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
@@ -818,9 +720,7 @@ namespace SR2E
             
             switch (sceneName)
             {
-                case "SystemCore": foreach (var expansion in expansions) try { expansion.OnSystemCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-                case "GameCore": foreach (var expansion in expansions) try { expansion.OnGameCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;

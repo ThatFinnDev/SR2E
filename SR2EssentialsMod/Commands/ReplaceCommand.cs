@@ -55,7 +55,7 @@ internal class ReplaceCommand : SR2ECommand
                 }
 
                 //Remove old one
-                DeathHandler.Kill(gameobject, SR2EEntryPoint.killDamage);
+                DeathHandler.Kill(gameobject, killDamage);
 
             } /*
             else if (gameobject.GetComponentInParent<Gadget>())
