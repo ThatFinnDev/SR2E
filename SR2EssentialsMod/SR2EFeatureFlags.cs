@@ -16,7 +16,7 @@ public enum FeatureStringValue
 public static class SR2EFeatureFlags
 {
     
-    static FeatureFlag[] defaultFlags => new [] {
+    static List<FeatureFlag> defaultFlags => new List<FeatureFlag>() {
         CommandsLoadCommands,CommandsLoadCheat,CommandsLoadBinding,CommandsLoadWarp,
         CommandsLoadCommon,CommandsLoadMenu,CommandsLoadMiscellaneous,CommandsLoadFun, 
         AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
@@ -184,10 +184,6 @@ public static class SR2EFeatureFlags
         initialized = true;
         enabledFlags = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
         flagsToForceOff = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
-        foreach (FeatureFlag flag in defaultFlags)
-            flag.EnableFlag();
-        featureInts = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
-        featureStrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
         FeatureFlag[] addedFlags = null;
         switch (SR2EEntryPoint.updateBranch)
         {
@@ -197,7 +193,11 @@ public static class SR2EFeatureFlags
         }
         if(addedFlags!=null)
             foreach (FeatureFlag flag in addedFlags)
-                flag.EnableFlag();
+                defaultFlags.Add(flag);
+        foreach (FeatureFlag flag in defaultFlags)
+            flag.EnableFlag();
+        featureInts = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
+        featureStrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
         if (File.Exists(flagfile_path)) LoadFromFlagFile();
         else SaveToFlagFile();
 
@@ -221,6 +221,7 @@ public static class SR2EFeatureFlags
     public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)];
     public static bool HasFlag(this bool[] array,FeatureFlag featureFlag) => array[Convert.ToInt32(featureFlag)];
     public static bool HasFlag(this FeatureFlag[] array,FeatureFlag featureFlag) => array.Contains(featureFlag);
+    public static bool HasFlag(this List<FeatureFlag> list,FeatureFlag featureFlag) => list.Contains(featureFlag);
     static void SetFlag(this FeatureFlag featureFlag, bool state) => enabledFlags[Convert.ToInt32(featureFlag)]=state;
     static bool EnableFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)]=true;
     static bool DisableFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)]=false;
