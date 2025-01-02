@@ -369,7 +369,7 @@ namespace SR2E
         internal static ScriptedBool saveSkipIntro;
         
         bool alreadyLoadedSettings = false;
-
+        private bool addedButtons = false;
         void OnUpdateBranchChanged(int id)
         {
             switch (id)
@@ -617,7 +617,35 @@ namespace SR2E
                         CustomSettingsCreator.ApplyModel();
                     }
 
+                    if (!addedButtons)
+                    {
+                        addedButtons = false;
+                        if (AddModMenuButton.HasFlag())
+                        {
+                            LocalizedString label =
+                                AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
+                            new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
+                            new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
+                        }
 
+                        if (!SR2EConsole.cheatsEnabledOnSave)
+                        {
+                            if (AddCheatMenuButton.HasFlag())
+                            {
+                                cheatMenuButton = new CustomPauseMenuButton(
+                                    AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"),
+                                    4,
+                                    (System.Action)(() => { SR2ECheatMenu.Open(); }));
+                                if (!enableCheatMenuButton) cheatMenuButton.Remove();
+                            }
+                        }
+
+                        if (DevMode.HasFlag())
+                            new CustomPauseMenuButton(
+                                AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3,
+                                (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI(); }));
+
+                    }
                     Time.timeScale = 1f;
                     try
                     {
@@ -754,30 +782,10 @@ namespace SR2E
         {
             if (isSaveDirectorLoaded) return;
             isSaveDirectorLoaded = true;
-            if (AddModMenuButton.HasFlag())
-            {
-                LocalizedString label =
-                    AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { SR2EModMenu.Open(); }));
-                new CustomPauseMenuButton(label, 3, (System.Action)(() => { SR2EModMenu.Open(); }));
-            }
+            
+            
 
-            if (!SR2EConsole.cheatsEnabledOnSave)
-            {
-                if (AddCheatMenuButton.HasFlag())
-                {
-                    cheatMenuButton = new CustomPauseMenuButton(
-                        AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"),
-                        4,
-                        (System.Action)(() => { SR2ECheatMenu.Open(); }));
-                    if (!enableCheatMenuButton) cheatMenuButton.Remove();
-                }
-            }
-
-            if (DevMode.HasFlag())
-                new CustomPauseMenuButton(
-                    AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3,
-                    (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI(); }));
+            
             foreach (var expansion in expansions)
                 try { expansion.SaveDirectorLoaded(GameContext.Instance.AutoSaveDirector); }
                 catch (Exception e) { MelonLogger.Error(e); }

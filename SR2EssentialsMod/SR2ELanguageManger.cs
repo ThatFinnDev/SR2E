@@ -96,6 +96,10 @@ public static class SR2ELanguageManger
     {
         if (!languages.ContainsKey(code)) return;
         loadedLanguage = new Dictionary<string, string>();
+        if(code!="en")
+            foreach (var languageDicts in languages["en"])
+                foreach (var translation in languageDicts)
+                    loadedLanguage[translation.Key] = translation.Value;
         foreach (var languageDicts in languages[code])
             foreach (var translation in languageDicts)
                 loadedLanguage[translation.Key] = translation.Value;
