@@ -730,6 +730,7 @@ namespace SR2E
                 try { SR2EConsole.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                try { SR2EThemeMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 if(SR2EConsole.cheatsEnabledOnSave) try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 if(DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
             }

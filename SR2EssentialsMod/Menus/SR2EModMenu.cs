@@ -8,7 +8,11 @@ using SR2E.Expansion;
 using SR2E.Managers;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using Action = System.Action;
+using Button = UnityEngine.UI.Button;
+using Image = UnityEngine.UI.Image;
+using Toggle = UnityEngine.UI.Toggle;
 
 namespace SR2E.Menus;
 
@@ -18,7 +22,6 @@ public static class SR2EModMenu
     internal static Transform transform;
     internal static GameObject gameObject;
     static TextMeshProUGUI modInfoText;
-    static UIPrefabLoader _uiActivator;
 
     /// <summary>
     /// Closes the mod menu
@@ -26,7 +29,6 @@ public static class SR2EModMenu
     public static void Close()
     {
         if (!EnableModMenu.HasFlag()) return;
-        if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
         menuBlock.SetActive(false);
         gameObject.SetActive(false);
         gameObject.getObjRec<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
@@ -40,7 +42,6 @@ public static class SR2EModMenu
             Object.Destroy(modContent.GetChild(i).gameObject);
     }
 
-    static MainMenuLandingRootUI _mainMenuLandingRootUI;
 
     /// <summary>
     /// Opens the mod menu
@@ -154,6 +155,8 @@ public static class SR2EModMenu
             }));
         }
         modContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
+        
+        foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
     }
 
     /// <summary>
@@ -181,7 +184,8 @@ public static class SR2EModMenu
     static GameObject warningText;
     static Texture2D modMenuTabImage;
     static List<Key> allPossibleKeys = new List<Key>();
-
+    private static TextMeshProUGUI themeMenuText;
+    private static Dictionary<TextMeshProUGUI, string> toTranslate = new Dictionary<TextMeshProUGUI, string>();
     internal static void Start()
     {
         entryTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateEntryRec");
@@ -203,11 +207,18 @@ public static class SR2EModMenu
         allPossibleKeys.Remove(Key.RightCommand);
         allPossibleKeys.Remove(Key.LeftWindows);
         allPossibleKeys.Remove(Key.RightWindows);
+
+        var button1 = transform.getObjRec<Image>("ModMenuModMenuSelectionButtonRec");
+        button1.sprite = whitePillBg;
+        var button2 = transform.getObjRec<Image>("ModMenuConfigurationSelectionButtonRec");
+        button2.sprite = whitePillBg;
+        toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modmenu");
+        toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modconfig");
+        toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
-        transform.getObjRec<Image>("ModMenuModMenuSelectionButtonRec").sprite = whitePillBg;
-        transform.getObjRec<Image>("ModMenuConfigurationSelectionButtonRec").sprite = whitePillBg;
-
-
+        Button themeButton = transform.getObjRec<Button>("ThemeMenuButtonRec");
+        themeButton.onClick.AddListener((Action)(() =>{ Close(); SR2EThemeMenu.Open(); }));
+        toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
         {
             GameObject header = Object.Instantiate(headerTemplate, content);

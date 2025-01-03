@@ -625,7 +625,7 @@ namespace SR2E
             );
         }
 
-        public static bool isAnyMenuOpen => SR2EConsole.isOpen ? true : SR2EModMenu.isOpen ? true : SR2ECheatMenu.isOpen;
+        public static bool isAnyMenuOpen => SR2EConsole.isOpen ? true : SR2EModMenu.isOpen ? true : SR2ECheatMenu.isOpen ? true : SR2EThemeMenu.isOpen;
         public static void TryHideMenus()
         {
             if (SR2EEntryPoint.mainMenuLoaded)

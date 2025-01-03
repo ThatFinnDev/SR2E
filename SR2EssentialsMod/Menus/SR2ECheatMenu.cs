@@ -24,6 +24,7 @@ public class SR2ECheatMenu
     internal static Transform refineryContent;
     internal static Transform gadgetsContent;
     internal static Transform warpsContent;
+    private static Dictionary<TextMeshProUGUI, string> toTranslate = new Dictionary<TextMeshProUGUI, string>();
     public static bool isOpen
     {
         get { return gameObject == null ? false : gameObject.activeSelf; }
@@ -34,7 +35,6 @@ public class SR2ECheatMenu
     public static void Close()
     {
         if (!isOpen) return;
-        if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
         menuBlock.SetActive(false);
         gameObject.SetActive(false);
         gameObject.getObjRec<Button>("CheatMenuMainSelectionButtonRec").onClick.Invoke();
@@ -136,6 +136,8 @@ public class SR2ECheatMenu
             slot.OnOpen();
         }
         
+        foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
+        
     }
 
     /// <summary>
@@ -177,11 +179,19 @@ public class SR2ECheatMenu
 
         transform.getObjRec<GameObject>("CheatMenuStatsNewbucksRec").AddComponent<CheatMenuNewbucks>();
         
-        transform.getObjRec<Image>("CheatMenuMainSelectionButtonRec").sprite = whitePillBg;
-        transform.getObjRec<Image>("CheatMenuRefinerySelectionButtonRec").sprite = whitePillBg;
-        transform.getObjRec<Image>("CheatMenuGadgetsSelectionButtonRec").sprite = whitePillBg;
-        transform.getObjRec<Image>("CheatMenuSpawnSelectionButtonRec").sprite = whitePillBg;
-
+        var button1 = transform.getObjRec<Image>("CheatMenuMainSelectionButtonRec");
+        button1.sprite = whitePillBg;
+        var button2 = transform.getObjRec<Image>("CheatMenuRefinerySelectionButtonRec");
+        button2.sprite = whitePillBg;
+        var button3 = transform.getObjRec<Image>("CheatMenuGadgetsSelectionButtonRec");
+        button3.sprite = whitePillBg;
+        var button4 = transform.getObjRec<Image>("CheatMenuSpawnSelectionButtonRec");
+        button4.sprite = whitePillBg;
+        toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.main");
+        toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.refinery");
+        toTranslate.Add(button3.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.gadgets");
+        toTranslate.Add(button4.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.spawn");
+        toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"cheatmenu.title");
     }
 
     internal static SR2ECheatMenuButton noclipButton;

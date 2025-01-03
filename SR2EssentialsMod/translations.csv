@@ -2,6 +2,12 @@ KEYS,en,de
 buttons.mods.label,"Mods",Modifikationen
 buttons.cheatmenu.label,"Cheat Menu",Schummelmenü
 buttons.debugplayer.label,"Debug Player",Debuginformationen
+buttons.thememenu.label,"Theme Menu",Designmenü
+cheatmenu.title,"Cheat Menu","Schummelmenü"
+cheatmenu.category.main,"Main","Haupt"
+cheatmenu.category.refinery,"Refinery","Raffenerie"
+cheatmenu.category.gadgets,"Gadgets","Gadgets"
+cheatmenu.category.spawn,"Spawn","Erscheinen"
 cheatmenu.cheatbuttons.refillinv,"Refill Inventory",Inventar auffüllen
 cheatmenu.cheatbuttons.noclipon,"NoClip [On]",Noclip [An]
 cheatmenu.cheatbuttons.noclipoff,"NoClip [Off]",Noclip [Aus]
@@ -13,6 +19,9 @@ cheatmenu.cheatbuttons.removeFogon,"Remove Fog [On]",Nebelentfernung [An]
 cheatmenu.cheatbuttons.removeFogoff,"Remove Fog [Off]",Nebelentfernung [Auf]
 cheatmenu.cheatbuttons.betterScreenshoton,"BetterScreenshot [On]",Besserbildschirmfoto [An]
 cheatmenu.cheatbuttons.betterScreenshotoff,"BetterScreenshot [Off]",Besserbildschirmfoto [Aus]
+modmenu.title,Mods,"Modifikationen"
+modmenu.category.modmenu,"Mod Menu","Modifikationen"
+modmenu.category.modconfig,"Mod Config","Modifikationseinstellungen"
 modmenu.modinfo.expansion,Expansion: $1,Erweiterung: $1
 modmenu.modinfo.brokenexpansion,"Broken expansion: $1",Kaputte Erweiterung: $1
 modmenu.modinfo.brokenexpansiontitle,Broken expansion,Kaputte Modifikation: $1
