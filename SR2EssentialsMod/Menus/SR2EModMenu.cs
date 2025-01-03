@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Reflection;
-using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
 using SR2E.Expansion;
+using SR2E.Managers;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Action = System.Action;
 
-namespace SR2E;
+namespace SR2E.Menus;
 
 public static class SR2EModMenu
 {

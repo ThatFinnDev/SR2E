@@ -1,5 +1,6 @@
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppMonomiPark.SlimeRancher.UI.Pause;
+using SR2E.Menus;
 
 namespace SR2E.Patches.InGame;
 

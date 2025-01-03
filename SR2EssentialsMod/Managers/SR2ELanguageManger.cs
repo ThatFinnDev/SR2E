@@ -1,10 +1,8 @@
 using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using Microsoft.VisualBasic.FileIO;
 
-namespace SR2E;
+namespace SR2E.Managers;
 
 public static class SR2ELanguageManger
 {

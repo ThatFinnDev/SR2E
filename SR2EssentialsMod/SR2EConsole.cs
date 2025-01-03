@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Il2CppTMPro;
 using SR2E.Commands;
+using SR2E.Managers;
+using SR2E.Menus;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;

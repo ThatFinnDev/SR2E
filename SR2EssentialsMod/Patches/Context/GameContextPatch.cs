@@ -1,6 +1,8 @@
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using SR2E.Buttons;
+using SR2E.Managers;
+using SR2E.Menus;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
 

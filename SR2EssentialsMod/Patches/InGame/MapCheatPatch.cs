@@ -1,4 +1,5 @@
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
+using SR2E.Menus;
 
 namespace SR2E.Patches.InGame;
 

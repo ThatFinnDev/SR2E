@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands;
+﻿using SR2E.Managers;
+
+namespace SR2E.Commands;
 
 internal class WarpCommand : SR2ECommand
 {

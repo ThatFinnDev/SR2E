@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using SR2E.Storage;
 
-namespace SR2E;
+namespace SR2E.Managers;
 
 
 public enum KeyState

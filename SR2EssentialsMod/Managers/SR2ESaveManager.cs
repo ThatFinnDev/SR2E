@@ -5,11 +5,9 @@ using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using Newtonsoft.Json;
-using SR2E.Commands;
 using SR2E.Components;
-using UnityEngine.InputSystem;
 
-namespace SR2E;
+namespace SR2E.Managers;
 
 public enum SR2EError
 {

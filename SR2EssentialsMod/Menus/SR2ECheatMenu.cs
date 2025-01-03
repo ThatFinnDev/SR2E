@@ -1,20 +1,15 @@
 using System;
 using System.Linq;
-using Il2CppMonomiPark.SlimeRancher.Player;
-using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
-using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
-using Il2CppMonomiPark.SlimeRancher.UI.Refinery;
 using Il2CppSystem.Linq;
 using Il2CppTMPro;
 using SR2E.Buttons;
 using SR2E.Commands;
 using SR2E.Components;
-using UnityEngine.InputSystem;
+using SR2E.Managers;
 using UnityEngine.UI;
 
-namespace SR2E;
+namespace SR2E.Menus;
 
 public class SR2ECheatMenu
 {

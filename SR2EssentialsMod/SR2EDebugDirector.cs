@@ -1,6 +1,8 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI.Debug;
 using Il2CppTMPro;
+using SR2E.Managers;
+using SR2E.Menus;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 

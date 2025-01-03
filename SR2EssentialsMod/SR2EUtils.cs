@@ -11,6 +11,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppSystem.IO;
+using SR2E.Menus;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
 using Unity.Mathematics;

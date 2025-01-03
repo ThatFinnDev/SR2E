@@ -25,6 +25,8 @@ using UnityEngine.Localization;
 using SR2E.Buttons;
 using SR2E.Commands;
 using SR2E.Components;
+using SR2E.Managers;
+using SR2E.Menus;
 using SR2E.Patches.Context;
 using SR2E.Patches.General;
 using SR2E.Patches.Language;
