@@ -7,12 +7,14 @@ using SR2E.Buttons;
 using SR2E.Commands;
 using SR2E.Components;
 using SR2E.Managers;
+using SR2E.Storage;
 using UnityEngine.UI;
 
 namespace SR2E.Menus;
 
 public class SR2ECheatMenu
 {
+    public static MenuIdentifier menuIdentifier = new MenuIdentifier(true,"cheatmenu",SR2EMenuTheme.Default,"CheatMenu");
     internal static List<SR2ECheatMenuButton> cheatButtons = new List<SR2ECheatMenuButton>();
     internal static List<CheatMenuRefineryEntry> refineryEntries = new List<CheatMenuRefineryEntry>();
     internal static List<CheatMenuGadgetEntry> gadgetEntries = new List<CheatMenuGadgetEntry>();

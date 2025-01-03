@@ -3,6 +3,9 @@ buttons.mods.label,"Mods",Modifikationen
 buttons.cheatmenu.label,"Cheat Menu",Schummelmenü
 buttons.debugplayer.label,"Debug Player",Debuginformationen
 buttons.thememenu.label,"Theme Menu",Designmenü
+console.title,"Console","Konsole"
+thememenu.title,"Themes","Designs"
+thememenu.category.selector,"Theme Selector","Designauswahl"
 cheatmenu.title,"Cheat Menu","Schummelmenü"
 cheatmenu.category.main,"Main","Haupt"
 cheatmenu.category.refinery,"Refinery","Raffenerie"

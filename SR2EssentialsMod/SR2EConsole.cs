@@ -17,6 +17,7 @@ namespace SR2E
 {
     public static class SR2EConsole
     {
+        public static MenuIdentifier menuIdentifier = new MenuIdentifier(true,"console",SR2EMenuTheme.Default,"Console");
         public static bool CheatsEnabled
         {
             get
@@ -519,13 +520,13 @@ namespace SR2E
                 SR2ECheatMenu.transform = SR2ECheatMenu.gameObject.transform;
                 SR2ECheatMenu.Start();
             } catch (Exception e) { MelonLogger.Error(e); }
-            /*try
+            try
             {
                 SR2EThemeMenu.parent = parent;
                 SR2EThemeMenu.gameObject = getMenu("ThemeMenu");
                 SR2EThemeMenu.transform = SR2EThemeMenu.gameObject.transform;
                 SR2EThemeMenu.Start();
-            } catch (Exception e) { MelonLogger.Error(e); }*/
+            } catch (Exception e) { MelonLogger.Error(e); }
             parent.gameObject.SetActive(true);
         }
         static void SetupCommands()
@@ -617,7 +618,6 @@ namespace SR2E
                 commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); })); 
             }
             SetupCommands();
-            SR2ESaveManager.Start();
 
             SetupOtherMenus();
             foreach (Transform child in parent.GetChildren())

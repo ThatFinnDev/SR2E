@@ -6,6 +6,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
 using SR2E.Expansion;
 using SR2E.Managers;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -18,6 +19,7 @@ namespace SR2E.Menus;
 
 public static class SR2EModMenu
 {
+    public static MenuIdentifier menuIdentifier = new MenuIdentifier(true,"modmenu",SR2EMenuTheme.Default,"ModMenu");
     internal static Transform parent;
     internal static Transform transform;
     internal static GameObject gameObject;
@@ -118,6 +120,7 @@ public static class SR2EModMenu
             }
             b.onClick.AddListener((Action)(() =>
             {
+                themeButton.gameObject.SetActive(melonBase is SR2EEntryPoint);
                 modInfoText.text = translation("modmenu.modinfo.mod",melonBase.Info.Name);
                 if(isSR2EExpansion) 
                     modInfoText.text = translation("modmenu.modinfo.expansion",melonBase.Info.Name);
@@ -186,6 +189,7 @@ public static class SR2EModMenu
     static List<Key> allPossibleKeys = new List<Key>();
     private static TextMeshProUGUI themeMenuText;
     private static Dictionary<TextMeshProUGUI, string> toTranslate = new Dictionary<TextMeshProUGUI, string>();
+    private static Button themeButton;
     internal static void Start()
     {
         entryTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateEntryRec");
@@ -216,7 +220,7 @@ public static class SR2EModMenu
         toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modconfig");
         toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
-        Button themeButton = transform.getObjRec<Button>("ThemeMenuButtonRec");
+        themeButton = transform.getObjRec<Button>("ThemeMenuButtonRec");
         themeButton.onClick.AddListener((Action)(() =>{ Close(); SR2EThemeMenu.Open(); }));
         toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)

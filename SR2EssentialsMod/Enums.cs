@@ -13,6 +13,11 @@ internal enum VacModes
     LAUNCH,
 }
 
+[Serializable]
+public enum SR2EMenuTheme
+{
+    Default, SR2E, Black
+}
 /// <summary>
 /// A three-way boolean
 /// </summary>

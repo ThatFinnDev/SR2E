@@ -6,6 +6,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
 using SR2E.Expansion;
 using SR2E.Managers;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Action = System.Action;
@@ -14,6 +15,7 @@ namespace SR2E.Menus;
 
 public static class SR2EThemeMenu
 {
+    public static MenuIdentifier menuIdentifier = new MenuIdentifier(false,"thememenu",SR2EMenuTheme.Default,"ThemeMenu");
     internal static Transform parent;
     internal static Transform transform;
     internal static GameObject gameObject;
@@ -24,11 +26,12 @@ public static class SR2EThemeMenu
     /// </summary>
     public static void Close()
     {
-        return;
         if (!EnableThemeMenu.HasFlag()) return;
         menuBlock.SetActive(false);
         gameObject.SetActive(false);
-        
+
+
+        content.DestroyAllChildren();
         TryUnPauseGame();
         TryUnHideMenus();
         TryEnableSR2Input();
@@ -40,13 +43,41 @@ public static class SR2EThemeMenu
     /// </summary>
     public static void Open()
     {
-        return;
         if (!EnableThemeMenu.HasFlag()) return;
         if (isAnyMenuOpen) return;
         menuBlock.SetActive(true);
         gameObject.SetActive(true);
         TryPauseAndHide();
         //TryDisableSR2Input();
+        
+        foreach (var identifier in new MenuIdentifier[]{SR2EConsole.menuIdentifier,SR2ECheatMenu.menuIdentifier,SR2EModMenu.menuIdentifier,SR2EThemeMenu.menuIdentifier})
+        {
+            if(!identifier.hasThemes) continue;
+            GameObject entry = Object.Instantiate(entryTemplate, content);
+            entry.SetActive(true);
+            entry.getObjRec<TextMeshProUGUI>("Title").text = translation(identifier.translationKey+".title");
+
+            foreach (SR2EMenuTheme theme in Enum.GetValues(typeof(SR2EMenuTheme)))
+            {
+                Transform contentRec = entry.getObjRec<Transform>("ContentRec");
+                GameObject button = Object.Instantiate(buttonTemplate, contentRec);
+                button.SetActive(true);
+                button.transform.GetChild(0).GetComponent<Button>().onClick.AddListener((Action)(() =>
+                {
+                    for (int i = 0; i < contentRec.childCount; i++)
+                        contentRec.GetChild(i).GetComponent<Image>().color = contentRec.GetChild(i) == button.transform ? Color.green : Color.red;
+                    SR2ESaveManager.data.themes[identifier.saveKey] = theme;
+                    SR2ESaveManager.Save();
+                }));
+                if (SR2ESaveManager.data.themes.ContainsKey(identifier.saveKey))
+                {
+                    if (SR2ESaveManager.data.themes[identifier.saveKey] == theme)
+                        button.GetComponent<Image>().color = Color.green;
+                }
+            }
+        }
+        
+        
         
         foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
     }
@@ -71,16 +102,28 @@ public static class SR2EThemeMenu
         }
     }
     
+    static GameObject entryTemplate;
+    static GameObject buttonTemplate;
+    static Transform content;
     internal static void Start()
     {
+        entryTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryRec");
+        buttonTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryButtonEntryRec");
+        content = transform.getObjRec<Transform>("ThemeMenuThemeSelectorContentRec");
         
+        var button1 = transform.getObjRec<Image>("ThemeMenuThemeSelectorSelectionButtonRec");
+        button1.sprite = whitePillBg;
+        
+        toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
+        toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"thememenu.title");
     }
 
     internal static void Update()
     {
         if (isOpen)
         {
-            
+            if (Key.Escape.OnKeyPressed())
+                Close();
         }
     }
 }

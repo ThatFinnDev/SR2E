@@ -714,15 +714,16 @@ namespace SR2E
                 }
                 else if (obj != null)
                 {
+                    SR2ESaveManager.Start();
                     SR2EStuff = obj;
                     obj.name = "SR2EStuff";
                     obj.tag = "";
                     obj.SetActive(false);
                     GameObject.DontDestroyOnLoad(obj);
-                    string whichMenuToLoad = ""; //Either "", "SR2E" or "Black"
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/Console"+whichMenuToLoad+".prefab"), obj.transform);
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/ModMenu"+whichMenuToLoad+".prefab"), obj.transform);
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/CheatMenu"+whichMenuToLoad+".prefab"), obj.transform);
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset(getMenuPath(SR2EConsole.menuIdentifier)), obj.transform);
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset(getMenuPath(SR2EModMenu.menuIdentifier)), obj.transform);
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset(getMenuPath(SR2ECheatMenu.menuIdentifier)), obj.transform);
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset(getMenuPath(SR2EThemeMenu.menuIdentifier)), obj.transform);
                 }
             }
             else
@@ -748,6 +749,15 @@ namespace SR2E
             }
         }
 
+        public static string getMenuPath(MenuIdentifier menuIdentifier)
+        {
+            if (!menuIdentifier.hasThemes) return "Assets/Menus/" + menuIdentifier.saveKey + ".prefab";
+            if(SR2ESaveManager.data.themes.TryAdd(menuIdentifier.saveKey, menuIdentifier.defaultTheme)) SR2ESaveManager.Save();
+            if (SR2ESaveManager.data.themes[menuIdentifier.saveKey] != SR2EMenuTheme.Default)
+                return "Assets/Menus/"+menuIdentifier.saveKey+"_"+SR2ESaveManager.data.themes[menuIdentifier.saveKey]
+                    .ToString().Split(".")[0].Replace("Default","")+".prefab";
+            return "Assets/Menus/" + menuIdentifier.saveKey + ".prefab";
+        }
         internal static GameObject SR2EStuff;
         private int reAddTicks = 0;
     }

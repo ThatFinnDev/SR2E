@@ -42,6 +42,7 @@ public static class SR2ESaveManager
             data = JsonConvert.DeserializeObject<SR2ESaveData>(File.ReadAllText(path), jsonSerializerSettings);
             if (data.keyBinds == null) data.keyBinds = new Dictionary<Key, string>();
             if (data.warps == null) data.warps = new Dictionary<string, Warp>();
+            if(data.themes == null) data.themes = new Dictionary<string, SR2EMenuTheme>();
         }
         else data = new SR2ESaveData();
     }
@@ -52,6 +53,7 @@ public static class SR2ESaveManager
     {
         public Dictionary<string, Warp> warps = new Dictionary<string, Warp>();
         public Dictionary<Key, string> keyBinds = new Dictionary<Key, string>();
+        public Dictionary<string, SR2EMenuTheme> themes = new Dictionary<string, SR2EMenuTheme>();
     }
     
     public static class WarpManager
