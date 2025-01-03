@@ -716,10 +716,11 @@ namespace SR2E
                     obj.name = "SR2EStuff";
                     obj.tag = "";
                     obj.SetActive(false);
-                    GameObject.DontDestroyOnLoad(obj); 
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/Console.prefab"), obj.transform);
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/ModMenu.prefab"), obj.transform);
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/CheatMenu.prefab"), obj.transform);
+                    GameObject.DontDestroyOnLoad(obj);
+                    string whichMenuToLoad = ""; //Either "", "SR2E" or "Black"
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/Console"+whichMenuToLoad+".prefab"), obj.transform);
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/ModMenu"+whichMenuToLoad+".prefab"), obj.transform);
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/CheatMenu"+whichMenuToLoad+".prefab"), obj.transform);
                 }
             }
             else
