@@ -233,6 +233,22 @@ namespace SR2E
                 }
             return null;
         }
+        public static T getObjRec<T>(this Transform transform, string name) where T : class
+        {
+            List<GameObject> totalChildren = getAllChildren(transform);
+            for (int i = 0; i < totalChildren.Count; i++)
+                if (totalChildren[i].name == name)
+                {
+                    if (typeof(T) == typeof(GameObject))
+                        return totalChildren[i] as T;
+                    if (typeof(T) == typeof(Transform))
+                        return totalChildren[i].transform as T;
+                    if (totalChildren[i].GetComponent<T>() != null)
+                        return totalChildren[i].GetComponent<T>();
+                }
+            return null;
+        }
+        
 
         public static List<Transform> GetChildren(this Transform obj)
         {
@@ -284,21 +300,6 @@ namespace SR2E
             return children.ToArray();
         }
 
-        public static T getObjRec<T>(this Transform transform, string name) where T : class
-        {
-            List<GameObject> totalChildren = getAllChildren(transform);
-            for (int i = 0; i < totalChildren.Count; i++)
-                if (totalChildren[i].name == name)
-                {
-                    if (typeof(T) == typeof(GameObject))
-                        return totalChildren[i] as T;
-                    if (typeof(T) == typeof(Transform))
-                        return totalChildren[i].transform as T;
-                    if (totalChildren[i].GetComponent<T>() != null)
-                        return totalChildren[i].GetComponent<T>();
-                }
-            return null;
-        }
 
         private static Sprite _whitePillBg;
         private static Texture2D _whitePillBgTex;
@@ -694,5 +695,7 @@ namespace SR2E
         {
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
         }
+
+        internal static GameObject menuBlock;
     }
 }

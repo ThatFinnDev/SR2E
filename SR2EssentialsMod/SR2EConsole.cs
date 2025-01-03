@@ -183,7 +183,7 @@ namespace SR2E
         {
             if (!EnableConsole.HasFlag()) return;
 
-            consoleBlock.SetActive(false);
+            menuBlock.SetActive(false);
             gameObject.SetActive(false);
             for (int i = 0; i < autoCompleteContent.childCount; i++)
             { Object.Destroy(autoCompleteContent.GetChild(i).gameObject); }
@@ -202,7 +202,7 @@ namespace SR2E
             if (!EnableConsole.HasFlag()) return;
             if (isAnyMenuOpen) return;
             if (SR2ESaveManager.WarpManager.warpTo != null) return;
-            consoleBlock.SetActive(true);
+            menuBlock.SetActive(true);
             gameObject.SetActive(true);
             TryPauseGame(false);
 
@@ -494,17 +494,30 @@ namespace SR2E
             autoCompleteScrollView.SetActive(autoCompleteContent.childCount != 0);
 
         }
-
+        internal static GameObject getMenu(string name)
+        {
+            for (int i = 0; i < parent.childCount; i++)
+                if (parent.GetChild(i).name.Replace("(Clone)","").Split("_")[0] == name)
+                    return parent.GetChild(i).gameObject;
+            return null;
+        }
         static void SetupOtherMenus()
         {
-            SR2EModMenu.parent = parent;
-            SR2EModMenu.gameObject = parent.getObjRec<GameObject>("modMenu");
-            SR2EModMenu.transform = parent.getObjRec<Transform>("modMenu");
-            SR2EModMenu.Start();
-            SR2ECheatMenu.parent = parent;
-            SR2ECheatMenu.gameObject = parent.getObjRec<GameObject>("cheatMenu");
-            SR2ECheatMenu.transform = parent.getObjRec<Transform>("cheatMenu");
-            SR2ECheatMenu.Start();
+            try
+            {
+                SR2EModMenu.parent = parent;
+                SR2EModMenu.gameObject = getMenu("ModMenu");
+                SR2EModMenu.transform = SR2EModMenu.gameObject.transform;
+                SR2EModMenu.Start();
+            } catch (Exception e) { MelonLogger.Error(e); }
+            try
+            {
+                SR2ECheatMenu.parent = parent;
+                SR2ECheatMenu.gameObject = getMenu("CheatMenu");
+                SR2ECheatMenu.transform = SR2ECheatMenu.gameObject.transform;
+                SR2ECheatMenu.Start();
+            } catch (Exception e) { MelonLogger.Error(e); }
+            parent.gameObject.SetActive(true);
         }
         static void SetupCommands()
         {
@@ -568,37 +581,10 @@ namespace SR2E
             }
         }
         
-        /// <summary>
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// If you are seeing this, tell a SR2E dev to change the first if statement. 
-        /// </summary>
         internal static void Start()
         {
-            // im assigning this to finn (i dont want to create a new config rn)
-            if (SR2EEntryPoint.consoleUsesSR2Style)
-            {
-                gameObject = parent.getObjRec<GameObject>("console");
-                transform = parent.getObjRec<Transform>("console");
-            }
-            else
-            {
-                gameObject = parent.getObjRec<GameObject>("consoleOld");
-                transform = parent.getObjRec<Transform>("consoleOld");
-            }
+            gameObject = getMenu("Console");
+            transform = gameObject.transform;
             commandHistory = new List<string>();
             if (EnableConsole.HasFlag())
                 if (SR2EEntryPoint.syncConsole)
@@ -606,7 +592,7 @@ namespace SR2E
 
             mlog = new MelonLogger.Instance("SR2E");
             
-            consoleBlock = parent.getObjRec<GameObject>("consoleBlockRec");
+            menuBlock = parent.getObjRec<GameObject>("blockRec");
             consoleContent = transform.getObjRec<Transform>("ConsoleMenuConsoleContentRec"); 
             messagePrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateMessageRec");
             commandInput = transform.getObjRec<TMP_InputField>("ConsoleMenuCommandInputRec");
@@ -633,7 +619,6 @@ namespace SR2E
         static MultiKey openKey = new MultiKey( Key.Tab,Key.LeftControl);
         static TMP_InputField commandInput;
         static GameObject autoCompleteEntryPrefab;
-        static GameObject consoleBlock;
         internal static Transform consoleContent;
         static Transform autoCompleteContent;
         static GameObject autoCompleteScrollView;

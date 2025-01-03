@@ -25,6 +25,7 @@ using UnityEngine.Localization;
 using SR2E.Buttons;
 using SR2E.Commands;
 using SR2E.Components;
+using SR2E.Patches.Context;
 using SR2E.Patches.General;
 using SR2E.Patches.Language;
 using SR2E.Storage;
@@ -613,9 +614,9 @@ namespace SR2E
             else if(normalFont!=null)
                 foreach (var text in SR2EConsole.parent.getAllChildrenOfType<TMP_Text>())
                     text.font = normalFont==null?SR2Font:normalFont;
-            foreach (var text in SR2EConsole.parent.getObjRec<GameObject>("modMenu").getAllChildrenOfType<TMP_Text>())
+            foreach (var text in SR2EConsole.getMenu("ModMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
-            foreach (var text in SR2EConsole.parent.getObjRec<GameObject>("cheatMenu").getAllChildrenOfType<TMP_Text>())
+            foreach (var text in SR2EConsole.getMenu("CheatMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
 
             foreach (var expansion in expansions)
@@ -703,15 +704,22 @@ namespace SR2E
             if (!consoleFinishedCreating)
             {
                 GameObject obj = GameObject.FindGameObjectWithTag("Respawn");
-                if (obj != null)
+                if (SR2EStuff != null)
                 {
+                    SR2EConsole.parent = SR2EStuff.transform;
+                    SR2EConsole.Start();
                     consoleFinishedCreating = true;
+                }
+                else if (obj != null)
+                {
+                    SR2EStuff = obj;
                     obj.name = "SR2EStuff";
                     obj.tag = "";
-                    GameObject.DontDestroyOnLoad(obj);
-                    
-                    SR2EConsole.parent = obj.transform;
-                    SR2EConsole.Start();
+                    obj.SetActive(false);
+                    GameObject.DontDestroyOnLoad(obj); 
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/Console.prefab"), obj.transform);
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/ModMenu.prefab"), obj.transform);
+                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset("Assets/Menus/CheatMenu.prefab"), obj.transform);
                 }
             }
             else
@@ -736,6 +744,7 @@ namespace SR2E
             }
         }
 
+        internal static GameObject SR2EStuff;
         private int reAddTicks = 0;
     }
 }

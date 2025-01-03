@@ -17,7 +17,6 @@ public static class SR2EModMenu
     internal static Transform parent;
     internal static Transform transform;
     internal static GameObject gameObject;
-    static GameObject modMenuBlock;
     static TextMeshProUGUI modInfoText;
     static UIPrefabLoader _uiActivator;
 
@@ -28,7 +27,7 @@ public static class SR2EModMenu
     {
         if (!EnableModMenu.HasFlag()) return;
         if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
-        modMenuBlock.SetActive(false);
+        menuBlock.SetActive(false);
         gameObject.SetActive(false);
         gameObject.getObjRec<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
         
@@ -50,7 +49,7 @@ public static class SR2EModMenu
     {
         if (!EnableModMenu.HasFlag()) return;
         if (isAnyMenuOpen) return;
-        modMenuBlock.SetActive(true);
+        menuBlock.SetActive(true);
         gameObject.SetActive(true);
         TryPauseAndHide();
         //TryDisableSR2Input();
@@ -185,7 +184,6 @@ public static class SR2EModMenu
 
     internal static void Start()
     {
-        modMenuBlock = parent.getObjRec<GameObject>("modMenuBlockRec");
         entryTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateEntryRec");
         headerTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
         warningText = transform.getObjRec<GameObject>("ModMenuModConfigurationRestartWarningRec");

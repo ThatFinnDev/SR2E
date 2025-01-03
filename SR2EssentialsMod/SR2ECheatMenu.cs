@@ -25,7 +25,6 @@ public class SR2ECheatMenu
     internal static Transform parent;
     internal static Transform transform;
     internal static GameObject gameObject;
-    internal static GameObject cheatMenuBlock;
     internal static Transform cheatButtonContent;
     internal static Transform refineryContent;
     internal static Transform gadgetsContent;
@@ -41,7 +40,7 @@ public class SR2ECheatMenu
     {
         if (!isOpen) return;
         if (Object.FindObjectsOfType<MapUI>().Length != 0) return;
-        cheatMenuBlock.SetActive(false);
+        menuBlock.SetActive(false);
         gameObject.SetActive(false);
         gameObject.getObjRec<Button>("CheatMenuMainSelectionButtonRec").onClick.Invoke();
 
@@ -59,7 +58,7 @@ public class SR2ECheatMenu
     {
         if(!SR2EConsole.cheatsEnabledOnSave) return;
         if (isAnyMenuOpen) return;
-        cheatMenuBlock.SetActive(true);
+        menuBlock.SetActive(true);
         gameObject.SetActive(true);
         TryPauseAndHide();
         //TryDisableSR2Input();
@@ -165,7 +164,6 @@ public class SR2ECheatMenu
     static GameObject gadgetsEntryTemplate;
     internal static void Start()
     {
-        cheatMenuBlock = parent.getObjRec<GameObject>("cheatMenuBlockRec");
         cheatButtonContent = transform.getObjRec<Transform>("CheatMenuCheatButtonsContentRec");
         refineryContent = transform.getObjRec<Transform>("CheatMenuRefineryContentRec");
         warpsContent = transform.getObjRec<Transform>("CheatMenuWarpsContentRec");
