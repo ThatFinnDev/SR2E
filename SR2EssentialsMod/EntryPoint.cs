@@ -152,10 +152,10 @@ namespace SR2E
             if (!prefs.HasEntry("autoUpdate"))
                 prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
             if (!prefs.HasEntry("fixSaves"))
-                prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).disableWarning();
+                prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).AddNullAction();
 
             if (!prefs.HasEntry("consoleUsesSR2Font"))
-                prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).disableWarning((System.Action)(
+                prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).AddAction((System.Action)(
                     () => { SetupFonts(); }));
             if (!prefs.HasEntry("consoleUsesSR2Style"))
                 prefs.CreateEntry("consoleUsesSR2Style", (bool)false, "Console uses SR2 style", false);
@@ -163,11 +163,11 @@ namespace SR2E
                 prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
 
             if (!prefs.HasEntry("enableDebugDirector"))
-                prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).disableWarning((System.Action)(
+                prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(
                     () => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
             
             if (!prefs.HasEntry("enableCheatMenuButton"))
-                prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).disableWarning((System.Action)(
+                prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).AddAction((System.Action)(
                     () =>
                     {
                         if (!enableCheatMenuButton)
@@ -179,13 +179,13 @@ namespace SR2E
             if (!prefs.HasEntry("doesConsoleSync"))
                 prefs.CreateEntry("doesConsoleSync", (bool)false, "Console sync with ML log", false);
             if (!prefs.HasEntry("onSaveLoadCommand"))
-                prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).disableWarning();
+                prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).AddNullAction();
             if (!prefs.HasEntry("onMainMenuLoadCommand"))
-                prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).disableWarning();
+                prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).AddNullAction();
             if (!prefs.HasEntry("noclipSprintMultiply"))
-                prefs.CreateEntry("noclipSprintMultiply", 2f, "NoClip sprint speed multiplier", false).disableWarning();
+                prefs.CreateEntry("noclipSprintMultiply", 2f, "NoClip sprint speed multiplier", false).AddNullAction();
             if (!prefs.HasEntry("noclipAdjustSpeed"))
-                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).disableWarning();
+                prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).AddNullAction();
         }
 
         public override void OnLateInitializeMelon()

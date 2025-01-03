@@ -176,9 +176,9 @@ namespace SR2E
         }
 
 
-        internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithoutWarning = new Dictionary<MelonPreferences_Entry, Action>();
-        public static void disableWarning(this MelonPreferences_Entry entry) => entriesWithoutWarning.Add(entry, null);
-        public static void disableWarning(this MelonPreferences_Entry entry, System.Action action) => entriesWithoutWarning.Add(entry, action);
+        internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithActions = new Dictionary<MelonPreferences_Entry, Action>();
+        public static void AddNullAction(this MelonPreferences_Entry entry) => entriesWithActions.Add(entry, null);
+        public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => entriesWithActions.Add(entry, action);
 
         public static bool RemoveComponent<T>(this GameObject obj) where T : Component
         {
