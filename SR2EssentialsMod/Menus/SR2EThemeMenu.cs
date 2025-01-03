@@ -69,6 +69,29 @@ public static class SR2EThemeMenu
                     SR2ESaveManager.data.themes[identifier.saveKey] = theme;
                     SR2ESaveManager.Save();
                 }));
+                Texture2D texture = new Texture2D(3, 1, TextureFormat.RGBA32, false)
+                { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
+                switch (theme)
+                {
+                    case SR2EMenuTheme.SR2E: if (true) {
+                            if(ColorUtility.TryParseHtmlString("#303846FF", out var pixel0)) texture.SetPixel(0,0,pixel0);
+                            if(ColorUtility.TryParseHtmlString("#2C6EC8FF", out var pixel1)) texture.SetPixel(1,0,pixel1);
+                            if(ColorUtility.TryParseHtmlString("#1B1B1DFF", out var pixel2)) texture.SetPixel(2,0,pixel2);
+                    } break;
+                    case SR2EMenuTheme.Black: if (true) {
+                            if(ColorUtility.TryParseHtmlString("#000000", out var pixel0)) texture.SetPixel(0,0,pixel0);
+                            if(ColorUtility.TryParseHtmlString("#000000", out var pixel1)) texture.SetPixel(1,0,pixel1);
+                            if(ColorUtility.TryParseHtmlString("#000000", out var pixel2)) texture.SetPixel(2,0,pixel2);
+                    } break;
+                    default: if (true) {
+                        if(ColorUtility.TryParseHtmlString("#F0E1C8FF", out var pixel0)) texture.SetPixel(0,0,pixel0);
+                        if(ColorUtility.TryParseHtmlString("#D2B394FF", out var pixel1)) texture.SetPixel(1,0,pixel1);
+                        if(ColorUtility.TryParseHtmlString("#FFFFFFFF", out var pixel2)) texture.SetPixel(2,0,pixel2);
+                    } break;
+                }
+
+                texture.Apply();
+                button.transform.GetChild(0).GetComponent<Image>().sprite = SR2EUtils.ConvertToSprite(texture);
                 if (SR2ESaveManager.data.themes.ContainsKey(identifier.saveKey))
                 {
                     if (SR2ESaveManager.data.themes[identifier.saveKey] == theme)
