@@ -22,7 +22,7 @@ public static class SR2EFeatureFlags
         AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
         InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectSR2Translations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
-        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch
+        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu
         
     };
 
@@ -347,6 +347,7 @@ public enum FeatureFlag
     EnableModMenu, //
     EnableCheatMenu, //
     EnableConsole, //
+    EnableThemeMenu, //
     
     //UI
     InjectMainMenuButtons, //

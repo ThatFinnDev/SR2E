@@ -78,9 +78,7 @@ internal class SR2EDebugDirector : MonoBehaviour
 	{
 		if (!isEnabled) return;
 
-		if (SR2ECheatMenu.isOpen) return;
-		if (SR2EConsole.isOpen) return;
-		if (SR2EModMenu.isOpen) return;
+		if (isAnyMenuOpen) return;
 		if (Time.timeScale == 0)  return;
 		if (Key.Digit0.OnKeyPressed()) SR2EConsole.ExecuteByString("upgrade set * 10", true);
 		if (Key.Digit7.OnKeyPressed()) SR2EConsole.ExecuteByString("infenergy true", true);

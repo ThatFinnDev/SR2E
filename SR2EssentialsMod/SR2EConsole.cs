@@ -310,6 +310,7 @@ namespace SR2E
                     if (commands.ContainsKey(cmd))
                     {
                         bool isModMenuOpen = SR2EModMenu.isOpen;
+                        bool isThemeMenuOpen = SR2EThemeMenu.isOpen;
                         bool isConsoleOpen = isOpen;
                         bool isCheatMenuOpen = SR2ECheatMenu.isOpen;
                         bool canPlay = false;
@@ -321,11 +322,13 @@ namespace SR2E
 
                         if (!canPlay)
                         {
-                            if (commands[cmd].execWhenIsOpenConsole && !isModMenuOpen && !isCheatMenuOpen)
+                            if (commands[cmd].execWhenIsOpenConsole && !isModMenuOpen && !isCheatMenuOpen && !isThemeMenuOpen)
                                 canPlay = true;
-                            if (commands[cmd].execWhenIsOpenModMenu && !isConsoleOpen && !isCheatMenuOpen)
+                            if (commands[cmd].execWhenIsOpenModMenu && !isConsoleOpen && !isCheatMenuOpen && !isThemeMenuOpen)
                                 canPlay = true;
-                            if (commands[cmd].execWhenIsOpenCheatMenu && !isModMenuOpen && !isConsoleOpen)
+                            if (commands[cmd].execWhenIsOpenCheatMenu && !isModMenuOpen && !isConsoleOpen && !isThemeMenuOpen)
+                                canPlay = true;
+                            if (commands[cmd].execWhenIsOpenThemeMenu && !isCheatMenuOpen && !isConsoleOpen && !isThemeMenuOpen)
                                 canPlay = true;
                         }
                         if (!silent) canPlay = true;
@@ -388,12 +391,9 @@ namespace SR2E
                             }
                         }
                     }
-                    else
-                        if(!silent)
-                            if (isOpen)
-                                if (!SR2EModMenu.isOpen)
-                                    if (!SR2ECheatMenu.isOpen)
-                                        SendError(translation("cmd.unknowncommand"));
+                    else if(!silent)
+                        if (isAnyMenuOpen)
+                            SendError(translation("cmd.unknowncommand"));
                 }
             }
                 
@@ -519,6 +519,13 @@ namespace SR2E
                 SR2ECheatMenu.transform = SR2ECheatMenu.gameObject.transform;
                 SR2ECheatMenu.Start();
             } catch (Exception e) { MelonLogger.Error(e); }
+            /*try
+            {
+                SR2EThemeMenu.parent = parent;
+                SR2EThemeMenu.gameObject = getMenu("ThemeMenu");
+                SR2EThemeMenu.transform = SR2EThemeMenu.gameObject.transform;
+                SR2EThemeMenu.Start();
+            } catch (Exception e) { MelonLogger.Error(e); }*/
             parent.gameObject.SetActive(true);
         }
         static void SetupCommands()

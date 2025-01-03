@@ -78,7 +78,12 @@ public abstract class SR2ECommand
     /// </summary>
     public virtual bool execWhenIsOpenModMenu { get; } = false;
 
+    /// <summary>
+    /// Allows the execution of the Command when the theme menu is open
+    /// </summary>
+    public virtual bool execWhenIsOpenThemeMenu { get; } = false;
 
+    
     /// <summary>
     /// Gets called every frame
     /// </summary>
