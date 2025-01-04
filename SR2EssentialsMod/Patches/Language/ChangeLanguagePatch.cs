@@ -9,10 +9,12 @@ internal class ChangeLanguagePatch
     internal static bool reAdd = false;
     static LocalizationDirector director;
     static UnityEngine.Localization.Locale curLocale;
+    internal static int reAddTicks = 0;
 
     internal static void Postfix(LocalizationDirector __instance, UnityEngine.Localization.Locale locale)
     {
         reAdd = true;
+        reAddTicks = 2;
         director = __instance;
         curLocale = locale;
         return;
@@ -20,6 +22,8 @@ internal class ChangeLanguagePatch
 
     internal static void FixLanguage()
     {
+        reAddTicks = 0;
+        reAdd = false;
         var code = curLocale.Formatter.Cast<CultureInfo>()._name;
 
         if (languages.ContainsKey(code))

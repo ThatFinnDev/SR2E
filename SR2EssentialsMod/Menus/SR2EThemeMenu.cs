@@ -10,7 +10,8 @@ namespace SR2E.Menus;
 
 public class SR2EThemeMenu : SR2EMenu
 {
-    public new static MenuIdentifier GetMenuIdentifier() => new (false,"thememenu",SR2EMenuTheme.Default,"ThemeMenu");
+    //Check valid themes for all menus EVERYWHERE
+    public new static MenuIdentifier GetMenuIdentifier() => new ("thememenu",SR2EMenuTheme.Default,"ThemeMenu");
     public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EThemeMenu>();
     public override bool createCommands => false;
     public override bool inGameOnly => false;
@@ -45,7 +46,7 @@ public class SR2EThemeMenu : SR2EMenu
         }
         foreach (var identifier in identifiers)
         {
-            if(!identifier.hasThemes) continue;
+            if(getValidThemes(identifier.saveKey).Count<2) continue;
             GameObject entry = Object.Instantiate(entryTemplate, content);
             entry.SetActive(true);
             entry.getObjRec<TextMeshProUGUI>("Title").text = translation(identifier.translationKey+".title");

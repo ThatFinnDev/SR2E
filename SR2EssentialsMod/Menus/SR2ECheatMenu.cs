@@ -14,7 +14,7 @@ namespace SR2E.Menus;
 
 public class SR2ECheatMenu : SR2EMenu
 {
-    public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier(true,"cheatmenu",SR2EMenuTheme.Default,"CheatMenu");
+    public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier("cheatmenu",SR2EMenuTheme.Default,"CheatMenu");
     public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2ECheatMenu>();
     public override bool createCommands => true;
     public override bool inGameOnly => true;

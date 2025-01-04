@@ -201,7 +201,13 @@ namespace SR2E
         internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithActions = new Dictionary<MelonPreferences_Entry, Action>();
         public static void AddNullAction(this MelonPreferences_Entry entry) => entriesWithActions.Add(entry, null);
         public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => entriesWithActions.Add(entry, action);
-
+        internal static Dictionary<string, List<SR2EMenuTheme>> validThemes = new Dictionary<string, List<SR2EMenuTheme>>();
+        public static List<SR2EMenuTheme> getValidThemes(string saveKey)
+        {
+            if (validThemes.ContainsKey(saveKey.ToLower()))
+                return validThemes[saveKey.ToLower()];
+            return new List<SR2EMenuTheme>();
+        }
         public static bool RemoveComponent<T>(this GameObject obj) where T : Component
         {
             try
