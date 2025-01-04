@@ -45,7 +45,7 @@ public static class BuildInfo
     /// </summary>
     public const string DisplayVersion = "3.0.0-dev";
 
-    //pre, allowmetadata, checkupdatelink,
+    //allowmetadata, checkupdatelink,
     internal static TripleDictionary<string, bool, string> getPreInfo()
     {
         return new TripleDictionary<string, bool, string>()
