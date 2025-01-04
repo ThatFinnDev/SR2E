@@ -35,10 +35,10 @@ public static class SR2EWarpManager
     }
     internal static void OnSceneUnloaded()
     {
+        if(warpTo==null) return;
         if (SceneContext.Instance == null) { warpTo = null; return; }
         if (SceneContext.Instance.PlayerState == null) { warpTo = null; return; }
-
-            
+        
         foreach (SceneGroup group in SystemContext.Instance.SceneLoader.SceneGroupList.items)
             if (group.IsGameplay) if (group.ReferenceId == warpTo.sceneGroup)
                 if (warpTo.sceneGroup == SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId)
