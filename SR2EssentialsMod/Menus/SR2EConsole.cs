@@ -1,6 +1,5 @@
 ﻿using Il2CppMonomiPark.ScriptedValue;
 using System;
-using System.Collections;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Il2CppTMPro;
@@ -35,7 +34,7 @@ public class SR2EConsole : SR2EMenu
     Scrollbar _scrollbar;
     bool shouldResetTime = false;
     bool scrollCompletlyDown = false;
-    private bool didHelloWorld = false;
+    
     protected override void OnAwake()
     {
         SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
@@ -46,18 +45,15 @@ public class SR2EConsole : SR2EMenu
         });
     }
 
-    void CheckHelloWorld()
+    protected override void OnStart()
     {
-        if (didHelloWorld) return;
-        didHelloWorld = true;
-        SendMessage(translation("console.helloworld"),false);
+        SendMessage(translation("console.helloworld"));
     }
 
     internal void SendMessage(string message)
     {
         if (!EnableConsole.HasFlag()) return;
         if (!SR2EEntryPoint.menusFinished) return;
-        if (!didHelloWorld) CheckHelloWorld();
         try
         {
             if (message.Contains("\n"))
@@ -78,12 +74,11 @@ public class SR2EConsole : SR2EMenu
     {
         if (!EnableConsole.HasFlag()) return;
         if (!SR2EEntryPoint.menusFinished) return;
-        if (!didHelloWorld) CheckHelloWorld();
         try
         {
             if (message.Contains("\n"))
             {
-                foreach (string singularLine in message.Split('\n')) SendError(singularLine);
+                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
                 return;
             }
             GameObject instance = Instantiate(messagePrefab, consoleContent);
@@ -99,12 +94,11 @@ public class SR2EConsole : SR2EMenu
     {
         if (!EnableConsole.HasFlag()) return;
         if (!SR2EEntryPoint.menusFinished) return;
-        if (!didHelloWorld) CheckHelloWorld();
         try
         {
             if (message.Contains("\n"))
             {
-                foreach (string singularLine in message.Split('\n')) SendWarning(singularLine);
+                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
                 return;
             }
             GameObject instance = Instantiate(messagePrefab, consoleContent);
@@ -128,7 +122,6 @@ public class SR2EConsole : SR2EMenu
 
     protected override void OnOpen()
     {
-        if (!didHelloWorld) CheckHelloWorld();
         RefreshAutoComplete(commandInput.text);
     }
 
@@ -247,6 +240,10 @@ public class SR2EConsole : SR2EMenu
         autoCompleteScrollView.SetActive(false);
 
         commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
+        
+
+        foreach (Transform child in transform.parent.GetChildren())
+            child.gameObject.SetActive(false);
 
     }
 
