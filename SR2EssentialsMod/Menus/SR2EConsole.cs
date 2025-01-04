@@ -37,7 +37,7 @@ public class SR2EConsole : SR2EMenu
     internal void SendMessage(string message)
     {
         if (!EnableConsole.HasFlag()) return;
-        if (!SR2EEntryPoint.consoleFinishedCreating) return;
+        if (!SR2EEntryPoint.menusFinished) return;
         try
         {
             if (message.Contains("\n"))
@@ -57,7 +57,7 @@ public class SR2EConsole : SR2EMenu
     internal void SendError(string message)
     {
         if (!EnableConsole.HasFlag()) return;
-        if (!SR2EEntryPoint.consoleFinishedCreating) return;
+        if (!SR2EEntryPoint.menusFinished) return;
         try
         {
             if (message.Contains("\n"))
@@ -77,7 +77,7 @@ public class SR2EConsole : SR2EMenu
     internal void SendWarning(string message)
     {
         if (!EnableConsole.HasFlag()) return;
-        if (!SR2EEntryPoint.consoleFinishedCreating) return;
+        if (!SR2EEntryPoint.menusFinished) return;
         try
         {
             if (message.Contains("\n"))
@@ -160,7 +160,7 @@ public class SR2EConsole : SR2EMenu
                             if (!argument.ToLower().Contains(containing.ToLower()))
                                 continue;
                         predicted++;
-                        GameObject instance = Object.Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
+                        GameObject instance = Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
                         TextMeshProUGUI textMesh = instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
                         if (args == null)
                             textMesh.text =

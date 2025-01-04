@@ -154,7 +154,7 @@ public abstract class SR2ECommand
     /// </summary>
     public bool SendUsage()
     {
-        if(!silent) SR2EConsole.SendMessage(translation("cmd.usage", Usage));
+        if(!silent) SR2ELogManager.SendMessage(translation("cmd.usage", Usage));
         return false;
     }
     /// <summary>
@@ -162,7 +162,7 @@ public abstract class SR2ECommand
     /// </summary>
     public bool SendNoArguments()
     {
-        if(!silent) SR2EConsole.SendError(translation("cmd.noarguments"));
+        if(!silent) SR2ELogManager.SendError(translation("cmd.noarguments"));
         return false;
     }
     
@@ -171,7 +171,7 @@ public abstract class SR2ECommand
     /// </summary>
     public bool SendLoadASaveFirst()
     {
-        if(!silent) SR2EConsole.SendError(translation("cmd.loadasavefirst"));
+        if(!silent) SR2ELogManager.SendError(translation("cmd.loadasavefirst"));
         return false;
     }
     /// <summary>
@@ -180,7 +180,7 @@ public abstract class SR2ECommand
 
     public void SendMessage(string message)
     {
-        if (!silent) SR2EConsole.SendMessage(message, SR2EEntryPoint.consoleToMLLog);
+        if (!silent) SR2ELogManager.SendMessage(message, SR2EEntryPoint.SR2ELogToMLLog);
     }
     
     /// <summary>
@@ -188,7 +188,7 @@ public abstract class SR2ECommand
     /// </summary>
     public bool SendError(string message)
     {
-        if (!silent) SR2EConsole.SendError(message, SR2EEntryPoint.consoleToMLLog);
+        if (!silent) SR2ELogManager.SendError(message, SR2EEntryPoint.SR2ELogToMLLog);
         return false;
     }
 
@@ -197,7 +197,7 @@ public abstract class SR2ECommand
     /// </summary>
     public void SendWarning(string message)
     {
-        if (!silent) SR2EConsole.SendWarning(message, SR2EEntryPoint.consoleToMLLog);
+        if (!silent) SR2ELogManager.SendWarning(message, SR2EEntryPoint.SR2ELogToMLLog);
     }
 
     public bool silent = false;

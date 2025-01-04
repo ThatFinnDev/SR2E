@@ -63,7 +63,7 @@ public class SR2EEntryPoint : MelonMod
     internal static TMP_FontAsset SR2Font;
     internal static TMP_FontAsset normalFont;
     internal static string updateBranch = "release";
-    internal static bool consoleFinishedCreating = false;
+    internal static bool menusFinished = false;
     internal static bool mainMenuLoaded = false;
     internal static GameObject SR2EStuff;
     static string branchJson = "";
@@ -80,8 +80,8 @@ public class SR2EEntryPoint : MelonMod
     
     internal static string onSaveLoadCommand => prefs.GetEntry<string>("onSaveLoadCommand").Value; 
     internal static string onMainMenuLoadCommand => prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
-    internal static bool consoleToMLLog => prefs.GetEntry<bool>("consoleToMLLog").Value; 
-    internal static bool mLLogToConsole => prefs.GetEntry<bool>("mLLogToConsole").Value; 
+    internal static bool SR2ELogToMLLog => prefs.GetEntry<bool>("SR2ELogToMLLog").Value; 
+    internal static bool mLLogToSR2ELog => prefs.GetEntry<bool>("mLLogToSR2ELog").Value; 
     internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value; 
     internal static bool quickStart => prefs.GetEntry<bool>("quickStart").Value; 
     internal static bool consoleUsesSR2Font => prefs.GetEntry<bool>("consoleUsesSR2Font").Value; 
@@ -131,6 +131,8 @@ public class SR2EEntryPoint : MelonMod
         prefs.DeleteEntry("debugLogging");
         prefs.DeleteEntry("consoleUsesSR2Style");;
         prefs.DeleteEntry("doesConsoleSync");
+        prefs.DeleteEntry("mLLogToConsole");
+        prefs.DeleteEntry("SR2ELogToMLLog");
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
         if (!prefs.HasEntry("fixSaves")) prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).AddNullAction();
@@ -145,8 +147,8 @@ public class SR2EEntryPoint : MelonMod
                 if (!enableCheatMenuButton) cheatMenuButton.Remove();
                 if (enableCheatMenuButton) cheatMenuButton.AddAgain();
             }));
-        if (!prefs.HasEntry("mLLogToConsole")) prefs.CreateEntry("mLLogToConsole", (bool)false, "Send MLLogs to console", false).AddNullAction();
-        if (!prefs.HasEntry("consoleToMLLog")) prefs.CreateEntry("consoleToMLLog", (bool)false, "Send console messages to MLLogs", false).AddNullAction();
+        if (!prefs.HasEntry("mLLogToSR2ELog")) prefs.CreateEntry("mLLogToSR2ELog", (bool)false, "Send MLLogs to console", false).AddNullAction();
+        if (!prefs.HasEntry("SR2ELogToMLLog")) prefs.CreateEntry("SR2ELogToMLLog", (bool)false, "Send console messages to MLLogs", false).AddNullAction();
         if (!prefs.HasEntry("onSaveLoadCommand")) prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).AddNullAction();
         if (!prefs.HasEntry("onMainMenuLoadCommand")) prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).AddNullAction();
         if (!prefs.HasEntry("noclipSprintMultiply")) prefs.CreateEntry("noclipSprintMultiply", 2f, "NoClip sprint speed multiplier", false).AddNullAction();
@@ -492,7 +494,7 @@ public class SR2EEntryPoint : MelonMod
             baseUIAddSliders.Remove(ui);
         }
 
-        if (!consoleFinishedCreating)
+        if (!menusFinished)
         {
             GameObject obj = GameObject.FindGameObjectWithTag("Respawn");
             if (SR2EStuff != null)
@@ -513,10 +515,11 @@ public class SR2EEntryPoint : MelonMod
                             }catch (Exception e) { MelonLogger.Error(e); }
                         }
                     }
-                consoleFinishedCreating = true;
+                menusFinished = true;
             }
             else if (obj != null)
             {
+                SR2ELogManager.Start();
                 SR2ESaveManager.Start();
                 SR2ECommandManager.Start();
                 SR2EStuff = obj;

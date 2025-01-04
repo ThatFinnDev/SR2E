@@ -7,6 +7,7 @@ using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
 using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppMonomiPark.SlimeRancher.World;
 using SR2E.Components;
+using SR2E.Managers;
 using Unity.Mathematics;
 
 namespace SR2E.Commands;
@@ -597,16 +598,16 @@ internal class UtilCommand : SR2ECommand
 
 
     private static VacModes currVacMode;
-    public static bool PlayerVacModeSet(bool isGet,bool silent,string modeString = ".")
+    public bool PlayerVacModeSet(bool isGet,bool silent,string modeString = ".")
     {
         if (isGet)
         {
-            if(!silent) SR2EConsole.SendMessage(translation("cmd.util.vacmode.show",currVacMode.ToString().Replace("VacModes","")));
+            if(!silent) SendMessage(translation("cmd.util.vacmode.show",currVacMode.ToString().Replace("VacModes","")));
             return true;
         }
         VacModes mode;
         try { mode = Enum.Parse<VacModes>(modeString); }
-        catch { if (!silent) SR2EConsole.SendError(translation("cmd.error.notvalidvacmode", modeString)); return false; }
+        catch { if (!silent) SendError(translation("cmd.error.notvalidvacmode", modeString)); return false; }
         
         
         if (mode == VacModes.NORMAL)
@@ -663,7 +664,7 @@ internal class UtilCommand : SR2ECommand
 
         //SR2ESavableDataV2.Instance.playerSavedData.vacMode = mode;
         currVacMode = mode;
-        if(!silent) SR2EConsole.SendMessage(translation("cmd.util.vacmode.success",mode.ToString().Replace("VacModes","")));
+        if(!silent) SendMessage(translation("cmd.util.vacmode.success",mode.ToString().Replace("VacModes","")));
         return true;
     }
 
