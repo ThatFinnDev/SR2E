@@ -80,18 +80,18 @@ internal class SR2EDebugDirector : MonoBehaviour
 
 		if (isAnyMenuOpen) return;
 		if (Time.timeScale == 0)  return;
-		if (Key.Digit0.OnKeyPressed()) SR2EConsole.ExecuteByString("upgrade set * 10", true);
-		if (Key.Digit7.OnKeyPressed()) SR2EConsole.ExecuteByString("infenergy true", true);
-		if (Key.Digit8.OnKeyPressed()) SR2EConsole.ExecuteByString("infhealth", true);
-		if(CommandsLoadExperimental.HasFlag()) if (Key.Digit9.OnKeyPressed()) GameContext.Instance.AutoSaveDirector.SaveGame();
-		if (Key.P.OnKeyPressed()) SR2EConsole.ExecuteByString("pedia unlock * false", true);
-		if (Key.K.OnKeyPressed()) SR2EConsole.ExecuteByString("clearinv", true);
-		if (Key.L.OnKeyPressed()) SR2EConsole.ExecuteByString("refillinv", true);
-		if (Key.N.OnKeyPressed()) SR2EConsole.ExecuteByString("noclip", true);
-		if (Key.KeypadPlus.OnKeyPressed()) SR2EConsole.ExecuteByString("newbucks 1000", true);
-		if (Key.KeypadMinus.OnKeyPressed()) SR2EConsole.ExecuteByString("newbucks -1000", true);
-		if (Key.LeftBracket.OnKeyPressed()) SR2EConsole.ExecuteByString("fastforward -1", true);
-		if (Key.RightBracket.OnKeyPressed()) SR2EConsole.ExecuteByString("fastforward 1", true);
+		if (Key.Digit0.OnKeyPressed()) SR2ECommandManager.ExecuteByString("upgrade set * 10", true);
+		if (Key.Digit7.OnKeyPressed()) SR2ECommandManager.ExecuteByString("infenergy true", true);
+		if (Key.Digit8.OnKeyPressed()) SR2ECommandManager.ExecuteByString("infhealth", true);
+		if (Key.Digit9.OnKeyPressed()) GameContext.Instance.AutoSaveDirector.SaveGame();
+		if(CommandsLoadExperimental.HasFlag()) if (Key.P.OnKeyPressed()) SR2ECommandManager.ExecuteByString("pedia unlock * false", true);
+		if (Key.K.OnKeyPressed()) SR2ECommandManager.ExecuteByString("clearinv", true);
+		if (Key.L.OnKeyPressed()) SR2ECommandManager.ExecuteByString("refillinv", true);
+		if (Key.N.OnKeyPressed()) SR2ECommandManager.ExecuteByString("noclip", true);
+		if (Key.KeypadPlus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks 1000", true);
+		if (Key.KeypadMinus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks -1000", true);
+		if (Key.LeftBracket.OnKeyPressed()) SR2ECommandManager.ExecuteByString("fastforward -1", true);
+		if (Key.RightBracket.OnKeyPressed()) SR2ECommandManager.ExecuteByString("fastforward 1", true);
 
 	}
 

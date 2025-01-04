@@ -1,3 +1,4 @@
+using SR2E.Managers;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Components;
@@ -9,11 +10,11 @@ internal class FlingMode : MonoBehaviour
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            SR2EConsole.ExecuteByString("fling 100");
+            SR2ECommandManager.ExecuteByString("fling 100");
         }
         else if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            SR2EConsole.ExecuteByString("fling -100");
+            SR2ECommandManager.ExecuteByString("fling -100");
         }
     }
 }

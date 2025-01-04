@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Il2CppInterop.Runtime.Injection;
 using Il2CppSystem.IO;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -32,6 +33,7 @@ using SR2E.Patches.General;
 using SR2E.Patches.Language;
 using SR2E.Storage;
 using UnityEngine.Networking;
+using UnityEngine.Playables;
 
 namespace SR2E
 {
@@ -595,7 +597,7 @@ namespace SR2E
                 case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
             }
-            SR2EConsole.OnSceneWasLoaded(buildIndex, sceneName);
+            SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
         }
         public static event EventHandler RegisterOptionMenuButtons;  
         
@@ -611,14 +613,14 @@ namespace SR2E
                 MelonLogger.Error("This happens on some platforms and I (the dev) haven't found a fix yet!");
             }
             if (consoleUsesSR2Font)
-                foreach (var text in SR2EConsole.parent.getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2EStuff.getAllChildrenOfType<TMP_Text>())
                     text.font = SR2Font;
             else if(normalFont!=null)
-                foreach (var text in SR2EConsole.parent.getAllChildrenOfType<TMP_Text>())
+                foreach (var text in SR2EStuff.getAllChildrenOfType<TMP_Text>())
                     text.font = normalFont==null?SR2Font:normalFont;
-            foreach (var text in SR2EConsole.getMenu("ModMenu").getAllChildrenOfType<TMP_Text>())
+            foreach (var text in getMenu("ModMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
-            foreach (var text in SR2EConsole.getMenu("CheatMenu").getAllChildrenOfType<TMP_Text>())
+            foreach (var text in getMenu("CheatMenu").getAllChildrenOfType<TMP_Text>())
                 text.font = SR2Font;
 
             foreach (var expansion in expansions)
@@ -679,7 +681,6 @@ namespace SR2E
             }
         }
         internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
-
         public override void OnUpdate()
         {
             if (mainMenuLoaded)
@@ -693,7 +694,7 @@ namespace SR2E
                         {
                             ScrollRect rect = scrollView.GetComponent<ScrollRect>();
                             rect.vertical = true;
-                            Scrollbar scrollBar = GameObject.Instantiate(SR2EConsole.parent.getObjRec<Scrollbar>("saveFilesSliderRec"), rect.transform);
+                            Scrollbar scrollBar = GameObject.Instantiate(SR2EStuff.getObjRec<Scrollbar>("saveFilesSliderRec"), rect.transform);
                             rect.verticalScrollbar = scrollBar;
                             rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
                             scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width / 250f, 0, 0);
@@ -708,34 +709,61 @@ namespace SR2E
                 GameObject obj = GameObject.FindGameObjectWithTag("Respawn");
                 if (SR2EStuff != null)
                 {
-                    SR2EConsole.parent = SR2EStuff.transform;
-                    SR2EConsole.Start();
+                    SR2EStuff.SetActive(true);
+                    foreach (var pair in menusToInit)
+                        for (int i = 0; i < SR2EStuff.transform.childCount; i++)
+                        {
+                            Transform child = SR2EStuff.transform.GetChild(i);
+                            if(child.name==pair.Key)
+                            {
+                                try
+                                {
+                                    var methodInfo = pair.Value.GetMethod(nameof(SR2EMenu.PreAwake), BindingFlags.Static | BindingFlags.Public);
+                                    var result = methodInfo.Invoke(null, new[] { child.gameObject });
+                                    child.gameObject.SetActive(true);
+                                }
+                                catch (Exception e) { MelonLogger.Error(e); }
+                            }
+                        }
                     consoleFinishedCreating = true;
                 }
                 else if (obj != null)
                 {
                     SR2ESaveManager.Start();
+                    SR2ECommandManager.Start();
                     SR2EStuff = obj;
                     obj.name = "SR2EStuff";
                     obj.tag = "";
                     obj.SetActive(false);
                     GameObject.DontDestroyOnLoad(obj);
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset(getMenuPath(SR2EConsole.menuIdentifier)), obj.transform);
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset(getMenuPath(SR2EModMenu.menuIdentifier)), obj.transform);
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset(getMenuPath(SR2ECheatMenu.menuIdentifier)), obj.transform);
-                    GameObject.Instantiate(SystemContextPatch.bundle.LoadAsset(getMenuPath(SR2EThemeMenu.menuIdentifier)), obj.transform);
+                    foreach (Type type in MelonAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract))
+                    {
+                        try
+                        {
+                            var methodInfo = type.GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
+                            var result = methodInfo.Invoke(null, null);
+                            if (result is MenuIdentifier identifier)
+                            {
+                                var asset = SystemContextPatch.bundle.LoadAsset(getMenuPath(identifier));
+                                var Object = GameObject.Instantiate(asset, obj.transform);
+                                menusToInit.Add(Object.name,type);
+                                ClassInjector.RegisterTypeInIl2Cpp(type, new RegisterTypeOptions(){LogSuccess =false});
+                            }
+                            else MelonLogger.Error($"The menu under the name {type.Name} couldn't be loaded! It's MenuIdentifier is broken!");
+
+                        }
+                        catch (Exception e) { MelonLogger.Error(e); }
+                    } 
                 }
             }
             else
             {
-                try { SR2EConsole.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                try { if (GM<SR2EConsole>().openKey.OnKeyPressed()) GM<SR2EConsole>().Toggle();} catch (Exception e) { MelonLogger.Error(e); }
+                try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+                try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-                try { SR2EModMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-                try { SR2EThemeMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-                if(SR2EConsole.cheatsEnabledOnSave) try { SR2ECheatMenu.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 if(DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
             }
-
             if (ChangeLanguagePatch.reAdd)
             {
                 reAddTicks++;
@@ -760,5 +788,10 @@ namespace SR2E
         }
         internal static GameObject SR2EStuff;
         private int reAddTicks = 0;
+        private Dictionary<Type, SR2EThemeMenu[]> allowedThemes = new Dictionary<Type, SR2EThemeMenu[]>();
+
+        internal static Dictionary<SR2EMenu, Dictionary<string, object>> menus =
+            new Dictionary<SR2EMenu, Dictionary<string, object>>();
+        static Dictionary<string,Type> menusToInit = new Dictionary<string, Type>();
     }
 }

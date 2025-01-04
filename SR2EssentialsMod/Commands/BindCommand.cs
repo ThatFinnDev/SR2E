@@ -18,12 +18,12 @@ internal class BindCommand : SR2ECommand
         if (argIndex == 1)
         {
             List<string> list = new List<string>();
-            foreach (KeyValuePair<string, SR2ECommand> entry in SR2EConsole.commands) list.Add(entry.Key);
+            foreach (KeyValuePair<string, SR2ECommand> entry in SR2ECommandManager.commands) list.Add(entry.Key);
             return list;
         }
 
         string secondArg = args[1];
-        foreach (KeyValuePair<string, SR2ECommand> entry in SR2EConsole.commands)
+        foreach (KeyValuePair<string, SR2ECommand> entry in SR2ECommandManager.commands)
         {
             if (entry.Key == secondArg) return entry.Value.GetAutoComplete(argIndex - 2, args);
         }

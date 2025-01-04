@@ -115,7 +115,7 @@ public static class SR2ESaveManager
             if (p == null) return SR2EError.TeleportablePlayerNull;
             SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
             if(cc == null) return SR2EError.SRCharacterControllerNull;
-            if (SR2EConsole.isOpen) SR2EConsole.Close();
+            if (GM<SR2EConsole>().isOpen) GM<SR2EConsole>().Close();
             if(sceneGroup==p.SceneGroup.ReferenceId)
             {
                 cc.Position = position;
@@ -224,7 +224,7 @@ public static class SR2ESaveManager
                 foreach (KeyValuePair<Key,string> keyValuePair in data.keyBinds)
                     if (keyValuePair.Key.OnKeyPressed())
                         if(WarpManager.warpTo==null)
-                            SR2EConsole.ExecuteByString(keyValuePair.Value,true);
+                            SR2ECommandManager.ExecuteByString(keyValuePair.Value,true);
             }
             catch 
             {

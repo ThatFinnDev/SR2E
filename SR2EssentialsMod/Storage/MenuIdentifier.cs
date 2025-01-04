@@ -14,4 +14,6 @@ public struct MenuIdentifier
         this.defaultTheme = defaultTheme;
         this.saveKey = saveKey;
     }
+    public override string ToString() => $"MenuIdentifier {{ HasThemes: {hasThemes}, TranslationKey: \"{translationKey}\", DefaultTheme: {defaultTheme}, SaveKey: \"{saveKey}\" }}";
+    
 }

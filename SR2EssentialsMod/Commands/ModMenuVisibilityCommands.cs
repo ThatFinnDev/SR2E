@@ -14,12 +14,12 @@ internal class ModMenuVisibilityCommands
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
-            if(SR2EConsole.isOpen)
-                SR2EConsole.Close();
-            if(SR2ECheatMenu.isOpen)
-                SR2ECheatMenu.Close();
-            if(!SR2EModMenu.isOpen)
-                SR2EModMenu.Open();
+            if(GM<SR2EConsole>().isOpen)
+                GM<SR2EConsole>().Close();
+            if(GM<SR2ECheatMenu>().isOpen)
+                GM<SR2ECheatMenu>().Close();
+            if(!GM<SR2EModMenu>().isOpen)
+                GM<SR2EModMenu>().Open();
             return true;
         }
     }
@@ -32,12 +32,12 @@ internal class ModMenuVisibilityCommands
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
-            if(SR2EConsole.isOpen)
-                SR2EConsole.Close();
-            if(SR2ECheatMenu.isOpen)
-                SR2ECheatMenu.Close();
-            if(SR2EModMenu.isOpen)
-                SR2EModMenu.Close();
+            if(GM<SR2EConsole>().isOpen)
+                GM<SR2EConsole>().Close();
+            if(GM<SR2ECheatMenu>().isOpen)
+                GM<SR2ECheatMenu>().Close();
+            if(GM<SR2EModMenu>().isOpen)
+                GM<SR2EModMenu>().Close();
             return true;
         }
     }
@@ -50,11 +50,11 @@ internal class ModMenuVisibilityCommands
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
-            if(SR2EConsole.isOpen)
-                SR2EConsole.Close();
-            if(SR2ECheatMenu.isOpen)
-                SR2ECheatMenu.Close();
-            SR2EModMenu.Toggle();
+            if(GM<SR2EConsole>().isOpen)
+                GM<SR2EConsole>().Close();
+            if(GM<SR2ECheatMenu>().isOpen)
+                GM<SR2ECheatMenu>().Close();
+            GM<SR2EModMenu>().Toggle();
             return true;
         }
     }

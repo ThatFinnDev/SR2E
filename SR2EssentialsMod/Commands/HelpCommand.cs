@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands;
+﻿using SR2E.Managers;
+
+namespace SR2E.Commands;
 
 internal class HelpCommand : SR2ECommand
 {
@@ -8,8 +10,8 @@ internal class HelpCommand : SR2ECommand
 
     public string GetCommandDescription(string command)
     {
-        if (SR2EConsole.commands.ContainsKey(command))
-            return SR2EConsole.commands[command].ExtendedDescription;
+        if (SR2ECommandManager.commands.ContainsKey(command))
+            return SR2ECommandManager.commands[command].ExtendedDescription;
         return string.Empty;
     }
 
@@ -18,7 +20,7 @@ internal class HelpCommand : SR2ECommand
         if (argIndex == 0)
         {
             List<string> list = new List<string>();
-            foreach (KeyValuePair<string, SR2ECommand> entry in SR2EConsole.commands)
+            foreach (KeyValuePair<string, SR2ECommand> entry in SR2ECommandManager.commands)
             {
                 if (!entry.Value.Hidden)
                     list.Add(entry.Key);
@@ -38,7 +40,7 @@ internal class HelpCommand : SR2ECommand
             string currText = translation("cmd.help.success")+"\n";
 
 
-            foreach (KeyValuePair<string, SR2ECommand> entry in SR2EConsole.commands)
+            foreach (KeyValuePair<string, SR2ECommand> entry in SR2ECommandManager.commands)
             {
                 if (!entry.Value.Hidden)
                     currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
@@ -49,9 +51,9 @@ internal class HelpCommand : SR2ECommand
         }
 
         var desc = GetCommandDescription(args[0]);
-        if (SR2EConsole.commands.ContainsKey(args[0]))
+        if (SR2ECommandManager.commands.ContainsKey(args[0]))
         {
-            SendMessage(translation("cmd.help.successspecific",SR2EConsole.commands[args[0]].Usage,desc));
+            SendMessage(translation("cmd.help.successspecific",SR2ECommandManager.commands[args[0]].Usage,desc));
             return true;
         }
 

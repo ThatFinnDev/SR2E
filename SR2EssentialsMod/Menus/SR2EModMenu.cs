@@ -17,46 +17,41 @@ using Toggle = UnityEngine.UI.Toggle;
 
 namespace SR2E.Menus;
 
-public static class SR2EModMenu
+public class SR2EModMenu : SR2EMenu
 {
-    public static MenuIdentifier menuIdentifier = new MenuIdentifier(true,"modmenu",SR2EMenuTheme.Default,"ModMenu");
-    internal static Transform parent;
-    internal static Transform transform;
-    internal static GameObject gameObject;
-    static TextMeshProUGUI modInfoText;
-
-    /// <summary>
-    /// Closes the mod menu
-    /// </summary>
-    public static void Close()
+    public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier(true,"modmenu",SR2EMenuTheme.Default,"ModMenu");
+    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EModMenu>();
+    
+    protected override void OnAwake()
     {
-        if (!EnableModMenu.HasFlag()) return;
-        menuBlock.SetActive(false);
-        gameObject.SetActive(false);
+        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
+        {
+            {"requiredFeatures",new List<FeatureFlag>(){EnableModMenu}},
+            {"openActions",new List<MenuActions> { MenuActions.PauseGame,MenuActions.HideMenus }},
+            {"closeActions",new List<MenuActions> { MenuActions.UnPauseGame,MenuActions.UnHideMenus,MenuActions.EnableInput }},
+        });
+    }
+    
+    
+    TextMeshProUGUI modInfoText;
+    GameObject entryTemplate;
+    GameObject headerTemplate;
+    GameObject warningText;
+    Texture2D modMenuTabImage;
+    List<Key> allPossibleKeys = new List<Key>();
+    TextMeshProUGUI themeMenuText;
+    Button themeButton;
+
+    protected override void OnClose()
+    {
         gameObject.getObjRec<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
-        
-        TryUnPauseGame();
-        TryUnHideMenus();
-        TryEnableSR2Input();
-        
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         for (int i = 0; i < modContent.childCount; i++)
             Object.Destroy(modContent.GetChild(i).gameObject);
     }
-
-
-    /// <summary>
-    /// Opens the mod menu
-    /// </summary>
-    public static void Open()
+    
+    protected override void OnOpen()
     {
-        if (!EnableModMenu.HasFlag()) return;
-        if (isAnyMenuOpen) return;
-        menuBlock.SetActive(true);
-        gameObject.SetActive(true);
-        TryPauseAndHide();
-        //TryDisableSR2Input();
-        
         GameObject buttonPrefab = transform.getObjRec<GameObject>("ModMenuModMenuTemplateButtonRec");
         Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
         foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (RottenMelon rotten in loadedAssembly.RottenMelons)
@@ -66,7 +61,7 @@ public static class SR2EModMenu
                 SR2EExpansionAttribute sr2EExpansionAttribute =
                     rotten.assembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
                 bool isSR2EExpansion = sr2EExpansionAttribute != null;
-                GameObject obj = GameObject.Instantiate(buttonPrefab, modContent);
+                GameObject obj = Instantiate(buttonPrefab, modContent);
                 Button b = obj.GetComponent<Button>();
                 if (String.IsNullOrEmpty(rotten.assembly.Assembly.FullName))
                     b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = translation("modmenu.modinfo.brokenmodtitle");
@@ -105,7 +100,7 @@ public static class SR2EModMenu
         {
             SR2EExpansionAttribute sr2EExpansionAttribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
             bool isSR2EExpansion = sr2EExpansionAttribute != null;
-            GameObject obj = GameObject.Instantiate(buttonPrefab, modContent);
+            GameObject obj = Instantiate(buttonPrefab, modContent);
             Button b = obj.GetComponent<Button>();
             b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = melonBase.Info.Name;
             obj.SetActive(true);
@@ -158,39 +153,8 @@ public static class SR2EModMenu
             }));
         }
         modContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
-        
-        foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
     }
-
-    /// <summary>
-    /// Toggles the mod menu
-    /// </summary>
-    public static void Toggle()
-    {
-        if (!EnableModMenu.HasFlag()) return;
-        if (isOpen) Close();
-        else Open();
-    }
-
-    public static bool isOpen
-    {
-        get
-        {
-            if (!EnableModMenu.HasFlag()) return false;
-            if(gameObject==null) return false;
-            return gameObject.activeSelf;
-        }
-    }
-
-    static GameObject entryTemplate;
-    static GameObject headerTemplate;
-    static GameObject warningText;
-    static Texture2D modMenuTabImage;
-    static List<Key> allPossibleKeys = new List<Key>();
-    private static TextMeshProUGUI themeMenuText;
-    private static Dictionary<TextMeshProUGUI, string> toTranslate = new Dictionary<TextMeshProUGUI, string>();
-    private static Button themeButton;
-    internal static void Start()
+    protected override void OnLateAwake()
     {
         entryTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateEntryRec");
         headerTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
@@ -221,18 +185,18 @@ public static class SR2EModMenu
         toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
         themeButton = transform.getObjRec<Button>("ThemeMenuButtonRec");
-        themeButton.onClick.AddListener((Action)(() =>{ Close(); SR2EThemeMenu.Open(); }));
+        themeButton.onClick.AddListener((Action)(() =>{ Close(); GM<SR2EThemeMenu>().Open(); }));
         toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
         {
-            GameObject header = Object.Instantiate(headerTemplate, content);
+            GameObject header = Instantiate(headerTemplate, content);
             header.SetActive(true);
             header.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = category.DisplayName;
             foreach (MelonPreferences_Entry entry in category.Entries)
             {
                 if (!entry.IsHidden)
                 {
-                    GameObject obj = Object.Instantiate(entryTemplate, content);
+                    GameObject obj = Instantiate(entryTemplate, content);
                     obj.SetActive(true);
                     obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
                     if (!String.IsNullOrEmpty(entry.Description))
@@ -251,11 +215,11 @@ public static class SR2EModMenu
                             {
                                 entry.BoxedEditedValue = isOn;
                                 category.SaveToFile(false);
-                                if (!entriesWithoutWarning.ContainsKey(entry))
+                                if (!entriesWithActions.ContainsKey(entry))
                                     warningText.SetActive(true);
                                 else
                                 {
-                                    System.Action action = entriesWithoutWarning[entry];
+                                    System.Action action = entriesWithActions[entry];
                                     if (action != null)
                                         action.Invoke();
                                 }
@@ -284,11 +248,11 @@ public static class SR2EModMenu
                                 {
                                     entry.BoxedEditedValue = value;
                                     category.SaveToFile(false);
-                                    if (!entriesWithoutWarning.ContainsKey(entry))
+                                    if (!entriesWithActions.ContainsKey(entry))
                                         warningText.SetActive(true);
                                     else
                                     {
-                                        System.Action action = entriesWithoutWarning[entry];
+                                        System.Action action = entriesWithActions[entry];
                                         if (action != null)
                                             action.Invoke();
                                     }
@@ -318,11 +282,11 @@ public static class SR2EModMenu
                                     entry.BoxedEditedValue = value;
                                     category.SaveToFile(false);
                                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
-                                    if (!entriesWithoutWarning.ContainsKey(entry))
+                                    if (!entriesWithActions.ContainsKey(entry))
                                         warningText.SetActive(true);
                                     else
                                     {
-                                        System.Action action = entriesWithoutWarning[entry];
+                                        System.Action action = entriesWithActions[entry];
                                         if (action != null)
                                             action.Invoke();
                                     }
@@ -352,11 +316,11 @@ public static class SR2EModMenu
                                     entry.BoxedEditedValue = value;
                                     category.SaveToFile(false);
                                     obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
-                                    if (!entriesWithoutWarning.ContainsKey(entry))
+                                    if (!entriesWithActions.ContainsKey(entry))
                                         warningText.SetActive(true);
                                     else
                                     {
-                                        System.Action action = entriesWithoutWarning[entry];
+                                        System.Action action = entriesWithActions[entry];
                                         if (action != null)
                                             action.Invoke();
                                     }
@@ -379,11 +343,11 @@ public static class SR2EModMenu
                         {
                             entry.BoxedEditedValue = text;
                             category.SaveToFile(false);
-                            if (!entriesWithoutWarning.ContainsKey(entry))
+                            if (!entriesWithActions.ContainsKey(entry))
                                 warningText.SetActive(true);
                             else
                             {
-                                System.Action action = entriesWithoutWarning[entry];
+                                System.Action action = entriesWithActions[entry];
                                 if (action != null)
                                     action.Invoke();
                             }
@@ -413,11 +377,11 @@ public static class SR2EModMenu
                                     {
                                         textMesh.text = key.ToString();
                                         entry.BoxedEditedValue = key.Value;
-                                        if (!entriesWithoutWarning.ContainsKey(entry))
+                                        if (!entriesWithActions.ContainsKey(entry))
                                             warningText.SetActive(true);
                                         else
                                         {
-                                            System.Action action = entriesWithoutWarning[entry];
+                                            System.Action action = entriesWithActions[entry];
                                             if (action != null)
                                                 action.Invoke();
                                         }
@@ -433,40 +397,40 @@ public static class SR2EModMenu
         }
     }
 
-    private static Action<Nullable<Key>> listeninAction = null;
+    static Action<Nullable<Key>> listeninAction = null;
 
-    static void keyWasPressed(Key key)
+    void keyWasPressed(Key key)
     {
         if (listeninAction != null)
             listeninAction.Invoke(key);
     }
 
-    internal static void Update()
+    protected void Update()
     {
-        if (isOpen)
+        if (listeninAction == null)
+            if (Key.Escape.OnKeyPressed())
+                Close();
+        foreach (Key key in allPossibleKeys)
         {
-            if (listeninAction == null)
-                if (Key.Escape.OnKeyPressed())
-                    Close();
-            foreach (Key key in allPossibleKeys)
+            try
             {
-                try { if(key.OnKeyPressed()) keyWasPressed(key); }
-                catch { }
+                if (key.OnKeyPressed()) keyWasPressed(key);
             }
-
-            if (Mouse.current.leftButton.wasPressedThisFrame ||
-                Mouse.current.rightButton.wasPressedThisFrame ||
-                Mouse.current.middleButton.wasPressedThisFrame ||
-                Mouse.current.backButton.wasPressedThisFrame ||
-                Mouse.current.forwardButton.wasPressedThisFrame ||
-                Mouse.current.leftButton.wasPressedThisFrame ||
-                Mouse.current.leftButton.wasPressedThisFrame)
+            catch
             {
-                if (listeninAction != null)
-                    listeninAction.Invoke(null);
             }
+        }
 
-
+        if (Mouse.current.leftButton.wasPressedThisFrame ||
+            Mouse.current.rightButton.wasPressedThisFrame ||
+            Mouse.current.middleButton.wasPressedThisFrame ||
+            Mouse.current.backButton.wasPressedThisFrame ||
+            Mouse.current.forwardButton.wasPressedThisFrame ||
+            Mouse.current.leftButton.wasPressedThisFrame ||
+            Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (listeninAction != null)
+                listeninAction.Invoke(null);
         }
     }
 }

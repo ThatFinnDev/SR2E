@@ -1,56 +1,44 @@
 using System;
 using System.Reflection;
-using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
-using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
-using SR2E.Expansion;
 using SR2E.Managers;
 using SR2E.Storage;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Action = System.Action;
 
 namespace SR2E.Menus;
 
-public static class SR2EThemeMenu
+public class SR2EThemeMenu : SR2EMenu
 {
-    public static MenuIdentifier menuIdentifier = new MenuIdentifier(false,"thememenu",SR2EMenuTheme.Default,"ThemeMenu");
-    internal static Transform parent;
-    internal static Transform transform;
-    internal static GameObject gameObject;
-    private static Dictionary<TextMeshProUGUI, string> toTranslate = new Dictionary<TextMeshProUGUI, string>();
+    public new static MenuIdentifier GetMenuIdentifier() => new (false,"thememenu",SR2EMenuTheme.Default,"ThemeMenu");
+    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EThemeMenu>();
+    
 
-    /// <summary>
-    /// Closes the theme menu
-    /// </summary>
-    public static void Close()
+    protected override void OnAwake()
     {
-        if (!EnableThemeMenu.HasFlag()) return;
-        menuBlock.SetActive(false);
-        gameObject.SetActive(false);
-
-
-        content.DestroyAllChildren();
-        TryUnPauseGame();
-        TryUnHideMenus();
-        TryEnableSR2Input();
-        
+        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
+        {
+            {"requiredFeatures",new List<FeatureFlag>(){EnableThemeMenu}},
+            {"openActions",new List<MenuActions> { MenuActions.PauseGame,MenuActions.HideMenus }},
+            {"closeActions",new List<MenuActions> { MenuActions.UnPauseGame,MenuActions.UnHideMenus,MenuActions.EnableInput }},
+        });
     }
 
-    /// <summary>
-    /// Opens the theme menu
-    /// </summary>
-    public static void Open()
+    protected override void OnClose()
     {
-        if (!EnableThemeMenu.HasFlag()) return;
-        if (isAnyMenuOpen) return;
-        menuBlock.SetActive(true);
-        gameObject.SetActive(true);
-        TryPauseAndHide();
-        //TryDisableSR2Input();
-        
-        foreach (var identifier in new MenuIdentifier[]{SR2EConsole.menuIdentifier,SR2ECheatMenu.menuIdentifier,SR2EModMenu.menuIdentifier,SR2EThemeMenu.menuIdentifier})
+        content.DestroyAllChildren();
+    }
+    protected override void OnOpen()
+    {
+        List<MenuIdentifier> identifiers = new List<MenuIdentifier>();
+        foreach (var pair in SR2EEntryPoint.menus)
+        {
+            var methodInfo = pair.Key.GetType().GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
+            var result = methodInfo.Invoke(null, null);
+            if (result is MenuIdentifier identifier) identifiers.Add(identifier);
+            else MelonLogger.Msg(result.GetType().FullName);
+        }
+        foreach (var identifier in identifiers)
         {
             if(!identifier.hasThemes) continue;
             GameObject entry = Object.Instantiate(entryTemplate, content);
@@ -60,7 +48,7 @@ public static class SR2EThemeMenu
             foreach (SR2EMenuTheme theme in Enum.GetValues(typeof(SR2EMenuTheme)))
             {
                 Transform contentRec = entry.getObjRec<Transform>("ContentRec");
-                GameObject button = Object.Instantiate(buttonTemplate, contentRec);
+                GameObject button = Instantiate(buttonTemplate, contentRec);
                 button.SetActive(true);
                 button.transform.GetChild(0).GetComponent<Button>().onClick.AddListener((Action)(() =>
                 {
@@ -99,36 +87,12 @@ public static class SR2EThemeMenu
                 }
             }
         }
-        
-        
-        
-        foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
-    }
-
-    /// <summary>
-    /// Toggles the theme menu
-    /// </summary>
-    public static void Toggle()
-    {
-        if (!EnableThemeMenu.HasFlag()) return;
-        if (isOpen) Close();
-        else Open();
-    }
-
-    public static bool isOpen
-    {
-        get
-        {
-            if (!EnableThemeMenu.HasFlag()) return false;
-            if(gameObject==null) return false;
-            return gameObject.activeSelf;
-        }
     }
     
-    static GameObject entryTemplate;
-    static GameObject buttonTemplate;
-    static Transform content;
-    internal static void Start()
+    GameObject entryTemplate;
+    GameObject buttonTemplate;
+    Transform content;
+    protected override void OnLateAwake()
     {
         entryTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryRec");
         buttonTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryButtonEntryRec");
@@ -141,12 +105,9 @@ public static class SR2EThemeMenu
         toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"thememenu.title");
     }
 
-    internal static void Update()
+    protected override void OnUpdate()
     {
-        if (isOpen)
-        {
-            if (Key.Escape.OnKeyPressed())
-                Close();
-        }
+        if (Key.Escape.OnKeyPressed())
+            Close();
     }
 }

@@ -151,6 +151,13 @@ namespace SR2E
         }
         public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
 
+        internal static GameObject getMenu(string name)
+        {
+            for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
+                if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).name.Replace("(Clone)","").Split("_")[0] == name)
+                    return SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject;
+            return null;
+        }
 
         public static GameObject? Get(string name) => Get<GameObject>(name);
 
@@ -159,7 +166,17 @@ namespace SR2E
             UnityEngine.Object.DontDestroyOnLoad(obj);
             obj.transform.parent = rootOBJ.transform;
         }
-        
+        internal static void DoActions(List<MenuActions> actions)
+        {
+            if(actions.Contains(MenuActions.UnPauseGame)) TryUnPauseGame();
+            if(actions.Contains(MenuActions.UnPauseGameFalse)) TryUnPauseGame(false);
+            if(actions.Contains(MenuActions.PauseGame)) TryPauseGame();
+            if(actions.Contains(MenuActions.PauseGameFalse)) TryPauseGame(false);
+            if(actions.Contains(MenuActions.UnHideMenus)) TryUnHideMenus();
+            if(actions.Contains(MenuActions.HideMenus)) TryHideMenus();
+            if(actions.Contains(MenuActions.EnableInput)) TryEnableSR2Input();
+            if(actions.Contains(MenuActions.DisableInput)) TryDisableSR2Input();
+        }
 
         internal static Sprite LoadSprite(string fileName) => ConvertToSprite(LoadImage(fileName));
 
@@ -190,6 +207,12 @@ namespace SR2E
                 return true;
             }
             catch { return false; }
+        }
+        public static T GM<T>() where T : SR2EMenu
+        {
+            foreach (var pair in SR2EEntryPoint.menus)
+                if (pair.Key is T) return (T)pair.Key;
+            return null;
         }
         public static bool RemoveComponent<T>(this Transform obj) where T : Component
         {
@@ -625,7 +648,7 @@ namespace SR2E
             );
         }
 
-        public static bool isAnyMenuOpen => SR2EConsole.isOpen ? true : SR2EModMenu.isOpen ? true : SR2ECheatMenu.isOpen ? true : SR2EThemeMenu.isOpen;
+        public static bool isAnyMenuOpen => GM<SR2EConsole>().isOpen ? true : GM<SR2EModMenu>().isOpen ? true : GM<SR2ECheatMenu>().isOpen ? true : GM<SR2EThemeMenu>().isOpen;
         public static void TryHideMenus()
         {
             if (SR2EEntryPoint.mainMenuLoaded)

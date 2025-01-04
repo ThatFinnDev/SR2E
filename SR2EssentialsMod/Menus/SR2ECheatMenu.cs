@@ -12,60 +12,56 @@ using UnityEngine.UI;
 
 namespace SR2E.Menus;
 
-public class SR2ECheatMenu
+public class SR2ECheatMenu : SR2EMenu
 {
-    public static MenuIdentifier menuIdentifier = new MenuIdentifier(true,"cheatmenu",SR2EMenuTheme.Default,"CheatMenu");
+    public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier(true,"cheatmenu",SR2EMenuTheme.Default,"CheatMenu");
+    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2ECheatMenu>();
+    protected override void OnAwake()
+    {
+        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
+        {
+            {"requiredFeatures",new List<FeatureFlag>(){EnableCheatMenu}},
+            {"openActions",new List<MenuActions> { MenuActions.PauseGame,MenuActions.HideMenus }},
+            {"closeActions",new List<MenuActions> { MenuActions.UnPauseGame,MenuActions.UnHideMenus,MenuActions.EnableInput }},
+        });
+    }
+    
+    
     internal static List<SR2ECheatMenuButton> cheatButtons = new List<SR2ECheatMenuButton>();
-    internal static List<CheatMenuRefineryEntry> refineryEntries = new List<CheatMenuRefineryEntry>();
-    internal static List<CheatMenuGadgetEntry> gadgetEntries = new List<CheatMenuGadgetEntry>();
-    internal static List<CheatMenuSlot> cheatSlots = new List<CheatMenuSlot>();
-    internal static Transform parent;
-    internal static Transform transform;
-    internal static GameObject gameObject;
-    internal static Transform cheatButtonContent;
-    internal static Transform refineryContent;
-    internal static Transform gadgetsContent;
-    internal static Transform warpsContent;
-    private static Dictionary<TextMeshProUGUI, string> toTranslate = new Dictionary<TextMeshProUGUI, string>();
-    public static bool isOpen
+    List<CheatMenuRefineryEntry> refineryEntries = new List<CheatMenuRefineryEntry>();
+    List<CheatMenuGadgetEntry> gadgetEntries = new List<CheatMenuGadgetEntry>();
+    List<CheatMenuSlot> cheatSlots = new List<CheatMenuSlot>();
+    Transform cheatButtonContent;
+    Transform refineryContent;
+    Transform gadgetsContent;
+    Transform warpsContent;
+    GameObject buttonTemplate;
+    GameObject refineryEntryTemplate;
+    GameObject gadgetsEntryTemplate;
+    SR2ECheatMenuButton noclipButton;
+    SR2ECheatMenuButton infEnergyButton;
+    SR2ECheatMenuButton infHealthButton;
+    SR2ECheatMenuButton removeFogButton;
+    SR2ECheatMenuButton betterScreenshotButton;
+    internal static bool removeFog = false;
+    internal static bool betterScreenshot = false;
+    
+    protected override void OnClose()
     {
-        get { return gameObject == null ? false : gameObject.activeSelf; }
-    }
-    /// <summary>
-    /// Closes the cheat menu
-    /// </summary>
-    public static void Close()
-    {
-        if (!isOpen) return;
-        menuBlock.SetActive(false);
-        gameObject.SetActive(false);
         gameObject.getObjRec<Button>("CheatMenuMainSelectionButtonRec").onClick.Invoke();
-
-
-        TryUnHideMenus();
-        TryUnPauseGame();
-        TryEnableSR2Input();
-    }
-
-
-    /// <summary>
-    /// Opens the cheat menu
-    /// </summary>
-    public static void Open()
-    {
-        if(!SR2EConsole.CheatsEnabled) return;
-        if (isAnyMenuOpen) return;
-        menuBlock.SetActive(true);
-        gameObject.SetActive(true);
-        TryPauseAndHide();
-        //TryDisableSR2Input();
-        //Refinery
-        
         refineryContent.DestroyAllChildren();
+        gadgetsContent.DestroyAllChildren();
+        cheatButtonContent.DestroyAllChildren();
+        warpsContent.DestroyAllChildren();
+    }
+    
+    protected override void OnOpen()
+    {
+        //Refinery
         List<IdentifiableType> refineryItems = SceneContext.Instance.GadgetDirector._refineryTypeGroup.GetAllMembers().ToArray().ToList();
         foreach (IdentifiableType refineryItem in refineryItems)
         {
-            GameObject entry = Object.Instantiate(refineryEntryTemplate, refineryContent);
+            GameObject entry = Instantiate(refineryEntryTemplate, refineryContent);
             entry.SetActive(true);
             entry.AddComponent<CheatMenuRefineryEntry>();
             entry.GetComponent<CheatMenuRefineryEntry>().item = refineryItem;
@@ -74,11 +70,10 @@ public class SR2ECheatMenu
         }
         //Gadgets
         
-        gadgetsContent.DestroyAllChildren();
         List<IdentifiableType> gadgetItems = SceneContext.Instance.GadgetDirector._gadgetsGroup.GetAllMembers().ToArray().ToList();
         foreach (IdentifiableType gadgetItem in gadgetItems)
         {
-            GameObject entry = Object.Instantiate(gadgetsEntryTemplate, gadgetsContent);
+            GameObject entry = Instantiate(gadgetsEntryTemplate, gadgetsContent);
             entry.SetActive(true);
             entry.AddComponent<CheatMenuGadgetEntry>();
             entry.GetComponent<CheatMenuGadgetEntry>().item = gadgetItem;
@@ -88,10 +83,9 @@ public class SR2ECheatMenu
         
         
         //Cheat Buttons
-        cheatButtonContent.DestroyAllChildren();
         foreach (SR2ECheatMenuButton cheatButton in cheatButtons)
         {
-            GameObject button = Object.Instantiate(buttonTemplate, cheatButtonContent);
+            GameObject button = Instantiate(buttonTemplate, cheatButtonContent);
             button.SetActive(true);
             button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = cheatButton.label;
             button.GetComponent<Button>().onClick.AddListener((Action)(() =>
@@ -111,10 +105,9 @@ public class SR2ECheatMenu
 
         
         //Warp Buttons
-        warpsContent.DestroyAllChildren();
         foreach (KeyValuePair<string,SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps.OrderBy(x => x.Key))
         {
-            GameObject button = Object.Instantiate(buttonTemplate, warpsContent);
+            GameObject button = Instantiate(buttonTemplate, warpsContent);
             button.SetActive(true);
             button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = pair.Key;
             button.GetComponent<Button>().onClick.AddListener((Action)(() =>
@@ -137,31 +130,15 @@ public class SR2ECheatMenu
             slot.gameObject.SetActive(SceneContext.Instance.PlayerState.Ammo.Slots[i].IsUnlocked);
             slot.OnOpen();
         }
-        
-        foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
-        
     }
 
-    /// <summary>
-    /// Toggles the cheat menu
-    /// </summary>
-    public static void Toggle()
+    protected override void OnUpdate()
     {
-        if (isOpen) Close();
-        else Open();
+       if (Key.Escape.OnKeyPressed())
+           Close();
+        
     }
-    internal static void Update()
-    {
-        if (isOpen)
-        {
-            if (Key.Escape.OnKeyPressed())
-                Close();
-        }
-    }
-    static GameObject buttonTemplate;
-    static GameObject refineryEntryTemplate;
-    static GameObject gadgetsEntryTemplate;
-    internal static void Start()
+    protected override void OnLateAwake()
     {
         cheatButtonContent = transform.getObjRec<Transform>("CheatMenuCheatButtonsContentRec");
         refineryContent = transform.getObjRec<Transform>("CheatMenuRefineryContentRec");
@@ -195,26 +172,18 @@ public class SR2ECheatMenu
         toTranslate.Add(button4.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.spawn");
         toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"cheatmenu.title");
     }
-
-    internal static SR2ECheatMenuButton noclipButton;
-    internal static SR2ECheatMenuButton infEnergyButton;
-    internal static SR2ECheatMenuButton infHealthButton;
-    internal static SR2ECheatMenuButton removeFogButton;
-    internal static SR2ECheatMenuButton betterScreenshotButton;
-    internal static bool removeFog = false;
-    internal static bool betterScreenshot = false;
-    static void CheatButtons()
+    void CheatButtons()
     {
         if (EnableInfEnergy.HasFlag()) infEnergyButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infenergyoff"),
             () =>
         {
-            SR2EConsole.ExecuteByString("infenergy", true,true);
+            SR2ECommandManager.ExecuteByString("infenergy", true,true);
             infEnergyButton.textInstance.text = translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off"));
         });
         if (EnableInfHealth.HasFlag()) infHealthButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infhealthoff"),
             () =>
         {
-            SR2EConsole.ExecuteByString("infhealth", true,true);
+            SR2ECommandManager.ExecuteByString("infhealth", true,true);
             infHealthButton.textInstance.text = translation("cheatmenu.cheatbuttons.infhealth" + (InfiniteHealthCommand.infHealth? "on" : "off"));
             });
         removeFogButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.removeFogoff"),
@@ -232,10 +201,10 @@ public class SR2ECheatMenu
         noclipButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.noclipoff"),
             () =>
             {
-                SR2EConsole.ExecuteByString("noclip", true,true);
+                SR2ECommandManager.ExecuteByString("noclip", true,true);
                 noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SceneContext.Instance.Camera.GetComponent<NoClipComponent>()!=null ? "on" : "off"));
             });
-        new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.refillinv"), () => { SR2EConsole.ExecuteByString("refillinv", true,true); });
+        new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.refillinv"), () => { SR2ECommandManager.ExecuteByString("refillinv", true,true); });
         
     }
 }
