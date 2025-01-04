@@ -50,36 +50,29 @@ public static class SR2ELanguageManger
                 if (firstLine)
                 {
                     firstLine = false;
-                    if (parts == null) return;
-                    if (parts.Length < 1) return;
+                    if (parts == null) return; if (parts.Length < 1) return;
                     bool isKeys = true;
                     foreach (string code in parts)
-                    {
                         if (isKeys) isKeys = false;
                         else
                         {
                             if (!newLanguages.ContainsKey(code)) newLanguages[code] = new Dictionary<string, string>();
                             codeIndexes.Add(code);
                         }
-                    }
                 }
                 else
                 {
-                    if (parts == null) continue;
-                    if (parts.Length < 1) continue;
+                    if (parts == null) continue; if (parts.Length < 1) continue;
                     bool isKey = true;
                     string key = parts[0];
                     int i = 0;
                     foreach (string translation in parts)
-                    {
                         if (isKey) isKey = false;
                         else
                         {
-                            if(codeIndexes.Count>i)
-                                    newLanguages[codeIndexes[i]][key] = translation.Replace("\\n", "\n");
+                            if(codeIndexes.Count>i) newLanguages[codeIndexes[i]][key] = translation.Replace("\\n", "\n");
                             i++;
                         }
-                    }
                 }
             }
         }

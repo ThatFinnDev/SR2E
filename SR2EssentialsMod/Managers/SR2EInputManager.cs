@@ -20,13 +20,9 @@ public static class SR2EInputManager
     {
         foreach (Key key in Enum.GetValues(typeof(Key)))
         {
-            if (!Application.isFocused)
-            {
-                keyStates[(int)key] = KeyState.Released;
-                continue;
-            }
             KeyState state = keyStates[(int)key];
-            bool isPressed = (GetAsyncKeyState((int)key) & 0x8000) != 0;
+            bool isPressed = false;
+            if (Application.isFocused) isPressed = (GetAsyncKeyState((int)key) & 0x8000) != 0;
             if (isPressed && state == KeyState.Released) state=KeyState.JustPressed;
             else if (isPressed && state == KeyState.JustPressed) state=KeyState.Pressed;
             else if (isPressed && state == KeyState.Pressed) break;
@@ -41,9 +37,6 @@ public static class SR2EInputManager
     public static bool OnKeyUnpressed(this Key key) => keyStates[(int)key]==KeyState.JustReleased;
     public static bool OnKey(this Key key) => keyStates[(int)key]==KeyState.Pressed;
     
-    /// <summary>
-    /// Run this every Update to get whether the key was pressed this frame
-    /// </summary>
     /// <returns>If the key was pressed this frame</returns>
     public static bool OnKeyPressed(this MultiKey multiKey)
     {
@@ -63,9 +56,7 @@ public static class SR2EInputManager
         }
         return false;
     }
-
-
-
+    
     public static bool OnKeyUnpressed(this MultiKey multiKey)
     {
         foreach (Key key in multiKey.requiredKeys)

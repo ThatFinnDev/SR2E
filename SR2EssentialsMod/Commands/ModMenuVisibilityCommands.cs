@@ -1,3 +1,4 @@
+using System;
 using SR2E.Menus;
 
 namespace SR2E.Commands;
@@ -9,7 +10,7 @@ internal class ModMenuVisibilityCommands
     {
         public override string ID => "openmodmenu";
         public override string Usage => "openmodmenu";
-        public override bool execWhenIsOpenModMenu => true;
+        public override Type[] execWhileMenuOpen => new[] { typeof(SR2EModMenu) };
         public override CommandType type => CommandType.Menu;
         public override bool Execute(string[] args)
         {
@@ -27,7 +28,7 @@ internal class ModMenuVisibilityCommands
     {
         public override string ID => "closemodmenu";
         public override string Usage => "closemodmenu";
-        public override bool execWhenIsOpenModMenu => true;
+        public override Type[] execWhileMenuOpen => new[] { typeof(SR2EModMenu) };
         public override CommandType type => CommandType.Menu;
         public override bool Execute(string[] args)
         {
@@ -45,7 +46,7 @@ internal class ModMenuVisibilityCommands
     {
         public override string ID => "togglemodmenu";
         public override string Usage => "togglemodmenu";
-        public override bool execWhenIsOpenModMenu => true;
+        public override Type[] execWhileMenuOpen => new[] { typeof(SR2EModMenu) };
         public override CommandType type => CommandType.Menu;
         public override bool Execute(string[] args)
         {

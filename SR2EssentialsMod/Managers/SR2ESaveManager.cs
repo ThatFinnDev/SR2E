@@ -1,8 +1,6 @@
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
-using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
-using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using Newtonsoft.Json;
 using SR2E.Components;
@@ -87,20 +85,18 @@ public static class SR2ESaveManager
             if (SceneContext.Instance == null) { warpTo = null; return; }
             if (SceneContext.Instance.PlayerState == null) { warpTo = null; return; }
 
-            if (warpTo != null)
-            {
-                foreach (SceneGroup group in SystemContext.Instance.SceneLoader.SceneGroupList.items)
-                    if (group.IsGameplay) if (group.ReferenceId == warpTo.sceneGroup)
-                        if (warpTo.sceneGroup == SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId)
-                        {
-                            SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
-                            cc.Position = warpTo.position;
-                            cc.Rotation = warpTo.rotation;
-                            cc.BaseVelocity = Vector3.zero;
-                            warpTo = null;
-                            return;
-                        }
-            }
+            
+            foreach (SceneGroup group in SystemContext.Instance.SceneLoader.SceneGroupList.items)
+                if (group.IsGameplay) if (group.ReferenceId == warpTo.sceneGroup)
+                    if (warpTo.sceneGroup == SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId)
+                    {
+                        SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
+                        cc.Position = warpTo.position;
+                        cc.Rotation = warpTo.rotation;
+                        cc.BaseVelocity = Vector3.zero;
+                        warpTo = null;
+                        break;
+                    }
         }
 
     }
@@ -115,7 +111,7 @@ public static class SR2ESaveManager
             if (p == null) return SR2EError.TeleportablePlayerNull;
             SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
             if(cc == null) return SR2EError.SRCharacterControllerNull;
-            if (GM<SR2EConsole>().isOpen) GM<SR2EConsole>().Close();
+            CloseOpenMenu();
             if(sceneGroup==p.SceneGroup.ReferenceId)
             {
                 cc.Position = position;
@@ -135,20 +131,8 @@ public static class SR2ESaveManager
                     obj.gameObject.SetActive(true);
                     obj.UpdateFX();
                     SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();
-                    try
-                    {
-                        PauseMenuRoot pauseMenuRoot = Object.FindObjectOfType<PauseMenuRoot>(); 
-                        pauseMenuRoot.Close();
-                    }catch { }
-                    try
-                    {
-                        SystemContext.Instance.SceneLoader.UnpauseGame();
-                    }catch { }
-                    try
-                    {
-                        PauseMenuDirector pauseMenuDirector = Object.FindObjectOfType<PauseMenuDirector>(); 
-                        pauseMenuDirector.UnPauseGame();
-                    }catch { }
+                    TryHideMenus();
+                    TryUnPauseGame();
                     //SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
 
                 }catch { }
@@ -162,21 +146,15 @@ public static class SR2ESaveManager
         public float y;
         public float z;
 
-        internal Vector3 position
-        {
-            get { return new Vector3(x, y, z); }
-        }
+        internal Vector3 position => new Vector3(x, y, z); 
 
         public float rotX;
         public float rotY;
         public float rotZ;
         public float rotW;
 
-        internal Quaternion rotation
-        {
-            get { return new Quaternion(rotX, rotY, rotZ, rotW); }
-        }
-
+        internal Quaternion rotation => new Quaternion(rotX, rotY, rotZ, rotW);
+        
         [JsonConstructor]
         internal Warp(string sceneGroup, Vector3 position, Quaternion rotation)
         {
@@ -226,9 +204,7 @@ public static class SR2ESaveManager
                         if(WarpManager.warpTo==null)
                             SR2ECommandManager.ExecuteByString(keyValuePair.Value,true);
             }
-            catch 
-            {
-            }
+            catch (Exception e) {MelonLogger.Error(e);}
         }
     }
     

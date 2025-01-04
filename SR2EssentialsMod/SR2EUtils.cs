@@ -170,12 +170,17 @@ namespace SR2E
         {
             if(actions.Contains(MenuActions.UnPauseGame)) TryUnPauseGame();
             if(actions.Contains(MenuActions.UnPauseGameFalse)) TryUnPauseGame(false);
-            if(actions.Contains(MenuActions.PauseGame)) TryPauseGame();
             if(actions.Contains(MenuActions.PauseGameFalse)) TryPauseGame(false);
             if(actions.Contains(MenuActions.UnHideMenus)) TryUnHideMenus();
-            if(actions.Contains(MenuActions.HideMenus)) TryHideMenus();
             if(actions.Contains(MenuActions.EnableInput)) TryEnableSR2Input();
             if(actions.Contains(MenuActions.DisableInput)) TryDisableSR2Input();
+            if(actions.Contains(MenuActions.PauseGame)&&actions.Contains(MenuActions.HideMenus)) TryPauseAndHide();
+            else
+            {
+                if(actions.Contains(MenuActions.HideMenus)) TryHideMenus();
+                if(actions.Contains(MenuActions.PauseGame)) TryPauseGame();
+            }
+
         }
 
         internal static Sprite LoadSprite(string fileName) => ConvertToSprite(LoadImage(fileName));
@@ -648,7 +653,40 @@ namespace SR2E
             );
         }
 
-        public static bool isAnyMenuOpen => GM<SR2EConsole>().isOpen ? true : GM<SR2EModMenu>().isOpen ? true : GM<SR2ECheatMenu>().isOpen ? true : GM<SR2EThemeMenu>().isOpen;
+        public static bool isAnyMenuOpen
+        {
+            get
+            {
+                for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
+                    if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).name.Contains("(Clone)"))
+                    {
+                        if(SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.activeSelf)
+                            return true;
+                    }
+                return false;
+            }
+        }
+
+        public static void CloseOpenMenu()
+        {
+            SR2EMenu menu = getOpenMenu;
+            if(menu!=null)
+                menu.Close();
+        }
+        public static SR2EMenu getOpenMenu
+        {
+            get
+            {
+                for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
+                    if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).name.Contains("(Clone)"))
+                    {
+                        if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.activeSelf)
+                            return SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.GetComponent<SR2EMenu>();
+                    }
+                return null;
+            }
+        }
+
         public static void TryHideMenus()
         {
             if (SR2EEntryPoint.mainMenuLoaded)
@@ -687,11 +725,11 @@ namespace SR2E
             try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch { }
             if(usePauseMenu) try { Object.FindObjectOfType<PauseMenuDirector>().PauseGame(); } catch { }
         }
-        public static void TryUnPauseGame(bool usePauseMenu = true)
+        public static void TryUnPauseGame(bool usePauseMenu = true, bool usePauseMenuElse = true)
         {
             try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch { }
             if(usePauseMenu) try { Object.FindObjectOfType<PauseMenuDirector>().UnPauseGame(); } catch { }
-            else try { if(Object.FindObjectOfType<PauseMenuRoot>() != null) Object.FindObjectOfType<PauseMenuDirector>().PauseGame(); } catch { }
+            else if(usePauseMenuElse) try { if(Object.FindObjectOfType<PauseMenuRoot>() != null) Object.FindObjectOfType<PauseMenuDirector>().PauseGame(); } catch { }
         }
         public static void TryUnHideMenus()
         {

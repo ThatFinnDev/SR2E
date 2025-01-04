@@ -64,24 +64,10 @@ public abstract class SR2ECommand
     }
 
     /// <summary>
-    /// Allows the execution of the Command when the console is open
+    /// Allows the execution of the Command when the respective menus are open
+    /// use typeof(Menu) to add
     /// </summary>
-    public virtual bool execWhenIsOpenConsole { get; } = false;
-
-    /// <summary>
-    /// Allows the execution of the Command when the cheat menu is open
-    /// </summary>
-    public virtual bool execWhenIsOpenCheatMenu { get; } = false;
-
-    /// <summary>
-    /// Allows the execution of the Command when the mod menu is open
-    /// </summary>
-    public virtual bool execWhenIsOpenModMenu { get; } = false;
-
-    /// <summary>
-    /// Allows the execution of the Command when the theme menu is open
-    /// </summary>
-    public virtual bool execWhenIsOpenThemeMenu { get; } = false;
+    public virtual Type[] execWhileMenuOpen { get; } = Array.Empty<Type>();
 
     
     /// <summary>
@@ -92,23 +78,76 @@ public abstract class SR2ECommand
     /// <summary>
     /// Gets called when the scene GameCore loads
     /// </summary>
-    public virtual void OnGameCoreLoad()
-    { }
+    
     /// <summary>
-    /// Gets called when the scene UICore loads
+    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets loaded.
     /// </summary>
-    public virtual void OnUICoreLoad()
-    { }
+    public virtual void OnStandaloneEngagementPromptLoad() { }
     /// <summary>
-    /// Gets called when the scene PlayerCore loads
+    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets unloaded.
     /// </summary>
-    public virtual void OnPlayerCoreLoad()
-    { }
+    public virtual void OnStandaloneEngagementPromptUnload() { }
     /// <summary>
-    /// Gets called when the scene MainMenuUI loads
+    /// Gets executed every time the scene "StandaloneEngagementPrompt" gets initialized.
     /// </summary>
-    public virtual void OnMainMenuUILoad()
-    { }
+    public virtual void OnStandaloneEngagementPromptInitialize() { }
+    
+    /// <summary>
+    /// Gets executed once GameContext loads. In Postfix of the Start method
+    /// </summary>
+    public virtual void OnGameContext(GameContext gameContext) { }
+    
+    /// <summary>
+    /// Gets executed every time the scene "PlayerCore" gets loaded.
+    /// </summary>
+    public virtual void OnPlayerCoreLoad() { }
+    /// <summary>
+    /// Gets executed every time the scene "PlayerCore" gets unloaded.
+    /// </summary>
+    public virtual void OnPlayerCoreUnload() { }
+    /// <summary>
+    /// Gets executed every time the scene "PlayerCore" gets initialized.
+    /// </summary>
+    public virtual void OnPlayerCoreInitialize() { }
+    
+    /// <summary>
+    /// Gets executed every time the scene "UICore" gets loaded.
+    /// </summary>
+    public virtual void OnUICoreLoad() { }
+    /// <summary>
+    /// Gets executed every time the scene "UICore" gets unloaded.
+    /// </summary>
+    public virtual void OnUICoreUnload() { }
+    /// <summary>
+    /// Gets executed every time the scene "UICore" gets initialized.
+    /// </summary>
+    public virtual void OnUICoreInitialize() { }
+    
+    /// <summary>
+    /// Gets executed every time the scene "MainMenuUI" gets initialized.
+    /// </summary>
+    public virtual void OnMainMenuUILoad() { }
+    /// <summary>
+    /// Gets executed every time the scene "MainMenuUI" gets loaded.
+    /// </summary>
+    public virtual void OnMainMenuUIUnload() { }
+    /// <summary>
+    /// Gets executed every time the scene "MainMenuUI" gets unloaded.
+    /// </summary>
+    public virtual void OnMainMenuUIInitialize() { }
+    
+    /// <summary>
+    /// Gets executed every time the scene "LoadScene" gets loaded.
+    /// </summary>
+    public virtual void OnLoadSceneLoad() { }
+    /// <summary>
+    /// Gets executed every time the scene "LoadScene" gets unloaded .
+    /// </summary>
+    public virtual void OnLoadSceneUnload() { }
+    /// <summary>
+    /// Gets executed every time the scene "LoadScene" gets initialized.
+    /// </summary>
+    public virtual void OnLoadSceneInitialize() { }
 
     /// <summary>
     /// Sends the usage of the command to the in game console 

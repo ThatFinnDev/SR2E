@@ -87,6 +87,15 @@ internal class GameContextPatch
             {
                 MelonLogger.Error(e);
             }
+        foreach (var pair in SR2ECommandManager.commands)
+            try
+            {
+                pair.Value.OnGameContext(__instance);
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Error(e);
+            }
     }
 
     internal static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()

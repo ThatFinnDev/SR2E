@@ -1,3 +1,4 @@
+using System;
 using SR2E.Menus;
 
 namespace SR2E.Commands;
@@ -9,7 +10,7 @@ internal class CheatMenuVisibilityCommands
     {
         public override string ID => "opencheatmenu";
         public override string Usage => "opencheatmenu";
-        public override bool execWhenIsOpenCheatMenu => true;
+        public override Type[] execWhileMenuOpen => new[] { typeof(SR2ECheatMenu) };
         public override CommandType type => CommandType.Menu | CommandType.Cheat;
         public override bool Execute(string[] args)
         {
@@ -28,7 +29,7 @@ internal class CheatMenuVisibilityCommands
     {
         public override string ID => "closecheatmenu";
         public override string Usage => "closecheatmenu";
-        public override bool execWhenIsOpenCheatMenu => true;
+        public override Type[] execWhileMenuOpen => new[] { typeof(SR2ECheatMenu) };
         public override CommandType type => CommandType.Menu | CommandType.Cheat;
         public override bool Execute(string[] args)
         {
@@ -47,7 +48,7 @@ internal class CheatMenuVisibilityCommands
     {
         public override string ID => "togglecheatmenu";
         public override string Usage => "togglecheatmenu";
-        public override bool execWhenIsOpenCheatMenu => true;
+        public override Type[] execWhileMenuOpen => new[] { typeof(SR2ECheatMenu) };
         public override CommandType type => CommandType.Menu | CommandType.Cheat;
 
         public override bool Execute(string[] args)

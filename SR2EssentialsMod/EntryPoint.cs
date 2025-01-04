@@ -650,7 +650,7 @@ namespace SR2E
                 catch (Exception e) { MelonLogger.Error(e); }
         }
 
-        public override void OnSceneWasInitialized(int buildindex, string sceneName)
+        public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             if(DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: "+sceneName);
             if(sceneName=="MainMenuUI") mainMenuLoaded = true;
@@ -662,6 +662,7 @@ namespace SR2E
                 case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
             }
+            SR2ECommandManager.OnSceneWasInitialized(buildIndex, sceneName);
         }
 
         public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
@@ -679,6 +680,7 @@ namespace SR2E
                 case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
                 case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
             }
+            SR2ECommandManager.OnSceneWasUnloaded(buildIndex, sceneName);
         }
         internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
         public override void OnUpdate()
