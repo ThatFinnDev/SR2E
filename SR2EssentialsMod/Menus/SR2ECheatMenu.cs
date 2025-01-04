@@ -118,8 +118,8 @@ public class SR2ECheatMenu : SR2EMenu
                     SR2EError error = pair.Value.WarpPlayerThere();
                     switch (error)
                     {
-                        case SR2EError.TeleportablePlayerNull: SR2EConsole.SendError(translation("cmd.error.teleportableplayernull")); break;
-                        case SR2EError.SRCharacterControllerNull: SR2EConsole.SendError(translation("cmd.error.srccnull")); break;
+                        case SR2EError.TeleportablePlayerNull: SR2ELogManager.SendError(translation("cmd.error.teleportableplayernull")); break;
+                        case SR2EError.SRCharacterControllerNull: SR2ELogManager.SendError(translation("cmd.error.srccnull")); break;
                     }
                 }));
         }

@@ -34,146 +34,65 @@ public class SR2EConsole : SR2EMenu
         SendMessage(translation("console.helloworld"),false);
     }
 
-    /// <summary>
-    /// Display a message in the console
-    /// </summary>
-    public static void SendMessage(string message)
-    {
-        SendMessage(message, SR2EEntryPoint.consoleToMLLog);
-    }
-
-    /// <summary>
-    /// Display a message in the console
-    /// </summary>
-    public static void SendMessage(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
+    internal void SendMessage(string message)
     {
         if (!EnableConsole.HasFlag()) return;
-        if (String.IsNullOrEmpty(message))
-            return;
+        if (!SR2EEntryPoint.consoleFinishedCreating) return;
         try
         {
-            if (message.StartsWith("[SR2E-Console]")) return;
-            if (message.StartsWith("[UnityExplorer]")) return;
-            if (message.StartsWith("[]:")) return;
-            if (!SR2EEntryPoint.consoleFinishedCreating) return;
             if (message.Contains("\n"))
             {
-                if (doMLLog) mlog.Msg(message);
-                foreach (string singularLine in message.Split('\n'))
-                    SendMessage(singularLine, doMLLog, false);
+                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
                 return;
             }
-            else
-            {
-                if (doMLLog && internal_logMLForSingleLine) mlog.Msg(message);
-                GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(0).gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 1f, 1f);
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
-                return;
-            }
-        }
-        catch
-        {
-        }
+            GameObject instance = Instantiate(messagePrefab, consoleContent);
+            instance.gameObject.SetActive(true);
+            instance.transform.GetChild(0).gameObject.SetActive(true);
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 1f, 1f);
+            _scrollbar.value = 0f;
+            scrollCompletlyDown = true;
+        } catch { }
     }
-
-    /// <summary>
-    /// Display an error in the console
-    /// </summary>
-    public static void SendError(string message)
-    {
-        SendError(message, SR2EEntryPoint.consoleToMLLog);
-    }
-
-    /// <summary>
-    /// Display an error in the console
-    /// </summary>
-    public static void SendError(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
+    internal void SendError(string message)
     {
         if (!EnableConsole.HasFlag()) return;
-        if (String.IsNullOrEmpty(message))
-            return;
+        if (!SR2EEntryPoint.consoleFinishedCreating) return;
         try
         {
-            if (message.StartsWith("[SR2E-Console]")) return;
-            if (message.StartsWith("[UnityExplorer]")) return;
-            if (message.StartsWith("[]:")) return;
-            if (!SR2EEntryPoint.consoleFinishedCreating) return;
             if (message.Contains("\n"))
             {
-                if (doMLLog) mlog.Error(message);
-                foreach (string singularLine in message.Split('\n'))
-                    SendError(singularLine, doMLLog, false);
+                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
                 return;
             }
-            else
-            {
-                if (doMLLog && internal_logMLForSingleLine) mlog.Error(message);
-
-                GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(0).gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0f, 0, 1);
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
-                return;
-            }
-        }
-        catch
-        {
-        }
+            GameObject instance = Instantiate(messagePrefab, consoleContent);
+            instance.gameObject.SetActive(true);
+            instance.transform.GetChild(0).gameObject.SetActive(true);
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0f, 0f, 1f);
+            _scrollbar.value = 0f;
+            scrollCompletlyDown = true;
+        } catch { }
     }
-
-    /// <summary>
-    /// Display an error in the console
-    /// </summary>
-    public static void SendWarning(string message)
-    {
-        SendWarning(message, SR2EEntryPoint.consoleToMLLog);
-    }
-
-    /// <summary>
-    /// Display an error in the console
-    /// </summary>
-    public static void SendWarning(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
+    internal void SendWarning(string message)
     {
         if (!EnableConsole.HasFlag()) return;
-        if (String.IsNullOrEmpty(message))
-            return;
+        if (!SR2EEntryPoint.consoleFinishedCreating) return;
         try
         {
-            if (message.StartsWith("[SR2E-Console]")) return;
-            if (message.StartsWith("[UnityExplorer]")) return;
-            if (message.StartsWith("[]:")) return;
-            if (!SR2EEntryPoint.consoleFinishedCreating) return;
             if (message.Contains("\n"))
             {
-                if (doMLLog) mlog.Msg(message, new Color32(255, 155, 0, 255));
-                foreach (string singularLine in message.Split('\n'))
-                    SendWarning(singularLine, doMLLog, false);
+                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
                 return;
             }
-            else
-            {
-                if (doMLLog && internal_logMLForSingleLine) mlog.Warning(message);
-                GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
-                instance.gameObject.SetActive(true);
-                instance.transform.GetChild(0).gameObject.SetActive(true);
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-                instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0, 1);
-                _scrollbar.value = 0f;
-                scrollCompletlyDown = true;
-                return;
-            }
-        }
-        catch
-        {
-        }
+            GameObject instance = Instantiate(messagePrefab, consoleContent);
+            instance.gameObject.SetActive(true);
+            instance.transform.GetChild(0).gameObject.SetActive(true);
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0f, 1f);
+            _scrollbar.value = 0f;
+            scrollCompletlyDown = true;
+        } catch { }
     }
 
 
@@ -193,7 +112,6 @@ public class SR2EConsole : SR2EMenu
     List<string> commandHistory;
     int commandHistoryIdx = -1;
 
-    static MelonLogger.Instance mlog;
     static Scrollbar _scrollbar;
     bool shouldResetTime = false;
     static bool scrollCompletlyDown = false;
@@ -300,7 +218,6 @@ public class SR2EConsole : SR2EMenu
     {
         commandHistory = new List<string>();
         
-        mlog = new MelonLogger.Instance("SR2E-Console");
 
 
         menuBlock = transform.parent.getObjRec<GameObject>("blockRec");
@@ -320,9 +237,6 @@ public class SR2EConsole : SR2EMenu
         foreach (Transform child in transform.parent.GetChildren())
             child.gameObject.SetActive(false);
 
-        MelonLogger.MsgDrawingCallbackHandler += (c1, c2, s1, s2) => { if (SR2EEntryPoint.mLLogToConsole) SendMessage($"[{s1}]: {s2}", false); };
-        MelonLogger.ErrorCallbackHandler += (s, s1) => { if (SR2EEntryPoint.mLLogToConsole) SendError($"[{s}]: {s1}", false); };
-        MelonLogger.WarningCallbackHandler += (s, s1) => { if (SR2EEntryPoint.mLLogToConsole) SendWarning($"[{s}]: {s}", false); };
     }
 
     internal MultiKey openKey = new MultiKey(Key.Tab, Key.LeftControl);

@@ -94,7 +94,7 @@ public static class SR2ECommandManager
     {
         if (commands.ContainsKey(cmd.ID.ToLowerInvariant()))
         {
-            SR2EConsole.SendMessage(translation("cmd.alreadyregistered", cmd.ID.ToLowerInvariant()));
+            SR2ELogManager.SendMessage(translation("cmd.alreadyregistered", cmd.ID.ToLowerInvariant()));
             return false;
         }
 
@@ -155,7 +155,7 @@ public static class SR2ECommandManager
             commands.Remove(cmd.ToLowerInvariant());
             return true;
         }
-        SR2EConsole.SendMessage(translation("cmd.notregistered", cmd.ToLowerInvariant()));
+        SR2ELogManager.SendMessage(translation("cmd.notregistered", cmd.ToLowerInvariant()));
         return false;
     }
 
@@ -232,11 +232,12 @@ public static class SR2ECommandManager
                 }
                 else if (!silent)
                     if (isAnyMenuOpen)
-                        SR2EConsole.SendError(translation("cmd.unknowncommand"));
+                        SR2ELogManager.SendError(translation("cmd.unknowncommand"));
             }
         }
 
     }
+
 
 
 }
