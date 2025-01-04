@@ -59,6 +59,8 @@ public static class BuildInfo
 public class SR2EEntryPoint : MelonMod
 {
     //Does console sync
+
+    internal static ScriptedBool cheatsEnabledOnSave;
     internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
     internal static TMP_FontAsset SR2Font;
     internal static TMP_FontAsset normalFont;
@@ -321,7 +323,7 @@ public class SR2EEntryPoint : MelonMod
                             SR2EUtils.ConvertToSprite(SR2EUtils.LoadImage("category")),
                             options.ToArray());
 
-                        SR2EConsole.cheatsEnabledOnSave = CustomSettingsCreator.CreateScruptedBool(true);
+                        cheatsEnabledOnSave = CustomSettingsCreator.CreateScruptedBool(true);
                         saveSkipIntro = CustomSettingsCreator.CreateScruptedBool(false);
 
                         CustomSettingsCreator.Create(
@@ -333,10 +335,10 @@ public class SR2EEntryPoint : MelonMod
                             (def, idx, _) => { },
                             new CustomSettingsCreator.OptionValue("off",
                                 AddTranslationFromSR2E( "setting.allowcheats.off","l.settingvalueno","UI"),
-                                SR2EConsole.cheatsEnabledOnSave, false),
+                                cheatsEnabledOnSave, false),
                             new CustomSettingsCreator.OptionValue("on",
                                 AddTranslationFromSR2E("setting.allowcheats.on", "l.settingvalueyes", "UI"),
-                                SR2EConsole.cheatsEnabledOnSave, true)
+                                cheatsEnabledOnSave, true)
                         );
 
                         CustomSettingsCreator.Create(
@@ -459,7 +461,7 @@ public class SR2EEntryPoint : MelonMod
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnUnloaded Scene: " + sceneName);
         if (sceneName == "MainMenuUI") mainMenuLoaded = false;
-        try { SR2ESaveManager.WarpManager.OnSceneUnloaded(); }
+        try { SR2EWarpManager.OnSceneUnloaded(); }
         catch (Exception e) { MelonLogger.Error(e); }
         switch (sceneName)
         {               
@@ -551,7 +553,7 @@ public class SR2EEntryPoint : MelonMod
             try { if (GM<SR2EConsole>().openKey.OnKeyPressed()) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-            try { SR2ESaveManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+            try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             if (DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
         }
 

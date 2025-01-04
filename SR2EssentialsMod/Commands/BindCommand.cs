@@ -2,6 +2,7 @@
 using System.Text;
 using SR2E.Managers;
 using UnityEngine.InputSystem;
+using Key = SR2E.Enums.Key;
 
 namespace SR2E.Commands;
 
@@ -52,7 +53,7 @@ internal class BindCommand : SR2ECommand
 
             string executeString = builder.ToString();
 
-            SR2ESaveManager.BindingManger.BindKey(key, executeString);
+            SR2EBindingManger.BindKey(key, executeString);
             SendMessage(translation("cmd.bind.success", executeString, key));
             return true;
         }

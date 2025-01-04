@@ -6,6 +6,7 @@ using Il2CppTMPro;
 using SR2E.Buttons;
 using SR2E.Commands;
 using SR2E.Components;
+using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Storage;
 using UnityEngine.UI;
@@ -107,7 +108,7 @@ public class SR2ECheatMenu : SR2EMenu
 
         
         //Warp Buttons
-        foreach (KeyValuePair<string,SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps.OrderBy(x => x.Key))
+        foreach (KeyValuePair<string,Warp> pair in SR2ESaveManager.data.warps.OrderBy(x => x.Key))
         {
             GameObject button = Instantiate(buttonTemplate, warpsContent);
             button.SetActive(true);

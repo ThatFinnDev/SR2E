@@ -2,6 +2,7 @@ using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using System;
+using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Storage;
 

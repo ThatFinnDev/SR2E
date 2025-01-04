@@ -1,3 +1,5 @@
+using SR2E.Enums;
+
 namespace SR2E.Storage;
 
 public struct MenuIdentifier

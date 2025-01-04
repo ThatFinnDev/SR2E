@@ -1,5 +1,6 @@
 ﻿using SR2E.Managers;
 using UnityEngine.InputSystem;
+using Key = SR2E.Enums.Key;
 
 namespace SR2E.Commands;
 internal class UnbindCommand : SR2ECommand
@@ -30,10 +31,10 @@ internal class UnbindCommand : SR2ECommand
         Key key;
         if (Key.TryParse(keyToParse, true, out key))
         {
-            if (!SR2ESaveManager.BindingManger.isKeyBound(key))
+            if (!SR2EBindingManger.isKeyBound(key))
                 return SendError(translation("cmd.unbind.notbound", args[0]));
 
-            SR2ESaveManager.BindingManger.UnbindKey(key);
+            SR2EBindingManger.UnbindKey(key);
             SendMessage(translation("cmd.unbind.success", key));
             return true;
         }

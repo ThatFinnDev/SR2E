@@ -4,6 +4,7 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
+using SR2E.Enums;
 using SR2E.Expansion;
 using SR2E.Managers;
 using SR2E.Storage;
@@ -13,6 +14,7 @@ using UnityEngine.UIElements;
 using Action = System.Action;
 using Button = UnityEngine.UI.Button;
 using Image = UnityEngine.UI.Image;
+using Key = SR2E.Enums.Key;
 using Toggle = UnityEngine.UI.Toggle;
 
 namespace SR2E.Menus;

@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine.InputSystem;
+using Key = SR2E.Enums.Key;
 
 namespace SR2E.Storage;
 

@@ -236,7 +236,7 @@ cmd.warp.description,"Warps you to a saved warp point","Teleportiert dich zu ein
 cmd.warp.extendeddescription,"Warps you to a saved warp point, use <u>setwarp</u> to create more","Teleportiert dich zu einem gesetzten Warppunkt, benutze <u>setwarp</u> um welche zu setzen"
 cmd.warp.unknownerror,"An unknown error occured!",Ein unbekannter Fehler ist unterlaufen!
 cmd.warplist.success,"<color=blue>List of all warp points:</color>","<color=blue>Alle Warppunkte:</color>"
-cmd.warplist.sucessdesc,"'$1' in '$2' at ($3,$4,$5)","Der Warppunkt '$1' ist in der Szenengruppe '$2' bei ($3,$4,$5)!"
+cmd.warplist.successdesc,"'$1' in '$2' at ($3,$4,$5)","Der Warppunkt '$1' ist in der Szenengruppe '$2' bei ($3,$4,$5)!"
 cmd.warplist.error,"There aren't any warp points yet!","Du hast noch keine Warppunkte gesetzt!"
 cmd.warplist.description,"Displays all warp points","Zeigt alle Warppunkte an"
 cmd.weather.successlist,"All weathers are: $1","Alle Wetter:"

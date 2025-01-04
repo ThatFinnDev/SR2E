@@ -1,31 +1,4 @@
-﻿using System;
-
-namespace SR2E;
-
-[Serializable]
-internal enum VacModes
-{
-    AUTO_SHOOT,
-    AUTO_VAC,
-    NORMAL,
-    DRAG,
-    NONE,
-    LAUNCH,
-}
-
-[Serializable]
-public enum SR2EMenuTheme
-{
-    Default, SR2E, Black
-}
-/// <summary>
-/// A three-way boolean
-/// </summary>
-[Serializable]
-public enum Trool
-{
-    False, True, Toggle
-}
+namespace SR2E.Enums;
 
 /// <summary>
 /// Every key on a keyboard (en_us layout) and some other buttons

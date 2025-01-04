@@ -7,6 +7,7 @@ using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
 using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppMonomiPark.SlimeRancher.World;
 using SR2E.Components;
+using SR2E.Enums;
 using SR2E.Managers;
 using Unity.Mathematics;
 

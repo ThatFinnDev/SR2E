@@ -1,4 +1,6 @@
-﻿using SR2E.Managers;
+﻿using SR2E.Enums;
+using SR2E.Managers;
+using SR2E.Storage;
 
 namespace SR2E.Commands;
 
@@ -13,7 +15,7 @@ internal class WarpCommand : SR2ECommand
         if (argIndex == 0)
         {
             List<string> warps = new List<string>();
-            foreach (KeyValuePair<string, SR2ESaveManager.Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key);
+            foreach (KeyValuePair<string, Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key);
             return warps;
         }
 
@@ -25,7 +27,7 @@ internal class WarpCommand : SR2ECommand
         if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         string name = args[0];
-        SR2ESaveManager.Warp warp = SR2ESaveManager.WarpManager.GetWarp(name);
+        Warp warp = SR2EWarpManager.GetWarp(name);
         if (warp == null) return SendError(translation("cmd.warpstuff.nowarpwithname",name));
 
         SR2EError error = warp.WarpPlayerThere();

@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Il2CppTMPro;
+using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Storage;
 using UnityEngine.UI;

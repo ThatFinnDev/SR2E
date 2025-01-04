@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using SR2E.Enums;
 using SR2E.Storage;
 
 namespace SR2E.Managers;

@@ -3,6 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Commands;
 using SR2E.Managers;
 using UnityEngine.InputSystem;
+using Key = SR2E.Enums.Key;
 
 namespace SR2E.Components;
 

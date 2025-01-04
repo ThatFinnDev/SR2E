@@ -11,6 +11,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppSystem.IO;
+using SR2E.Enums;
 using SR2E.Menus;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
@@ -19,6 +20,7 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.Playables;
 using Enumerable = Il2CppSystem.Linq.Enumerable;
+using Key = SR2E.Enums.Key;
 
 namespace SR2E
 {

@@ -1,12 +1,15 @@
 ﻿using Il2CppMonomiPark.ScriptedValue;
 using System;
+using System.Collections;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Il2CppTMPro;
+using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Key = SR2E.Enums.Key;
 
 namespace SR2E;
 
@@ -19,6 +22,20 @@ public class SR2EConsole : SR2EMenu
     public override bool createCommands => true;
     public override bool inGameOnly => false;
 
+    internal MultiKey openKey = new MultiKey(Key.Tab, Key.LeftControl);
+    internal Transform consoleContent;
+    TMP_InputField commandInput;
+    GameObject autoCompleteEntryPrefab;
+    Transform autoCompleteContent;
+    GameObject autoCompleteScrollView;
+    GameObject messagePrefab;
+    int selectedAutoComplete = 0;
+    List<string> commandHistory;
+    int commandHistoryIdx = -1;
+    Scrollbar _scrollbar;
+    bool shouldResetTime = false;
+    bool scrollCompletlyDown = false;
+    private bool didHelloWorld = false;
     protected override void OnAwake()
     {
         SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
@@ -29,8 +46,10 @@ public class SR2EConsole : SR2EMenu
         });
     }
 
-    protected override void OnStart()
+    void CheckHelloWorld()
     {
+        if (didHelloWorld) return;
+        didHelloWorld = true;
         SendMessage(translation("console.helloworld"),false);
     }
 
@@ -38,6 +57,7 @@ public class SR2EConsole : SR2EMenu
     {
         if (!EnableConsole.HasFlag()) return;
         if (!SR2EEntryPoint.menusFinished) return;
+        if (!didHelloWorld) CheckHelloWorld();
         try
         {
             if (message.Contains("\n"))
@@ -58,11 +78,12 @@ public class SR2EConsole : SR2EMenu
     {
         if (!EnableConsole.HasFlag()) return;
         if (!SR2EEntryPoint.menusFinished) return;
+        if (!didHelloWorld) CheckHelloWorld();
         try
         {
             if (message.Contains("\n"))
             {
-                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
+                foreach (string singularLine in message.Split('\n')) SendError(singularLine);
                 return;
             }
             GameObject instance = Instantiate(messagePrefab, consoleContent);
@@ -78,11 +99,12 @@ public class SR2EConsole : SR2EMenu
     {
         if (!EnableConsole.HasFlag()) return;
         if (!SR2EEntryPoint.menusFinished) return;
+        if (!didHelloWorld) CheckHelloWorld();
         try
         {
             if (message.Contains("\n"))
             {
-                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
+                foreach (string singularLine in message.Split('\n')) SendWarning(singularLine);
                 return;
             }
             GameObject instance = Instantiate(messagePrefab, consoleContent);
@@ -106,15 +128,10 @@ public class SR2EConsole : SR2EMenu
 
     protected override void OnOpen()
     {
+        if (!didHelloWorld) CheckHelloWorld();
         RefreshAutoComplete(commandInput.text);
     }
 
-    List<string> commandHistory;
-    int commandHistoryIdx = -1;
-
-    static Scrollbar _scrollbar;
-    bool shouldResetTime = false;
-    static bool scrollCompletlyDown = false;
 
     void RefreshAutoComplete(string text)
     {
@@ -212,8 +229,6 @@ public class SR2EConsole : SR2EMenu
     }
 
 
-    public static ScriptedBool cheatsEnabledOnSave;
-
     protected override void OnLateAwake()
     {
         commandHistory = new List<string>();
@@ -232,21 +247,9 @@ public class SR2EConsole : SR2EMenu
         autoCompleteScrollView.SetActive(false);
 
         commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
-        
-
-        foreach (Transform child in transform.parent.GetChildren())
-            child.gameObject.SetActive(false);
 
     }
 
-    internal MultiKey openKey = new MultiKey(Key.Tab, Key.LeftControl);
-    TMP_InputField commandInput;
-    GameObject autoCompleteEntryPrefab;
-    internal static Transform consoleContent;
-    Transform autoCompleteContent;
-    GameObject autoCompleteScrollView;
-    static GameObject messagePrefab;
-    int selectedAutoComplete = 0;
 
     protected override void OnUpdate()
     {

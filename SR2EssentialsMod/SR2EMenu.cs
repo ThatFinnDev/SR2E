@@ -1,10 +1,7 @@
-using System;
-using System.Linq;
 using System.Reflection;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Managers;
-using SR2E.Menus;
 using SR2E.Storage;
 
 namespace SR2E;
@@ -76,7 +73,7 @@ public class SR2EMenu : MonoBehaviour
         foreach (FeatureFlag featureFlag in SR2EEntryPoint.menus[this]["requiredFeatures"] as List<FeatureFlag>) if (!featureFlag.HasFlag()) return;
         if (isAnyMenuOpen) return;
         if(inGameOnly) if (!inGame) return;
-        if (SR2ESaveManager.WarpManager.warpTo != null) return;
+        if (SR2EWarpManager.warpTo != null) return;
         switch (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name)
         {
             case "StandaloneStart":

@@ -45,7 +45,7 @@ internal class GameContextPatch
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
             }
 
-            if (!SR2EConsole.cheatsEnabledOnSave)
+            if (!SR2EEntryPoint.cheatsEnabledOnSave)
                 if (AddCheatMenuButton.HasFlag())
                 {
                     SR2EEntryPoint.cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { GM<SR2ECheatMenu>().Open(); }));
@@ -110,7 +110,7 @@ internal class GameContextPatch
     {
         StaticTeleporterNode teleporter = GameObject.Instantiate(getGadgetDefByName(gadgetName).prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
         teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
-        SR2ESaveManager.WarpManager.teleporters.TryAdd(sceneGroup, teleporter);
+        SR2EWarpManager.teleporters.TryAdd(sceneGroup, teleporter);
     }
 
 }

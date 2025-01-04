@@ -5,6 +5,7 @@ using SR2E.Managers;
 using SR2E.Menus;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Key = SR2E.Enums.Key;
 
 namespace SR2E;
 
