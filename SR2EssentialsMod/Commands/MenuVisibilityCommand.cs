@@ -8,7 +8,6 @@ internal class MenuVisibilityCommands
 {
     internal class OpenCommand : SR2ECommand
     {
-        public OpenCommand() {}
         internal OpenCommand(MenuIdentifier identifier, SR2EMenu menu, bool inGameOnly)
         {
             this.identifier = identifier;
@@ -34,7 +33,6 @@ internal class MenuVisibilityCommands
     }
     internal class CloseCommand : SR2ECommand
     {
-        public CloseCommand() {}
         internal CloseCommand(MenuIdentifier identifier, SR2EMenu menu, bool inGameOnly)
         {
             this.identifier = identifier;
@@ -59,7 +57,6 @@ internal class MenuVisibilityCommands
     }
     internal class ToggleCommand : SR2ECommand
     {
-        public ToggleCommand() {}
         internal ToggleCommand(MenuIdentifier identifier, SR2EMenu menu, bool inGameOnly)
         {
             this.identifier = identifier;

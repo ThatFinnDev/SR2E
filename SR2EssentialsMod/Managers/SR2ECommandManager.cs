@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using SR2E.Commands;
 
 namespace SR2E.Managers;
@@ -61,18 +62,25 @@ public static class SR2ECommandManager
     {
         foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
         {
-            IEnumerable<SR2ECommand> exporters = melonBase.MelonAssembly.Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(SR2ECommand)) && !t.IsAbstract)
-                .Select(t => (SR2ECommand)Activator.CreateInstance(t));
-            foreach (SR2ECommand sr2Command in exporters)
-                if((enabledCommands & sr2Command.type) == sr2Command.type)
+            var exporters = melonBase.MelonAssembly.Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(SR2ECommand)) && !t.IsAbstract);
+            foreach (Type type in exporters)
+                try
                 {
-                    if (sr2Command is InfiniteHealthCommand && !EnableInfHealth.HasFlag()) continue;
-                    if (sr2Command is InfiniteEnergyCommand && !EnableInfEnergy.HasFlag()) continue;
-                    if (sr2Command.type.HasFlag(CommandType.DontLoad)) continue;
-                    try { RegisterCommand(sr2Command); }
-                    catch (Exception e) { MelonLogger.Error(e); }
+                    if(type == typeof(MenuVisibilityCommands.OpenCommand)) continue;
+                    if(type == typeof(MenuVisibilityCommands.CloseCommand)) continue;
+                    if(type == typeof(MenuVisibilityCommands.ToggleCommand)) continue;
+                    SR2ECommand sr2Command = (SR2ECommand)Activator.CreateInstance(type);
+                    if((enabledCommands & sr2Command.type) == sr2Command.type)
+                    {
+                        if (sr2Command is InfiniteHealthCommand && !EnableInfHealth.HasFlag()) continue;
+                        if (sr2Command is InfiniteEnergyCommand && !EnableInfEnergy.HasFlag()) continue;
+                        if (sr2Command.type.HasFlag(CommandType.DontLoad)) continue;
+                        try { RegisterCommand(sr2Command); }
+                        catch (Exception e) { MelonLogger.Error(e); }
+                    }
                 }
+                catch (Exception e) { MelonLogger.Error(e); }
         }
         foreach (var expansion in SR2EEntryPoint.expansions)
             try { expansion.LoadCommands(); }

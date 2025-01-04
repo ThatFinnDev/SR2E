@@ -8,7 +8,6 @@ namespace SR2E;
 /// </summary>
 public abstract class SR2ECommand
 {
-    public SR2ECommand(){}
     /// <summary>
     /// The ID of this command (Always lowercase)
     /// </summary>
@@ -40,7 +39,7 @@ public abstract class SR2ECommand
     /// <summary>
     /// The type of this command
     /// </summary>
-    public virtual CommandType type { get; } = CommandType.DontLoad;
+    public virtual CommandType type { get; } = CommandType.None;
 
 
     public virtual bool Hidden { get; }
@@ -181,7 +180,7 @@ public abstract class SR2ECommand
 
     public void SendMessage(string message)
     {
-        if (!silent) SR2EConsole.SendMessage(message, SR2EEntryPoint.syncConsole);
+        if (!silent) SR2EConsole.SendMessage(message, SR2EEntryPoint.consoleToMLLog);
     }
     
     /// <summary>
@@ -189,7 +188,7 @@ public abstract class SR2ECommand
     /// </summary>
     public bool SendError(string message)
     {
-        if (!silent) SR2EConsole.SendError(message, SR2EEntryPoint.syncConsole);
+        if (!silent) SR2EConsole.SendError(message, SR2EEntryPoint.consoleToMLLog);
         return false;
     }
 
@@ -198,7 +197,7 @@ public abstract class SR2ECommand
     /// </summary>
     public void SendWarning(string message)
     {
-        if (!silent) SR2EConsole.SendWarning(message, SR2EEntryPoint.syncConsole);
+        if (!silent) SR2EConsole.SendWarning(message, SR2EEntryPoint.consoleToMLLog);
     }
 
     public bool silent = false;
@@ -208,14 +207,15 @@ public abstract class SR2ECommand
 [Flags]
 public enum CommandType
 {
-    DontLoad = 0,
-    DevOnly = 1 << 1,
-    Cheat = 1 << 2,
-    Binding = 1 << 3,
-    Warp = 1 << 4,
-    Common = 1 << 5,
-    Menu = 1 << 6,
-    Miscellaneous = 1 << 7,
-    Fun = 1 << 8,
-    Experimental = 1 << 9
+    None = 0,
+    DontLoad = 1 << 1,
+    DevOnly = 1 << 2,
+    Cheat = 1 << 3,
+    Binding = 1 << 4,
+    Warp = 1 << 5,
+    Common = 1 << 6,
+    Menu = 1 << 7,
+    Miscellaneous = 1 << 8,
+    Fun = 1 << 9,
+    Experimental = 1 << 10
 }

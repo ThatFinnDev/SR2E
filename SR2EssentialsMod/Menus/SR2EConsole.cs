@@ -31,7 +31,7 @@ public class SR2EConsole : SR2EMenu
 
     protected override void OnStart()
     {
-        SendMessage(translation("console.helloworld"));
+        SendMessage(translation("console.helloworld"),false);
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public class SR2EConsole : SR2EMenu
     /// </summary>
     public static void SendMessage(string message)
     {
-        SendMessage(message, SR2EEntryPoint.syncConsole);
+        SendMessage(message, SR2EEntryPoint.consoleToMLLog);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public class SR2EConsole : SR2EMenu
             return;
         try
         {
-            if (message.Contains("[SR2E]:")) return;
+            if (message.StartsWith("[SR2E-Console]")) return;
             if (message.StartsWith("[UnityExplorer]")) return;
             if (message.StartsWith("[]:")) return;
             if (!SR2EEntryPoint.consoleFinishedCreating) return;
@@ -65,7 +65,7 @@ public class SR2EConsole : SR2EMenu
             }
             else
             {
-                if (doMLLog && internal_logMLForSingleLine) MelonLogger.Msg($"[SR2E]: {message}");
+                if (doMLLog && internal_logMLForSingleLine) mlog.Msg(message);
                 GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
                 instance.gameObject.SetActive(true);
                 instance.transform.GetChild(0).gameObject.SetActive(true);
@@ -86,7 +86,7 @@ public class SR2EConsole : SR2EMenu
     /// </summary>
     public static void SendError(string message)
     {
-        SendError(message, SR2EEntryPoint.syncConsole);
+        SendError(message, SR2EEntryPoint.consoleToMLLog);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public class SR2EConsole : SR2EMenu
             return;
         try
         {
-            if (message.Contains("[SR2E]:")) return;
+            if (message.StartsWith("[SR2E-Console]")) return;
             if (message.StartsWith("[UnityExplorer]")) return;
             if (message.StartsWith("[]:")) return;
             if (!SR2EEntryPoint.consoleFinishedCreating) return;
@@ -112,7 +112,7 @@ public class SR2EConsole : SR2EMenu
             }
             else
             {
-                if (doMLLog && internal_logMLForSingleLine) MelonLogger.Error($"[SR2E]: {message}");
+                if (doMLLog && internal_logMLForSingleLine) mlog.Error(message);
 
                 GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
                 instance.gameObject.SetActive(true);
@@ -134,7 +134,7 @@ public class SR2EConsole : SR2EMenu
     /// </summary>
     public static void SendWarning(string message)
     {
-        SendWarning(message, SR2EEntryPoint.syncConsole);
+        SendWarning(message, SR2EEntryPoint.consoleToMLLog);
     }
 
     /// <summary>
@@ -147,7 +147,7 @@ public class SR2EConsole : SR2EMenu
             return;
         try
         {
-            if (message.Contains("[SR2E]:")) return;
+            if (message.StartsWith("[SR2E-Console]")) return;
             if (message.StartsWith("[UnityExplorer]")) return;
             if (message.StartsWith("[]:")) return;
             if (!SR2EEntryPoint.consoleFinishedCreating) return;
@@ -160,7 +160,7 @@ public class SR2EConsole : SR2EMenu
             }
             else
             {
-                if (doMLLog && internal_logMLForSingleLine) MelonLogger.Warning($"[SR2E]: {message}");
+                if (doMLLog && internal_logMLForSingleLine) mlog.Warning(message);
                 GameObject instance = GameObject.Instantiate(messagePrefab, consoleContent);
                 instance.gameObject.SetActive(true);
                 instance.transform.GetChild(0).gameObject.SetActive(true);
@@ -296,21 +296,11 @@ public class SR2EConsole : SR2EMenu
 
     public static ScriptedBool cheatsEnabledOnSave;
 
-    static bool syncedSetuped = false;
-
-    static void SetupConsoleSync()
-    {
-        syncedSetuped = true;
-        MelonLogger.MsgDrawingCallbackHandler += (c1, c2, s1, s2) => SendMessage($"[{s1}]: {s2}", false);
-        MelonLogger.ErrorCallbackHandler += (s, s1) => SendError($"[{s}]: {s1}", false);
-        MelonLogger.WarningCallbackHandler += (s, s1) => SendWarning($"[{s}]: {s}", false);
-    }
-
     protected override void OnLateAwake()
     {
         commandHistory = new List<string>();
         
-        mlog = new MelonLogger.Instance("SR2E");
+        mlog = new MelonLogger.Instance("SR2E-Console");
 
 
         menuBlock = transform.parent.getObjRec<GameObject>("blockRec");
@@ -329,7 +319,10 @@ public class SR2EConsole : SR2EMenu
 
         foreach (Transform child in transform.parent.GetChildren())
             child.gameObject.SetActive(false);
-        if (syncedSetuped) SetupConsoleSync();
+
+        MelonLogger.MsgDrawingCallbackHandler += (c1, c2, s1, s2) => { if (SR2EEntryPoint.mLLogToConsole) SendMessage($"[{s1}]: {s2}", false); };
+        MelonLogger.ErrorCallbackHandler += (s, s1) => { if (SR2EEntryPoint.mLLogToConsole) SendError($"[{s}]: {s1}", false); };
+        MelonLogger.WarningCallbackHandler += (s, s1) => { if (SR2EEntryPoint.mLLogToConsole) SendWarning($"[{s}]: {s}", false); };
     }
 
     internal MultiKey openKey = new MultiKey(Key.Tab, Key.LeftControl);
@@ -343,15 +336,9 @@ public class SR2EConsole : SR2EMenu
 
     protected override void OnUpdate()
     {
-
-        try
-        {
-            if (consoleContent.childCount >= MAX_CONSOLELINES.Get())
-                Destroy(consoleContent.GetChild(0).gameObject);
-        }
-        catch
-        {
-        }
+        try { if (consoleContent.childCount >= MAX_CONSOLELINES.Get())
+            Destroy(consoleContent.GetChild(0).gameObject);
+        } catch { }
 
         commandInput.ActivateInputField();
         if (scrollCompletlyDown)
@@ -361,7 +348,7 @@ public class SR2EConsole : SR2EMenu
                 scrollCompletlyDown = false;
             }
 
-        if (Key.Tab.OnKeyPressed())
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
             if (autoCompleteContent.childCount != 0)
                 try
@@ -376,13 +363,13 @@ public class SR2EConsole : SR2EMenu
 
         }
 
-        if (Key.Enter.OnKeyPressed())
+        if (Keyboard.current.enterKey.wasPressedThisFrame)
             if (commandInput.text != "")
                 Execute();
 
         if (commandHistoryIdx != -1 && !autoCompleteScrollView.active)
         {
-            if (Key.UpArrow.OnKeyPressed())
+            if (Keyboard.current.upArrowKey.wasPressedThisFrame)
             {
                 commandInput.text = commandHistory[commandHistoryIdx];
                 commandInput.MoveToEndOfLine(false, false);
@@ -394,10 +381,10 @@ public class SR2EConsole : SR2EMenu
 
         if (autoCompleteContent.childCount != 0 && autoCompleteScrollView.active)
         {
-            if (Key.DownArrow.OnKeyPressed())
+            if (Keyboard.current.downArrowKey.wasPressedThisFrame)
                 NextAutoComplete();
 
-            if (Key.UpArrow.OnKeyPressed())
+            if (Keyboard.current.upArrowKey.wasPressedThisFrame)
                 PrevAutoComplete();
         }
 
