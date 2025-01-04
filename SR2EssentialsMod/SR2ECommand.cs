@@ -8,6 +8,7 @@ namespace SR2E;
 /// </summary>
 public abstract class SR2ECommand
 {
+    public SR2ECommand(){}
     /// <summary>
     /// The ID of this command (Always lowercase)
     /// </summary>

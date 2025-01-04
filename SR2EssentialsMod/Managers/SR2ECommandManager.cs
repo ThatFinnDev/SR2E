@@ -69,7 +69,9 @@ public static class SR2ECommandManager
                 {
                     if (sr2Command is InfiniteHealthCommand && !EnableInfHealth.HasFlag()) continue;
                     if (sr2Command is InfiniteEnergyCommand && !EnableInfEnergy.HasFlag()) continue;
-                    RegisterCommand(sr2Command);
+                    if (sr2Command.type.HasFlag(CommandType.DontLoad)) continue;
+                    try { RegisterCommand(sr2Command); }
+                    catch (Exception e) { MelonLogger.Error(e); }
                 }
         }
         foreach (var expansion in SR2EEntryPoint.expansions)

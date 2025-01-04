@@ -16,6 +16,8 @@ public class SR2EConsole : SR2EMenu
         new MenuIdentifier(true, "console", SR2EMenuTheme.Default, "Console");
 
     public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EConsole>();
+    public override bool createCommands => true;
+    public override bool inGameOnly => false;
 
     protected override void OnAwake()
     {
@@ -25,6 +27,11 @@ public class SR2EConsole : SR2EMenu
             { "openActions", new List<MenuActions> { MenuActions.PauseGameFalse, MenuActions.DisableInput } },
             { "closeActions", new List<MenuActions> { MenuActions.UnPauseGameFalse, MenuActions.EnableInput } },
         });
+    }
+
+    protected override void OnStart()
+    {
+        SendMessage(translation("console.helloworld"));
     }
 
     /// <summary>

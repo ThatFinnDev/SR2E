@@ -12,6 +12,8 @@ public class SR2EThemeMenu : SR2EMenu
 {
     public new static MenuIdentifier GetMenuIdentifier() => new (false,"thememenu",SR2EMenuTheme.Default,"ThemeMenu");
     public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EThemeMenu>();
+    public override bool createCommands => false;
+    public override bool inGameOnly => false;
     
 
     protected override void OnAwake()
@@ -33,10 +35,13 @@ public class SR2EThemeMenu : SR2EMenu
         List<MenuIdentifier> identifiers = new List<MenuIdentifier>();
         foreach (var pair in SR2EEntryPoint.menus)
         {
-            var methodInfo = pair.Key.GetType().GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
-            var result = methodInfo.Invoke(null, null);
-            if (result is MenuIdentifier identifier) identifiers.Add(identifier);
-            else MelonLogger.Msg(result.GetType().FullName);
+            try
+            {
+                var methodInfo = pair.Key.GetType().GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
+                var result = methodInfo.Invoke(null, null);
+                if (result is MenuIdentifier identifier) identifiers.Add(identifier);
+            }
+            catch (Exception e) { MelonLogger.Error(e); }
         }
         foreach (var identifier in identifiers)
         {
