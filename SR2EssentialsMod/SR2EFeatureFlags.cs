@@ -16,7 +16,7 @@ public enum FeatureStringValue
 public static class SR2EFeatureFlags
 {
     
-    static List<FeatureFlag> defaultFlags => new List<FeatureFlag>() {
+    static List<FeatureFlag> defaultFlags = new List<FeatureFlag>() {
         CommandsLoadCommands,CommandsLoadCheat,CommandsLoadBinding,CommandsLoadWarp,
         CommandsLoadCommon,CommandsLoadMenu,CommandsLoadMiscellaneous,CommandsLoadFun, 
         AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
