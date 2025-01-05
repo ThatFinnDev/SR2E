@@ -12,7 +12,7 @@ namespace SR2E.Menus;
 public class SR2EThemeMenu : SR2EMenu
 {
     //Check valid themes for all menus EVERYWHERE
-    public new static MenuIdentifier GetMenuIdentifier() => new ("thememenu",SR2EMenuTheme.Default,"ThemeMenu");
+    public new static MenuIdentifier GetMenuIdentifier() => new ("thememenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"ThemeMenu");
     public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EThemeMenu>();
     public override bool createCommands => false;
     public override bool inGameOnly => false;
@@ -37,13 +37,8 @@ public class SR2EThemeMenu : SR2EMenu
         List<MenuIdentifier> identifiers = new List<MenuIdentifier>();
         foreach (var pair in SR2EEntryPoint.menus)
         {
-            try
-            {
-                var methodInfo = pair.Key.GetType().GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
-                var result = methodInfo.Invoke(null, null);
-                if (result is MenuIdentifier identifier) identifiers.Add(identifier);
-            }
-            catch (Exception e) { MelonLogger.Error(e); }
+            var ident = pair.Key.GetIdentifierViaReflection();
+            if (!string.IsNullOrEmpty(ident.saveKey)) identifiers.Add(ident);
         }
         foreach (var identifier in identifiers)
         {

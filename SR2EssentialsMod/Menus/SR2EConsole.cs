@@ -15,7 +15,7 @@ namespace SR2E;
 public class SR2EConsole : SR2EMenu
 {
     public new static MenuIdentifier GetMenuIdentifier() =>
-        new MenuIdentifier("console", SR2EMenuTheme.Default, "Console");
+        new MenuIdentifier("console",SR2EMenuFont.Default, SR2EMenuTheme.Black, "Console");
 
     public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EConsole>();
     public override bool createCommands => true;

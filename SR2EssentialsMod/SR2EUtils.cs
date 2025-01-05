@@ -11,7 +11,9 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppSystem.IO;
+using Il2CppTMPro;
 using SR2E.Enums;
+using SR2E.Managers;
 using SR2E.Menus;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
@@ -153,14 +155,33 @@ namespace SR2E
         }
         public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
 
-        internal static GameObject getMenu(string name)
+        internal static void ReloadFont(this SR2EMenu menu)
         {
-            for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
-                if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).name.Replace("(Clone)","").Split("_")[0] == name)
-                    return SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject;
-            return null;
+            var ident = menu.GetIdentifierViaReflection();
+            if (string.IsNullOrEmpty(ident.saveKey)) return;
+            if(SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
+            var dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
+            TMP_FontAsset fontAsset = null;
+            switch (dataFont)
+            {
+                case SR2EMenuFont.Default: fontAsset = SR2EEntryPoint.normalFont; break;
+                case SR2EMenuFont.SR2: fontAsset = SR2EEntryPoint.SR2Font; break;
+            }
+            if(fontAsset!=null) menu.ApplyFont(fontAsset);
         }
-
+        internal static MenuIdentifier GetIdentifierViaReflection(this SR2EMenu menu) => menu.GetType().GetIdentifierViaReflection();
+        
+        internal static MenuIdentifier GetIdentifierViaReflection(this Type type)
+        {
+            try
+            {
+                var methodInfo = type.GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
+                var result = methodInfo.Invoke(null, null);
+                if(result is MenuIdentifier identifier) return identifier;
+            }
+            catch (Exception e) { MelonLogger.Error(e); }
+            return new MenuIdentifier(); 
+        }
         public static GameObject? Get(string name) => Get<GameObject>(name);
 
         public static void MakePrefab(this GameObject obj)

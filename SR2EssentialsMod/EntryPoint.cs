@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using SR2E.Buttons;
 using SR2E.Components;
+using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Patches.Context;
 using SR2E.Patches.Language;
@@ -86,7 +87,6 @@ public class SR2EEntryPoint : MelonMod
     internal static bool mLLogToSR2ELog => prefs.GetEntry<bool>("mLLogToSR2ELog").Value; 
     internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value; 
     internal static bool quickStart => prefs.GetEntry<bool>("quickStart").Value; 
-    internal static bool consoleUsesSR2Font => prefs.GetEntry<bool>("consoleUsesSR2Font").Value; 
     internal static bool fixSaves => prefs.GetEntry<bool>("fixSaves").Value; 
     internal static float noclipAdjustSpeed => prefs.GetEntry<float>("noclipAdjustSpeed").Value; 
     internal static float noclipSpeedMultiplier => prefs.GetEntry<float>("noclipSpeedMultiplier").Value; 
@@ -131,6 +131,7 @@ public class SR2EEntryPoint : MelonMod
         prefs.DeleteEntry("devMode");
         prefs.DeleteEntry("showUnityErrors");
         prefs.DeleteEntry("debugLogging");
+        prefs.DeleteEntry("consoleUsesSR2Font");;
         prefs.DeleteEntry("consoleUsesSR2Style");;
         prefs.DeleteEntry("doesConsoleSync");
         prefs.DeleteEntry("mLLogToConsole");
@@ -138,8 +139,7 @@ public class SR2EEntryPoint : MelonMod
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
         if (!prefs.HasEntry("fixSaves")) prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).AddNullAction();
-        if (!prefs.HasEntry("consoleUsesSR2Font")) prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).AddAction((System.Action)(() => 
-            { SetupFonts(); }));
+        //if (!prefs.HasEntry("consoleUsesSR2Font")) prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).AddAction((System.Action)(() => { SetupFonts(); }));
         if (!prefs.HasEntry("quickStart")) prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => 
             { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
@@ -405,25 +405,20 @@ public class SR2EEntryPoint : MelonMod
     }
 
     public static event EventHandler RegisterOptionMenuButtons;
-
+    static bool useSR2Font = true;
     internal static void SetupFonts()
     {
-        try
-        {
-            if (normalFont == null) normalFont = Get<TMP_FontAsset>("Lexend-Regular (Latin)");
-        }
+        try { if (normalFont == null) normalFont = Get<TMP_FontAsset>("Lexend-Regular (Latin)"); }
         catch
         {
             MelonLogger.Error("The normal font couldn't be loaded!");
             MelonLogger.Error("This happens on some platforms and I (the dev) haven't found a fix yet!");
         }
-
-        if (consoleUsesSR2Font) foreach (var text in SR2EStuff.getAllChildrenOfType<TMP_Text>()) text.font = SR2Font;
-        else if (normalFont != null) foreach (var text in SR2EStuff.getAllChildrenOfType<TMP_Text>()) text.font = normalFont == null ? SR2Font : normalFont;
-        foreach (var text in getMenu("ModMenu").getAllChildrenOfType<TMP_Text>()) text.font = SR2Font;
-        foreach (var text in getMenu("CheatMenu").getAllChildrenOfType<TMP_Text>()) text.font = SR2Font;
-
         foreach (var expansion in expansions) try { expansion.OnSR2FontLoad(); }catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var pair in menus)
+        {
+            pair.Key.ReloadFont();
+        }
     }
 
     internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)

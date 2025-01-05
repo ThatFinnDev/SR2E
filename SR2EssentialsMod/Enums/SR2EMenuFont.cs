@@ -6,7 +6,7 @@ namespace SR2E.Enums;
 
 [Serializable]
 [JsonConverter(typeof(StringEnumConverter))]
-public enum SR2EMenuTheme
+public enum SR2EMenuFont
 {
-    Default, SR2E, Black
+    Default, SR2
 }

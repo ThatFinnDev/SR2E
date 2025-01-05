@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 using SR2E.Enums;
 using SR2E.Storage;
@@ -11,12 +12,15 @@ public static class SR2ESaveManager
     {
         Load();
     }
-    internal static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+    static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
     {
         Error = (sender, args) =>
         {
-            if(DebugLogging.HasFlag())
-                MelonLogger.Msg($"Error: {args.ErrorContext.Error.Message}");
+            if(DebugLogging.HasFlag()) MelonLogger.Msg($"Error: {args.ErrorContext.Error.Message}");
+            if (args.ErrorContext.Member is string memberName && args.ErrorContext.Path.Contains(nameof(SR2ESaveData.fonts))) 
+                ((Dictionary<string, SR2EMenuFont>)args.ErrorContext.OriginalObject)[memberName] = SR2EMenuFont.Default;
+            if (args.ErrorContext.Member is string memberName2 && args.ErrorContext.Path.Contains(nameof(SR2ESaveData.themes))) 
+                ((Dictionary<string, SR2EMenuTheme>)args.ErrorContext.OriginalObject)[memberName2] = SR2EMenuTheme.Default;
             args.ErrorContext.Handled = true;
         }
     };
@@ -24,10 +28,25 @@ public static class SR2ESaveManager
     {
         if (File.Exists(path))
         {
-            data = JsonConvert.DeserializeObject<SR2ESaveData>(File.ReadAllText(path), jsonSerializerSettings);
+            
+            try { data = JsonConvert.DeserializeObject<SR2ESaveData>(File.ReadAllText(path), jsonSerializerSettings); }
+            catch (Exception e) 
+            { 
+                MelonLogger.Msg("SR2E save data is broken"); 
+                MelonLogger.Msg(e);
+                data = new SR2ESaveData();
+            }
             if (data.keyBinds == null) data.keyBinds = new Dictionary<Key, string>();
             if (data.warps == null) data.warps = new Dictionary<string, Warp>();
             if(data.themes == null) data.themes = new Dictionary<string, SR2EMenuTheme>();
+            if(data.fonts == null) data.fonts = new Dictionary<string, SR2EMenuFont>();
+            foreach (var pair in data.fonts)
+                if (!Enum.IsDefined(typeof(SR2EMenuFont), pair.Value))
+                    data.fonts[pair.Key] = SR2EMenuFont.Default;
+            foreach (var pair in data.themes)
+                if (!Enum.IsDefined(typeof(SR2EMenuTheme), pair.Value))
+                    data.themes[pair.Key] = SR2EMenuTheme.Default;
+            Save();
         }
         else data = new SR2ESaveData();
     }
@@ -39,5 +58,6 @@ public static class SR2ESaveManager
         public Dictionary<string, Warp> warps = new Dictionary<string, Warp>();
         public Dictionary<Key, string> keyBinds = new Dictionary<Key, string>();
         public Dictionary<string, SR2EMenuTheme> themes = new Dictionary<string, SR2EMenuTheme>();
+        public Dictionary<string, SR2EMenuFont> fonts = new Dictionary<string, SR2EMenuFont>();
     }
 }

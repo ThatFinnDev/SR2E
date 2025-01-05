@@ -21,7 +21,7 @@ namespace SR2E.Menus;
 
 public class SR2EModMenu : SR2EMenu
 {
-    public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier("modmenu",SR2EMenuTheme.Default,"ModMenu");
+    public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier("modmenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"ModMenu");
     public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EModMenu>();
     public override bool createCommands => true;
     public override bool inGameOnly => false;

@@ -19,6 +19,12 @@ public class SR2EMenu : MonoBehaviour
     //public List<MenuActions> closeActions => SR2EEntryPoint.menus[this][nameof(closeActions)] as List<MenuActions>;
     protected virtual void OnClose() {}
     protected virtual void OnOpen() {}
+
+    public virtual void ApplyFont(TMP_FontAsset font)
+    {
+        foreach (var text in gameObject.getAllChildrenOfType<TMP_Text>())
+            text.font = font;
+    }
     public static void PreAwake(GameObject obj) {}
     public void Awake()
     {
@@ -34,9 +40,8 @@ public class SR2EMenu : MonoBehaviour
             //Requires Reflection to get overriden one
             try
             {
-                var methodInfo = GetType().GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
-                var result = methodInfo.Invoke(null, null);
-                if (result is MenuIdentifier identifier)
+                MenuIdentifier identifier = this.GetIdentifierViaReflection();
+                if (!string.IsNullOrEmpty(identifier.saveKey))
                 {
                     try { SR2ECommandManager.RegisterCommand(new MenuVisibilityCommands.OpenCommand(identifier,this,inGameOnly)); } catch (Exception e) { MelonLogger.Error(e); }
                     try { SR2ECommandManager.RegisterCommand(new MenuVisibilityCommands.ToggleCommand(identifier,this,inGameOnly)); } catch (Exception e) { MelonLogger.Error(e); }
