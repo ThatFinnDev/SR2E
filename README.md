@@ -3,25 +3,25 @@
 A mod for SlimeRancher 2 that adds a mod menu to the main menu and an in-game console with commands (expandable by other mods/ expansions). This includes cheats, etc.
 
 # Installation guides
-Windows: [Click Here](https://sr2e.thatfinn.dev/docs/installation/windows-installation-guide)
+Windows: [Click Here](https://sr2e.thatfinn.dev/docs/installation/windows-installation-guide)<br />
 Linux: [Click Here](https://sr2e.thatfinn.dev/docs/installation/linux-installation-guide)
 
 # Mod's Website
-including information about the mod, usage
+including information about the mod, usage<br />
 Web: [Click Here](https://sr2e.thatfinn.dev)
 
-✮ Need Help? Found bugs?
-Please let me know on Discord or in GitHub Issues!
+# Need Help? Found bugs?
+Please let me know on Discord or in GitHub Issues!<br />
 Discord: https://discord.gg/YBghgrSTA9
 
 # Special thanks
-Special thanks to SlimeRancherModding for SRML because it gave me good starting point for a bit of stuff when commencing development.
+Special thanks to SlimeRancherModding for SRML because it gave me good starting point for a bit of stuff when commencing development.<br />
 Link: https://github.com/SlimeRancherModding/SRML
 
-Special thanks to AureumApes for adjusting the weather commands
+Special thanks to AureumApes for adjusting the weather commands<br />
 Link: https://github.com/AureumApes
  
-Special thanks to LavaGang for MelonLoader because otherwise SR2 Mods wouldn't exist.
+Special thanks to LavaGang for MelonLoader because otherwise SR2 Mods wouldn't exist.<br />
 Link: https://github.com/LavaGang/MelonLoader
 # Screenshots
 ![Screenshot 1](https://github.com/ThatFinnDev/SR2E/blob/experimental/.readme/Screenshot1.png?raw=true)
