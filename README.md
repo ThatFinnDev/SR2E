@@ -1,4 +1,4 @@
-# ![logo](https://github.com/ThatFinnDev/SR2E/blob/experimental/logo.png?raw=true)
+# ![logo](https://github.com/ThatFinnDev/SR2E/blob/experimental/.readme/logo.png?raw=true)
 (short SR2E)<br />
 A mod for SlimeRancher 2 that adds a mod menu to the main menu and an in-game console with commands (expandable by other mods/ expansions). This includes cheats, etc.
 
