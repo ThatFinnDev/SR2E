@@ -1,31 +1,29 @@
-![logo](https://github.com/ThatFinnDev/SR2E/blob/experimental/SR2EssentialsMod/category.png?raw=true)
+![logo](https://github.com/ThatFinnDev/SR2E/blob/experimental/logo.png?raw=true)
 
 # SR2E
- A mod for Slime Rancher 2 that adds a mod menu to the main menu and a in-game console with commands (expandable by other mods).
+A mod for SlimeRancher 2 that adds a mod menu to the main menu and an in-game console with commands (expandable by other mods/ expansions). This includes cheats, etc.
 
- # Installation:
-  1. Install MelonLoader 0.6.2 or higher https://github.com/LavaGang/MelonLoader/releases (BUT NOT 0.6.5 OR 0.6.6!)
-  2. Download the SR2E.dll in the releases Tab.
-  3. Put the SR2E.dll in your Mods Folder
+# Installation guides
+Windows: [Click Here](https://sr2e.thatfinn.dev/docs/installation/windows-installation-guide)
+Linux: [Click Here](https://sr2e.thatfinn.dev/docs/installation/linux-installation-guide)
 
-# Usage:
- Open the console wih Ctrl+Tab, type in commands, and press enter. There is also auto complete for commands and a keybinding system.
+# Mod's Website
+including information about the mod, usage
+Web: [Click Here](https://sr2e.thatfinn.dev)
 
-# Gamerules
-
-There are 2 gamerules right now. They are: **Enable Cheats (Default is 'No')**, **Skip Intro (Defualt is 'Yes')** 
+✮ Need Help? Found bugs?
+Please let me know on Discord or in GitHub Issues!
+Discord: https://discord.gg/YBghgrSTA9
 
 # Special thanks
- Special thanks to SlimeRancherModding for SRML
- because it gave me good starting point for a lot of stuff.
- Link: https://github.com/SlimeRancherModding/SRML
+Special thanks to SlimeRancherModding for SRML because it gave me good starting point for a bit of stuff when commencing development.
+Link: https://github.com/SlimeRancherModding/SRML
 
- Special thanks to AureumApes for helping with translating to `DE` and adjusting the weather commands
- Link: https://github.com/AureumApes
+Special thanks to AureumApes for adjusting the weather commands
+Link: https://github.com/AureumApes
  
- Special thanks to LavaGang for MelonLoader
- because otherwise SR2 Mods wouldn't exist.
- Link: https://melonwiki.xyz/#/
+Special thanks to LavaGang for MelonLoader because otherwise SR2 Mods wouldn't exist.
+Link: https://melonwiki.xyz/#/
 # Screenshots
 ![Screenshot 1](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot1.png?raw=true)
 ![Screenshot 2](https://github.com/ThatFinnDev/SR2Essentials/blob/main/Screenshot2.png?raw=true)
