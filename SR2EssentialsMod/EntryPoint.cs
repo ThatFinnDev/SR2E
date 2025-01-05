@@ -44,7 +44,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.0.0-beta.2";
+    public const string DisplayVersion = "3.0.0-dev";
 
     //allowmetadata, checkupdatelink,
     internal static TripleDictionary<string, bool, string> getPreInfo()
