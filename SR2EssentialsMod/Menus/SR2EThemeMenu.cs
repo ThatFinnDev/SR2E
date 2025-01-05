@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using Il2CppTMPro;
 using SR2E.Enums;
 using SR2E.Managers;
@@ -17,6 +19,10 @@ public class SR2EThemeMenu : SR2EMenu
     public override bool createCommands => false;
     public override bool inGameOnly => false;
     
+    GameObject entryTemplate;
+    GameObject buttonTemplate;
+    GameObject dropdownTemplate;
+    Transform content;
 
     protected override void OnAwake()
     {
@@ -42,20 +48,46 @@ public class SR2EThemeMenu : SR2EMenu
         }
         foreach (var identifier in identifiers)
         {
-            if(getValidThemes(identifier.saveKey).Count<2) continue;
             GameObject entry = Object.Instantiate(entryTemplate, content);
             entry.SetActive(true);
             entry.getObjRec<TextMeshProUGUI>("Title").text = translation(identifier.translationKey+".title");
 
-            foreach (SR2EMenuTheme theme in Enum.GetValues(typeof(SR2EMenuTheme)))
+            Transform contentRec = entry.getObjRec<Transform>("ContentRec");
+            GameObject dropDownObj = Instantiate(dropdownTemplate, contentRec);
+            dropDownObj.SetActive(true);
+            TMP_Dropdown dropdown = dropDownObj.getObjRec<TMP_Dropdown>("Dropdown");
+            dropdown.ClearOptions();
+            //idk how to convert to il2cpp list
+            var options = new Il2CppSystem.Collections.Generic.List<string>();
+            var fonts = new List<SR2EMenuFont>();
+            var currValue = 0;
+            var z = 0;
+            foreach(SR2EMenuFont font in Enum.GetValues(typeof(SR2EMenuFont)))
             {
-                Transform contentRec = entry.getObjRec<Transform>("ContentRec");
+                fonts.Add(font);
+                if (SR2ESaveManager.data.fonts[identifier.saveKey] == font) currValue = z;
+                options.Add(font.ToString());
+                z += 1;
+            }
+            dropdown.AddOptions(options);
+            dropdown.value = currValue;
+            dropdown.RefreshShownValue();
+            dropdown.onValueChanged.AddListener((Action<int>)((value) =>
+            {
+                SR2ESaveManager.data.fonts[identifier.saveKey]=fonts[value];
+                var menu = identifier.GetSR2EMenu();
+                if (menu != null)
+                    menu.ReloadFont();
+            }));
+            foreach (SR2EMenuTheme theme in getValidThemes(identifier.saveKey))
+            {
                 GameObject button = Instantiate(buttonTemplate, contentRec);
                 button.SetActive(true);
                 button.transform.GetChild(0).GetComponent<Button>().onClick.AddListener((Action)(() =>
                 {
                     for (int i = 0; i < contentRec.childCount; i++)
-                        contentRec.GetChild(i).GetComponent<Image>().color = contentRec.GetChild(i) == button.transform ? Color.green : Color.red;
+                        if(!contentRec.GetChild(i).HasComponent<CanvasGroup>())
+                            contentRec.GetChild(i).GetComponent<Image>().color = contentRec.GetChild(i) == button.transform ? Color.green : Color.red;
                     SR2ESaveManager.data.themes[identifier.saveKey] = theme;
                     SR2ESaveManager.Save();
                 }));
@@ -91,13 +123,11 @@ public class SR2EThemeMenu : SR2EMenu
         }
     }
     
-    GameObject entryTemplate;
-    GameObject buttonTemplate;
-    Transform content;
     protected override void OnLateAwake()
     {
         entryTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryRec");
         buttonTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryButtonEntryRec");
+        dropdownTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryDropdownEntryRec");
         content = transform.getObjRec<Transform>("ThemeMenuThemeSelectorContentRec");
         
         var button1 = transform.getObjRec<Image>("ThemeMenuThemeSelectorSelectionButtonRec");

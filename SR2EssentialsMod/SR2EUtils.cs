@@ -182,6 +182,19 @@ namespace SR2E
             catch (Exception e) { MelonLogger.Error(e); }
             return new MenuIdentifier(); 
         }
+        internal static SR2EMenu GetSR2EMenu(this MenuIdentifier identifier)
+        {
+            try
+            {
+                foreach (var pair in SR2EEntryPoint.menus)
+                {
+                    var ident = pair.Key.GetIdentifierViaReflection();
+                    if (ident.saveKey == identifier.saveKey) return pair.Key;
+                }
+            }
+            catch (Exception e) { MelonLogger.Error(e); }
+            return null; 
+        }
         public static GameObject? Get(string name) => Get<GameObject>(name);
 
         public static void MakePrefab(this GameObject obj)
@@ -231,6 +244,17 @@ namespace SR2E
                 return validThemes[saveKey.ToLower()];
             return new List<SR2EMenuTheme>();
         }
+        public static bool AddComponent<T>(this Transform obj) where T : Component => obj.gameObject.AddComponent<T>();
+        public static bool HasComponent<T>(this Transform obj) where T : Component => HasComponent<T>(obj.gameObject);
+        public static bool HasComponent<T>(this GameObject obj) where T : Component
+        {
+            try
+            {
+                return obj.GetComponent<T>()!=null;
+            }
+            catch { return false; }
+        }
+        public static bool RemoveComponent<T>(this Transform obj) where T : Component => RemoveComponent<T>(obj.gameObject);
         public static bool RemoveComponent<T>(this GameObject obj) where T : Component
         {
             try
@@ -248,18 +272,6 @@ namespace SR2E
                 if (pair.Key is T) return (T)pair.Key;
             return null;
         }
-        public static bool RemoveComponent<T>(this Transform obj) where T : Component
-        {
-            try
-            {
-                T comp = obj.GetComponent<T>();
-                var check = comp.gameObject;
-                Object.Destroy(comp);
-                return true;
-            }
-            catch { return false; }
-        }
-
         public static Il2CppSystem.Type il2cppTypeof(this Type type)
         {
             string typeName = type.AssemblyQualifiedName;
