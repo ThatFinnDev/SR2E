@@ -67,8 +67,7 @@ internal class SystemContextPatch
         
         var lang = SystemContext.Instance.LocalizationDirector.GetCurrentLocaleCode();
                     
-        if (languages.ContainsKey(lang)) LoadLanguage(lang);
-        else LoadLanguage("en");
+        LoadLanguage(lang);
         
         foreach (var expansion in SR2EEntryPoint.expansions)
             try { expansion.OnSystemContext(__instance); } 

@@ -26,10 +26,7 @@ internal class ChangeLanguagePatch
         reAdd = false;
         var code = curLocale.Formatter.Cast<CultureInfo>()._name;
 
-        if (languages.ContainsKey(code))
-            LoadLanguage(code);
-        else
-            LoadLanguage("en");
+        LoadLanguage(code);
 
         sr2etosrlanguage.Clear();
         addedTranslations.Clear();

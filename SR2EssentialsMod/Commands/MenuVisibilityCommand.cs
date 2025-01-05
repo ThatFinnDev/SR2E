@@ -1,4 +1,5 @@
 using System;
+using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Storage;
 
@@ -21,6 +22,16 @@ internal class MenuVisibilityCommands
         public override string Usage => "open"+identifier.saveKey.ToLower();
         public override Type[] execWhileMenuOpen => new[] { menu.GetType() };
         public override CommandType type => CommandType.DontLoad | CommandType.Menu;
+        public override string Description => translation($"cmd.openmenu.description");
+        public override string ExtendedDescription
+        {
+            get
+            {
+                string key = $"cmd.openmenu.extendeddescription";
+                string translation = SR2ELanguageManger.translation(key);
+                return key == translation ? Description : translation;
+            }
+        }
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -46,6 +57,16 @@ internal class MenuVisibilityCommands
         public override string Usage => "close"+identifier.saveKey.ToLower();
         public override Type[] execWhileMenuOpen => new[] { menu.GetType() };
         public override CommandType type => CommandType.DontLoad | CommandType.Menu;
+        public override string Description => translation($"cmd.closemenu.description");
+        public override string ExtendedDescription
+        {
+            get
+            {
+                string key = $"cmd.closemenu.extendeddescription";
+                string translation = SR2ELanguageManger.translation(key);
+                return key == translation ? Description : translation;
+            }
+        }
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -70,6 +91,16 @@ internal class MenuVisibilityCommands
         public override string Usage => "toggle"+identifier.saveKey.ToLower();
         public override Type[] execWhileMenuOpen => new[] { menu.GetType() };
         public override CommandType type => CommandType.DontLoad | CommandType.Menu;
+        public override string Description => translation($"cmd.togglemenu.description");
+        public override string ExtendedDescription
+        {
+            get
+            {
+                string key = $"cmd.togglemenu.extendeddescription";
+                string translation = SR2ELanguageManger.translation(key);
+                return key == translation ? Description : translation;
+            }
+        }
         public override bool Execute(string[] args)
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();

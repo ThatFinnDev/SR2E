@@ -41,6 +41,7 @@ public class SR2ECheatMenu : SR2EMenu
     GameObject buttonTemplate;
     GameObject refineryEntryTemplate;
     GameObject gadgetsEntryTemplate;
+    SR2ECheatMenuButton refillButton;
     SR2ECheatMenuButton noclipButton;
     SR2ECheatMenuButton infEnergyButton;
     SR2ECheatMenuButton infHealthButton;
@@ -101,6 +102,7 @@ public class SR2ECheatMenu : SR2EMenu
 
 
         noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SceneContext.Instance.Camera.GetComponent<NoClipComponent>() == null ? "off" : "on"));
+        refillButton.textInstance.text = translation("cheatmenu.cheatbuttons.refillinv");
         if (EnableInfHealth.HasFlag()) infHealthButton.textInstance.text = translation("cheatmenu.cheatbuttons.infhealth" + (InfiniteHealthCommand.infHealth? "on" : "off"));
         if (EnableInfEnergy.HasFlag()) infEnergyButton.textInstance.text = translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off"));
         removeFogButton.textInstance.text = translation("cheatmenu.cheatbuttons.removeFog" + (removeFog? "on" : "off"));
@@ -207,7 +209,7 @@ public class SR2ECheatMenu : SR2EMenu
                 SR2ECommandManager.ExecuteByString("noclip", true,true);
                 noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SceneContext.Instance.Camera.GetComponent<NoClipComponent>()!=null ? "on" : "off"));
             });
-        new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.refillinv"), () => { SR2ECommandManager.ExecuteByString("refillinv", true,true); });
+        refillButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.refillinv"), () => { SR2ECommandManager.ExecuteByString("refillinv", true,true); });
         
     }
 }

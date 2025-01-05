@@ -313,7 +313,7 @@ public class SR2EConsole : SR2EMenu
             if (Mouse.current.scroll.ReadValue().y != 0)
                 _scrollbar.value =
                     Mathf.Clamp(
-                        _scrollbar.value + ((value > 0.01 ? 1.25f : value < -0.01 ? -1.25f : 0) *
+                        _scrollbar.value + ((value > 0.01 ? SR2EEntryPoint.consoleMaxSpeed : value < -0.01 ? -SR2EEntryPoint.consoleMaxSpeed : 0) *
                                             _scrollbar.size), 0, 1f);
 
         }

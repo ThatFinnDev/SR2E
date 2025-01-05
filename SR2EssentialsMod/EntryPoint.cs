@@ -90,6 +90,7 @@ public class SR2EEntryPoint : MelonMod
     internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value; 
     internal static bool quickStart => prefs.GetEntry<bool>("quickStart").Value; 
     internal static bool fixSaves => prefs.GetEntry<bool>("fixSaves").Value; 
+    internal static float consoleMaxSpeed => prefs.GetEntry<float>("consoleMaxSpeed").Value; 
     internal static float noclipAdjustSpeed => prefs.GetEntry<float>("noclipAdjustSpeed").Value; 
     internal static float noclipSpeedMultiplier => prefs.GetEntry<float>("noclipSpeedMultiplier").Value; 
     internal static bool enableDebugDirector => prefs.GetEntry<bool>("enableDebugDirector").Value; 
@@ -156,6 +157,7 @@ public class SR2EEntryPoint : MelonMod
         if (!prefs.HasEntry("onMainMenuLoadCommand")) prefs.CreateEntry("onMainMenuLoadCommand", (string)"", "Execute command when main menu is loaded", false).AddNullAction();
         if (!prefs.HasEntry("noclipSpeedMultiplier")) prefs.CreateEntry("noclipSpeedMultiplier", 2f, "NoClip sprint speed multiplier", false).AddNullAction();
         if (!prefs.HasEntry("noclipAdjustSpeed")) prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).AddNullAction();
+        if (!prefs.HasEntry("consoleMaxSpeed")) prefs.CreateEntry("consoleMaxSpeed", (float)0.75f, "Controls how fast you scroll in the Console", false).AddNullAction();
     }
     public override void OnLateInitializeMelon()
     {

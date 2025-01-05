@@ -8,6 +8,7 @@ public static class SR2ELanguageManger
 {
     internal static Dictionary<string, List<Dictionary<string, string>>> languages = new Dictionary<string, List<Dictionary<string, string>>>();
     static Dictionary<string, string> loadedLanguage = new Dictionary<string, string>();
+    static Dictionary<string, string> defaultLang = null;
     public static string translation(string key)
     {
         if (String.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
@@ -85,15 +86,19 @@ public static class SR2ELanguageManger
     }
     public static void LoadLanguage(string code)
     {
-        if (!languages.ContainsKey(code)) return;
         loadedLanguage = new Dictionary<string, string>();
-        if(code!="en")
-            foreach (var languageDicts in languages["en"])
+        if (defaultLang == null)
+        {
+            defaultLang = new Dictionary<string, string>();
+            foreach (var languageDicts in languages[DEFAULT_LANGUAGECODE.Get()])
+                foreach (var translation in languageDicts) 
+                    defaultLang[translation.Key] = translation.Value;
+        }
+        if (code == DEFAULT_LANGUAGECODE.Get()) loadedLanguage = new Dictionary<string, string>(defaultLang);
+        else if (languages.ContainsKey(code))
+            foreach (var languageDicts in languages[code]) 
                 foreach (var translation in languageDicts)
                     loadedLanguage[translation.Key] = translation.Value;
-        foreach (var languageDicts in languages[code])
-            foreach (var translation in languageDicts)
-                loadedLanguage[translation.Key] = translation.Value;
     }
     
 }
