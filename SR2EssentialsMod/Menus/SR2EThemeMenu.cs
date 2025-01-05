@@ -75,6 +75,7 @@ public class SR2EThemeMenu : SR2EMenu
             dropdown.onValueChanged.AddListener((Action<int>)((value) =>
             {
                 SR2ESaveManager.data.fonts[identifier.saveKey]=fonts[value];
+                SR2ESaveManager.Save();
                 var menu = identifier.GetSR2EMenu();
                 if (menu != null)
                     menu.ReloadFont();
@@ -85,6 +86,7 @@ public class SR2EThemeMenu : SR2EMenu
                 button.SetActive(true);
                 button.transform.GetChild(0).GetComponent<Button>().onClick.AddListener((Action)(() =>
                 {
+                    warningText.SetActive(true);
                     for (int i = 0; i < contentRec.childCount; i++)
                         if(!contentRec.GetChild(i).HasComponent<CanvasGroup>())
                             contentRec.GetChild(i).GetComponent<Image>().color = contentRec.GetChild(i) == button.transform ? Color.green : Color.red;
@@ -123,11 +125,14 @@ public class SR2EThemeMenu : SR2EMenu
         }
     }
     
+    GameObject warningText;
     protected override void OnLateAwake()
     {
         entryTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryRec");
         buttonTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryButtonEntryRec");
         dropdownTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryDropdownEntryRec");
+        warningText = transform.getObjRec<GameObject>("ThemeMenuRestartWarningRec");
+        toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"thememenu.warning.restart");
         content = transform.getObjRec<Transform>("ThemeMenuThemeSelectorContentRec");
         
         var button1 = transform.getObjRec<Image>("ThemeMenuThemeSelectorSelectionButtonRec");

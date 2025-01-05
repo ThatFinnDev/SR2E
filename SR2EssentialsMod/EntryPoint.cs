@@ -65,6 +65,8 @@ public class SR2EEntryPoint : MelonMod
     internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
     internal static TMP_FontAsset SR2Font;
     internal static TMP_FontAsset normalFont;
+    internal static TMP_FontAsset regularFont;
+    internal static TMP_FontAsset boldFont;
     internal static string updateBranch = "release";
     internal static bool menusFinished = false;
     internal static bool mainMenuLoaded = false;
@@ -224,7 +226,7 @@ public class SR2EEntryPoint : MelonMod
 
 
 
-    //Logging code from Atmudia
+    //Logging code from Atmudia and adapted
     private static void AppLogUnity(string message, string trace, LogType type)
     {
         if (!ShowUnityErrors.HasFlag()) return;
@@ -234,11 +236,11 @@ public class SR2EEntryPoint : MelonMod
         toDisplay = Regex.Replace(toDisplay, @"\[INFO]\s|\[ERROR]\s|\[WARNING]\s", "");
         switch (type)
         {
-            case LogType.Assert: MelonLogger.Error("[Unity] " + toDisplay); break;
-            case LogType.Exception: MelonLogger.Error("[Unity] " + toDisplay + trace); break;
-            case LogType.Log: MelonLogger.Msg("[Unity] " + toDisplay); break;
-            case LogType.Error: MelonLogger.Error("[Unity] " + toDisplay + trace); break;
-            case LogType.Warning: MelonLogger.Warning("[Unity] " + toDisplay); break;
+            case LogType.Assert: unityLog.Error(toDisplay); break;
+            case LogType.Exception: unityLog.Error(toDisplay + trace); break;
+            case LogType.Log: unityLog.Msg(toDisplay); break;
+            case LogType.Error: unityLog.Error(toDisplay + trace); break;
+            case LogType.Warning: unityLog.Warning(toDisplay); break;
         }
     }
     public override void OnEarlyInitializeMelon()
@@ -246,6 +248,8 @@ public class SR2EEntryPoint : MelonMod
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
         InitFlagManager();
     }
+
+    static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
     public override void OnInitializeMelon()
     {
         prefs = MelonPreferences.CreateCategory("SR2E", "SR2E");
@@ -406,19 +410,20 @@ public class SR2EEntryPoint : MelonMod
 
     public static event EventHandler RegisterOptionMenuButtons;
     static bool useSR2Font = true;
+
+    internal static void SendFontError(string name)
+    {
+        MelonLogger.Error($"The font '{name}' couldn't be loaded!");
+        MelonLogger.Error("This happens on some platforms and I (the dev) haven't found a fix yet!");
+    }
     internal static void SetupFonts()
     {
-        try { if (normalFont == null) normalFont = Get<TMP_FontAsset>("Lexend-Regular (Latin)"); }
-        catch
-        {
-            MelonLogger.Error("The normal font couldn't be loaded!");
-            MelonLogger.Error("This happens on some platforms and I (the dev) haven't found a fix yet!");
-        }
+        if (SR2Font == null) SR2Font = FontFromGame("Runsell Type - HemispheresCaps2");
+        if (regularFont == null) regularFont = FontFromGame("Lexend-Regular (Latin)"); 
+        if (boldFont == null) boldFont = FontFromGame("Lexend-Bold (Latin)"); 
+        if (normalFont == null) normalFont = FontFromOS("Tahoma"); 
         foreach (var expansion in expansions) try { expansion.OnSR2FontLoad(); }catch (Exception e) { MelonLogger.Error(e); }
-        foreach (var pair in menus)
-        {
-            pair.Key.ReloadFont();
-        }
+        foreach (var pair in menus) pair.Key.ReloadFont();
     }
 
     internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)

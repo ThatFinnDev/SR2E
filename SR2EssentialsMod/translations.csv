@@ -6,6 +6,7 @@ buttons.thememenu.label,"Theme Menu",Designmenü
 console.title,"Console","Konsole"
 console.helloworld,"Hello World! :)","Hallo Welt! :)"
 thememenu.title,"Themes","Designs"
+thememenu.warning.restart,"You've changed a theme!\nThey will apply once you restart your game!","Du hast ein Design verändert! Du musst das Spiel neustarten um die Änderungen zu sehen!"
 thememenu.category.selector,"Theme Selector","Designauswahl"
 cheatmenu.title,"Cheat Menu","Schummelmenü"
 cheatmenu.category.main,"Main","Haupt"
@@ -24,6 +25,7 @@ cheatmenu.cheatbuttons.removeFogoff,"Remove Fog [Off]",Nebelentfernung [Auf]
 cheatmenu.cheatbuttons.betterScreenshoton,"BetterScreenshot [On]",Besserbildschirmfoto [An]
 cheatmenu.cheatbuttons.betterScreenshotoff,"BetterScreenshot [Off]",Besserbildschirmfoto [Aus]
 modmenu.title,Mods,"Modifikationen"
+modmenu.warning.restart,"You've edited a value!\nPlease restart your game when you're finished!","Du hast einen Wert verändert! Du musst das Spiel neustarten um die Änderungen zu sehen!"
 modmenu.category.modmenu,"Mod Menu","Modifikationen"
 modmenu.category.modconfig,"Mod Config","Modifikationseinstellungen"
 modmenu.modinfo.expansion,Expansion: $1,Erweiterung: $1

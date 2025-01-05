@@ -163,6 +163,7 @@ public class SR2EModMenu : SR2EMenu
         entryTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateEntryRec");
         headerTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
         warningText = transform.getObjRec<GameObject>("ModMenuModConfigurationRestartWarningRec");
+        toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"modmenu.warning.restart");
         Transform content = transform.getObjRec<Transform>("ModMenuModConfigurationContentRec");
         modInfoText = transform.getObjRec<TextMeshProUGUI>("ModMenuModInfoTextRec");
         foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
