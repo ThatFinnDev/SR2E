@@ -8,7 +8,7 @@ internal class ClearInventoryCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return new List<string> { "1", "2", "3", "4"};
+            return new List<string> { "1", "2", "3", "4", "5", "6"};
         return null;
     }
     public override bool Execute(string[] args)
@@ -18,21 +18,20 @@ internal class ClearInventoryCommand : SR2ECommand
 
         int numberOfSlots = SceneContext.Instance.PlayerState.Ammo.Slots.Length - 1;
         int slotToClear = -1;
-        if (args != null && args.Length == 1)
+        if (args!=null)
         {
             try { slotToClear = int.Parse(args[0]); }
             catch { SendError(translation("cmd.error.notvalidint",args[0])); return false; }
 
             if (slotToClear<=0) return SendError(translation("cmd.error.notintabove",args[0])); 
             if(slotToClear>numberOfSlots) return SendError(translation("cmd.clearinv.error.slotdoesntexist",numberOfSlots));
-            
+            slotToClear -= 1;
         }
 
-        slotToClear -= 1;
         if(slotToClear==-1)
         {
             foreach (Ammo.Slot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
-                slot.Clear();
+                if(slot.IsUnlocked) slot.Clear();
             SendMessage(translation("cmd.clearinv.success"));
             return true;
         }

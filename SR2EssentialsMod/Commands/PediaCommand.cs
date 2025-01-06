@@ -48,7 +48,7 @@ internal class PediaCommand : SR2ECommand
             {
                 silent = true;
                 if(args.Length==3) Execute(new []{args[0], def.name, args[2]});
-                else Execute(new []{args[0], def.name});
+                else Execute(new []{args[0], def.name, "false"});
                 silent = true;
             }
             if(silent)
