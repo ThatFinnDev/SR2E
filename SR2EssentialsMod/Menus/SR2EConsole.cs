@@ -50,7 +50,7 @@ public class SR2EConsole : SR2EMenu
         SendMessage(translation("console.helloworld"));
     }
 
-    internal void SendMessage(string message)
+    public void Send(string message, Color32 color)
     {
         if (!EnableConsole.HasFlag()) return;
         if (!SR2EEntryPoint.menusFinished) return;
@@ -65,50 +65,23 @@ public class SR2EConsole : SR2EMenu
             instance.gameObject.SetActive(true);
             instance.transform.GetChild(0).gameObject.SetActive(true);
             instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 1f, 1f);
+            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = color;
             _scrollbar.value = 0f;
             scrollCompletlyDown = true;
         } catch { }
+    }
+    
+    internal void SendMessage(string message)
+    {
+        Send(message, Color.white);
     }
     internal void SendError(string message)
     {
-        if (!EnableConsole.HasFlag()) return;
-        if (!SR2EEntryPoint.menusFinished) return;
-        try
-        {
-            if (message.Contains("\n"))
-            {
-                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
-                return;
-            }
-            GameObject instance = Instantiate(messagePrefab, consoleContent);
-            instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).gameObject.SetActive(true);
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 0f, 0f, 1f);
-            _scrollbar.value = 0f;
-            scrollCompletlyDown = true;
-        } catch { }
+        Send(message, Color.red);
     }
     internal void SendWarning(string message)
     {
-        if (!EnableConsole.HasFlag()) return;
-        if (!SR2EEntryPoint.menusFinished) return;
-        try
-        {
-            if (message.Contains("\n"))
-            {
-                foreach (string singularLine in message.Split('\n')) SendMessage(singularLine);
-                return;
-            }
-            GameObject instance = Instantiate(messagePrefab, consoleContent);
-            instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).gameObject.SetActive(true);
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = message;
-            instance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(1f, 1f, 0f, 1f);
-            _scrollbar.value = 0f;
-            scrollCompletlyDown = true;
-        } catch { }
+        Send(message, Color.yellow);
     }
 
 
@@ -225,8 +198,6 @@ public class SR2EConsole : SR2EMenu
     protected override void OnLateAwake()
     {
         commandHistory = new List<string>();
-        
-
 
         menuBlock = transform.parent.getObjRec<GameObject>("blockRec");
         consoleContent = transform.getObjRec<Transform>("ConsoleMenuConsoleContentRec");
@@ -241,10 +212,12 @@ public class SR2EConsole : SR2EMenu
 
         commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
         
-
         foreach (Transform child in transform.parent.GetChildren())
             child.gameObject.SetActive(false);
-
+        
+        messagePrefab.SetActive(false);
+        
+        Send("Hello Console!", Color.green);
     }
 
 

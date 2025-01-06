@@ -1,6 +1,6 @@
 namespace SR2E.Managers;
 
-public class SR2ELogManager
+public static class SR2ELogManager
 {
     static MelonLogger.Instance mlog;
     const string logName = "SR2E-Console";
@@ -22,6 +22,8 @@ public class SR2ELogManager
     /// <summary>
     /// Display a message in the log
     /// </summary>
+    
+    
     public static void SendMessage(string message, bool doMLLog, bool internal_logMLForSingleLine = true)
     {
         if (string.IsNullOrEmpty(message)) return;
