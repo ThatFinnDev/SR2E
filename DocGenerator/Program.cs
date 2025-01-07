@@ -16,8 +16,8 @@ class Program
     {
         Console.WriteLine("Hello World! The converting has begun!");
         DirectoryInfo SR2EWeb = null;
-        DirectoryInfo devDocs = null;
-        DirectoryInfo apiDocs = null;
+        DirectoryInfo apiDev = null;
+        DirectoryInfo api = null;
         DirectoryInfo XMLToMD = null;
         string rootDir = "";
         string gitDir = "";
@@ -30,28 +30,28 @@ class Program
             SR2EWeb = new DirectoryInfo(sr2eWebDir);
             string xmltomdDir = Path.Combine(gitDir, "XMLToMD");
             XMLToMD = new DirectoryInfo(xmltomdDir);
-            string devDocsDir = Path.Combine(sr2eWebDir, "dev");
-            devDocs = new DirectoryInfo(devDocsDir);
-            string apiDocsDir = Path.Combine(devDocsDir, apiDir);
-            apiDocs = new DirectoryInfo(apiDocsDir);
+            string devDir = Path.Combine(sr2eWebDir, "dev");
+            string apiDevDir = Path.Combine(devDir, "api");
+            apiDev = new DirectoryInfo(apiDevDir);
+            api = new DirectoryInfo(Path.Combine(apiDevDir, apiDir));
         }
         catch 
         {
             Console.WriteLine("Setup is wrong");
             Console.WriteLine("Are you running this program in the ide?");
             Console.WriteLine("Is the sr2e-web cloned next to this git repo?");
-            Console.WriteLine("Does dev exist in sr2e-web?");
+            Console.WriteLine("Does dev/api exist in sr2e-web?");
             Console.WriteLine("Is the XMLToMD folder in this git repo?");
             Console.WriteLine("Please check everything?");
             return;
         }
         if (!SR2EWeb.Exists) { Console.WriteLine("sr2e-web missing?"); return; }
         if (!XMLToMD.Exists) { Console.WriteLine("XMLToMD missing?"); return; }
-        if (!devDocs.Exists) { Console.WriteLine("docs/dev missing?"); return; }
-        if (!apiDocs.Exists) { apiDocs.Create();}
+        if (!apiDev.Exists) { Console.WriteLine("dev/api missing?"); return; }
+        if (!api.Exists) { api.Create();}
 
         string sourceDir = XMLToMD.FullName;
-        string workingDir = apiDocs.FullName;
+        string workingDir = api.FullName;
         if(!ExecuteCommand(docGen, gitDir+"/SR2EssentialsMod")) return;
         
         
@@ -63,7 +63,7 @@ class Program
         MoveFiles(workingDir);  
         ProcessDirectories(workingDir);  
         FixBrTags(workingDir);  
-        FixMarkDownLinks(workingDir,"/dev/"+apiDir);  
+        FixMarkDownLinks(workingDir,"/dev/api/"+apiDir);  
         DeleteMdFilesInWorkingDir(workingDir); 
         //Cleanup
         ClearDirectory(sourceDir);
@@ -144,8 +144,7 @@ class Program
     {
         string categoryContent = 
             "{" + "\n" +
-            "\"label\": \"API "+SR2E.BuildInfo.DisplayVersion+"\"," + "\n" +
-            "\"position\": 25," + "\n" +
+            "\"label\": \"SR2E "+SR2E.BuildInfo.DisplayVersion+"\"," + "\n" +
             "\"link\": {" + "\n" +
             "\"type\": \"generated-index\"," + "\n" +
             "\"description\": \"An API of SR2E and its expansions!\"" + "\n" +
