@@ -5,7 +5,7 @@ using SR2E.Storage;
 
 namespace SR2E.Managers;
 
-public static class SR2ESaveManager
+internal static class SR2ESaveManager
 {
     internal static SR2ESaveData data = null;
     internal static void Start()

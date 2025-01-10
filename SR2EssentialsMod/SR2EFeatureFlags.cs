@@ -2,17 +2,13 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using SR2E.Enums.Features;
 
 namespace SR2E;
 
-public enum FeatureIntegerValue
-{
-    MAX_AUTOCOMPLETE,MAX_CONSOLELINES,SAVESLOT_COUNT, MAX_AUTOCOMPLETEONSCREEN
-}
-public enum FeatureStringValue
-{
-    DEFAULT_LANGUAGECODE
-}
+
+
+
 public static class SR2EFeatureFlags
 {
     
@@ -20,7 +16,7 @@ public static class SR2EFeatureFlags
         CommandsLoadCommands,CommandsLoadCheat,CommandsLoadBinding,CommandsLoadWarp,
         CommandsLoadCommon,CommandsLoadMenu,CommandsLoadMiscellaneous,CommandsLoadFun, 
         AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
-        InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectSR2Translations,
+        InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectTranslations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
         EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu
         
@@ -302,63 +298,6 @@ public static class SR2EFeatureFlags
     }
 }
 
-[Flags]
-public enum FeatureFlag
-{
-    None,
-    //Dev
-    /// <summary>
-    /// Activates Devmode
-    /// </summary>
-    DevMode,
-    DebugLogging,
-    ShowUnityErrors,
-    Experiments,
-    ExperimentalSettingsInjection,
-    
-    //Commands+Dev
-    CommandsLoadDevOnly, 
-    CommandsLoadExperimental, 
-    
-    //Commands
-    CommandsLoadCommands, //
-    CommandsLoadCheat, //
-    CommandsLoadBinding, //
-    CommandsLoadWarp, //
-    CommandsLoadCommon, //
-    CommandsLoadMenu, //
-    CommandsLoadMiscellaneous, //
-    CommandsLoadFun, //
-
-    //Cheats and Mods
-    DisableCheats,
-    AddCheatMenuButton, //
-    EnableInfHealth, //
-    EnableInfEnergy, //
-    
-    //Misc
-    AddModMenuButton, //
-    AllowExpansions, //
-    EnableLocalizedVersionPatch, //
-    InjectSR2Translations, //
-    EnableIl2CppDetourExceptionReporting, //
-    
-    //Menus
-    EnableModMenu, //
-    EnableCheatMenu, //
-    EnableConsole, //
-    EnableThemeMenu, //
-    
-    //UI
-    InjectMainMenuButtons, //
-    InjectRanchUIButtons, //
-    InjectPauseButtons, //
-
-    //Updates and Patches
-    CheckForUpdates, //
-    AllowAutoUpdate, //
-
-}
 internal class FFR //FeatureFlagRequirement
 { } 
 internal class FFRString : FFR //FeatureFlagRequirementString

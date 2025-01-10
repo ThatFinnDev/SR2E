@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -15,19 +16,15 @@ using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using SR2E.Buttons;
 using SR2E.Components;
-using SR2E.Enums;
 using SR2E.Managers;
+using SR2E.Menus;
 using SR2E.Patches.Context;
-using SR2E.Patches.Language;
 using SR2E.Storage;
-using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 
 namespace SR2E;
 
-/// <summary>
-/// SR2E Build information. Please do not edit anything other than version numbers.
-/// </summary>
+// SR2E Build information. Please do not edit anything other than version numbers.
 public static class BuildInfo
 {
     public const string Name = "SR2E";
@@ -38,10 +35,10 @@ public static class BuildInfo
     public const string DownloadLink = "https://github.com/ThatFinnDev/SR2E";
 
     /// <summary>
-    /// Should be the same as CodeVersion unless this is non release build.
-    /// For alpha versions, add "-alpha.buildnumber" e.g 3.0.0-alpha.5
-    /// For beta versions, add "-beta.buildnumber" e.g 3.0.0-beta.12
-    /// For dev versions, use "-dev". Do not add a build number!
+    /// Should be the same as CodeVersion unless this is non release build.<br />
+    /// For alpha versions, add "-alpha.buildnumber" e.g 3.0.0-alpha.5<br />
+    /// For beta versions, add "-beta.buildnumber" e.g 3.0.0-beta.12<br />
+    /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
     public const string DisplayVersion = "3.0.0-dev";
@@ -60,7 +57,6 @@ public static class BuildInfo
 public class SR2EEntryPoint : MelonMod
 {
     //Does console sync
-
     internal static ScriptedBool cheatsEnabledOnSave;
     internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
     internal static TMP_FontAsset SR2Font;
@@ -71,16 +67,16 @@ public class SR2EEntryPoint : MelonMod
     internal static bool menusFinished = false;
     internal static bool mainMenuLoaded = false;
     internal static GameObject SR2EStuff;
-    static string branchJson = "";
     internal static bool updatedSR2E = false;
     internal static string newVersion = null;
     internal static ScriptedBool saveSkipIntro;
-    bool alreadyLoadedSettings = false;
     internal static bool addedButtons = false;
     internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
     internal static Dictionary<SR2EMenu, Dictionary<string, object>> menus = new Dictionary<SR2EMenu, Dictionary<string, object>>();
     static Dictionary<string, Type> menusToInit = new Dictionary<string, Type>();
     static MelonPreferences_Category prefs;
+    static string branchJson = "";
+    bool alreadyLoadedSettings = false;
     static bool isLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
     internal static string onSaveLoadCommand => prefs.GetEntry<string>("onSaveLoadCommand").Value; 
@@ -220,7 +216,7 @@ public class SR2EEntryPoint : MelonMod
                 if (DebugLogging.HasFlag()) MelonLogger.Msg("Downloading SR2E complete");
                 string path = MelonAssembly.Assembly.Location;
                 if (File.Exists(path)) File.Move(path, path + ".old");
-                File.WriteAllBytes(path, uwr.downloadHandler.data);
+                File.WriteAllBytes(Path.Combine(new FileInfo("path").Directory.FullName, "SR2E.dll"), uwr.downloadHandler.data);
                 updatedSR2E = true;
                 if (DebugLogging.HasFlag()) MelonLogger.Msg("Restart needed for applying SR2E update");
             }
@@ -558,10 +554,14 @@ public class SR2EEntryPoint : MelonMod
             if (DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
         }
 
-        if (ChangeLanguagePatch.reAdd)
+        if(actionCounter.Count>0) foreach (var pair in new Dictionary<Action, int>(actionCounter))
         {
-            ChangeLanguagePatch.reAddTicks--;
-            if (ChangeLanguagePatch.reAddTicks <= 0) ChangeLanguagePatch.FixLanguage();
+            if (pair.Value < 1)
+            {
+                try { pair.Key.Invoke(); } catch (Exception e) { MelonLogger.Error(e); }
+                actionCounter.Remove(pair.Key);
+            }
+            else actionCounter[pair.Key]--;
         }
     }
 }

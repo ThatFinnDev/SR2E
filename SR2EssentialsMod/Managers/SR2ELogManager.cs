@@ -1,3 +1,5 @@
+using SR2E.Menus;
+
 namespace SR2E.Managers;
 
 public static class SR2ELogManager

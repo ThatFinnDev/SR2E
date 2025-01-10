@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands;
+﻿using SR2E.Menus;
+
+namespace SR2E.Commands;
 
 internal class ClearCommand : SR2ECommand
 {

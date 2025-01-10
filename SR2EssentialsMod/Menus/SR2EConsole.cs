@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Il2CppTMPro;
 using SR2E.Enums;
+using SR2E.Enums.Features;
 using SR2E.Managers;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Key = SR2E.Enums.Key;
 
-namespace SR2E;
+namespace SR2E.Menus;
 
 public class SR2EConsole : SR2EMenu
 {

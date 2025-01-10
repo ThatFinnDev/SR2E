@@ -6,14 +6,10 @@ using SR2E.Storage;
 namespace SR2E.Managers;
 
 
-public enum KeyState
-{
-    Released, JustPressed, Pressed, JustReleased,
-}
 public static class SR2EInputManager
 {
     [DllImport("user32.dll")]
-    public static extern short GetAsyncKeyState(int vKey);
+    static extern short GetAsyncKeyState(int vKey);
     
     static KeyState[] keyStates = new KeyState[512];
 

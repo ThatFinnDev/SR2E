@@ -2,8 +2,6 @@
 using Il2CppMonomiPark.SlimeRancher.UI.Debug;
 using Il2CppTMPro;
 using SR2E.Managers;
-using SR2E.Menus;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Key = SR2E.Enums.Key;
 
@@ -16,7 +14,7 @@ internal class SR2EDebugDirector : MonoBehaviour
 	internal Font _helpFont;
 	internal class DebugStatsManager
     {
-        internal static bool playerDebugUIEnabled = false;
+	    static bool playerDebugUIEnabled = false;
         private static SRCharacterController cc;
         private static PlayerDebugHudUI playerDebugHudUI = null;
 
@@ -40,7 +38,6 @@ internal class SR2EDebugDirector : MonoBehaviour
             if(playerDebugUIEnabled) return;
             if(playerDebugHudUI==null) playerDebugHudUI = Get<PlayerDebugHudUI>("PlayerDebug");
             if(playerDebugHudUI==null) return;
-            playerDebugHudUI.GetComponent<VerticalLayoutGroup>().spacing = -50;
             if(!playerDebugHudUI.gameObject.activeSelf)
                 playerDebugHudUI.transform.gameObject.SetActive(true);
             if(player==null) return;
@@ -65,6 +62,7 @@ internal class SR2EDebugDirector : MonoBehaviour
             playerDebugHudUI._horizontalVelocity.SetText($"Position: {cc.Position.x} {cc.Position.y} {cc.Position.z}");
             playerDebugHudUI._slopeText.SetText($"Rotation: {player.transform.eulerAngles.y}");
             playerDebugHudUI._playerLocation.SetText($"Velocity: {cc.Velocity.x} {cc.Velocity.y} {cc.Velocity.z}");
+            playerDebugHudUI._cell.SetText($"InputVector: {cc.InputVector.x} {cc.InputVector.y}");
             playerDebugHudUI._lookInput.SetText($"LookInput: {cc.LookVector.x} {cc.LookVector.y} {cc.LookVector.z}");
             playerDebugHudUI._activeAbilities.SetText($"Slope: {cc.CurrentSlopeAngle}");
         }
@@ -81,11 +79,14 @@ internal class SR2EDebugDirector : MonoBehaviour
 
 		if (isAnyMenuOpen) return;
 		if (Time.timeScale == 0)  return;
+		if (!inGame) return;
+		if (SR2EWarpManager.warpTo != null) return;
+		switch (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name) { case "StandaloneStart": case "CompanyLogo": case "LoadScene": return; }
 		if (Key.Digit0.OnKeyPressed()) SR2ECommandManager.ExecuteByString("upgrade set * 10", true);
 		if (Key.Digit7.OnKeyPressed()) SR2ECommandManager.ExecuteByString("infenergy true", true);
 		if (Key.Digit8.OnKeyPressed()) SR2ECommandManager.ExecuteByString("infhealth", true);
 		if (Key.Digit9.OnKeyPressed()) GameContext.Instance.AutoSaveDirector.SaveGame();
-		if(CommandsLoadExperimental.HasFlag()) if (Key.P.OnKeyPressed()) SR2ECommandManager.ExecuteByString("pedia unlock * false", true);
+		if (Key.P.OnKeyPressed()) SR2ECommandManager.ExecuteByString("pedia unlock * false", true);
 		if (Key.K.OnKeyPressed()) SR2ECommandManager.ExecuteByString("clearinv", true);
 		if (Key.L.OnKeyPressed()) SR2ECommandManager.ExecuteByString("refillinv", true);
 		if (Key.N.OnKeyPressed()) SR2ECommandManager.ExecuteByString("noclip", true);
@@ -102,21 +103,19 @@ internal class SR2EDebugDirector : MonoBehaviour
 		{
 			GUI.skin.label.font = _helpFont;
 			GUI.skin.label.alignment = TextAnchor.UpperRight;
-			string text = "<b>DEBUG MODE INFO" +
-			              " \n\nGIVE ALL PERSONAL UPGRADES     0 ";
-
-			if (CommandsLoadExperimental.HasFlag())
-				text += "\nGIVE ALL PEDIA ENTRIES     P ";
-			text+=              "\nTOGGLE INFINITE ENERGY     7 " +
-				                    "\nTOGGLE INFINITE HEALTH     8 " +
-				                    "\nFORCE SAVE     9 " +
-				                    "\n\nCLEAR INVENTORY     K " +
-				                    "\nREFILL INVENTORY     L " +
-				                    "\nTOGGLE NOCLIP     N " +
-				                    "\n\nADD 1000 CREDITS     + " +
-				                    "\nREMOVE 1000 CREDITS     - " +
-				                    "\nDECREMENT TIME OF DAY     [ " +
-				                    "\nINCREMENT TIME OF DAY     ] </b>";
+			string text = "<b>DEBUG MODE INFO" + 
+							"\n\nGIVE ALL PERSONAL UPGRADES     0 " +
+							"\nGIVE ALL PEDIA ENTRIES     P " + 
+							"\nTOGGLE INFINITE ENERGY     7 " +
+							"\nTOGGLE INFINITE HEALTH     8 " +
+							"\nFORCE SAVE     9 " +
+							"\n\nCLEAR INVENTORY     K " +
+							"\nREFILL INVENTORY     L " +
+							"\nTOGGLE NOCLIP     N " +
+							"\n\nADD 1000 CREDITS     + " +
+							"\nREMOVE 1000 CREDITS     - " +
+							"\nDECREMENT TIME OF DAY     [ " +
+							"\nINCREMENT TIME OF DAY     ] </b>";
 			for (int i = -2; i <= 2; i += 2)
 				for (int j = -2; j <= 2; j += 2)
 				{

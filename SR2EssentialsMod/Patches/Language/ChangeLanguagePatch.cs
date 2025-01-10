@@ -1,3 +1,4 @@
+using System;
 using Il2CppMonomiPark.SlimeRancher.UI.Localization;
 using Il2CppSystem.Globalization;
 
@@ -6,24 +7,13 @@ namespace SR2E.Patches.Language;
 [HarmonyPatch(typeof(LocalizationDirector), nameof(LocalizationDirector.SetLocale))]
 internal class ChangeLanguagePatch
 {
-    internal static bool reAdd = false;
-    static LocalizationDirector director;
-    static UnityEngine.Localization.Locale curLocale;
-    internal static int reAddTicks = 0;
-
     internal static void Postfix(LocalizationDirector __instance, UnityEngine.Localization.Locale locale)
     {
-        reAdd = true;
-        reAddTicks = 2;
-        director = __instance;
-        curLocale = locale;
-        return;
+        ExecuteInTicks((Action)(() => { FixLanguage(__instance, locale);}), 2);
     }
 
-    internal static void FixLanguage()
+    static void FixLanguage(LocalizationDirector director, UnityEngine.Localization.Locale curLocale)
     {
-        reAddTicks = 0;
-        reAdd = false;
         var code = curLocale.Formatter.Cast<CultureInfo>()._name;
 
         LoadLanguage(code);

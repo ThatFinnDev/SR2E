@@ -5,6 +5,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
 using SR2E.Enums;
+using SR2E.Enums.Features;
 using SR2E.Expansion;
 using SR2E.Managers;
 using SR2E.Storage;

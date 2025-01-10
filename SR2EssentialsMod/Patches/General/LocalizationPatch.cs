@@ -8,7 +8,7 @@ internal static class LocalizationDirectorLoadTablePatch
 {
     internal static void Postfix(LocalizationDirector __instance)
     {
-        if(InjectSR2Translations.HasFlag())
+        if(InjectTranslations.HasFlag())
             MelonCoroutines.Start(LoadTable(__instance));
     }
     private static IEnumerator LoadTable(LocalizationDirector director)

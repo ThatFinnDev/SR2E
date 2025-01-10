@@ -84,7 +84,7 @@ namespace SR2E
         internal static Dictionary<string, (string, string, LocalizedString)> sr2eReplaceOnLanguageChange = new Dictionary<string, (string, string, LocalizedString)>();
         public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
         {
-            if (!InjectSR2Translations.HasFlag())
+            if (!InjectTranslations.HasFlag())
             {
                 var tutorial = LocalizationUtil.GetTable("Tutorial");
                 foreach (var pair in tutorial.m_TableEntries) return new LocalizedString(tutorial.SharedData.TableCollectionName, pair.Value.SharedEntry.Id);
@@ -119,7 +119,7 @@ namespace SR2E
         
         public static void SetTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
         {
-            if (!InjectSR2Translations.HasFlag()) return;
+            if (!InjectTranslations.HasFlag()) return;
             
             StringTable table2 = LocalizationUtil.GetTable(table);
             
@@ -851,5 +851,11 @@ namespace SR2E
         }
 
         internal static GameObject menuBlock;
+        internal static Dictionary<Action, int> actionCounter = new Dictionary<Action, int>();
+        public static void ExecuteInTicks(Action action, int ticks = 2)
+        {
+            if (action == null) return;
+            actionCounter.Add(new Action(action),ticks);
+        }
     }
 }

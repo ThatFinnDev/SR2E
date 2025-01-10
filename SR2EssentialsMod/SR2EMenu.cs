@@ -1,6 +1,8 @@
 using System.Reflection;
 using Il2CppTMPro;
 using SR2E.Commands;
+using SR2E.Enums;
+using SR2E.Enums.Features;
 using SR2E.Managers;
 using SR2E.Storage;
 
@@ -107,7 +109,3 @@ public class SR2EMenu : MonoBehaviour
     protected Dictionary<TextMeshProUGUI, string> toTranslate = new Dictionary<TextMeshProUGUI, string>();
 }
 
-public enum MenuActions
-{
-    PauseGame, PauseGameFalse, UnPauseGame, UnPauseGameFalse, HideMenus, UnHideMenus, DisableInput, EnableInput
-}
