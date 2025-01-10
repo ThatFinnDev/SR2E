@@ -13,7 +13,7 @@ internal class ReplaceCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return getIdentListByPartialName(args == null ? null : args[0], true, false,true);
+            return getIdentListByPartialName(args == null ? null : args[0], true, true,true);
 
         return null;
     }
@@ -33,7 +33,6 @@ internal class ReplaceCommand : SR2ECommand
         Camera cam = Camera.main;
         if (cam == null) return SendError(translation("cmd.error.nocamera"));
         
-        
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
@@ -43,44 +42,24 @@ internal class ReplaceCommand : SR2ECommand
             if (gameobject.GetComponent<Identifiable>())
             {
                 isValid = true;
-                try
-                {
-                    string name = gameobject.GetComponent<Identifiable>().identType.LocalizedName.GetLocalizedString();
-                    if (name.Contains(" ")) oldObjectName = "'" + name + "'";
-                    else oldObjectName = name;
-                }
-                catch
-                {
-                    oldObjectName = gameobject.GetComponent<Identifiable>().identType.name;
-                }
-
+                oldObjectName = gameobject.GetComponent<Identifiable>().identType.getName();
                 //Remove old one
                 DeathHandler.Kill(gameobject, killDamage);
 
-            } /*
+            } 
             else if (gameobject.GetComponentInParent<Gadget>())
             {
                 isValid = true;
-                try
-                {
-                    string name = gameobject.GetComponentInParent<Gadget>().identType.LocalizedName.GetLocalizedString();
-                    if (name.Contains(" ")) objectName = "'" + name + "'";
-                    else objectName = name;
-                }
-                catch
-                { oldObjectName = gameobject.GetComponentInParent<Gadget>().identType.name;}
-
+                oldObjectName = gameobject.GetComponentInParent<Gadget>().identType.getName();
                 //Remove old one
                 gameobject.GetComponentInParent<Gadget>().DestroyGadget();
-            }*/
-
+            }
             if (isValid)
             {
                 //Add new one 
                 GameObject spawned = null;
-                //if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
-                //else 
-                spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
+                if (type is GadgetDefinition gadgetDefinition) spawned = gadgetDefinition.SpawnGadget(hit.point,Quaternion.identity);
+                else spawned = type.SpawnActor(hit.point, Quaternion.identity);
                 Vector3 position = gameobject.transform.position;
                 Quaternion rotation = gameobject.transform.rotation;
                 spawned.transform.position = position;

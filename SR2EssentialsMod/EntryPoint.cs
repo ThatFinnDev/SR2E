@@ -474,6 +474,7 @@ public class SR2EEntryPoint : MelonMod
 
     public override void OnUpdate()
     {
+        
         foreach (BaseUI ui in new List<BaseUI>(baseUIAddSliders))
         {
             if (ui)

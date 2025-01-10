@@ -3,6 +3,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -10,6 +11,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
+using Il2CppMonomiPark.SlimeRancher.World;
 using Il2CppSystem.IO;
 using Il2CppTMPro;
 using SR2E.Enums;
@@ -129,12 +131,20 @@ namespace SR2E
         {
             SetTranslation(translation(sr2eTranslationID), key, table);
         }
-
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos) => SpawnActor(obj, pos, Quaternion.identity);
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Vector3 rot)=> SpawnActor(obj, pos, Quaternion.Euler(rot));
-        public static GameObject SpawnActor(this GameObject obj, Vector3 pos, Quaternion rot)
+        public static GameObject SpawnGadget(this GadgetDefinition def, Vector3 pos) => SpawnGadget(def, pos, Quaternion.identity);
+        public static GameObject SpawnGadget(this GadgetDefinition def, Vector3 pos, Vector3 rot)=> SpawnGadget(def, pos, Quaternion.Euler(rot));
+        public static GameObject SpawnGadget(this GadgetDefinition def, Vector3 pos, Quaternion rot)
         {
-            return InstantiationHelpers.InstantiateActor(obj,
+            throw new Exception("Currently broken");
+            GameObject gadget = GadgetDirector.InstantiateGadget(def.prefab, SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, rot);
+            return gadget;
+        }
+        public static GameObject SpawnActor(this IdentifiableType ident, Vector3 pos) => SpawnActor(ident, pos, Quaternion.identity);
+        public static GameObject SpawnActor(this IdentifiableType ident, Vector3 pos, Vector3 rot)=> SpawnActor(ident, pos, Quaternion.Euler(rot));
+        public static GameObject SpawnActor(this IdentifiableType ident, Vector3 pos, Quaternion rot)
+        {
+            if (ident is GadgetDefinition gadgetDefinition) return SpawnGadget(gadgetDefinition, pos, rot);
+            return InstantiationHelpers.InstantiateActor(ident.prefab,
                 SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, rot,
                 false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
         }

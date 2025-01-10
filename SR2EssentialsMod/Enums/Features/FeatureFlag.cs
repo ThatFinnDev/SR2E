@@ -17,6 +17,10 @@ public enum FeatureFlag
     /// </summary>
     ShowUnityErrors,
     /// <summary>
+    /// Show save game related errors and skips them
+    /// </summary>
+    IgnoreSaveErrors,
+    /// <summary>
     /// Enable experimental features
     /// </summary>
     Experiments,

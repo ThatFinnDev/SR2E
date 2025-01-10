@@ -23,7 +23,7 @@ public static class SR2EFeatureFlags
     };
 
     private static FeatureFlag[] extraDevFlags => new[] {
-        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental 
+        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};

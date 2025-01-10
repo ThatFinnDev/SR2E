@@ -11,7 +11,7 @@ internal class SpawnCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return getIdentListByPartialName(args == null ? null : args[0], true, false,true);
+            return getIdentListByPartialName(args == null ? null : args[0], true, true,true);
         if (argIndex == 1)
             return new List<string> { "1", "5", "10", "20", "30", "50" };
 
@@ -27,7 +27,7 @@ internal class SpawnCommand : SR2ECommand
         string identifierTypeName = args[0];
         IdentifiableType type = getIdentByName(identifierTypeName);
         if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
-
+        
         if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));
         
         Camera cam = Camera.main;
@@ -50,9 +50,8 @@ internal class SpawnCommand : SR2ECommand
                 try
                 {
                     GameObject spawned = null;
-                    //if (type is GadgetDefinition) spawned = type.prefab.SpawnGadget(hit.point,Quaternion.identity);
-                    //else 
-                    spawned = type.prefab.SpawnActor(hit.point, Quaternion.identity);
+                    if (type is GadgetDefinition gadgetDefinition) spawned = gadgetDefinition.SpawnGadget(hit.point,Quaternion.identity);
+                    else spawned = type.SpawnActor(hit.point, Quaternion.identity);
 
                     spawned.transform.position =
                         hit.point + hit.normal * PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());

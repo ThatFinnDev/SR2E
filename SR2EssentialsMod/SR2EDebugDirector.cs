@@ -85,7 +85,7 @@ internal class SR2EDebugDirector : MonoBehaviour
 		if (Key.Digit0.OnKeyPressed()) SR2ECommandManager.ExecuteByString("upgrade set * 10", true);
 		if (Key.Digit7.OnKeyPressed()) SR2ECommandManager.ExecuteByString("infenergy true", true);
 		if (Key.Digit8.OnKeyPressed()) SR2ECommandManager.ExecuteByString("infhealth", true);
-		if (Key.Digit9.OnKeyPressed()) GameContext.Instance.AutoSaveDirector.SaveGame();
+		if (Key.Digit9.OnKeyPressed()) GameContext.Instance.AutoSaveDirector.SaveAllNow();
 		if (Key.P.OnKeyPressed()) SR2ECommandManager.ExecuteByString("pedia unlock * false", true);
 		if (Key.K.OnKeyPressed()) SR2ECommandManager.ExecuteByString("clearinv", true);
 		if (Key.L.OnKeyPressed()) SR2ECommandManager.ExecuteByString("refillinv", true);
