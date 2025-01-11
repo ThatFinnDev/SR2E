@@ -37,10 +37,7 @@ internal class GraphicsCommand : SR2ECommand
     {
         if (!args.IsBetween(1,1)) return SendUsage();
 
-
-        if (rangeLightInstance == null)
-        { SendError(translation("cmd.graphics.norangelights")); return false; }
-
+        if (rangeLightInstance == null) return SendError(translation("cmd.graphics.norangelights")); 
 
         rangeLightInstance.transform.GetChild(0).gameObject.SetActive(false);
         rangeLightInstance.transform.GetChild(1).gameObject.SetActive(false);
@@ -70,8 +67,7 @@ internal class GraphicsCommand : SR2ECommand
             case "ORANGE":
                 rangeLightInstance.transform.GetChild(1).gameObject.SetActive(true);
                 rangeLightInstance.GetComponent<SunAndMoonVector>().enabled = true;
-                for (int i = 0; i < vectorUpdaters.Length; i++)
-                    vectorUpdaters[i].enabled = true;
+                for (int i = 0; i < vectorUpdaters.Length; i++) vectorUpdaters[i].enabled = true;
                 SendMessage(translation("cmd.graphics.success","orange"));
                 return true;
         }

@@ -8,29 +8,20 @@ internal class KillCommand : SR2ECommand
     public override string ID => "kill";
     public override string Usage => "kill";
     public override CommandType type => CommandType.Cheat;
-
-    public override List<string> GetAutoComplete(int argIndex, string[] args)
-    {
-        return null;
-    }
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(0,0)) return SendNoArguments();
         if (!inGame) return SendLoadASaveFirst();
         
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
         GameObject gameObject = null;
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
-            gameObject = hit.collider.gameObject;
-        else
-            return SendError(translation("cmd.error.notlookingatanything"));
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit)) gameObject = hit.collider.gameObject;
+        else return SendNotLookingAtAnything();
         if (gameObject != null)
-            if (Kill(gameObject))
-            { SendMessage(translation("cmd.kill.success")); return true; }
-        
-        return SendError(translation("cmd.error.notlookingatvalidobject"));
-        
+            if (Kill(gameObject)) { SendMessage(translation("cmd.kill.success")); return true; }
+
+        return SendNotLookingAtValidObject();
+
     }
 
     bool Kill(GameObject gameObject)
@@ -54,10 +45,7 @@ internal class KillCommand : SR2ECommand
                 {
                     gordoEat.ImmediateReachedTarget();
                     didAThing = true;
-                }
-                catch
-                {
-                }
+                }catch { }
 
         }
         else if (gameObject.GetComponentInParent<LandPlot>())

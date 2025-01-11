@@ -1,8 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
+using SR2E.Enums;
 using SR2E.Managers;
-using UnityEngine.InputSystem;
-using Key = SR2E.Enums.Key;
 
 namespace SR2E.Commands;
 
@@ -36,30 +34,17 @@ internal class BindCommand : SR2ECommand
     {
         if (!args.IsBetween(2,-1)) return SendUsage();
 
-        int e;
-        string keyToParse = args[0];
-
-        if (args[0].ToCharArray().Length == 1)
-            if (int.TryParse(args[0], out e))
-                keyToParse = "Digit" + args[0];
-
         Key key;
-        if (Key.TryParse(keyToParse, true, out key))
-        {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 1; i < args.Length; i++)
-                builder.Append(args[i] + " ");
-            
+        if (!this.TryParseKeyCode(args[0], out key)) return false;
+        
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i < args.Length; i++) builder.Append(args[i] + " ");
+        
+        string executeString = builder.ToString();
 
-            string executeString = builder.ToString();
-
-            SR2EBindingManger.BindKey(key, executeString);
-            SendMessage(translation("cmd.bind.success", executeString, key));
-            return true;
-        }
-
-        SendMessage(translation("cmd.error.notvalidkeycode", args[0]));
-        return false;
+        SR2EBindingManger.BindKey(key, executeString);
+        SendMessage(translation("cmd.bind.success", executeString, key));
+        return true;
     }
 }
 

@@ -25,16 +25,13 @@ internal class GadgetCommand : SR2ECommand
     {
         if (!args.IsBetween(2,3)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
-        if(!arg0List.Contains(args[0]))
-            return SendError(translation("cmd.gadget.notvalidoption",args[0]));
+        if(!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
         
         int amount = 1;
         if (args.Length == 3)
         {
-            if(args[0]=="get"||args[0]=="unlock"||args[0]=="lock") 
-                return SendError(translation("cmd.gadget.errortoomanyargs",args[0])); 
-            if (!int.TryParse(args[2], out amount)) return SendError(translation("cmd.error.notvalidint",args[2]));
-            if (amount <= -1) return SendError(translation("cmd.error.notintabove",args[2],-1));
+            if(args[0]=="get"||args[0]=="unlock"||args[0]=="lock") return SendErrorToManyArgs(args[0]); 
+            if(!this.TryParseInt(args[2], out amount,0,true)) return false;
         }
         else
             switch (args[0])
@@ -54,36 +51,21 @@ internal class GadgetCommand : SR2ECommand
                 else Execute(new []{args[0], def.name});
                 silent=args[0]!="get";
             }
-            if(silent)
+            silent = isSilent;
+            switch (args[0])
             {
-                silent = isSilent;
-                switch (args[0])
-                {
-                    case "add":
-                        SendMessage(translation("cmd.gadget.successalladd", amount));
-                        break;
-                    case "set":
-                        SendMessage(translation("cmd.gadget.successallset", amount));
-                        break;
-                    case "remove":
-                        SendMessage(translation("cmd.gadget.successallremove", amount));
-                        break;
-                    case "lock":
-                        SendMessage(translation("cmd.gadget.successalllock"));
-                        break;
-                    case "unlock":
-                        SendMessage(translation("cmd.gadget.successallunlock"));
-                        break;
-                }
+                case "add": SendMessage(translation("cmd.gadget.successalladd", amount)); break;
+                case "set": SendMessage(translation("cmd.gadget.successallset", amount)); break;
+                case "remove": SendMessage(translation("cmd.gadget.successallremove", amount)); break;
+                case "lock": SendMessage(translation("cmd.gadget.successalllock")); break;
+                case "unlock": SendMessage(translation("cmd.gadget.successallunlock")); break;
             }
             return true;
         }
         string identifierTypeName = args[1];
         GadgetDefinition type = getGadgetDefByName(identifierTypeName);
-        if(type==null) return SendError(translation("cmd.error.notvalidgadget",identifierTypeName));
+        if (type == null) return SendNotValidGadget(identifierTypeName);
         string itemName = type.getName();
-
-
 
         switch (args[0])
         {
@@ -100,18 +82,15 @@ internal class GadgetCommand : SR2ECommand
                 }
                 newValue=Mathf.Clamp(newValue, 0, int.MaxValue);
                 
-                if (newValue > 0 && !SceneContext.Instance.GadgetDirector.HasBlueprint(type))
-                    SceneContext.Instance.GadgetDirector.AddBlueprint(type);
+                if (newValue > 0 && !SceneContext.Instance.GadgetDirector.HasBlueprint(type)) SceneContext.Instance.GadgetDirector.AddBlueprint(type);
                 int difference = newValue - oldValue;
-                if (difference > 0)
-                    SceneContext.Instance.GadgetDirector.AddItem(type,difference);
+                if (difference > 0) SceneContext.Instance.GadgetDirector.AddItem(type,difference);
                 else if (difference < 0)
                 {
                     IdentCostEntry costEntry = new IdentCostEntry();
                     costEntry.amount = -difference;
                     costEntry.identType = type;
-                    Il2CppSystem.Collections.Generic.List<IdentCostEntry> entries =
-                        new Il2CppSystem.Collections.Generic.List<IdentCostEntry>();
+                    var entries = new Il2CppSystem.Collections.Generic.List<IdentCostEntry>();
                     entries.Add(costEntry);
                     SceneContext.Instance.GadgetDirector.TryToSpendItems(entries);
                 }
@@ -139,7 +118,6 @@ internal class GadgetCommand : SR2ECommand
                 SendMessage(translation("cmd.gadget.successunlock",itemName)); 
                 break;
         }
-
         return false;
     }
 }

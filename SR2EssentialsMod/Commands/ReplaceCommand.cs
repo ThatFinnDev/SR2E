@@ -1,5 +1,4 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Damage;
-using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Commands;
@@ -12,9 +11,7 @@ internal class ReplaceCommand : SR2ECommand
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0)
-            return getIdentListByPartialName(args == null ? null : args[0], true, true,true);
-
+        if (argIndex == 0) return getIdentListByPartialName(args == null ? null : args[0], true, true,true);
         return null;
     }
 
@@ -22,17 +19,12 @@ internal class ReplaceCommand : SR2ECommand
     {
         if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
-
         
         string identifierTypeName = args[0];
         IdentifiableType type = getIdentByName(identifierTypeName);
-        if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
-
-        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));
-        
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
-        
+        if (type == null) return SendNotValidIdentType(identifierTypeName);
+        if (type.isGadget()) return SendIsGadgetNotItem(type.getName());
+        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
@@ -67,9 +59,8 @@ internal class ReplaceCommand : SR2ECommand
                 SendMessage(translation("cmd.replace.success",oldObjectName,type.getName()));
                 return true;
             }
-
+            return SendNotLookingAtValidObject();
         }
-
-        return SendError(translation("cmd.error.notlookingatanything"));
+        return SendNotLookingAtAnything();
     }
 }

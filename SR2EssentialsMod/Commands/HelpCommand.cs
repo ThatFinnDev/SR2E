@@ -21,14 +21,9 @@ internal class HelpCommand : SR2ECommand
         {
             List<string> list = new List<string>();
             foreach (KeyValuePair<string, SR2ECommand> entry in SR2ECommandManager.commands)
-            {
-                if (!entry.Value.Hidden)
-                    list.Add(entry.Key);
-            }
-
+                if (!entry.Value.Hidden) list.Add(entry.Key);
             return list;
         }
-
         return null;
     }
 
@@ -41,24 +36,18 @@ internal class HelpCommand : SR2ECommand
 
 
             foreach (KeyValuePair<string, SR2ECommand> entry in SR2ECommandManager.commands)
-            {
                 if (!entry.Value.Hidden)
                     currText = $"{currText}\n{entry.Value.Usage} - {GetCommandDescription(entry.Key)}";
-            }
-
             SendMessage(currText);
             return true;
         }
-
         var desc = GetCommandDescription(args[0]);
         if (SR2ECommandManager.commands.ContainsKey(args[0]))
         {
             SendMessage(translation("cmd.help.successspecific",SR2ECommandManager.commands[args[0]].Usage,desc));
             return true;
         }
-
-        SendError(translation("cmd.help.notvalidcommand",args[0]));
-        return false;
+        return SendError(translation("cmd.help.notvalidcommand",args[0]));
         
     }
 }

@@ -18,7 +18,6 @@ internal class WarpListCommand : SR2ECommand
         SendMessage(translation("cmd.warplist.success"));
         foreach (KeyValuePair<string, Warp> pair in SR2ESaveManager.data.warps)
             SendMessage(translation("cmd.warplist.successdesc",pair.Key,pair.Value.sceneGroup,pair.Value.x,pair.Value.y,pair.Value.z));
-
         return true;
     }
 }

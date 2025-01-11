@@ -8,6 +8,7 @@ namespace SR2E;
 /// </summary>
 public abstract class SR2ECommand
 {
+    public bool silent = false;
     /// <summary>
     /// The ID of this command (Always lowercase)
     /// </summary>
@@ -154,26 +155,24 @@ public abstract class SR2ECommand
     /// </summary>
     public bool SendUsage()
     {
-        if(!silent) SR2ELogManager.SendMessage(translation("cmd.usage", Usage));
+        SendMessage(translation("cmd.usage", Usage));
         return false;
     }
     /// <summary>
     /// Sends the no arguments message
     /// </summary>
-    public bool SendNoArguments()
-    {
-        if(!silent) SR2ELogManager.SendError(translation("cmd.noarguments"));
-        return false;
-    }
+    public bool SendNoArguments() => SendError(translation("cmd.noarguments"));
+    
     
     /// <summary>
     /// Sends the load a save first message
     /// </summary>
-    public bool SendLoadASaveFirst()
-    {
-        if(!silent) SR2ELogManager.SendError(translation("cmd.loadasavefirst"));
-        return false;
-    }
+    public bool SendLoadASaveFirst() => SendError(translation("cmd.loadasavefirst"));
+    /// <summary>
+    /// Sends the cheats disabled message
+    /// </summary>
+    public bool SendCheatsDisabled() => SendError(translation("cmd.cheatsdisabled"));
+
     /// <summary>
     /// Display a message in the console
     /// </summary>
@@ -200,7 +199,38 @@ public abstract class SR2ECommand
         if (!silent) SR2ELogManager.SendWarning(message, SR2EEntryPoint.SR2ELogToMLLog);
     }
 
-    public bool silent = false;
-
-
+    public bool SendMaintenance() => SendError(translation("cmd.error.maintenance"));
+    public bool SendNotValidPedia(object obj) => SendError(translation("cmd.error.notvalidpedia",obj));
+    public bool SendNotValidVacMode(object obj) => SendError(translation("cmd.error.notvalidvacmode",obj));
+    public bool SendNotValidWeather(object obj) => SendError(translation("cmd.error.notvalidweather",obj));
+    public bool SendNotValidKeyCode(object obj) => SendError(translation("cmd.error.notvalidkeycode",obj));
+    public bool SendNotValidInt(object obj) => SendError(translation("cmd.error.notvalidint",obj));
+    public bool SendNotValidFloat(object obj) => SendError(translation("cmd.error.notvalidfloat",obj));
+    public bool SendNotValidDouble(object obj) => SendError(translation("cmd.error.notvaliddouble",obj));
+    public bool SendNotValidBool(object obj) => SendError(translation("cmd.error.notvalidbool",obj));
+    public bool SendNotValidTrool(object obj) => SendError(translation("cmd.error.notvalidtrool",obj));
+    public bool SendNotValidVector3(object objX,object objY,object objZ) => SendError(translation("cmd.error.notvalidvector3",objX,objY,objZ));
+    public bool SendNotValidIdentType(object obj) => SendError(translation("cmd.error.notvalididenttype",obj));
+    public bool SendNotValidGadget(object obj) => SendError(translation("cmd.error.notvalidgadget",obj));
+    public bool SendNotValidUpgrade(object obj) => SendError(translation("cmd.error.notvalidupgrade",obj));
+    public bool SendNotIntAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notintatleast",currValue,obj));
+    public bool SendNotIntAbove(object currValue, object obj) => SendError(translation("cmd.error.notintabove",currValue,obj));
+    public bool SendNotIntUnder(object currValue, object obj) => SendError(translation("cmd.error.notintbelow",currValue,obj));
+    public bool SendNotFloatAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notfloatatleast",currValue,obj));
+    public bool SendNotFloatAbove(object currValue, object obj) => SendError(translation("cmd.error.notfloatabove",currValue,obj));
+    public bool SendNotFloatUnder(object currValue, object obj) => SendError(translation("cmd.error.notfloatbelow",currValue,obj));
+    public bool SendNotDoubleAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notdoubleatleast",currValue,obj));
+    public bool SendNotDoubleAbove(object currValue, object obj) => SendError(translation("cmd.error.notdoubleabove",currValue,obj));
+    public bool SendNotDoubleUnder(object currValue, object obj) => SendError(translation("cmd.error.notdoublebelow",currValue,obj));
+    public bool SendNullSRCharacterController() => SendError(translation("cmd.error.srccnull"));
+    public bool SendNullTeleportablePlayer() => SendError(translation("cmd.error.teleportableplayernull"));
+    public bool SendNullKinematicCharacterMotor() => SendError(translation("cmd.error.kinematiccharactermotornull"));
+    public bool SendUnsupportedSceneGroup(object obj) => SendError(translation("cmd.error.scenegroupnotsupported",obj));
+    public bool SendNoCamera() => SendError(translation("cmd.error.nocamera"));
+    public bool SendNotLookingAtValidObject() => SendError(translation("cmd.error.notlookingatvalidobject"));
+    public bool SendNotLookingAtAnything() => SendError(translation("cmd.error.notlookingatanything"));
+    public bool SendUnknown() => SendError(translation("cmd.error.unknown"));
+    public bool SendIsGadgetNotItem(object obj) => SendError(translation("cmd.error.isgadgetnotitem",obj));
+    public bool SendErrorToManyArgs(object obj) => SendError(translation("cmd.error.errortoomanyargs",obj));
+    public bool SendNotValidOption(object obj) => SendError(translation("cmd.error.notvalidoption",obj));
 }

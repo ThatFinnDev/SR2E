@@ -6,12 +6,8 @@ internal class PartyCommand : SR2ECommand
     public override string ID => "party";
     public override string Usage => "party";
     public override CommandType type => CommandType.Fun;
-    public override List<string> GetAutoComplete(int argIndex, string[] args)
-    {
-        return null;
-    }
-    internal static Volume defaultVolume = null;
-    internal static ColorAdjustments myAdjustments = null;
+    static Volume defaultVolume = null;
+    static ColorAdjustments myAdjustments = null;
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -36,8 +32,7 @@ internal class PartyCommand : SR2ECommand
                 return true;
             }
 
-        SendError(translation("cmd.party.novolume"));
-        return false;
+        return SendError(translation("cmd.party.novolume"));
     }
 
     public override void Update()

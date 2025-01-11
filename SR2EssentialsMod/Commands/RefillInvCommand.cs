@@ -26,16 +26,10 @@ internal class RefillInvCommand : SR2ECommand
             {
                 slotToFill = int.Parse(args[0]);
                 if (slotToFill <= 0) return SendError(translation("cmd.error.notintabove", args[0]));
-                if (slotToFill > numberOfSlots)
-                    return SendError(translation("cmd.refillinv.error.slotdoesntexist", numberOfSlots));
+                if (slotToFill > numberOfSlots) return SendError(translation("cmd.refillinv.error.slotdoesntexist", numberOfSlots));
                 slotToFill -= 1;
             }
-            catch
-            {
-                return SendError(translation("cmd.error.notvalidint", args[0]));
-            }
-
-
+            catch { return SendNotValidInt(args[0]); }
         if (args==null)
         {
             for (int i = 0; i < SceneContext.Instance.PlayerState.Ammo.Slots.Count; i++)
@@ -61,8 +55,6 @@ internal class RefillInvCommand : SR2ECommand
         Ammo.Slot invSlot = SceneContext.Instance.PlayerState.Ammo.Slots[slotToFill];
         invSlot.Count = SceneContext.Instance.PlayerState.Ammo._ammoModel.GetSlotMaxCount(invSlot.Id, slotToFill);
         SendMessage(translation("cmd.refillinv.successsingle", slotToFill + 1));
-
-
         return true;
     }
 }

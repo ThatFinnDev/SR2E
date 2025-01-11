@@ -12,8 +12,7 @@ internal class InfiniteEnergyCommand : SR2ECommand
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0)
-            return new List<string> { "true", "false" };
+        if (argIndex == 0) return new List<string> { "true", "false" };
         return null;
     }
 
@@ -23,25 +22,15 @@ internal class InfiniteEnergyCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         bool shouldDisableThrusterHeight = false;
-        if (args != null)
-            if (args.Length != 1)
-                return SendUsage();
-            else
-            {
-                string boolToParse = args[0].ToLower();
-                if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",args[0]));
-                if (boolToParse == "true")  shouldDisableThrusterHeight = true;
-            }
+        if (args != null) if (!this.TryParseBool(args[0], out shouldDisableThrusterHeight)) return false;
 
         if (infEnergy)
         {
             infEnergy = false;
-            if (energyMeter == null)
-                energyMeter = Get<EnergyMeter>("Energy Meter");
+            if (energyMeter == null) energyMeter = Get<EnergyMeter>("Energy Meter");
             energyMeter.gameObject.active = true;
 
-            if (jetpackAbilityData == null)
-                jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
+            if (jetpackAbilityData == null) jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
             jetpackAbilityData._hoverHeight = normalHoverHeight;
             jetpackAbilityData._maxUpwardThrustForce = normalMaxUpwardThrustForce;
             jetpackAbilityData._upwardThrustForceIncrement = normalUpwardThrustForceIncrement;
@@ -53,12 +42,10 @@ internal class InfiniteEnergyCommand : SR2ECommand
         else
         {
             infEnergy = true;
-            if (energyMeter == null)
-                energyMeter = Get<EnergyMeter>("Energy Meter");
+            if (energyMeter == null) energyMeter = Get<EnergyMeter>("Energy Meter");
             energyMeter.gameObject.active = false;
 
-            if (jetpackAbilityData == null)
-                jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
+            if (jetpackAbilityData == null) jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
             normalHoverHeight = jetpackAbilityData._hoverHeight;
             normalMaxUpwardThrustForce = jetpackAbilityData._maxUpwardThrustForce;
             normalUpwardThrustForceIncrement = jetpackAbilityData._upwardThrustForceIncrement;
@@ -69,17 +56,11 @@ internal class InfiniteEnergyCommand : SR2ECommand
                 jetpackAbilityData._upwardThrustForceIncrement = 5f;
             }
 
-            try
-            {
-                SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
-            }
-            catch { }
+            try { SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue); }catch { }
             normalEnergy = energyMeter.maxEnergy;
             energyMeter.maxEnergy = new NullableFloatProperty(2.14748365E+09f);
             SendMessage(translation("cmd.infenergy.success"));
         }
-
-
         return true;
     }
 
@@ -95,20 +76,10 @@ internal class InfiniteEnergyCommand : SR2ECommand
         catch { }
     }
 
-    public override void OnMainMenuUILoad()
-    {
-        infEnergy = false;
-    }
-
-    public override void OnPlayerCoreLoad()
-    {
-        jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
-    }
-
-    public override void OnUICoreLoad()
-    {
-        energyMeter = Get<EnergyMeter>("Energy Meter");
-    }
+    public override void OnMainMenuUILoad() => infEnergy = false;
+    public override void OnPlayerCoreLoad() => jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
+    public override void OnUICoreLoad() => energyMeter = Get<EnergyMeter>("Energy Meter");
+    
 
     public static bool infEnergy = false;
     static float normalEnergy = 100;

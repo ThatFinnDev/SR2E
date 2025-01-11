@@ -1,6 +1,4 @@
 using System.Linq;
-using Il2CppMonomiPark.SlimeRancher.Pedia;
-using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.World;
 
 namespace SR2E.Commands;
@@ -14,10 +12,8 @@ internal class RanchCommand : SR2ECommand
     public override CommandType type => CommandType.Cheat;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0)
-            return arg0List;
-        if (argIndex == 1)
-            return translations.Keys.ToList();
+        if (argIndex == 0) return arg0List;
+        if (argIndex == 1) return translations.Keys.ToList();
         return null;
     }
     public Dictionary<string, string> translations = new Dictionary<string, string>()
@@ -31,14 +27,10 @@ internal class RanchCommand : SR2ECommand
     };
     public override bool Execute(string[] args)
     {
-        
         if (!args.IsBetween(2,2)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
-        if(!arg0List.Contains(args[0]))
-            return SendError(translation("cmd.ranch.notvalidoption",args[0]));
-        if(!translations.Keys.ToList().Contains(args[1]))
-            return SendError(translation("cmd.ranch.notvalidoption",args[1]));
-        
+        if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
+        if(!translations.Keys.ToList().Contains(args[1])) return SendNotValidOption(args[1]);
         if (args[1] == "*")
         {
             bool isSilent = silent;
@@ -52,14 +44,9 @@ internal class RanchCommand : SR2ECommand
             silent = isSilent;
             switch (args[0])
             { 
-                case "lock":
-                    SendMessage(translation("cmd.ranch.successalllock"));
-                    break;
-                case "unlock":
-                    SendMessage(translation("cmd.ranch.successallunlock"));
-                    break;
+                case "lock": SendMessage(translation("cmd.ranch.successalllock")); break;
+                case "unlock": SendMessage(translation("cmd.ranch.successallunlock")); break;
             }
-            
             return true;
         }
 

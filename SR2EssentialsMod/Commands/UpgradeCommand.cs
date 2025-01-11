@@ -10,19 +10,15 @@ internal class UpgradeCommand : SR2ECommand
     List<string> arg0List = new List<string> { "increment","set","decrement","get"};
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0)
-            return arg0List;
+        if (argIndex == 0) return arg0List;
         if (argIndex == 1)
         {
-            var identifiableTypeGroup =
-                Resources.FindObjectsOfTypeAll<UpgradeDefinition>().Select(x => x.name);
+            var identifiableTypeGroup = Resources.FindObjectsOfTypeAll<UpgradeDefinition>().Select(x => x.name);
             List<string> list = identifiableTypeGroup.ToList();
             list.Add("*");
             return list;
         }
-        if (argIndex == 2)
-            if(args[0]!="get")
-                return new List<string> { "0", "1", "2", "3", "4", "5", "6" };
+        if (argIndex == 2) if(args[0]!="get") return new List<string> { "0", "1", "2", "3", "4", "5", "6" };
         return null;
     }
 
@@ -30,16 +26,12 @@ internal class UpgradeCommand : SR2ECommand
     {
         if (!args.IsBetween(2,3)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
-        if(!arg0List.Contains(args[0]))
-            return SendError(translation("cmd.upgrade.notvalidoption",args[0]));
-
-        
+        if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
         int level = 1;
         if (args.Length == 3)
         {
-            if(args[0]=="get") return SendError(translation("cmd.upgrade.errortoomanyargs",args[0])); 
-            if (!int.TryParse(args[2], out level)) return SendError(translation("cmd.error.notvalidint",args[2]));
-            if (level <= -1) return SendError(translation("cmd.error.notintabove",args[2],-1));
+            if (args[0] == "get") return SendErrorToManyArgs(args[0]); 
+            if(!this.TryParseInt(args[2], out level,0,true)) return false;
         }
         else switch (args[0])
         {
@@ -58,27 +50,18 @@ internal class UpgradeCommand : SR2ECommand
                 else Execute(new []{args[0], def.name});
                 silent=args[0]!="get";
             }
-            if(silent)
+            silent = isSilent;
+            switch (args[0])
             {
-                silent = isSilent;
-                switch (args[0])
-                {
-                    case "increment":
-                        SendMessage(translation("cmd.upgrade.successalladd", level));
-                        break;
-                    case "set":
-                        SendMessage(translation("cmd.upgrade.successallset", level));
-                        break;
-                    case "decrement":
-                        SendMessage(translation("cmd.upgrade.successallremove", level));
-                        break;
-                }
+                case "increment": SendMessage(translation("cmd.upgrade.successalladd", level)); break;
+                case "set": SendMessage(translation("cmd.upgrade.successallset", level)); break;
+                case "decrement": SendMessage(translation("cmd.upgrade.successallremove", level)); break;
             }
             return true;
         }
         string identifierTypeName = args[1];
         UpgradeDefinition id = Resources.FindObjectsOfTypeAll<UpgradeDefinition>().FirstOrDefault(x => x.name.ToLower().Equals(identifierTypeName.ToLower()));
-        if(id==null) return SendError(translation("cmd.error.notvalidupgrade",identifierTypeName));
+        if (id == null) return SendNotValidUpgrade(identifierTypeName);
         string itemName = id.name;
         int maxUpgrade = 0;
         bool continueTesting = true;
@@ -115,7 +98,6 @@ internal class UpgradeCommand : SR2ECommand
                 SendMessage(translation("cmd.upgrade.successget",SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id),itemName)); 
                 break;
         }
-
         return false;
     }
 }

@@ -22,8 +22,7 @@ internal class ClearInventoryCommand : SR2ECommand
         {
             try { slotToClear = int.Parse(args[0]); }
             catch { SendError(translation("cmd.error.notvalidint",args[0])); return false; }
-
-            if (slotToClear<=0) return SendError(translation("cmd.error.notintabove",args[0])); 
+            if (slotToClear<=0) return SendNotValidInt(args[0]); 
             if(slotToClear>numberOfSlots) return SendError(translation("cmd.clearinv.error.slotdoesntexist",numberOfSlots));
             slotToClear -= 1;
         }

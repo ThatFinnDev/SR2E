@@ -13,8 +13,7 @@ internal class FreezeCommand : SR2ECommand
         if (!args.IsBetween(0,0)) return SendNoArguments();
         if (!inGame) return SendLoadASaveFirst();
 
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
             
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
@@ -36,13 +35,13 @@ internal class FreezeCommand : SR2ECommand
                     ident.GetComponent<Vacuumable>().enabled = true;
                     if (ident.transform.getObjRec<Animator>("Appearance"))
                         ident.transform.getObjRec<Animator>("Appearance").enabled = true;
-                    SendMessage(translation("cmd.freeze.successunfroze"));
-                    return true;
+                    SendMessage(translation("cmd.freeze.successthaw"));
                 }
+                return true;
             }
+            return SendNotLookingAtValidObject();
         }
-
-        return SendError(translation("cmd.error.notlookingatvalidobject"));
+        return SendNotLookingAtAnything();
     }
 }
 

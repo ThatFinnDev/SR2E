@@ -9,15 +9,14 @@ internal class SpeedCommand : SR2ECommand
     public override string Usage { get; } = "speed <speed>";
     public override CommandType type => CommandType.Cheat;
 
-    private static float baseMaxAirSpeed = 10;
-    private static float baseAccAirSpeed = 60;
-    private static float baseMaxGroundSpeed = 10;
-    private static CharacterControllerParameters parameters;
+    static float baseMaxAirSpeed = 10;
+    static float baseAccAirSpeed = 60;
+    static float baseMaxGroundSpeed = 10;
+    static CharacterControllerParameters parameters;
 
     public static void RemoteExc(float val)
     {
-        if (parameters == null)
-            parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+        if (parameters == null) parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
         if (parameters == null) return;
         parameters._maxGroundedMoveSpeed = val * baseMaxGroundSpeed;
         parameters._maxAirMoveSpeed = val * baseMaxAirSpeed;
@@ -29,15 +28,12 @@ internal class SpeedCommand : SR2ECommand
         if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
-        if (parameters == null)
-            parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
-        if (parameters == null)
-            return SendError("cmd.error.srccnull");
+        if (parameters == null) parameters = Get<SRCharacterController>("PlayerControllerKCC")._parameters;
+        if (parameters == null) return SendNullSRCharacterController();
         float speedValue = 0;
-        if (!float.TryParse(args[0], out speedValue)) return SendError(translation("cmd.error.notvalidfloat",args[0]));
+        if (!float.TryParse(args[0], out speedValue)) return SendNotValidFloat(args[0]);
         try
         {
-
             parameters._maxGroundedMoveSpeed = speedValue * baseMaxGroundSpeed;
             parameters._maxAirMoveSpeed = speedValue * baseMaxAirSpeed;
             parameters._airAccelerationSpeed = speedValue * baseAccAirSpeed;
@@ -46,10 +42,6 @@ internal class SpeedCommand : SR2ECommand
 
             SendMessage(translation("cmd.speed.success",args[0]));
             return true;
-        }
-        catch
-        {
-            return SendError(translation("cmd.speed.unknownerror"));
-        }
+        }catch { return SendUnknown(); }
     }
 }

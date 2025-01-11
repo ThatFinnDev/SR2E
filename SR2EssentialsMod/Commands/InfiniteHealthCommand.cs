@@ -17,16 +17,14 @@ internal class InfiniteHealthCommand : SR2ECommand
         if (infHealth)
         {
             infHealth = false;
-            if (healthMeter == null)
-                healthMeter = Get<HealthMeter>("Health Meter");
+            if (healthMeter == null) healthMeter = Get<HealthMeter>("Health Meter");
             healthMeter.gameObject.active = true;
             SendMessage(translation("cmd.infhealth.successnolonger"));
         }
         else
         {
             infHealth = true;;
-            if (healthMeter == null)
-                healthMeter = Get<HealthMeter>("Health Meter");
+            if (healthMeter == null) healthMeter = Get<HealthMeter>("Health Meter");
             healthMeter.gameObject.active = false;
             SendMessage(translation("cmd.infhealth.success"));
         }
@@ -34,25 +32,14 @@ internal class InfiniteHealthCommand : SR2ECommand
         return true;
     }
 
-    public override void OnMainMenuUILoad()
-    {
-        infHealth = false;
-    }
-
+    public override void OnMainMenuUILoad() => infHealth = false;
     public static bool infHealth = false;
-
     private static HealthMeter healthMeter;
-    public override void OnUICoreLoad()
-    {
-        healthMeter = Get<HealthMeter>("Health Meter");
-    }
+    public override void OnUICoreLoad() => healthMeter = Get<HealthMeter>("Health Meter");
     [HarmonyPatch(typeof(PlayerModel), nameof(PlayerModel.LoseHealth))]
     internal class PlayerModelLoseHealthPatch
     {
-        public static bool Prefix(PlayerState __instance, float health)
-        {
-            return !infHealth;
-        }
+        public static bool Prefix(PlayerState __instance, float health) => !infHealth;
     }
 
 }

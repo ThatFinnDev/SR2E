@@ -23,23 +23,15 @@ internal class GiveCommand : SR2ECommand
 
         string identifierTypeName = args[0];
         IdentifiableType type = getIdentByName(identifierTypeName);
-        if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
+        if (type == null) return SendNotValidIdentType(identifierTypeName);
         string itemName = type.getName();
-        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",itemName));
+        if (type.isGadget()) return SendIsGadgetNotItem(itemName);
         
-
         int amount = 1;
-        if (args.Length == 2)
-        {
-            try { amount = int.Parse(args[1]); }
-            catch { return SendError(translation("cmd.error.notvalidint",args[1])); }
-            if (amount <= 0) return SendError(translation("cmd.error.notintabove",args[1],0));
-        }
-
+        if (args.Length == 2) if(!this.TryParseInt(args[2], out amount,0, false)) return false;
 
         for (int i = 0; i < amount; i++)
             SceneContext.Instance.PlayerState.Ammo.MaybeAddToSlot(type, null);
-
 
         SendMessage(translation("cmd.give.success",amount,itemName));
         return true;

@@ -1,6 +1,5 @@
 using System;
 using SR2E.Managers;
-using SR2E.Menus;
 using SR2E.Storage;
 
 namespace SR2E.Commands;

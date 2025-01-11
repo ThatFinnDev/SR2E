@@ -8,8 +8,7 @@ internal class NewBucksCommand : SR2ECommand
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0)
-            return new List<string> { "100", "1000", "10000", "100000", "1000000", "10000000" };
+        if (argIndex == 0) return new List<string> { "100", "1000", "10000", "100000", "1000000", "10000000" };
         return null;
     }
 
@@ -19,9 +18,7 @@ internal class NewBucksCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         int amount = 0;
-        if (!int.TryParse(args[0], out amount))
-        { return SendError(translation("cmd.error.notvalidint",args[0])); }
-
+        if (!this.TryParseInt(args[0], out amount)) return false;
 
         int newNewBuckAmount = Mathf.Clamp(amount + SceneContext.Instance.PlayerState._model.currency, 0, int.MaxValue);
         SceneContext.Instance.PlayerState._model.SetCurrency(newNewBuckAmount);

@@ -32,17 +32,12 @@ internal class NoClipCommand : SR2ECommand
             }
             else
             {
-
                 //SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
                 SendMessage(translation("cmd.noclip.success2"));
             }
-
             return true;
         }
-        catch
-        {
-            return false;
-        }
+        catch { return SendError("cmd.noclip.error"); }
     }
 
     public static InputAction horizontal;

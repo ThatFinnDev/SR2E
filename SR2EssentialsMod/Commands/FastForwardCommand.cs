@@ -19,15 +19,11 @@ internal class FastForwardCommand : SR2ECommand
         if (!args.IsBetween(0,1)) return SendUsage();
          
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
-        float duration = float.Parse(args[0]);
+        float duration;
         if (args.Length == 1)
-        {
-            try { duration = float.Parse(args[0]); }
-            catch { return SendError(translation("cmd.error.notvalidfloat",args[0])); }
-            if (duration <= 0) return SendError(translation("cmd.error.notintabove", args[0], 0));
-            timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(duration);
-        }
-
+            if (!this.TryParseFloat(args[0], out duration, 0, false)) return false;
+            else timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(duration);
+        
         SceneContext.Instance.TimeDirector.FastForwardTo(timeToFastForwardTo);
         SendMessage(translation("cmd.fastforward.success",timeToFastForwardTo));
         return true;

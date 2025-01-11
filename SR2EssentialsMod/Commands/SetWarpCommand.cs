@@ -10,8 +10,6 @@ internal class SetWarpCommand : SR2ECommand
     public override string ID => "setwarp";
     public override string Usage => "setwarp <name>";
     public override CommandType type => CommandType.Warp;
-
-
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(1,1)) return SendUsage();
@@ -24,8 +22,7 @@ internal class SetWarpCommand : SR2ECommand
         string sceneGroup = SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId;
 
         SR2EError error = SR2EWarpManager.AddWarp(name, new Warp(sceneGroup, pos, rotation));
-        if (error == SR2EError.AlreadyExists)
-            return SendError(translation("cmd.warpstuff.alreadywarpwithname",name));
+        if (error == SR2EError.AlreadyExists) return SendError(translation("cmd.warpstuff.alreadywarpwithname",name));
 
         SendMessage(translation("cmd.setwarp.success",name));
         return true;

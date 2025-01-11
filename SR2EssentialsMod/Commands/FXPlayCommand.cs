@@ -1,6 +1,5 @@
-﻿using SR2E.Managers;
-using UnityEngine.InputSystem;
-using Key = SR2E.Enums.Key;
+﻿using SR2E.Enums;
+using SR2E.Managers;
 
 namespace SR2E.Commands;
 
@@ -35,41 +34,22 @@ internal class FXPlayCommand : SR2ECommand
         if (!inGame) SendLoadASaveFirst();
 
         if (currFX != null && !currFX.isStopped) return SendError(translation("cmd.fxplayer.waitforstop"));
-           
         
-
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
-            
-
+        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
+        
         float playbackSpeed = 0;
         bool playAndPause = false;
         if (args.Length >= 2)
         {
-            try { playbackSpeed = float.Parse(args[1]); }
-            catch { return SendError(translation("cmd.error.notvalidfloat",args[1])); }
-
-            if (playbackSpeed <= 0) return SendError(translation("cmd.error.notfloatabove",args[1],0));
-            
-
-
-            if (args.Length == 3)
-            {
-                string boolToParse = args[2].ToLower();
-                if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",args[2]));
-                
-                if (boolToParse == "true") playAndPause = true;
-            }
+            if (!this.TryParseFloat(args[1], out playbackSpeed, 0, false)) return false;
+            if (args.Length == 3) if (!this.TryParseBool(args[2], out playAndPause)) return false;
         }
 
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
             GameObject fxobj;
-            try
-            {
-                fxobj = FXLibraryReversable[args[0]].Item2;
-            }
+            try { fxobj = FXLibraryReversable[args[0]].Item2; }
             catch { return SendError(translation("cmd.fxplayer.invalidfxname")); }
 
             fxobj.SpawnFX(cam.transform.position + hit.transform.position);
@@ -77,19 +57,14 @@ internal class FXPlayCommand : SR2ECommand
             if (args.Length >= 2)
             {
                 fxobj.GetComponent<ParticleSystem>().playbackSpeed = playbackSpeed;
-                if (args.Length == 3)
-                {
-                    if (playAndPause)
-                        fxobj.AddComponent<FXPlayPauseFunction>();
-                }
+                if (args.Length == 3) if (playAndPause) fxobj.AddComponent<FXPlayPauseFunction>();
             }
 
             currFX = fxobj.GetComponent<ParticleSystem>();
             SendMessage(translation("cmd.fxplayer.success"));
             return true;
         }
-
-        return SendError(translation( "cmd.error.notlookingatanything"));
+        return SendNotLookingAtAnything();
     }
 }
 

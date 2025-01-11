@@ -713,6 +713,112 @@ namespace SR2E
             list.AddRange(listTwo);
             return list;
         }
+        public static bool TryParseVector3(this SR2ECommand cmd, string inputX, string inputY, string inputZ, out Vector3 value)
+        {
+            value = Vector3.zero;
+            try { value = new Vector3(float.Parse(inputX),float.Parse(inputY),float.Parse(inputZ)); }
+            catch { return cmd.SendNotValidVector3(inputX,inputY,inputZ); }
+            return true;
+        }
+        public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value, float min, bool inclusive, float max)
+        {
+            value = 0;
+            try { value = int.Parse(input); }
+            catch { return cmd.SendNotValidFloat(input); }
+            if (inclusive)
+            {
+                if (value < min) return cmd.SendNotFloatAtLeast(input, min);
+            }
+            else if (value <= min) return cmd.SendNotFloatAbove(input,min);
+            if (value >= max) return cmd.SendNotFloatUnder(input, max);
+            return true;
+        }
+        public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value, float min, bool inclusive)
+        {
+            value = 0;
+            try { value = float.Parse(input); }
+            catch { return cmd.SendNotValidFloat(input); }
+            if (inclusive)
+            {
+                if (value < min) return cmd.SendNotFloatAtLeast(input, min);
+            }
+            else if (value <= min) return cmd.SendNotFloatAbove(input,min);
+            return true;
+        }
+        public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value, float max)
+        {
+            value = 0;
+            try { value = float.Parse(input); }
+            catch { return cmd.SendNotValidFloat(input); }
+            if (value >= max) return cmd.SendNotFloatUnder(input, max);
+            return true;
+        }
+        public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value)
+        {
+            value = 0;
+            try { value = float.Parse(input); }
+            catch { return cmd.SendNotValidFloat(input); }
+            return true;
+        }
+        public static bool TryParseInt(this SR2ECommand cmd, string input, out int value, int min, bool inclusive, int max)
+        {
+            value = 0;
+            try { value = int.Parse(input); }
+            catch { return cmd.SendNotValidInt(input); }
+            if (inclusive)
+            {
+                if (value < min) return cmd.SendNotIntAtLeast(input, min);
+            }
+            else if (value <= min) return cmd.SendNotIntAbove(input,min);
+            if (value >= max) return cmd.SendNotIntUnder(input, max);
+            return true;
+        }
+        public static bool TryParseInt(this SR2ECommand cmd, string input, out int value, int min, bool inclusive)
+        {
+            value = 0;
+            try { value = int.Parse(input); }
+            catch { return cmd.SendNotValidInt(input); }
+            if (inclusive)
+            {
+                if (value < min) return cmd.SendNotIntAtLeast(input, min);
+            }
+            else if (value <= min) return cmd.SendNotIntAbove(input,min);
+            return true;
+        }
+        public static bool TryParseInt(this SR2ECommand cmd, string input, out int value, int max)
+        {
+            value = 0;
+            try { value = int.Parse(input); }
+            catch { return cmd.SendNotValidInt(input); }
+            if (value >= max) return cmd.SendNotIntUnder(input, max);
+            return true;
+        }
+        public static bool TryParseInt(this SR2ECommand cmd, string input, out int value)
+        {
+            value = 0;
+            try { value = int.Parse(input); }
+            catch { return cmd.SendNotValidInt(input); }
+            return true;
+        }
+        public static bool TryParseBool(this SR2ECommand cmd, string input, out bool value)
+        {
+            value = false;
+            if (input.ToLower() != "true" && input.ToLower() != "false") cmd.SendNotValidBool(input);
+            if (input.ToLower() == "true") value = true;
+            return true;
+        }
+        public static bool TryParseKeyCode(this SR2ECommand cmd, string input, out Key value)
+        {
+            string keyToParse = input;
+            if (input.ToCharArray().Length == 1)
+                if (int.TryParse(input, out int ignored))
+                    keyToParse = "Digit" + input;
+            Key key;
+            if (Key.TryParse(keyToParse, true, out key)) { value = key; return true; }
+            value = Key.None;
+            cmd.SendNotValidKeyCode(input);
+            return false;
+        }
         public static bool IsBetween(this string[] list, uint min, int max)
         {
             if (list == null)
@@ -862,10 +968,19 @@ namespace SR2E
 
         internal static GameObject menuBlock;
         internal static Dictionary<Action, int> actionCounter = new Dictionary<Action, int>();
-        public static void ExecuteInTicks(Action action, int ticks = 2)
+        public static void ExecuteInTicks(Action action, int ticks)
         {
             if (action == null) return;
             actionCounter.Add(new Action(action),ticks);
+        }
+        public static void ExecuteInSeconds(Action action, float seconds)
+        {
+            MelonCoroutines.Start(waitForSeconds(seconds, action));
+        }
+        static System.Collections.IEnumerator waitForSeconds(float seconds, Action action)
+        {
+            yield return new WaitForSeconds(seconds);
+            try { action.Invoke(); }catch (Exception e) { MelonLogger.Error(e); }
         }
     }
 }

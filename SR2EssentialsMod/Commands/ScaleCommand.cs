@@ -14,33 +14,24 @@ internal class ScaleCommand: SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         Vector3 scale;
-        try
-        { scale = new Vector3(float.Parse(args[0]), float.Parse(args[1]), float.Parse(args[2])); }
-        catch 
-        {return SendError(translation("cmd.error.notvalidvector3",args[0],args[1],args[2])); }
+        if (!this.TryParseVector3(args[0], args[1], args[2], out scale)) return false;
         
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
              
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
             var gameobject = hit.collider.gameObject;
-            if (gameobject.GetComponent<Identifiable>())
-            {
-                gameobject.transform.localScale = scale;
-            }
+            if (gameobject.GetComponent<Identifiable>()) gameobject.transform.localScale = scale;
             else if (gameobject.GetComponentInParent<Gadget>())
             {
                 try { gameobject.GetComponentInParent<Gadget>().transform.localScale = scale; }
                 catch { }
             }
-            else
-                return SendError(translation("cmd.error.notlookingatvalidobject"));
-           
+            else return SendNotLookingAtValidObject();
             SendMessage(translation("cmd.scale.success"));
             return true;
             
         }
-        return SendError(translation("cmd.error.notlookingatanything"));
+        return SendNotLookingAtAnything();
     }
 }

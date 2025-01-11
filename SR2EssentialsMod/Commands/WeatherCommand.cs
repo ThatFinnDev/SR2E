@@ -1,4 +1,3 @@
-using System;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 
@@ -53,7 +52,7 @@ internal class WeatherCommand : SR2ECommand
     
     public override bool Execute(string[] args)
     {
-        return SendError("cmd.error.maintance");
+        return SendMaintenance();
         if (!args.IsBetween(0,3)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         
@@ -99,7 +98,7 @@ internal class WeatherCommand : SR2ECommand
                 {
                     
                     WeatherStateDefinition def = getWeatherStateByName(args[1]);
-                    if (def == null) return SendError(translation("cmd.error.notvalidweather",args[1])); 
+                    if (def == null) return SendNotValidWeather(args[1]); 
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
                     if(isRunning) SendMessage( translation("cmd.weather.currentlyrunning",$"\"{def.name.Replace(" ", "")}\""));
@@ -114,7 +113,7 @@ internal class WeatherCommand : SR2ECommand
                 {
                     
                     WeatherStateDefinition def = getWeatherStateByName(args[1]);
-                    if (def == null) return SendError(translation("cmd.error.notvalidweather", args[1]));
+                    if (def == null) return SendNotValidWeather(args[1]); 
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
                     

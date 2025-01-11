@@ -14,13 +14,12 @@ internal class KillAllCommand : SR2ECommand
     }
     public override bool Execute(string[] args)
     {
-        if (!args.IsBetween(0,01)) return SendUsage();
+        if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         
         if (args == null)
         {
             foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
-            {
                 if (ident.hasStarted)
                 {
                     var id = ident._model.actorId;
@@ -30,7 +29,6 @@ internal class KillAllCommand : SR2ECommand
                         SceneContext.Instance.GameModel.identifiables.Remove(id);
                     }
                 }
-            }
             SendMessage(translation("cmd.killall.success"));
             return true;
         }
@@ -39,9 +37,8 @@ internal class KillAllCommand : SR2ECommand
             
             string identifierTypeName = args[0];
             IdentifiableType type = getIdentByName(identifierTypeName);
-            if (type == null) return SendError(translation("cmd.error.notvalididenttype", identifierTypeName));
-    
-            if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));
+            if (type == null) return SendNotValidIdentType(identifierTypeName);
+            if (type.isGadget()) return SendIsGadgetNotItem(type.getName());
                 
             foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                 if (ident.hasStarted)
@@ -51,8 +48,6 @@ internal class KillAllCommand : SR2ECommand
                         Object.Destroy(ident.gameObject);
                         SceneContext.Instance.GameModel.identifiables.Remove(id);
                     }
-                
-            
             SendMessage(translation("cmd.killall.successspecific",type.getName()));
             return true;
         }

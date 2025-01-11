@@ -12,14 +12,14 @@ internal class GravityCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         Vector3 gravBase;
+        if (!this.TryParseVector3(args[0], args[1], args[2], out gravBase)) return false;
         try
         {
-            gravBase = new Vector3(-float.Parse(args[0]), -float.Parse(args[1]), -float.Parse(args[2]));
-            Physics.gravity = gravBase * 9.81f;
+            Physics.gravity = -gravBase * 9.81f;
             SendMessage(translation("cmd.gravity.success",args[0],args[1],args[2]));
             return true;
         }
-        catch { return SendError(translation("cmd.error.notvalidvector3",args[0],args[1],args[2])); }
+        catch { return SendNotValidVector3(args[0],args[1],args[2]); }
     }
 }
 

@@ -18,10 +18,8 @@ internal class WarpCommand : SR2ECommand
             foreach (KeyValuePair<string, Warp> pair in SR2ESaveManager.data.warps) warps.Add(pair.Key);
             return warps;
         }
-
         return null;
     }
-
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(1,1)) return SendUsage();
@@ -33,19 +31,15 @@ internal class WarpCommand : SR2ECommand
         SR2EError error = warp.WarpPlayerThere();
         switch (error)
         {
-            case SR2EError.NoError:
-                SendMessage(translation("cmd.warp.success",name));
-                return true;
+            case SR2EError.NoError: SendMessage(translation("cmd.warp.success",name)); return true;
             case SR2EError.NotInGame: return SendLoadASaveFirst();
             case SR2EError.PlayerNull: return SendLoadASaveFirst();
-            case SR2EError.TeleportablePlayerNull: return SendError(translation("cmd.error.teleportableplayernull"));
-            case SR2EError.SRCharacterControllerNull: return SendError(translation("cmd.error.srccnull"));
-            case SR2EError.SceneGroupNotSupported: return SendError(translation("cmd.error.scenegroupnotsupported",warp.sceneGroup));
+            case SR2EError.TeleportablePlayerNull: return SendNullTeleportablePlayer();
+            case SR2EError.SRCharacterControllerNull: return SendNullSRCharacterController();
+            case SR2EError.SceneGroupNotSupported: return SendUnsupportedSceneGroup(warp.sceneGroup);
             case SR2EError.DoesntExist: return SendError(translation("cmd.warpstuff.nowarpwithname",name));
         }
-
-        SendError(translation("cmd.warp.unknownerror"));
-        return false;
+        return SendUnknown();
 
     }
 

@@ -5,11 +5,8 @@ using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
 using Il2CppMonomiPark.SlimeRancher.Slime;
-using Il2CppMonomiPark.SlimeRancher.World;
 using SR2E.Components;
 using SR2E.Enums;
-using SR2E.Managers;
-using Unity.Mathematics;
 
 namespace SR2E.Commands;
 
@@ -19,15 +16,11 @@ internal class UtilCommand : SR2ECommand
     public override string Usage => "util <type> <parameter [value] [value2] [value3]";
     public override CommandType type => CommandType.Cheat;
 
-    public const float playerColliderHeightBase = 2f;
-    public const float playerColliderRadBase = 0.6f;
 
-    readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER", "GADGET" };
+    readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER" };
     readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
     readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR","SLIME_SLEEPINESS", "USE_GRAVITY" };
     readonly List<string> GameParam = new List<string>() { "ACTOR_TYPE" };
-    readonly List<string> PlayerParam = new List<string>() { "CUSTOM_SIZE", "GRAVITY_LEVEL", "VAC_MODE" };
-    readonly List<string> GadgetParam = new List<string>() { "ROTATION", "POSITION" };
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -38,8 +31,6 @@ internal class UtilCommand : SR2ECommand
                 case "GORDO": return GordoParam;
                 case "SLIME": return SlimeParam;
                 case "GAME": return GameParam;
-                case "PLAYER": return PlayerParam;
-                case "GADGET": return GadgetParam;
                 default: return null;
             }
         if (argIndex == 2)
@@ -65,20 +56,6 @@ internal class UtilCommand : SR2ECommand
                         case "ACTOR_TYPE": return getIdentListByPartialName(args[2], true,true,true);
                     }
                     return null;
-                case "PLAYER": switch (args[1])
-                    {
-                        case "CUSTOM_SIZE": return new List<string> { "0.25", "0.5", "1", "1.5", "2", "5" };
-                        case "GRAVITY_LEVEL": return new List<string> { "-2", "-1", "1", "2", "5" };
-                        case "VAC_MODE": return Enum.GetNames(typeof(VacModes)).ToList();
-                    }
-                    return null;
-                case "GADGET": 
-                    switch (args[1])
-                    {
-                        case "POSITION": return new List<string> { "0", "1" };
-                        case "ROTATION": return new List<string> { "0", "90", "180", "270" };
-                    }
-                    return null;
             }
         
         if (argIndex == 3)
@@ -87,24 +64,6 @@ internal class UtilCommand : SR2ECommand
                 case "GAME": switch (args[1])
                     {
                         case "ACTOR_TYPE": return new List<string> { "true", "false", "toggle" };
-                    }
-                    return null;
-                case "GADGET": 
-                    switch (args[1])
-                    {
-                        case "POSITION": return new List<string> { "0", "1" };
-                        case "ROTATION": return new List<string> { "0", "90", "180", "270" };
-                    }
-                    return null;
-            }
-        if (argIndex == 4)
-            switch (args[0])
-            {
-                case "GADGET": 
-                    switch (args[1])
-                    {
-                        case "POSITION": return new List<string> { "0", "1" };
-                        case "ROTATION": return new List<string> { "0", "90", "180", "270" };
                     }
                     return null;
             }
@@ -119,8 +78,6 @@ internal class UtilCommand : SR2ECommand
             case "GORDO": return ExcGordo(args);
             case "SLIME": return ExcSlime(args);
             case "GAME": return ExcGame(args);
-            case "PLAYER": return ExcPlayer(args);
-            case "GADGET": return ExcGadget(args);
             default: return SendError(translation("cmd.util.invalidtype",args[0]));
         }
     }
@@ -174,39 +131,6 @@ internal class UtilCommand : SR2ECommand
             default: return false;
         }
     }
-    public bool ExcPlayer(string[] cmd)
-    {
-        switch (cmd[1])
-        {
-            case "CUSTOM_SIZE":
-                if (cmd.Length > 2) return PlayerSize(false, cmd[2]);
-                return PlayerSize(true);
-            case "GRAVITY_LEVEL":
-                if (cmd.Length > 2) return PlayerGravity(false, cmd[2]);
-                return PlayerGravity(true);
-            case "VAC_MODE":
-                if (cmd.Length > 2) return PlayerVacModeSet(false,silent,cmd[2]);
-                return PlayerVacModeSet(true,silent);
-            default: return false;
-        }
-    }
-
-    public bool ExcGadget(string[] cmd)
-    {
-        switch (cmd[1])
-        {
-            case "POSITION":
-                if (cmd.Length == 1) return GadgetPos(true);
-                if (cmd.Length == 5) return GadgetPos(false, cmd[2], cmd[3], cmd[4]);
-                return SendError(translation("cmd.util.requiresmore", cmd[1]));
-            case "ROTATION":
-                if (cmd.Length == 1) return GadgetRot(true);
-                if (cmd.Length == 5) return GadgetRot(false, cmd[2], cmd[3], cmd[4]);
-                return SendError(translation("cmd.util.requiresmore", cmd[1]));
-            default: return false;
-        }
-    }
-
 
     public bool SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, string valString = "1f")
     {
@@ -340,7 +264,7 @@ internal class UtilCommand : SR2ECommand
                 }
                 float size = -1;
                 try { size = float.Parse(sizeString); }
-                catch { return SendError(translation("cmd.error.notvalidfloat",sizeString)); }
+                catch { return SendNotValidFloat(sizeString); }
                 if (size <= 0) return SendError(translation("cmd.error.notfloatabove",sizeString,0));
                 eat._initScale = size*4;
                 SendMessage(translation("com.util.gordosize.edit",gordo.identType.getName(),size));
@@ -370,7 +294,7 @@ internal class UtilCommand : SR2ECommand
                 }
                 int amount = -1;
                 try { amount = int.Parse(amountString); }
-                catch { return SendError(translation("cmd.error.notvalidint",amountString)); }
+                catch { return SendNotValidInt(amountString); }
                 if (amount <= 0) return SendError(translation("cmd.error.notintabove",amountString,0));
                 eat.SetEatenCount(amount); 
                 SendMessage(translation("com.util.gordosize.edit",gordo.identType.getName(),amount));
@@ -422,7 +346,7 @@ internal class UtilCommand : SR2ECommand
         }
         IdentifiableType type = getIdentByName(identName);
         if (type == null) return SendError(translation("cmd.error.notvalididenttype", identName));
-        if (type.isGadget()) return SendError(translation("cmd.give.isgadgetnotitem",type.getName()));
+        if (type.isGadget()) return SendIsGadgetNotItem(type.getName());
         bool enabled = !disabledActors.Contains(type.ReferenceId);
         if (isGet)
         {
@@ -469,226 +393,6 @@ internal class UtilCommand : SR2ECommand
         }
         return false;
 
-    }
-
-
-    public bool PlayerSize(bool isGet, string sizeString = "1")
-    {
-        if (isGet)
-        {
-            SendMessage(translation("cmd.util.player.size.show",SceneContext.Instance.player.transform.localScale.x));
-            return true;
-        }
-
-        int size = -1;
-        try { size = int.Parse(sizeString); }
-        catch { return SendError(translation("cmd.error.notvalidint",sizeString)); }
-        if (size <= 0) return SendError(translation("cmd.error.notintabove",sizeString,0));
-        
-        
-        KinematicCharacterMotor KCC = null;
-        
-        try { KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>(); }
-        catch { return SendError(translation("cmd.error.kinematiccharactermotornull"));}
-        
-        SceneContext.Instance.player.transform.localScale = Vector3.one * size;
-        KCC.CapsuleHeight = playerColliderHeightBase * size;
-        KCC.CapsuleRadius = playerColliderRadBase * size;
-        //SR2ESavableDataV2.Instance.playerSavedData.size = size;
-        SendMessage(translation("cmd.util.player.size.edit",size));
-        return true;
-
-    }
-
-    public static void RemoteExc_PlayerSize(float size)
-    {
-        try
-        {
-
-            SceneContext.Instance.player.transform.localScale = Vector3.one * size;
-            var KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>();
-            KCC.CapsuleHeight = playerColliderHeightBase * size;
-            KCC.CapsuleRadius = playerColliderRadBase * size;
-        }
-        catch { }
-    }
-
-    public bool PlayerGravity(bool isGet, string levelString = "1")
-    {
-        
-        SRCharacterController SRCC = null;
-        
-        try { SRCC = SceneContext.Instance.player.GetComponent<SRCharacterController>(); }
-        catch { return SendError(translation("cmd.error.srccnull"));}
-        if (isGet)
-        {
-            SendMessage(translation("cmd.util.player.gravity.show",SRCC._gravityMagnitude.Value));
-            return true;
-        }
-        
-        float level = -1;
-        try { level = float.Parse(levelString); }
-        catch { return SendError(translation("cmd.error.notvalidfloat",levelString)); }
-        
-        SRCC._gravityMagnitude = new Il2CppSystem.Nullable<float>(level);
-        //SR2ESavableDataV2.Instance.playerSavedData.gravityLevel = level;
-        SendMessage(translation("cmd.util.player.gravity.edit",level));
-        return true;
-
-    }
-    
-    public bool GadgetPos(bool isGet, string xString = "0", string yString = "0", string zString = "0")
-    {
-        Camera cam = Camera.main;
-        if (cam == null)  return SendError(translation("cmd.error.nocamera"));
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,maskForGordo))
-        {
-            Gadget gadget = hit.collider.gameObject.GetComponentInParent<Gadget>();
-            if (gadget != null)
-            {
-                if (isGet)
-                {
-                    var pos = gadget.transform.position;
-                    SendMessage(translation("cmd.util.gadget.pos.show",gadget.identType.getName(),pos.x,pos.y,pos.z));
-                    return true;
-                }
-                Vector3 vector3;
-                try { vector3 = new Vector3(-float.Parse(xString), -float.Parse(yString), -float.Parse(zString)); }
-                catch { return SendError(translation("cmd.error.notvalidvector3",xString,yString,zString)); }
-                
-                gadget.transform.position = vector3;
-                gadget._model.lastPosition = vector3;
-                SendMessage(translation("cmd.util.gadget.pos.edit",gadget.identType.getName(),vector3.x,vector3.y,vector3.z));
-                return true;
-                
-            }
-            return SendError(translation("cmd.error.notlookingatvalidobject"));
-        }
-        return SendError(translation("cmd.error.notlookingatanything"));
-    }
-
-    public bool GadgetRot(bool isGet, string xString = "0", string yString = "0", string zString = "0")
-    {
-        Camera cam = Camera.main;
-        if (cam == null)  return SendError(translation("cmd.error.nocamera"));
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,maskForGordo))
-        {
-            Gadget gadget = hit.collider.gameObject.GetComponentInParent<Gadget>();
-            if (gadget != null)
-            {
-                if (isGet)
-                {
-                    var pos = gadget.transform.rotation.eulerAngles;
-                    SendMessage(translation("cmd.util.gadget.rot.show",gadget.identType.getName(),pos.x,pos.y,pos.z));
-                    return true;
-                }
-                Vector3 vector3;
-                try { vector3 = new Vector3(-float.Parse(xString), -float.Parse(yString), -float.Parse(zString)); }
-                catch { return SendError(translation("cmd.error.notvalidvector3",xString,yString,zString)); }
-                
-                gadget.transform.rotation = Quaternion.Euler(vector3);
-                gadget._model.eulerRotation = vector3;
-                SendMessage(translation("cmd.util.gadget.rot.edit",gadget.identType.getName(),vector3.x,vector3.y,vector3.z));
-                return true;
-                
-            }
-            return SendError(translation("cmd.error.notlookingatvalidobject"));
-        }
-        return SendError(translation("cmd.error.notlookingatanything"));
-    }
-
-
-    private static VacModes currVacMode;
-    public bool PlayerVacModeSet(bool isGet,bool silent,string modeString = ".")
-    {
-        if (isGet)
-        {
-            if(!silent) SendMessage(translation("cmd.util.vacmode.show",currVacMode.ToString().Replace("VacModes","")));
-            return true;
-        }
-        VacModes mode;
-        try { mode = Enum.Parse<VacModes>(modeString); }
-        catch { if (!silent) SendError(translation("cmd.error.notvalidvacmode", modeString)); return false; }
-        
-        
-        if (mode == VacModes.NORMAL)
-        {
-            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
-            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
-            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-        }
-        else if (mode == VacModes.AUTO_VAC)
-        {
-            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
-            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.VAC;
-            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-        }
-        else if (mode == VacModes.AUTO_SHOOT)
-        {
-            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
-            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.SHOOT;
-            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-        }
-        else if (mode == VacModes.NONE)
-        {
-            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
-
-            MelonCoroutines.Start(waitForSeconds(1.5f));
-
-            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
-        }
-        else if (mode == VacModes.DRAG)
-        {
-            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
-
-            MelonCoroutines.Start(waitForSeconds(1.5f));
-
-            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
-            SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-            SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>();
-        }
-        else if (mode == VacModes.LAUNCH)
-        {
-            SceneContext.Instance.PlayerState.VacuumItem._vacMode = VacuumItem.VacMode.NONE;
-
-            MelonCoroutines.Start(waitForSeconds(1.5f));
-
-            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
-            SceneContext.Instance.Camera.AddComponent<FlingMode>();
-            SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-        }
-
-        //SR2ESavableDataV2.Instance.playerSavedData.vacMode = mode;
-        currVacMode = mode;
-        if(!silent) SendMessage(translation("cmd.util.vacmode.success",mode.ToString().Replace("VacModes","")));
-        return true;
-    }
-
-    static System.Collections.IEnumerator waitForSeconds(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-    }
-
-    public override void OnPlayerCoreLoad()
-    {
-        switch (SceneContext.Instance.PlayerState.VacuumItem._vacMode)
-        {
-            case VacuumItem.VacMode.NONE:
-                currVacMode = VacModes.NONE;
-                break;
-            case VacuumItem.VacMode.SHOOT:
-                currVacMode = VacModes.AUTO_SHOOT;
-                break;
-            case VacuumItem.VacMode.VAC:
-                currVacMode = VacModes.AUTO_VAC;
-                break;
-        }
-        
     }
 }
 

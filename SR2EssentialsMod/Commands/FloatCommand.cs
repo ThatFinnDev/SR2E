@@ -20,23 +20,18 @@ internal class FloatCommand : SR2ECommand
         if (!args.IsBetween(1,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
+        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
         
         float duration = 0;
-        try { duration = float.Parse(args[0]); }
-        catch { return SendError(translation("cmd.error.notvalidfloat",args[0])); }
-        if (duration<=0)  return SendError(translation("cmd.error.notfloatabove",args[0],0));
+        if(!this.TryParseFloat(args[0], out duration, 0, false)) return false;
         
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
         {
-            if (hit.rigidbody == null)
-            { SendError(translation("cmd.error.notlookingatvalidobject")); return false; }
+            if (hit.rigidbody == null) return SendNotLookingAtValidObject();
             MelonCoroutines.Start(TimeGravity(hit, duration));
             SendMessage(translation("cmd.float.success",duration));
         }
-        else return SendError(translation("cmd.error.notlookingatanything")); 
-        return true;
+        return SendNotLookingAtAnything();
     }
 
     private IEnumerator TimeGravity(RaycastHit hit, float duration)
