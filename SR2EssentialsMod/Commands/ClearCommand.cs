@@ -14,6 +14,6 @@ internal class ClearCommand : SR2ECommand
 
         for (int i = 0; i < GM<SR2EConsole>().consoleContent.childCount; i++) Object.Destroy(GM<SR2EConsole>().consoleContent.GetChild(i).gameObject);
 
-        return SendUsage();
+        return true;
     }
 }

@@ -199,7 +199,7 @@ public abstract class SR2ECommand
         if (!silent) SR2ELogManager.SendWarning(message, SR2EEntryPoint.SR2ELogToMLLog);
     }
 
-    public bool SendMaintenance() => SendError(translation("cmd.error.maintenance"));
+    public bool SendCommandMaintenance() => SendError(translation("cmd.error.maintenance"));
     public bool SendNotValidPedia(object obj) => SendError(translation("cmd.error.notvalidpedia",obj));
     public bool SendNotValidVacMode(object obj) => SendError(translation("cmd.error.notvalidvacmode",obj));
     public bool SendNotValidWeather(object obj) => SendError(translation("cmd.error.notvalidweather",obj));
