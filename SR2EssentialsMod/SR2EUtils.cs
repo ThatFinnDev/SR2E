@@ -807,6 +807,14 @@ namespace SR2E
             if (input.ToLower() == "true") value = true;
             return true;
         }
+        public static bool TryParseTrool(this SR2ECommand cmd, string input, out Trool value)
+        {
+            value = Trool.False;
+            if (input.ToLower() != "true" && input.ToLower() != "false" && input.ToLower() != "toggle") cmd.SendNotValidTrool(input);
+            if (input.ToLower() == "true") value = Trool.True;
+            if (input.ToLower() == "toggle") value = Trool.Toggle;
+            return true;
+        }
         public static bool TryParseKeyCode(this SR2ECommand cmd, string input, out Key value)
         {
             string keyToParse = input;

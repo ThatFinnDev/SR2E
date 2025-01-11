@@ -90,6 +90,14 @@ cmd.error.unknown,"An unknown error occured!","Ein unbekannter Fehler ist unterl
 cmd.error.isgadgetnotitem,"$1 is a gadget, not an item!",$1 ist ein Gadget und kein Item!
 cmd.error.errortoomanyargs,"Too many arguments for '$1'!","Zu viele Argumente für $1!"
 cmd.error.notvalidoption,"$1 is not a valid option!","'$1' ist kein gültiges Argument!"
+cmd.actortype.description,"Toggles Actors","Deaktiviert oder aktiviert Charaktere"
+cmd.actortype.toggleeall,"All actor types have been toggled","All Charaktäre, die aktiviert waren, sind nun deaktviert und umgekehrt!"
+cmd.actortype.disable,"The actor type $1 is now disabled","Alle Charaktäre mit dem Typ '$1' sind nun deaktviert!"
+cmd.actortype.disableall,"All actor types are now disabled","All Charaktäre sind nun deaktviert!"
+cmd.actortype.enable,"The actor type $1 is now enabled!","Alle Charaktäre mit dem Typ '$1' sind nun aktviert!"
+cmd.actortype.enableall,"All actor types are now disabled!","Alle Charaktäre sind nun deaktviert!"
+cmd.actortype.alreadyenabled,"The actor type $1 is already enabled!","Alle Charaktäre mit dem Typ '$1' sind bereits aktviert!"
+cmd.actortype.alreadydisabled,"The actor type $1 is already disabled!","Alle Charaktäre mit dem Typ '$1' sind bereits deaktviert!"
 cmd.bind.success,"Successfully bound command '$1' to key $2!",Der Befehl '$1' wurde erfolgreich auf die Taste '$2' gebunden!
 cmd.bind.description,"Binds a key to a specific command",Bindet einen Befehl/mehrere Befehle zu einer Taste
 cmd.bind.extendeddescription,"Binds a key to a specific command, you can even bind multiple. To remove the binding, use the 'unbind' command",Bindet einen Befehl/mehrere Befehle zu einer Taste. Benütze bitte den Befehl namens 'unbind' um alle Bindungen mit einer Taste zu entfernen.
@@ -169,7 +177,7 @@ cmd.graphics.extendeddescription,"Changes the look of your game. It may make you
 cmd.graphics.norangelights,"An error occured, 'rangelights' couldn't be found!","Ein Fehler aufgetreten! Die Fernlichter konnten nicht gefunden werden!"
 cmd.gravity.success,"Successfully changed the gravity to ($1,$2,$3)!","Die Gravitation wurde auf ($1,$2,$3) gesetzt" 
 cmd.gravity.description,"Changes the gravity!","Verändert die Gravitation"
-cmd.gravity.description,"It changes the gravity for every single physics object (except player, use the util command for that)","Verändert die Gravitation für jedes Physikobjekt (außer den Spieler, nutze den 'util'-Befehl dafür)"
+cmd.gravity.description,"It changes the gravity for every single physics object (except player, use the 'player' command for that)","Verändert die Gravitation für jedes Physikobjekt (außer den Spieler, nutze den 'player'-Befehl dafür)"
 cmd.help.success,"<color=#45d192>List of all currently registered commands:</color>\n<color=#45d192><> is a required argument; [] is an optional argument</color>","<color=#45d192>Alle registrierten Befehle:</color>\n<color=#45d192><> ist ein notwendiges Argument; [] ist ein optionales Argument</color>"
 cmd.help.successspecific,"Usage: $1\nDescription: $2","Benutzung: $1\nBeschreibung: $2",
 cmd.help.description,"Displays all commands available and their usage","Zeigt alle Befehle und deren Benutzung an"
@@ -257,15 +265,6 @@ cmd.weather.nodirector,"An error occured, cannot find WeatherDirector component!
 cmd.timescale.success,"Timescale is now $1!",Die Spielgeschwindigkeit ist nun $1!
 cmd.timescale.description,"Modifies game speed","Verändet die Spielgeschwindigkeit"
 cmd.timescale.between,"The scale has to be between $1 and $2!",Die Spielgeschwindigkeit muss zwischen $1 und $2 liegen!
-cmd.util.description,"Utility Command","Werkzeugbefehl"
-cmd.util.requiresmore,"'$1' requires more arguments!","'$1' braucht mehr Argumente!"
-cmd.util.invalidtype,"$1 is not a valid type!","$1 ist kein gültiger Typ"
-cmd.util.invalidparameter,"$1 is not a valid parameter!","$1 ist kein gültiger Paremter"
-cmd.util.actor.showdisable,"The actor type $1 is currently disabled","Alle Charaktäre mit dem Typ '$1' sind gerade deaktviert!"
-cmd.util.actor.editenable,"The actor type $1 is now enabled!","Alle Charaktäre mit dem Typ '$1' sind nun aktviert!"
-cmd.util.actor.editdisable,"The actor type $1 is now disabled!","Alle Charaktäre mit dem Typ '$1' sind nun deaktviert!"
-cmd.util.actor.alreadyenabled,"The actor type $1 is already enabled!","Alle Charaktäre mit dem Typ '$1' sind bereits aktviert!"
-cmd.util.actor.alreadydisabled,"The actor type $1 is already disabled!","Alle Charaktäre mit dem Typ '$1' sind bereits deaktviert!"
 cmd.player.vacmode.success,"The VACMODE is now $1!","Der Vacmodus $1 ist nun $1"
 cmd.player.vacmode.show,"The VACMODE is currently $1","Im Moment ist der Vacmodus $1"
 cmd.player.description,"Changes a few player related things","Verändert paar Sachen zum Spieler"
