@@ -197,6 +197,7 @@ cmd.position.success,"Successfully moved the actor!","Das Objekt wurde erfolgrei
 cmd.position.description,"Moves an actor","Bewegt einen Charakter"
 cmd.scale.success,"Successfully changed the scale of the actor!","Die Charaktergröße wurde erfolgreich verändert"
 cmd.scale.description,"Changes the scale of an actor","Verändert die Größe eines Charakters"
+cmd.scale.usegordocmd,"Gordos only have a base scale, please use the 'gordo' command to scale the gordo!","Gordos haben leider nur eine veränderbare Basisgröße, bitte benütze den Befehl names 'gordo' um die Gordogröße zu verändern!"
 cmd.newbucks.success,"Successfully added $1 newbucks!","Du hast nun $1 Newbucks mehr!"
 cmd.newbucks.description,"Adds or removes newbucks","Gibt oder entfernt Newbucks"
 cmd.noclip.success,"Successfully activated noclip!","Noclip wurde erfolgreich aktiviert"
@@ -260,15 +261,6 @@ cmd.util.description,"Utility Command","Werkzeugbefehl"
 cmd.util.requiresmore,"'$1' requires more arguments!","'$1' braucht mehr Argumente!"
 cmd.util.invalidtype,"$1 is not a valid type!","$1 ist kein gültiger Typ"
 cmd.util.invalidparameter,"$1 is not a valid parameter!","$1 ist kein gültiger Paremter"
-com.util.gordosize.edit,"The $1 gordo's size is now $2!",Die Größe des Gordos '$1' ist nun '$2'!
-com.util.gordosize.show,"The $1 gordo's size is currently $2",Die Größe des Gordos '$1' ist gerade '$2'
-com.util.gordoeat.edit,"The $1 gordo's eating count is now $2!",Der Gordo hat jetzt insgesamt '$1' Essen gegessen!
-com.util.gordoeat.show,"The $1 gordo's size is currently $2",Der Gordo hat schon'$1' Essen gegessen
-cmd.util.actorgravity.editenable,"Gravity for the actor $1 is now enabled!","Gravitation wurde für den Charakter namens '$1' jetzt aktiviert!"
-cmd.util.actorgravity.showenable,"Gravity for the actor $1 is enabled","Gravitation ist für den Charakter namens '$1' aktiviert"
-cmd.util.actorgravity.editdisable,"Gravity for the actor $1 is now disabled!","Gravitation wurde für den Charakter namens '$1' jetzt deaktiviert!"
-cmd.util.actorgravity.showdisable,"Gravity for the actor $1 is disabled","Gravitation ist für den Charakter namens '$1' deaktiviert"
-cmd.util.actor.showenable,"The actor type $1 is currently enabled","Alle Charaktäre mit dem Typ '$1' sind gerade aktviert!"
 cmd.util.actor.showdisable,"The actor type $1 is currently disabled","Alle Charaktäre mit dem Typ '$1' sind gerade deaktviert!"
 cmd.util.actor.editenable,"The actor type $1 is now enabled!","Alle Charaktäre mit dem Typ '$1' sind nun aktviert!"
 cmd.util.actor.editdisable,"The actor type $1 is now disabled!","Alle Charaktäre mit dem Typ '$1' sind nun deaktviert!"
@@ -281,6 +273,11 @@ cmd.player.size.show,"The current size of the player is $1","Der Spielergröße 
 cmd.player.size.edit,"The new size of the player is $1!","Der Spielergröße ist nun '$1'"
 cmd.player.gravity.show,"The current gravity level of the player is $1","Der Gravitationswert vom Spieler ist gerade '$1'"
 cmd.player.gravity.edit,"The new gravity level of the player is $1!","Der Gravitationswert vom Spieler ist nun '$1'"
+cmd.gordo.description,"Changes a few gordo related things","Verändert paar Sachen zu Gordos"
+cmd.gordo.size.edit,"The $1 gordo's size is now $2!",Die Größe des Gordos '$1' ist nun '$2'!
+cmd.gordo.size.show,"The $1 gordo's size is currently $2",Die Größe des Gordos '$1' ist gerade '$2'
+cmd.gordo.eat.edit,"The $1 gordo's eating count is now $2!",Der Gordo hat jetzt insgesamt '$1' Essen gegessen!
+cmd.gordo.eat.show,"The $1 gordo's size is currently $2",Der Gordo hat schon'$1' Essen gegessen
 cmd.quit.description,"Exits the game","Verlässt das Spiel"
 cmd.quit.again,"Enter the command again within $1 seconds to quit!","Gib den Befehl noch einmal innerhalb $1 Sekunde(n) um das Spiel zu verlassen!"
 cmd.quit.success,"The game will quit now!","Das Spiel wird jetzt verlassen!"

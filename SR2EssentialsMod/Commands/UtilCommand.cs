@@ -1,5 +1,4 @@
-﻿using Il2CppMonomiPark.SlimeRancher;
-using SR2E.Components;
+﻿using SR2E.Components;
 using SR2E.Enums;
 
 namespace SR2E.Commands;
@@ -8,10 +7,9 @@ internal class UtilCommand : SR2ECommand
 {
     public override string ID => "util";
     public override string Usage => "util <type> <parameter [value] [value2] [value3]";
-    public override CommandType type => CommandType.Cheat;
+    public override CommandType type => CommandType.DontLoad;
 
-    readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER" };
-    readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
+    readonly List<string> TypeParam = new List<string>() { "GAME", };
     readonly List<string> GameParam = new List<string>() { "ACTOR_TYPE" };
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
@@ -20,19 +18,12 @@ internal class UtilCommand : SR2ECommand
         if (argIndex == 1)
             switch (args[0])
             {
-                case "GORDO": return GordoParam;
                 case "GAME": return GameParam;
                 default: return null;
             }
         if (argIndex == 2)
             switch (args[0])
             {
-                case "GORDO": switch (args[1])
-                    {
-                        case "BASE_SIZE": return new List<string> { "0.25", "0.5", "1", "1.5", "2", "5" };
-                        case "EATEN_COUNT": return new List<string> { "1", "5", "10", "45" };
-                    }
-                    return null;
                 case "GAME": switch (args[1])
                     {
                         case "ACTOR_TYPE": return getIdentListByPartialName(args[2], true,true,true);
@@ -57,25 +48,8 @@ internal class UtilCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
         switch (args[0])
         {
-            case "GORDO": return ExcGordo(args);
             case "GAME": return ExcGame(args);
             default: return SendError(translation("cmd.util.invalidtype",args[0]));
-        }
-    }
-
-    public bool ExcGordo(string[] cmd)
-    {
-        switch (cmd[1])
-        {
-            case "BASE_SIZE":
-                if (cmd.Length == 2) return GordoSize(true);
-                return GordoSize(false, cmd[2]);
-            case "EATEN_COUNT":
-                if (cmd.Length == 2) return GordoEatenAmount(true);
-                return GordoEatenAmount(false, cmd[2]);
-            case "PRINT_ID":
-                return PrintGordoID();
-            default: return SendError(translation("cmd.util.invalidparameter",cmd[1]));
         }
     }
     public bool ExcGame(string[] cmd)
@@ -93,85 +67,7 @@ internal class UtilCommand : SR2ECommand
     {
         disabledActors = new List<string>();
     }
-
-
-    public bool GordoSize(bool isGet, string sizeString = "1f")
-    {
-        Camera cam = Camera.main;
-        if (cam == null)  return SendError(translation("cmd.error.nocamera"));
-
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
-        {
-            GordoIdentifiable gordo = hit.collider.gameObject.GetComponent<GordoIdentifiable>();
-            GordoEat eat = hit.collider.gameObject.GetComponent<GordoEat>();
-            if (gordo != null)
-            {
-                if (isGet)
-                {
-                    SendMessage(translation("com.util.gordosize.show",gordo.identType.getName(),eat._initScale/4));
-                    return true;
-                }
-                float size = -1;
-                try { size = float.Parse(sizeString); }
-                catch { return SendNotValidFloat(sizeString); }
-                if (size <= 0) return SendError(translation("cmd.error.notfloatabove",sizeString,0));
-                eat._initScale = size*4;
-                SendMessage(translation("com.util.gordosize.edit",gordo.identType.getName(),size));
-                return true;
-                
-            }
-            return SendError(translation("cmd.error.notlookingatvalidobject"));
-        }
-        return SendError(translation("cmd.error.notlookingatanything"));
-    }
-
-    public bool GordoEatenAmount(bool isGet, string amountString = "49")
-    {
-        
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
-        {
-            GordoIdentifiable gordo = hit.collider.gameObject.GetComponent<GordoIdentifiable>();
-            GordoEat eat = hit.collider.gameObject.GetComponent<GordoEat>();
-            if (gordo != null)
-            {
-                if (isGet)
-                {
-                    SendMessage(translation("com.util.gordosize.show",gordo.identType.getName(),eat.GetEatenCount()));
-                    return true;
-                }
-                int amount = -1;
-                try { amount = int.Parse(amountString); }
-                catch { return SendNotValidInt(amountString); }
-                if (amount <= 0) return SendError(translation("cmd.error.notintabove",amountString,0));
-                eat.SetEatenCount(amount); 
-                SendMessage(translation("com.util.gordosize.edit",gordo.identType.getName(),amount));
-
-                return true;
-            }
-            return SendError(translation("cmd.error.notlookingatvalidobject"));
-        }
-        return SendError(translation("cmd.error.notlookingatanything"));
-    }
-
-    public bool PrintGordoID()
-    {
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
-        {
-            var gordo = hit.collider.gameObject.GetComponent<GordoEat>();
-            if (gordo != null)
-            {
-                SendMessage($"This {gordo.SlimeDefinition.name.ToLower()} gordo\'s ID is {gordo._id}");
-                return true;
-            }
-            return SendError(translation("cmd.error.notlookingatvalidobject"));
-        }
-        return SendError(translation("cmd.error.notlookingatanything"));
-    }
-
+    
     public List<string> disabledActors = new List<string>();
     public bool ToggleActorType(bool isGet, string identName, string action = ".") 
     {

@@ -27,6 +27,10 @@ internal class ScaleCommand: SR2ECommand
                 try { gameobject.GetComponentInParent<Gadget>().transform.localScale = scale; }
                 catch { }
             }
+            else if (hit.collider.gameObject.GetComponent<GordoEat>() != null)
+            {
+                return SendError(translation("cmd.scale.usegordocmd"));
+            }
             else return SendNotLookingAtValidObject();
             SendMessage(translation("cmd.scale.success"));
             return true;

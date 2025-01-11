@@ -19,7 +19,7 @@ internal class PlayerCommand : SR2ECommand
     {
         if (argIndex == 0) return arg0List;
         if (argIndex == 1)
-            switch (args[1])
+            switch (args[0])
             {
                 case "size": return new List<string> { "0.25", "0.5", "1", "1.5", "2", "5" };
                 case "gravity": return new List<string> { "-2", "-1", "1", "2", "5" };
@@ -35,7 +35,7 @@ internal class PlayerCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
         if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
          
-        switch (args[1])
+        switch (args[0])
         {
             case "size":
                 if (args.Length == 1) { SendMessage(translation("cmd.player.size.show",SceneContext.Instance.player.transform.localScale.x)); return true; }
