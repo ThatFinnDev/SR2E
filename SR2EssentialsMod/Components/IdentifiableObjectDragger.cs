@@ -39,7 +39,7 @@ internal class IdentifiableObjectDragger : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit))
+            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit,Mathf.Infinity,defaultMask))
             {
                 if (hit.transform.GetComponent<Rigidbody>())
                 {
@@ -61,7 +61,7 @@ internal class IdentifiableObjectDragger : MonoBehaviour
         if (isDragging && draggedObject)
         {
             draggedObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            if (Physics.Raycast(new Ray(mousePos, Camera.main.transform.forward), out var hit))
+            if (Physics.Raycast(new Ray(mousePos, Camera.main.transform.forward), out var hit,Mathf.Infinity,defaultMask))
             {
                 draggedObject.transform.position = hit.point;
             }

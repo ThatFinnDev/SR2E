@@ -46,7 +46,7 @@ internal class FXPlayCommand : SR2ECommand
         }
 
 
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
         {
             GameObject fxobj;
             try { fxobj = FXLibraryReversable[args[0]].Item2; }

@@ -28,7 +28,7 @@ internal class SpawnCommand : SR2ECommand
 
         for (int i = 0; i < amount; i++)
         {
-            if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+            if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
             {
                 try
                 {

@@ -113,7 +113,8 @@ cmd.fastforward.success,"Successfully fast-forwarded $1 hours!",Es wurde erfolgr
 cmd.fastforward.description,"Fast-forwards to next morning, or the amount of hours you request",Spult entweder zum nächsten Morgen or beliebig viele Stunden for
 cmd.fling.success,"Successfully flinged the object with a strength of $1!",Der Charakter wurde erfolgreich mit einer Stärke von $1 weggeschleudert.
 cmd.fling.description,"Flings any object you are looking at","Schleudert den Charakter, dass du anschaust weg"
-cmd.floaty.success,"The actor will float for $1 seconds!",Der Charakter wird für $1 Sekunde(n) schwerelos sein!
+cmd.floaty.successduration,"The actor will float for $1 seconds!",Der Charakter wird für $1 Sekunde(n) schwerelos sein!
+cmd.floaty.successtoggle,"The actor floating state has been toggled!",Der Schwerlosstatus des Charakter wurde verändert!
 cmd.floaty.description,"Temporarily disables gravity for an actor you're looking at","Deaktiviert Gravitation temporär für den Charakter, den du anschaust" 
 cmd.floaty.extendeddescription,"Temporarily disables gravity for an actor you're looking at for the specified duration in seconds","Deaktiviert Gravitation temporär für den Charakter, den du anschaust, für eine spezifische Dauer" 
 cmd.freeze.successthaw,"Successfully thawed the actor!",Die Zeit wurde für den Charakter erfolgreich aufgetaut!
@@ -267,14 +268,6 @@ cmd.util.actorgravity.editenable,"Gravity for the actor $1 is now enabled!","Gra
 cmd.util.actorgravity.showenable,"Gravity for the actor $1 is enabled","Gravitation ist für den Charakter namens '$1' aktiviert"
 cmd.util.actorgravity.editdisable,"Gravity for the actor $1 is now disabled!","Gravitation wurde für den Charakter namens '$1' jetzt deaktiviert!"
 cmd.util.actorgravity.showdisable,"Gravity for the actor $1 is disabled","Gravitation ist für den Charakter namens '$1' deaktiviert"
-cmd.util.emotion.fear.show,"The fear of $1 is currently $2","Der Angstwert von '$1' ist nun '$2'"
-cmd.util.emotion.fear.edit,"The fear of $1 is now $2!","Der Angstwert von '$1' ist gerade '$2'"
-cmd.util.emotion.hunger.show,"The hunger of $1 is currently $2","Der Hungerwert von '$1' ist nun '$2'"
-cmd.util.emotion.hunger.edit,"The hunger of $1 is now $2!","Der Hungerwert von '$1' ist gerade '$2'"
-cmd.util.emotion.agitation.show,"The agitation of $1 is currently $2","Der Wutwert von '$1' ist nun '$2'"
-cmd.util.emotion.agitation.edit,"The agitation of $1 is now $2!","Der Wutwert von '$1' ist gerade '$2'"
-cmd.util.emotion.sleepiness.show,"The sleepiness of $1 is currently $2","Der Schläfrigkeitswert von '$1' ist nun '$2'"
-cmd.util.emotion.sleepiness.edit,"The sleepiness of $1 is now $2!","Der Schläfrigkeitswert von '$1' ist gerade '$2'"
 cmd.util.actor.showenable,"The actor type $1 is currently enabled","Alle Charaktäre mit dem Typ '$1' sind gerade aktviert!"
 cmd.util.actor.showdisable,"The actor type $1 is currently disabled","Alle Charaktäre mit dem Typ '$1' sind gerade deaktviert!"
 cmd.util.actor.editenable,"The actor type $1 is now enabled!","Alle Charaktäre mit dem Typ '$1' sind nun aktviert!"
@@ -287,6 +280,14 @@ cmd.player.size.show,"The current size of the player is $1","Der Spielergröße 
 cmd.player.size.edit,"The new size of the player is $1!","Der Spielergröße ist nun '$1'"
 cmd.player.gravity.show,"The current gravity level of the player is $1","Der Gravitationswert vom Spieler ist gerade '$1'"
 cmd.player.gravity.edit,"The new gravity level of the player is $1!","Der Gravitationswert vom Spieler ist nun '$1'"
+cmd.emotion.fear.show,"The fear of $1 is currently $2","Der Angstwert von '$1' ist nun '$2'"
+cmd.emotion.fear.edit,"The fear of $1 is now $2!","Der Angstwert von '$1' ist gerade '$2'"
+cmd.emotion.hunger.show,"The hunger of $1 is currently $2","Der Hungerwert von '$1' ist nun '$2'"
+cmd.emotion.hunger.edit,"The hunger of $1 is now $2!","Der Hungerwert von '$1' ist gerade '$2'"
+cmd.emotion.agitation.show,"The agitation of $1 is currently $2","Der Wutwert von '$1' ist nun '$2'"
+cmd.emotion.agitation.edit,"The agitation of $1 is now $2!","Der Wutwert von '$1' ist gerade '$2'"
+cmd.emotion.sleepiness.show,"The sleepiness of $1 is currently $2","Der Schläfrigkeitswert von '$1' ist nun '$2'"
+cmd.emotion.sleepiness.edit,"The sleepiness of $1 is now $2!","Der Schläfrigkeitswert von '$1' ist gerade '$2'"
 cmd.recentercamera.description,"Recenters your camera to look at the center of an object you're looking at","Zentriert die Kamera neu, damit du in die Mitte des Objekts vor dir anschaust"
 cmd.recentercamera.success,"Successfully recentered the camera! Make sure to screenshot before unpausing.","Die Kamera wurder erfolgreich neu zentriert. Mache ein Bildschirmfoto bevor du das Spiel fortsetzt"
 cmd.recentercamera.nocamera,"There was no main camera found!","Es wurde keine Hauptkamera gefunden!"

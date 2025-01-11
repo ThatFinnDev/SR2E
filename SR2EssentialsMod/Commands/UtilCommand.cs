@@ -1,10 +1,4 @@
-﻿using Il2CppKinematicCharacterController;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using System;
-using System.Linq;
-using Il2CppMonomiPark.SlimeRancher;
-using Il2CppMonomiPark.SlimeRancher.Player.PlayerItems;
-using Il2CppMonomiPark.SlimeRancher.Slime;
+﻿using Il2CppMonomiPark.SlimeRancher;
 using SR2E.Components;
 using SR2E.Enums;
 
@@ -16,10 +10,8 @@ internal class UtilCommand : SR2ECommand
     public override string Usage => "util <type> <parameter [value] [value2] [value3]";
     public override CommandType type => CommandType.Cheat;
 
-
     readonly List<string> TypeParam = new List<string>() { "GAME", "GORDO", "SLIME", "PLAYER" };
     readonly List<string> GordoParam = new List<string>() { "BASE_SIZE", "EATEN_COUNT", "PRINT_ID" };
-    readonly List<string> SlimeParam = new List<string>() { "SLIME_HUNGER", "SLIME_AGI", "SLIME_FEAR","SLIME_SLEEPINESS", "USE_GRAVITY" };
     readonly List<string> GameParam = new List<string>() { "ACTOR_TYPE" };
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
@@ -29,7 +21,6 @@ internal class UtilCommand : SR2ECommand
             switch (args[0])
             {
                 case "GORDO": return GordoParam;
-                case "SLIME": return SlimeParam;
                 case "GAME": return GameParam;
                 default: return null;
             }
@@ -40,15 +31,6 @@ internal class UtilCommand : SR2ECommand
                     {
                         case "BASE_SIZE": return new List<string> { "0.25", "0.5", "1", "1.5", "2", "5" };
                         case "EATEN_COUNT": return new List<string> { "1", "5", "10", "45" };
-                    }
-                    return null;
-                case "SLIME": switch (args[1])
-                    {
-                        case "SLIME_HUNGER": 
-                        case "SLIME_AGI": 
-                        case "SLIME_FEAR": 
-                        case "SLIME_SLEEPINESS": return new List<string> { "0", "0.25", "0.5", "1" };
-                        case "USE_GRAVITY": return new List<string> { "false", "true" };
                     }
                     return null;
                 case "GAME": switch (args[1])
@@ -76,7 +58,6 @@ internal class UtilCommand : SR2ECommand
         switch (args[0])
         {
             case "GORDO": return ExcGordo(args);
-            case "SLIME": return ExcSlime(args);
             case "GAME": return ExcGame(args);
             default: return SendError(translation("cmd.util.invalidtype",args[0]));
         }
@@ -97,29 +78,6 @@ internal class UtilCommand : SR2ECommand
             default: return SendError(translation("cmd.util.invalidparameter",cmd[1]));
         }
     }
-    public bool ExcSlime(string[] cmd)
-    {
-        switch (cmd[1])
-        {
-            case "SLIME_HUNGER":
-                if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.HUNGER);
-                return SlimeEmotion(false, SlimeEmotions.Emotion.HUNGER, cmd[2]);
-            case "SLIME_AGI":
-                if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.AGITATION);
-                return SlimeEmotion(false, SlimeEmotions.Emotion.AGITATION, cmd[2]);
-            case "SLIME_FEAR":
-                if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.FEAR);
-                return SlimeEmotion(false, SlimeEmotions.Emotion.FEAR, cmd[2]);
-            case "SLIME_SLEEPINESS":
-                if (cmd.Length == 2) return SlimeEmotion(true, SlimeEmotions.Emotion.SLEEPINESS);
-                return SlimeEmotion(false, SlimeEmotions.Emotion.SLEEPINESS, cmd[2]);
-            case "USE_GRAVITY":
-                if (cmd.Length == 2) return ToggleActorZeroGrav(true);
-                return ToggleActorZeroGrav(false,cmd[2]);
-        }
-
-        return false;
-    }
     public bool ExcGame(string[] cmd)
     {
         switch (cmd[1])
@@ -131,127 +89,18 @@ internal class UtilCommand : SR2ECommand
             default: return false;
         }
     }
-
-    public bool SlimeEmotion(bool isGet, SlimeEmotions.Emotion emotion, string valString = "1f")
-    {
-        
-        Camera cam = Camera.main;
-        if (cam == null) return SendError(translation("cmd.error.nocamera"));
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
-        {
-            var slime = hit.collider.gameObject.GetComponent<SlimeEmotions>();
-            if (slime != null)
-            {
-                if (isGet)
-                {
-                    switch (emotion)
-                    {
-                        case SlimeEmotions.Emotion.FEAR:
-                            SendMessage(translation("cmd.util.emotion.fear.show",
-                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
-                            break;
-                        case SlimeEmotions.Emotion.HUNGER:
-                            SendMessage(translation("cmd.util.emotion.hunger.show",
-                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
-                            break;
-                        case SlimeEmotions.Emotion.AGITATION:
-                            SendMessage(translation("cmd.util.emotion.agitation.show",
-                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
-                            break;
-                        case SlimeEmotions.Emotion.SLEEPINESS:
-                            SendMessage(translation("cmd.util.emotion.sleepiness.show",
-                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
-                            break;
-                    }
-
-                    return true;
-                }
-                else
-                {
-                    float parsed = float.Parse(valString);
-                    slime.Set(emotion, parsed);
-                    
-                    switch (emotion)
-                    {
-                        case SlimeEmotions.Emotion.FEAR:
-                            SendMessage(translation("cmd.util.emotion.fear.edit",
-                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), parsed));
-                            break;
-                        case SlimeEmotions.Emotion.HUNGER:
-                            SendMessage(translation("cmd.util.emotion.hunger.edit",
-                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), parsed));
-                            break;
-                        case SlimeEmotions.Emotion.AGITATION:
-                            SendMessage(translation("cmd.util.emotion.agitation.edit",
-                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), parsed));
-                            break;
-                        case SlimeEmotions.Emotion.SLEEPINESS:
-                            SendMessage(translation("cmd.util.emotion.sleepiness.edit",
-                                slime.gameObject.GetComponent<Identifiable>().identType.getName(), parsed));
-                            break;
-                    }
-
-                    return true;
-                }
-            }
-
-            return SendError(translation("cmd.error.notlookingatvalidobject"));
-        }
-        return SendError(translation("cmd.error.notlookingatanything"));
-        
-    }
-
-    public bool ToggleActorZeroGrav(bool isGet, string gravity = "true")
-    {
-        bool newGravityState = false;
-        string boolToParse = gravity.ToLower();
-        if (boolToParse != "true" && boolToParse != "false") return SendError(translation("cmd.error.notvalidbool",gravity));
-        if (boolToParse == "true")  newGravityState = true;
-        Camera cam = Camera.main;
-        if (cam == null)  return SendError(translation("cmd.error.nocamera"));
-        
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
-        {
-            var actor = hit.collider.gameObject.GetComponent<Vacuumable>();
-            if (actor != null)
-            {
-                if (isGet)
-                {
-                    if(actor._ignoresGravity) SendMessage(translation("cmd.util.actorgravity.showenable",actor._identifiable.identType.getName()));
-                    else SendMessage(translation("cmd.util.actorgravity.showdisable",actor._identifiable.identType.getName()));
-                    return true;
-                }
-                actor._ignoresGravity = !newGravityState;
-                if(actor._ignoresGravity) SendMessage(translation("cmd.util.actorgravity.editenable",actor._identifiable.identType.getName()));
-                else SendMessage(translation("cmd.util.actorgravity.editdisable",actor._identifiable.identType.getName()));
-                return true;
-            }
-            return SendError(translation("cmd.error.notlookingatvalidobject"));
-        }
-        return SendError(translation("cmd.error.notlookingatanything"));
-    }
-
     public override void OnMainMenuUILoad()
     {
         disabledActors = new List<string>();
     }
 
-    public static LayerMask maskForGordo
-    {
-        get
-        {
-            LayerMask mask = ~0;
-            mask &= ~(1 << Layers.GadgetPlacement);
-            return mask;
-        }
-    }
 
     public bool GordoSize(bool isGet, string sizeString = "1f")
     {
         Camera cam = Camera.main;
         if (cam == null)  return SendError(translation("cmd.error.nocamera"));
 
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,maskForGordo))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
         {
             GordoIdentifiable gordo = hit.collider.gameObject.GetComponent<GordoIdentifiable>();
             GordoEat eat = hit.collider.gameObject.GetComponent<GordoEat>();
@@ -281,7 +130,7 @@ internal class UtilCommand : SR2ECommand
         
         Camera cam = Camera.main;
         if (cam == null) return SendError(translation("cmd.error.nocamera"));
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,maskForGordo))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
         {
             GordoIdentifiable gordo = hit.collider.gameObject.GetComponent<GordoIdentifiable>();
             GordoEat eat = hit.collider.gameObject.GetComponent<GordoEat>();
@@ -310,7 +159,7 @@ internal class UtilCommand : SR2ECommand
     {
         Camera cam = Camera.main;
         if (cam == null) return SendError(translation("cmd.error.nocamera"));
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
         {
             var gordo = hit.collider.gameObject.GetComponent<GordoEat>();
             if (gordo != null)

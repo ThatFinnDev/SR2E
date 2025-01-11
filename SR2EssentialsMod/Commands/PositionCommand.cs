@@ -20,7 +20,7 @@ internal class PositionCommand: SR2ECommand
         
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
              
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
         {
             var gameobject = hit.collider.gameObject;
             if (gameobject.GetComponent<Identifiable>()) 

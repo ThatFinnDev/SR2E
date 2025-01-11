@@ -19,7 +19,7 @@ internal class RotationCommand : SR2ECommand
         if (args.Length==4) if (!this.TryParseBool(args[3], out absolute)) return false;
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
         
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
         {
             var gameobject = hit.collider.gameObject;
             if (gameobject.GetComponent<Identifiable>()) gameobject.transform.Rotate(rotation);

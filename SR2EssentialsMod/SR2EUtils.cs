@@ -982,5 +982,14 @@ namespace SR2E
             yield return new WaitForSeconds(seconds);
             try { action.Invoke(); }catch (Exception e) { MelonLogger.Error(e); }
         }
+        public static LayerMask defaultMask
+        {
+            get
+            {
+                LayerMask mask = ~0;
+                mask &= ~(1 << Layers.GadgetPlacement);
+                return mask;
+            }
+        }
     }
 }
