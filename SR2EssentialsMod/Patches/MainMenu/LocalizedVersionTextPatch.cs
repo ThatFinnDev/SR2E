@@ -20,7 +20,7 @@ internal static class LocalizedVersionTextPatch
                         versionLabel.text = translation("patches.localizedversionpatch.downloadedversion",SR2EEntryPoint.newVersion,versionLabel.text);
                     else versionLabel.text = translation("patches.localizedversionpatch.newversion",SR2EEntryPoint.newVersion,versionLabel.text);
                 }
-            versionLabel.text = translation("patches.localizedversionpatch.default",MelonLoader.BuildInfo.Version,versionLabel.text);
+            versionLabel.text = translation("patches.localizedversionpatch.default",MelonLoader.Properties.BuildInfo.Version,versionLabel.text);
                 
         }
         catch { }
