@@ -11,7 +11,7 @@ namespace SR2E;
 /// Abstract menu class
 /// </summary>
 [RegisterTypeInIl2Cpp(false)]
-public class SR2EMenu : MonoBehaviour
+public abstract class SR2EMenu : MonoBehaviour
 {
     public static MenuIdentifier GetMenuIdentifier() => new ();
     public virtual bool createCommands => false;
