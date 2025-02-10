@@ -3,10 +3,18 @@ using Il2CppMonomiPark.SlimeRancher.Weather;
 
 namespace SR2E.Commands;
 
+<<<<<<< HEAD
 public class WeatherCommand : SR2Command
 {
     public override string ID => "weather";
     public override string Usage => "weather <action> <action> <action>";
+=======
+internal class WeatherCommand : SR2ECommand
+{
+    public override string ID => "weather";
+    public override string Usage => "weather <action> <action> <action>";
+    public override CommandType type => CommandType.Cheat;
+>>>>>>> experimental
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -24,12 +32,40 @@ public class WeatherCommand : SR2Command
 
         if (argIndex == 2) if (args[0] == "modify")
                 return new List<string> { "start", "stop", "toggle" };
+<<<<<<< HEAD
+=======
+
+        switch (argIndex)
+        {
+            case 0:
+                return new List<string> { "list", "modify" };
+            case 1:
+                switch (args[0])
+                {
+                    case "list":
+                        return new List<string> { "all", "running" };
+                    case "modify":
+                        var list = new List<string>();
+                        foreach (var state in weatherStateDefinitions) list.Add(state.name.Replace(" ", ""));
+                        return list;
+                }
+                break;
+            case 2:
+                if (args[0] == "modify")
+                    return new List<string> { "start", "stop", "toggle" };
+                break;
+        }
+>>>>>>> experimental
         
         return null;
     }
     
     public override bool Execute(string[] args)
     {
+<<<<<<< HEAD
+=======
+        return SendCommandMaintenance();
+>>>>>>> experimental
         if (!args.IsBetween(0,3)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         
@@ -75,7 +111,11 @@ public class WeatherCommand : SR2Command
                 {
                     
                     WeatherStateDefinition def = getWeatherStateByName(args[1]);
+<<<<<<< HEAD
                     if (def == null) return SendError(translation("cmd.error.notvalidweather",args[1])); 
+=======
+                    if (def == null) return SendNotValidWeather(args[1]); 
+>>>>>>> experimental
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
                     if(isRunning) SendMessage( translation("cmd.weather.currentlyrunning",$"\"{def.name.Replace(" ", "")}\""));
@@ -90,7 +130,11 @@ public class WeatherCommand : SR2Command
                 {
                     
                     WeatherStateDefinition def = getWeatherStateByName(args[1]);
+<<<<<<< HEAD
                     if (def == null) return SendError(translation("cmd.error.notvalidweather", args[1]));
+=======
+                    if (def == null) return SendNotValidWeather(args[1]); 
+>>>>>>> experimental
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
                     

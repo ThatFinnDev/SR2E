@@ -7,6 +7,7 @@ using SR2E.Buttons;
 namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(PauseMenuDirector), nameof(PauseMenuDirector.Awake))]
+<<<<<<< HEAD
 public static class SR2PauseDirectorPatch
 {
     public static void Prefix(PauseMenuDirector __instance)
@@ -15,12 +16,29 @@ public static class SR2PauseDirectorPatch
     }
 }
 public static class SR2PauseMenuButtonPatch
+=======
+internal static class SR2PauseDirectorPatch
+{
+    internal static void Prefix(PauseMenuDirector __instance)
+    {
+        if (!InjectPauseButtons.HasFlag()) return;
+        SR2PauseMenuButtonPatch.Prefix(Get<PauseMenuRoot>("PauseMenuRoot"));
+    }
+}
+internal static class SR2PauseMenuButtonPatch
+>>>>>>> experimental
 {
     internal static List<CustomPauseMenuButton> buttons = new List<CustomPauseMenuButton>();
     internal static bool safeLock;
     internal static bool postSafeLock;
+<<<<<<< HEAD
     public static void Prefix(PauseMenuRoot __instance)
     {
+=======
+    internal static void Prefix(PauseMenuRoot __instance)
+    {
+        if (!InjectPauseButtons.HasFlag()) return;
+>>>>>>> experimental
         if (safeLock) { return; }
         safeLock = true;
         try

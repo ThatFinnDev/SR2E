@@ -1,19 +1,44 @@
 using System.Linq;
 using UnityEngine.InputSystem;
+<<<<<<< HEAD
 
 namespace SR2E.Storage;
 
 public class MultiKey
 {
+=======
+using Key = SR2E.Enums.Key;
+
+namespace SR2E.Storage;
+
+/// <summary>
+/// Struct acting as an array of keys check for input at the same time
+/// </summary>
+public struct MultiKey
+{
+    /// <summary>
+    /// A Multi-Key constructor using a List instead of an array
+    /// </summary>
+    /// <param name="requiredKeys">The collection of keys to check for</param>
+>>>>>>> experimental
     public MultiKey(List<Key> requiredKeys)
     {
         this.requiredKeys = requiredKeys;
     }
+<<<<<<< HEAD
     public MultiKey(Key[] requiredKeys)
+=======
+    /// <summary>
+    /// A Multi-Key constructor using a params array.
+    /// </summary>
+    /// <param name="requiredKeys">The collection of keys to check for</param>
+    public MultiKey(params Key[] requiredKeys)
+>>>>>>> experimental
     {
         this.requiredKeys = requiredKeys.ToList();
     }
     public List<Key> requiredKeys = new List<Key>();
+<<<<<<< HEAD
 
     public bool wasPressedThisFrame
     {
@@ -61,4 +86,7 @@ public class MultiKey
             return true;
         }
     }
+=======
+   
+>>>>>>> experimental
 }

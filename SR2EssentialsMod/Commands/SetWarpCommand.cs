@@ -1,4 +1,5 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Regions;
+<<<<<<< HEAD
 
 namespace SR2E.Commands;
 
@@ -8,6 +9,19 @@ public class SetWarpCommand : SR2Command
     public override string Usage => "setwarp <name>";
 
 
+=======
+using SR2E.Enums;
+using SR2E.Managers;
+using SR2E.Storage;
+
+namespace SR2E.Commands;
+
+internal class SetWarpCommand : SR2ECommand
+{
+    public override string ID => "setwarp";
+    public override string Usage => "setwarp <name>";
+    public override CommandType type => CommandType.Warp;
+>>>>>>> experimental
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(1,1)) return SendUsage();
@@ -19,9 +33,14 @@ public class SetWarpCommand : SR2Command
         Quaternion rotation = SceneContext.Instance.Player.transform.rotation;
         string sceneGroup = SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId;
 
+<<<<<<< HEAD
         SR2EError error = SR2ESaveManager.WarpManager.AddWarp(name, new SR2ESaveManager.Warp(sceneGroup, pos, rotation));
         if (error == SR2EError.AlreadyExists)
             return SendError(translation("cmd.warpstuff.alreadywarpwithname",name));
+=======
+        SR2EError error = SR2EWarpManager.AddWarp(name, new Warp(sceneGroup, pos, rotation));
+        if (error == SR2EError.AlreadyExists) return SendError(translation("cmd.warpstuff.alreadywarpwithname",name));
+>>>>>>> experimental
 
         SendMessage(translation("cmd.setwarp.success",name));
         return true;

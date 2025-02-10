@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;
@@ -6,6 +7,18 @@ public class FXPlayCommand : SR2Command
 {
     public override string ID => "fxplayer";
     public override string Usage => "fxplayer <FX> [speed] [playandpause]";
+=======
+﻿using SR2E.Enums;
+using SR2E.Managers;
+
+namespace SR2E.Commands;
+
+internal class FXPlayCommand : SR2ECommand
+{
+    public override string ID => "fxplayer";
+    public override string Usage => "fxplayer <FX> [speed] [playandpause]";
+    public override CommandType type => CommandType.Fun;
+>>>>>>> experimental
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -32,6 +45,7 @@ public class FXPlayCommand : SR2Command
         if (!inGame) SendLoadASaveFirst();
 
         if (currFX != null && !currFX.isStopped) return SendError(translation("cmd.fxplayer.waitforstop"));
+<<<<<<< HEAD
            
         
 
@@ -39,10 +53,16 @@ public class FXPlayCommand : SR2Command
         if (cam == null) return SendError(translation("cmd.error.nocamera"));
             
 
+=======
+        
+        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
+        
+>>>>>>> experimental
         float playbackSpeed = 0;
         bool playAndPause = false;
         if (args.Length >= 2)
         {
+<<<<<<< HEAD
             try { playbackSpeed = float.Parse(args[1]); }
             catch { return SendError(translation("cmd.error.notvalidfloat",args[1])); }
 
@@ -67,6 +87,17 @@ public class FXPlayCommand : SR2Command
             {
                 fxobj = FXLibraryReversable[args[0]].Item2;
             }
+=======
+            if (!this.TryParseFloat(args[1], out playbackSpeed, 0, false)) return false;
+            if (args.Length == 3) if (!this.TryParseBool(args[2], out playAndPause)) return false;
+        }
+
+
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        {
+            GameObject fxobj;
+            try { fxobj = FXLibraryReversable[args[0]].Item2; }
+>>>>>>> experimental
             catch { return SendError(translation("cmd.fxplayer.invalidfxname")); }
 
             fxobj.SpawnFX(cam.transform.position + hit.transform.position);
@@ -74,24 +105,36 @@ public class FXPlayCommand : SR2Command
             if (args.Length >= 2)
             {
                 fxobj.GetComponent<ParticleSystem>().playbackSpeed = playbackSpeed;
+<<<<<<< HEAD
                 if (args.Length == 3)
                 {
                     if (playAndPause)
                         fxobj.AddComponent<FXPlayPauseFunction>();
                 }
+=======
+                if (args.Length == 3) if (playAndPause) fxobj.AddComponent<FXPlayPauseFunction>();
+>>>>>>> experimental
             }
 
             currFX = fxobj.GetComponent<ParticleSystem>();
             SendMessage(translation("cmd.fxplayer.success"));
             return true;
         }
+<<<<<<< HEAD
 
         return SendError(translation( "cmd.error.notlookingatanything"));
+=======
+        return SendNotLookingAtAnything();
+>>>>>>> experimental
     }
 }
 
 [RegisterTypeInIl2Cpp(false)]
+<<<<<<< HEAD
 public class FXPlayPauseFunction : MonoBehaviour
+=======
+internal class FXPlayPauseFunction : MonoBehaviour
+>>>>>>> experimental
 {
     public ParticleSystem sys;
 
@@ -102,7 +145,11 @@ public class FXPlayPauseFunction : MonoBehaviour
 
     public void Update()
     {
+<<<<<<< HEAD
         if (Key.P.kc().wasPressedThisFrame)
+=======
+        if (Key.P.OnKeyPressed())
+>>>>>>> experimental
         {
             if (sys.isPlaying) sys.Pause();
             else sys.Play();

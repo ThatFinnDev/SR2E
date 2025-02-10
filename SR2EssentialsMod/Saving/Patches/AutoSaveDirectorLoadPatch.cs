@@ -1,11 +1,19 @@
 ﻿/*using System;
 using SR2E.Saving;
 using System.IO;
+<<<<<<< HEAD
 public static class AutoSaveDirectorLoadPatch
 {
     public static string loadPath => GameContext.Instance.AutoSaveDirector.StorageProvider.Cast<FileStorageProvider>().savePath;
 
     public static void Postfix(AutoSaveDirector __instance, string gameName, string saveName)
+=======
+internal static class AutoSaveDirectorLoadPatch
+{
+    internal static string loadPath => GameContext.Instance.AutoSaveDirector.StorageProvider.Cast<FileStorageProvider>().savePath;
+
+    internal static void Postfix(AutoSaveDirector __instance, string gameName, string saveName)
+>>>>>>> experimental
     {
         string[] split = saveName.Split("_");
         string path = Path.Combine(loadPath, split[0] + "_" + split[1] + ".sr2ev2");
@@ -44,18 +52,30 @@ public static class AutoSaveDirectorLoadPatch
 }
 
 [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.BeginLoad), new Type[] { typeof(string), typeof(string) })]
+<<<<<<< HEAD
 public static class AutoSaveDirectorLoadPatchStringString
 {
     public static void Postfix(AutoSaveDirector __instance, string gameName, string saveName)
+=======
+internal static class AutoSaveDirectorLoadPatchStringString
+{
+    internal static void Postfix(AutoSaveDirector __instance, string gameName, string saveName)
+>>>>>>> experimental
     {
         MelonLogger.Msg("BEGIN LOAD STRING STRING");
         AutoSaveDirectorLoadPatch.Postfix(__instance,gameName,saveName);
     }
 }
 [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.BeginLoad), new Type[] { typeof(Il2CppSystem.IO.Stream),typeof(string), typeof(string) })]
+<<<<<<< HEAD
 public static class AutoSaveDirectorLoadPatchStreamStringString
 {
     public static void Postfix(AutoSaveDirector __instance, Il2CppSystem.IO.Stream gameData, string gameName, string saveName)
+=======
+internal static class AutoSaveDirectorLoadPatchStreamStringString
+{
+    internal static void Postfix(AutoSaveDirector __instance, Il2CppSystem.IO.Stream gameData, string gameName, string saveName)
+>>>>>>> experimental
     {
         MelonLogger.Msg("BEGIN LOAD STREAM TRING STRING");
         AutoSaveDirectorLoadPatch.Postfix(__instance,gameName,saveName);

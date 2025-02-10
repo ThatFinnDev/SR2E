@@ -1,9 +1,17 @@
 ﻿namespace SR2E.Commands;
 
+<<<<<<< HEAD
 public class FastForwardCommand : SR2Command
 {
     public override string ID => "fastforward";
     public override string Usage => "fastforward [hour amount]";
+=======
+internal class FastForwardCommand : SR2ECommand
+{
+    public override string ID => "fastforward";
+    public override string Usage => "fastforward [hour amount]";
+    public override CommandType type => CommandType.Cheat;
+>>>>>>> experimental
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -18,6 +26,7 @@ public class FastForwardCommand : SR2Command
         if (!args.IsBetween(0,1)) return SendUsage();
          
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
+<<<<<<< HEAD
         float duration = float.Parse(args[0]);
         if (args.Length == 1)
         {
@@ -27,6 +36,13 @@ public class FastForwardCommand : SR2Command
             timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(duration);
         }
 
+=======
+        float duration;
+        if (args.Length == 1)
+            if (!this.TryParseFloat(args[0], out duration, 0, false)) return false;
+            else timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(duration);
+        
+>>>>>>> experimental
         SceneContext.Instance.TimeDirector.FastForwardTo(timeToFastForwardTo);
         SendMessage(translation("cmd.fastforward.success",timeToFastForwardTo));
         return true;

@@ -1,9 +1,17 @@
 ﻿namespace SR2E.Commands;
 
+<<<<<<< HEAD
 public class RefillInvCommand : SR2Command
 {
     public override string ID => "refillinv";
     public override string Usage => "refillinv [slot]";
+=======
+internal class RefillInvCommand : SR2ECommand
+{
+    public override string ID => "refillinv";
+    public override string Usage => "refillinv [slot]";
+    public override CommandType type => CommandType.Cheat;
+>>>>>>> experimental
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
@@ -25,6 +33,7 @@ public class RefillInvCommand : SR2Command
             {
                 slotToFill = int.Parse(args[0]);
                 if (slotToFill <= 0) return SendError(translation("cmd.error.notintabove", args[0]));
+<<<<<<< HEAD
                 if (slotToFill > numberOfSlots)
                     return SendError(translation("cmd.refillinv.error.slotdoesntexist", numberOfSlots));
                 slotToFill -= 1;
@@ -35,6 +44,12 @@ public class RefillInvCommand : SR2Command
             }
 
 
+=======
+                if (slotToFill > numberOfSlots) return SendError(translation("cmd.refillinv.error.slotdoesntexist", numberOfSlots));
+                slotToFill -= 1;
+            }
+            catch { return SendNotValidInt(args[0]); }
+>>>>>>> experimental
         if (args==null)
         {
             for (int i = 0; i < SceneContext.Instance.PlayerState.Ammo.Slots.Count; i++)
@@ -60,8 +75,11 @@ public class RefillInvCommand : SR2Command
         Ammo.Slot invSlot = SceneContext.Instance.PlayerState.Ammo.Slots[slotToFill];
         invSlot.Count = SceneContext.Instance.PlayerState.Ammo._ammoModel.GetSlotMaxCount(invSlot.Id, slotToFill);
         SendMessage(translation("cmd.refillinv.successsingle", slotToFill + 1));
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> experimental
         return true;
     }
 }

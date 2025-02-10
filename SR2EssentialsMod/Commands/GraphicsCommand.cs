@@ -3,10 +3,18 @@ using Il2CppMonomiPark.SlimeRancher.Rendering;
 
 namespace SR2E.Commands;
 
+<<<<<<< HEAD
 public class GraphicsCommand : SR2Command
 {
     public override string ID => "graphics";
     public override string Usage => "graphics <mode>";
+=======
+internal class GraphicsCommand : SR2ECommand
+{
+    public override string ID => "graphics";
+    public override string Usage => "graphics <mode>";
+    public override CommandType type => CommandType.Fun;
+>>>>>>> experimental
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     { 
         if (argIndex == 0)
@@ -36,10 +44,14 @@ public class GraphicsCommand : SR2Command
     {
         if (!args.IsBetween(1,1)) return SendUsage();
 
+<<<<<<< HEAD
 
         if (rangeLightInstance == null)
         { SendError(translation("cmd.graphics.norangelights")); return false; }
 
+=======
+        if (rangeLightInstance == null) return SendError(translation("cmd.graphics.norangelights")); 
+>>>>>>> experimental
 
         rangeLightInstance.transform.GetChild(0).gameObject.SetActive(false);
         rangeLightInstance.transform.GetChild(1).gameObject.SetActive(false);
@@ -69,8 +81,12 @@ public class GraphicsCommand : SR2Command
             case "ORANGE":
                 rangeLightInstance.transform.GetChild(1).gameObject.SetActive(true);
                 rangeLightInstance.GetComponent<SunAndMoonVector>().enabled = true;
+<<<<<<< HEAD
                 for (int i = 0; i < vectorUpdaters.Length; i++)
                     vectorUpdaters[i].enabled = true;
+=======
+                for (int i = 0; i < vectorUpdaters.Length; i++) vectorUpdaters[i].enabled = true;
+>>>>>>> experimental
                 SendMessage(translation("cmd.graphics.success","orange"));
                 return true;
         }

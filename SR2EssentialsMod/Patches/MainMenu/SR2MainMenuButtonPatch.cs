@@ -2,18 +2,32 @@
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using SR2E.Buttons;
+<<<<<<< HEAD
+=======
+using SR2E.Components;
+>>>>>>> experimental
 
 namespace SR2E.Patches.MainMenu;
 
 
 [HarmonyPatch(typeof(MainMenuLandingRootUI), nameof(MainMenuLandingRootUI.CreateModels))]
+<<<<<<< HEAD
 public static class SR2MainMenuButtonPatch
+=======
+internal static class SR2MainMenuButtonPatch
+>>>>>>> experimental
 {
     internal static List<CustomMainMenuButton> buttons = new List<CustomMainMenuButton>();
     internal static bool safeLock;
     internal static bool postSafeLock;
+<<<<<<< HEAD
     public static void Prefix(MainMenuLandingRootUI __instance)
     {
+=======
+    internal static void Prefix(MainMenuLandingRootUI __instance)
+    {
+        if (!InjectMainMenuButtons.HasFlag()) return;
+>>>>>>> experimental
         foreach (CustomMainMenuButton button in buttons)
         {
             if (button.label == null || button.action == null) continue;
@@ -23,7 +37,11 @@ public static class SR2MainMenuButtonPatch
                 {
                     var obj = new GameObject();
                     UnityEngine.Object.DontDestroyOnLoad(obj);
+<<<<<<< HEAD
                     obj.name = button.label.GetLocalizedString() + "ButtonStarter";
+=======
+                    obj.name = button.label.TableEntryReference.Key + "ButtonStarter";
+>>>>>>> experimental
                     obj.transform.parent = rootOBJ.transform;
                     obj.AddComponent<CustomMainMenuButtonPressHandler>();
                     button._prefabToSpawn = obj;
@@ -39,7 +57,11 @@ public static class SR2MainMenuButtonPatch
                 }
                 button._definition = ScriptableObject.CreateInstance<CreateNewUIItemDefinition>();
                 button._definition.label = button.label;
+<<<<<<< HEAD
                 button._definition.name = button.label.GetLocalizedString();
+=======
+                button._definition.name = button.label.TableEntryReference.Key;
+>>>>>>> experimental
                 button._definition.icon = button.icon;
                 button._definition.hideFlags |= HideFlags.HideAndDontSave;
                 button._definition.prefabToSpawn = button._prefabToSpawn;
@@ -52,6 +74,10 @@ public static class SR2MainMenuButtonPatch
     }
     private static void Postfix()
     {
+<<<<<<< HEAD
+=======
+        if (!InjectMainMenuButtons.HasFlag()) return;
+>>>>>>> experimental
         foreach (CustomMainMenuButton button in buttons)
         {
             if (button.label.GetLocalizedString() == null || button.label == null || button.action == null) continue;

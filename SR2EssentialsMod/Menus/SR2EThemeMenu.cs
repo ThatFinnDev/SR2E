@@ -1,0 +1,151 @@
+using System;
+using System.Linq;
+using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
+using Il2CppTMPro;
+using SR2E.Enums;
+using SR2E.Enums.Features;
+using SR2E.Managers;
+using SR2E.Storage;
+using UnityEngine.UI;
+using Action = System.Action;
+
+namespace SR2E.Menus;
+
+public class SR2EThemeMenu : SR2EMenu
+{
+    //Check valid themes for all menus EVERYWHERE
+    public new static MenuIdentifier GetMenuIdentifier() => new ("thememenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"ThemeMenu");
+    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EThemeMenu>();
+    public override bool createCommands => false;
+    public override bool inGameOnly => false;
+    
+    GameObject entryTemplate;
+    GameObject buttonTemplate;
+    GameObject dropdownTemplate;
+    Transform content;
+
+    protected override void OnAwake()
+    {
+        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
+        {
+            {"requiredFeatures",new List<FeatureFlag>(){EnableThemeMenu}},
+            {"openActions",new List<MenuActions> { MenuActions.PauseGame,MenuActions.HideMenus }},
+            {"closeActions",new List<MenuActions> { MenuActions.UnPauseGame,MenuActions.UnHideMenus,MenuActions.EnableInput }},
+        });
+    }
+
+    protected override void OnClose()
+    {
+        content.DestroyAllChildren();
+    }
+    protected override void OnOpen()
+    {
+        List<MenuIdentifier> identifiers = new List<MenuIdentifier>();
+        foreach (var pair in SR2EEntryPoint.menus)
+        {
+            var ident = pair.Key.GetIdentifierViaReflection();
+            if (!string.IsNullOrEmpty(ident.saveKey)) identifiers.Add(ident);
+        }
+        foreach (var identifier in identifiers)
+        {
+            GameObject entry = Object.Instantiate(entryTemplate, content);
+            entry.SetActive(true);
+            entry.getObjRec<TextMeshProUGUI>("Title").text = translation(identifier.translationKey+".title");
+
+            Transform contentRec = entry.getObjRec<Transform>("ContentRec");
+            GameObject dropDownObj = Instantiate(dropdownTemplate, contentRec);
+            dropDownObj.SetActive(true);
+            TMP_Dropdown dropdown = dropDownObj.getObjRec<TMP_Dropdown>("Dropdown");
+            dropdown.ClearOptions();
+            //idk how to convert to il2cpp list
+            var options = new Il2CppSystem.Collections.Generic.List<string>();
+            var fonts = new List<SR2EMenuFont>();
+            var currValue = 0;
+            var z = 0;
+            foreach(SR2EMenuFont font in Enum.GetValues(typeof(SR2EMenuFont)))
+            {
+                fonts.Add(font);
+                if (SR2ESaveManager.data.fonts[identifier.saveKey] == font) currValue = z;
+                options.Add(font.ToString());
+                z += 1;
+            }
+            dropdown.AddOptions(options);
+            dropdown.value = currValue;
+            dropdown.RefreshShownValue();
+            dropdown.onValueChanged.AddListener((Action<int>)((value) =>
+            {
+                SR2ESaveManager.data.fonts[identifier.saveKey]=fonts[value];
+                SR2ESaveManager.Save();
+                var menu = identifier.GetSR2EMenu();
+                if (menu != null)
+                    menu.ReloadFont();
+            }));
+            foreach (SR2EMenuTheme theme in getValidThemes(identifier.saveKey))
+            {
+                GameObject button = Instantiate(buttonTemplate, contentRec);
+                button.SetActive(true);
+                button.transform.GetChild(0).GetComponent<Button>().onClick.AddListener((Action)(() =>
+                {
+                    warningText.SetActive(true);
+                    for (int i = 0; i < contentRec.childCount; i++)
+                        if(!contentRec.GetChild(i).HasComponent<CanvasGroup>())
+                            contentRec.GetChild(i).GetComponent<Image>().color = contentRec.GetChild(i) == button.transform ? Color.green : Color.red;
+                    SR2ESaveManager.data.themes[identifier.saveKey] = theme;
+                    SR2ESaveManager.Save();
+                }));
+                Texture2D texture = new Texture2D(3, 1, TextureFormat.RGBA32, false)
+                { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
+                switch (theme)
+                {
+                    case SR2EMenuTheme.SR2E: if (true) {
+                            if(ColorUtility.TryParseHtmlString("#303846FF", out var pixel0)) texture.SetPixel(0,0,pixel0);
+                            if(ColorUtility.TryParseHtmlString("#2C6EC8FF", out var pixel1)) texture.SetPixel(1,0,pixel1);
+                            if(ColorUtility.TryParseHtmlString("#1B1B1DFF", out var pixel2)) texture.SetPixel(2,0,pixel2);
+                    } break;
+                    case SR2EMenuTheme.Black: if (true) {
+                            if(ColorUtility.TryParseHtmlString("#000000", out var pixel0)) texture.SetPixel(0,0,pixel0);
+                            if(ColorUtility.TryParseHtmlString("#000000", out var pixel1)) texture.SetPixel(1,0,pixel1);
+                            if(ColorUtility.TryParseHtmlString("#000000", out var pixel2)) texture.SetPixel(2,0,pixel2);
+                    } break;
+                    default: if (true) {
+                        if(ColorUtility.TryParseHtmlString("#F0E1C8FF", out var pixel0)) texture.SetPixel(0,0,pixel0);
+                        if(ColorUtility.TryParseHtmlString("#D2B394FF", out var pixel1)) texture.SetPixel(1,0,pixel1);
+                        if(ColorUtility.TryParseHtmlString("#FFFFFFFF", out var pixel2)) texture.SetPixel(2,0,pixel2);
+                    } break;
+                }
+
+                texture.Apply();
+                button.transform.GetChild(0).GetComponent<Image>().sprite = SR2EUtils.ConvertToSprite(texture);
+                if (SR2ESaveManager.data.themes.ContainsKey(identifier.saveKey))
+                {
+                    if (SR2ESaveManager.data.themes[identifier.saveKey] == theme)
+                        button.GetComponent<Image>().color = Color.green;
+                }
+            }
+        }
+    }
+    
+    GameObject warningText;
+    protected override void OnLateAwake()
+    {
+        entryTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryRec");
+        buttonTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryButtonEntryRec");
+        dropdownTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryDropdownEntryRec");
+        warningText = transform.getObjRec<GameObject>("ThemeMenuRestartWarningRec");
+        toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"thememenu.warning.restart");
+        content = transform.getObjRec<Transform>("ThemeMenuThemeSelectorContentRec");
+        
+        var button1 = transform.getObjRec<Image>("ThemeMenuThemeSelectorSelectionButtonRec");
+        button1.sprite = whitePillBg;
+        
+        toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
+        toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"thememenu.title");
+    }
+
+    protected override void OnUpdate()
+    {
+        if (Key.Escape.OnKeyPressed())
+            Close();
+    }
+}

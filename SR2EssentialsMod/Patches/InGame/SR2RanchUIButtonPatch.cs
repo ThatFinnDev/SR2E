@@ -4,13 +4,23 @@ using Il2CppMonomiPark.SlimeRancher.UI.RanchHouse;
 namespace SR2E.Patches.InGame;
 
 [HarmonyPatch(typeof(RanchHouseMenuRoot), nameof(RanchHouseMenuRoot.Awake))]
+<<<<<<< HEAD
 public static class SR2RanchUIButtonPatch
+=======
+internal static class SR2RanchUIButtonPatch
+>>>>>>> experimental
 {
     internal static List<CustomRanchUIButton> buttons = new List<CustomRanchUIButton>();
     internal static bool safeLock;
     internal static bool postSafeLock;
+<<<<<<< HEAD
     public static void Prefix(RanchHouseMenuRoot __instance)
     {
+=======
+    internal static void Prefix(RanchHouseMenuRoot __instance)
+    {
+        if (!InjectRanchUIButtons.HasFlag()) return;
+>>>>>>> experimental
         if (safeLock) { return; }
         safeLock = true;
         foreach (CustomRanchUIButton button in buttons)

@@ -82,6 +82,7 @@ __MACOSX
 
 # Mono auto generated files
 SR2EssentialsMod/mono_crash.*
+SR2EExampleExpansion/mono_crash.*
 
 
 # Build results
@@ -97,37 +98,62 @@ SR2EssentialsMod/bld/
 SR2EssentialsMod/[Bb]in/
 SR2EssentialsMod/[Ll]og/
 SR2EssentialsMod/[Ll]ogs/
+SR2EExampleExpansion/[Dd]ebug/
+SR2EExampleExpansion/[Dd]ebugPublic/
+SR2EExampleExpansion/[Rr]elease/
+SR2EExampleExpansion/[Rr]eleases/
+SR2EExampleExpansion/x64/
+SR2EExampleExpansion/x86/
+SR2EExampleExpansion/[Aa][Rr][Mm]/
+SR2EExampleExpansion/[Aa][Rr][Mm]64/
+SR2EExampleExpansion/bld/
+SR2EExampleExpansion/[Bb]in/
+SR2EExampleExpansion/[Ll]og/
+SR2EExampleExpansion/[Ll]ogs/
 
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
 # Visual Studio 2017 auto generated files
 SR2EssentialsMod/Generated\ Files/
+SR2EExampleExpansion/Generated\ Files/
 
 # MSTest test Results
 SR2EssentialsMod/[Tt]est[Rr]esult*/
 SR2EssentialsMod/[Bb]uild[Ll]og.*
+SR2EExampleExpansion/[Tt]est[Rr]esult*/
+SR2EExampleExpansion/[Bb]uild[Ll]og.*
 
 # NUnit
 *.VisualState.xml
 SR2EssentialsMod/TestResult.xml
 SR2EssentialsMod/nunit-*.xml
+SR2EExampleExpansion/TestResult.xml
+SR2EExampleExpansion/nunit-*.xml
 
 # Build Results of an ATL Project
 SR2EssentialsMod/[Dd]ebugPS/
 SR2EssentialsMod/[Rr]eleasePS/
 SR2EssentialsMod/dlldata.c
+SR2EExampleExpansion/[Dd]ebugPS/
+SR2EExampleExpansion/[Rr]eleasePS/
+SR2EExampleExpansion/dlldata.c
 
 # Benchmark Results
 SR2EssentialsMod/BenchmarkDotNet.Artifacts/
+SR2EExampleExpansion/BenchmarkDotNet.Artifacts/
 
 # .NET Core
 SR2EssentialsMod/project.lock.json
 SR2EssentialsMod/project.fragment.lock.json
 SR2EssentialsMod/artifacts/
+SR2EExampleExpansion/project.lock.json
+SR2EExampleExpansion/project.fragment.lock.json
+SR2EExampleExpansion/artifacts/
 
 # StyleCop
 SR2EssentialsMod/StyleCopReport.xml
+SR2EExampleExpansion/StyleCopReport.xml
 
 # Files built by Visual Studio
 *_i.c
@@ -159,9 +185,11 @@ SR2EssentialsMod/StyleCopReport.xml
 
 # Chutzpah Test files
 SR2EssentialsMod/_Chutzpah*
+SR2EExampleExpansion/_Chutzpah*
 
 # Visual C++ cache files
 SR2EssentialsMod/ipch/
+SR2EExampleExpansion/ipch/
 *.aps
 *.ncb
 *.opendb
@@ -188,6 +216,7 @@ $tf/
 
 # ReSharper is a .NET coding add-in
 SR2EssentialsMod/_ReSharper*/
+SR2EExampleExpansion/_ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
@@ -200,8 +229,14 @@ _SR2EssentialsMod/TeamCity*
 # AxoCover is a Code Coverage Tool
 .axoCover/*
 SR2EssentialsMod/!.axoCover/settings.json
+<<<<<<< HEAD
+=======
+SR2EExampleExpansion/!.axoCover/settings.json
+>>>>>>> experimental
 # Coverlet is a free, cross platform Code Coverage Tool
 SR2EssentialsMod/coverage*[.json, .xml, .info]
+SR2EExampleExpansion/coverage*[.json, .xml, .info]
+
 
 
 # Visual Studio code coverage results
@@ -210,18 +245,22 @@ SR2EssentialsMod/coverage*[.json, .xml, .info]
 
 # NCrunch
 SR2EssentialsMod/_NCrunch_*
+SR2EExampleExpansion/_NCrunch_*
 .*crunch*.local.xml
 SR2EssentialsMod/nCrunchTemp_*
+SR2EExampleExpansion/nCrunchTemp_*
 
 # MightyMoose
 *.mm.*
 SR2EssentialsMod/AutoTest.Net/
+SR2EExampleExpansion/AutoTest.Net/
 
 # Web workbench (sass)
 .sass-cache/
 
 # Installshield output folder
 SR2EssentialsMod/[Ee]xpress/
+SR2EExampleExpansion/[Ee]xpress/
 
 # DocProject is a documentation generator add-in
 SR2EssentialsMod/DocProject/buildhelp/
@@ -232,10 +271,20 @@ SR2EssentialsMod/DocProject/Help/*.hhk
 SR2EssentialsMod/DocProject/Help/*.hhp
 SR2EssentialsMod/DocProject/Help/Html2
 SR2EssentialsMod/DocProject/Help/html
+SR2EExampleExpansion/DocProject/buildhelp/
+SR2EExampleExpansion/DocProject/Help/*.HxT
+SR2EExampleExpansion/DocProject/Help/*.HxC
+SR2EExampleExpansion/DocProject/Help/*.hhc
+SR2EExampleExpansion/DocProject/Help/*.hhk
+SR2EExampleExpansion/DocProject/Help/*.hhp
+SR2EExampleExpansion/DocProject/Help/Html2
+SR2EExampleExpansion/DocProject/Help/html
+
 
 
 # Click-Once directory
 SR2EssentialsMod/publish/
+SR2EExampleExpansion/publish/
 
 # Publish Web Output
 *.[Pp]ublish.xml
@@ -249,6 +298,7 @@ SR2EssentialsMod/publish/
 # checkin your Azure Web App publish settings, but sensitive information contained
 # in these scripts will be unencrypted
 SR2EssentialsMod/PublishScripts/
+SR2EExampleExpansion/PublishScripts/
 
 # NuGet Packages
 *.nupkg
@@ -262,16 +312,22 @@ SR2EssentialsMod/PublishScripts/
 
 # Microsoft Azure Build Output
 SR2EssentialsMod/csx/
+SR2EExampleExpansion/csx/
 *.build.csdef
 
 # Microsoft Azure Emulator
 SR2EssentialsMod/ecf/
 SR2EssentialsMod/rcf/
+SR2EExampleExpansion/ecf/
+SR2EExampleExpansion/rcf/
 
 # Windows Store app package directories and files
 SR2EssentialsMod/AppPackages/
 SR2EssentialsMod/BundleArtifacts/
 SR2EssentialsMod/Package.StoreAssociation.xml
+SR2EExampleExpansion/AppPackages/
+SR2EExampleExpansion/BundleArtifacts/
+SR2EExampleExpansion/Package.StoreAssociation.xml
 _pkginfo.txt
 *.appx
 *.appxbundle
@@ -282,9 +338,11 @@ _pkginfo.txt
 *.[Cc]ache
 # but keep track of directories ending in .cache
 SR2EssentialsMod/!?*.[Cc]ache/
+SR2EExampleExpansion/!?*.[Cc]ache/
 
 # Others
 SR2EssentialsMod/ClientBin/
+SR2EExampleExpansion/ClientBin/
 ~$*
 *~
 *.dbmdl
@@ -293,6 +351,10 @@ SR2EssentialsMod/ClientBin/
 *.pfx
 *.publishsettings
 SR2EssentialsMod/orleans.codegen.css
+<<<<<<< HEAD
+=======
+SR2EExampleExpansion/orleans.codegen.css
+>>>>>>> experimental
 
 # Including strong name files can present a security risk
 # (https://github.com/github/gitignore/pull/2483#issue-259490424)
@@ -304,6 +366,10 @@ SR2EssentialsMod/orleans.codegen.css
 
 # RIA/Silverlight projects
 SR2EssentialsMod/Generated_Code/
+<<<<<<< HEAD
+=======
+SR2EExampleExpansion/Generated_Code/
+>>>>>>> experimental
 # Backup & report files from converting an old project file
 # to a newer Visual Studio version. Backup files are not needed,
 # because we have git ;-)
@@ -312,6 +378,12 @@ SR2EssentialsMod/Backup*/
 SR2EssentialsMod/UpgradeLog*.XML
 SR2EssentialsMod/UpgradeLog*.htm
 SR2EssentialsMod/ServiceFabricBackup/
+SR2EExampleExpansion/_UpgradeReport_Files/
+SR2EExampleExpansion/Backup*/
+SR2EExampleExpansion/UpgradeLog*.XML
+SR2EExampleExpansion/UpgradeLog*.htm
+SR2EExampleExpansion/ServiceFabricBackup/
+
 *.rptproj.bak
 
 # SQL Server files
@@ -330,6 +402,7 @@ SR2EssentialsMod/ServiceFabricBackup/
 
 # Microsoft Fakes
 SR2EssentialsMod/FakesAssemblies/
+SR2EExampleExpansion/FakesAssemblies/
 
 # GhostDoc plugin setting file
 *.GhostDoc.xml
@@ -337,6 +410,7 @@ SR2EssentialsMod/FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 SR2EssentialsMod/node_modules/
+SR2EExampleExpansion/node_modules/
 
 # Visual Studio 6 build log
 *.plg
@@ -424,4 +498,22 @@ SR2EssentialsMod/.vs
 SR2EssentialsMod/obj
 SR2EssentialsMod/start.bat
 SR2EssentialsMod/start.sh
+<<<<<<< HEAD
 tempreleasenotes.txt
+=======
+SR2EExampleExpansion/Output
+SR2EExampleExpansion/Libs/MelonLoader.dll
+SR2EExampleExpansion//packages/LavaGang.MelonLoader.0.6.1
+SR2EExampleExpansion/Libs
+SR2EExampleExpansion/.idea
+SR2EExampleExpansion/.vs
+SR2EExampleExpansion/obj
+SR2EExampleExpansion/start.bat
+SR2EExampleExpansion/start.sh
+tempreleasenotes.txt
+!SR2EssentialsMod.sln
+DocGenerator/bin
+DocGenerator/obj
+XMLToMD/*.md
+*.kate-swp
+>>>>>>> experimental

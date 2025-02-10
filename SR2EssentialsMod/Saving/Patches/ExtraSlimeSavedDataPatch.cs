@@ -1,9 +1,15 @@
 ﻿/*using SR2E.Saving;
 
 [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
+<<<<<<< HEAD
 public static class ExtraSlimeSavedDataPatch
 {
     public static void Postfix(AutoSaveDirector __instance)
+=======
+internal static class ExtraSlimeSavedDataPatch
+{
+    internal static void Postfix(AutoSaveDirector __instance)
+>>>>>>> experimental
     {
         foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableType>())
         {

@@ -1,6 +1,7 @@
 ﻿using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 namespace SR2E.Commands;
+<<<<<<< HEAD
 public class PartyCommand : SR2Command
 {
     public override string ID => "party";
@@ -11,6 +12,15 @@ public class PartyCommand : SR2Command
     }
     internal static Volume defaultVolume = null;
     internal static ColorAdjustments myAdjustments = null;
+=======
+internal class PartyCommand : SR2ECommand
+{
+    public override string ID => "party";
+    public override string Usage => "party";
+    public override CommandType type => CommandType.Fun;
+    static Volume defaultVolume = null;
+    static ColorAdjustments myAdjustments = null;
+>>>>>>> experimental
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(0,0)) return SendNoArguments();
@@ -35,8 +45,12 @@ public class PartyCommand : SR2Command
                 return true;
             }
 
+<<<<<<< HEAD
         SendError(translation("cmd.party.novolume"));
         return false;
+=======
+        return SendError(translation("cmd.party.novolume"));
+>>>>>>> experimental
     }
 
     public override void Update()

@@ -1,0 +1,6 @@
+namespace SR2E.Enums.Features;
+
+public enum FeatureIntegerValue
+{
+    MAX_AUTOCOMPLETE,MAX_CONSOLELINES,SAVESLOT_COUNT, MAX_AUTOCOMPLETEONSCREEN
+}

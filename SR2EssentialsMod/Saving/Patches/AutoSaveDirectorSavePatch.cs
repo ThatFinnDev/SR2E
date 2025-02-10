@@ -3,9 +3,15 @@ using SR2E.Saving;
 using System.IO;
 
 [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.SaveGame))]
+<<<<<<< HEAD
 public static class AutoSaveDirectorSavePatch
 {
     public static void Postfix(AutoSaveDirector __instance)
+=======
+internal static class AutoSaveDirectorSavePatch
+{
+    internal static void Postfix(AutoSaveDirector __instance)
+>>>>>>> experimental
     {
         MelonLogger.Msg("SAVE GAME");
         if (SR2EEntryPoint.debugLogging)
