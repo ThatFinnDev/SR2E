@@ -474,7 +474,8 @@ public class SR2EEntryPoint : MelonMod
 
     public override void OnUpdate()
     {
-        
+        try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
+
         foreach (BaseUI ui in new List<BaseUI>(baseUIAddSliders))
         {
             if (ui)
@@ -550,7 +551,6 @@ public class SR2EEntryPoint : MelonMod
         {
             try { if (GM<SR2EConsole>().openKey.OnKeyPressed()) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-            try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             if (DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
         }
