@@ -41,14 +41,14 @@ internal class GameContextPatch
             if (AddModMenuButton.HasFlag())
             {
                 LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
-                new CustomPauseMenuButton(label, 3, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
+                new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 2, (System.Action)(() => { GetMenu<SR2EModMenu>().Open(); }));
+                new CustomPauseMenuButton(label, 3, (System.Action)(() => { GetMenu<SR2EModMenu>().Open(); }));
             }
 
             if (!SR2EEntryPoint.cheatsEnabledOnSave)
                 if (AddCheatMenuButton.HasFlag())
                 {
-                    SR2EEntryPoint.cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { GM<SR2ECheatMenu>().Open(); }));
+                    SR2EEntryPoint.cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { GetMenu<SR2ECheatMenu>().Open(); }));
                     if (!SR2EEntryPoint.enableCheatMenuButton) SR2EEntryPoint.cheatMenuButton.Remove();
                 }
             if (DevMode.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI(); }));

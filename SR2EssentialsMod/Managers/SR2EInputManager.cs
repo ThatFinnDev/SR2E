@@ -16,19 +16,8 @@ public static class SR2EInputManager
     internal static void Update()
     {
         foreach (Key key in Enum.GetValues(typeof(Key)))
-        {
-            KeyState state = keyStates[(int)key];
-            bool isPressed = false;
-            if (Application.isFocused) isPressed = (GetAsyncKeyState((int)key) & 0x8000) != 0;
-            if (isPressed && state == KeyState.Released) state=KeyState.JustPressed;
-            else if (isPressed && state == KeyState.JustPressed) state=KeyState.Pressed;
-            else if (isPressed && state == KeyState.Pressed) break;
-            else if (!isPressed && state == KeyState.JustPressed) state=KeyState.JustReleased;
-            else if (!isPressed && state == KeyState.Pressed) state=KeyState.JustReleased;
-            else if (!isPressed && state == KeyState.JustReleased) state=KeyState.Released;
-            else state = KeyState.Released;
-            keyStates[(int)key] = state;
-        }
+            keyStates[(int)key] = (KeyState)GetAsyncKeyState((int)key);
+        
     }
     public static bool OnKeyPressed(this Key key) => keyStates[(int)key]==KeyState.JustPressed;
     public static bool OnKeyUnpressed(this Key key) => keyStates[(int)key]==KeyState.JustReleased;
