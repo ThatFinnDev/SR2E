@@ -327,7 +327,7 @@ namespace SR2E
             }
             catch { return false; }
         }
-        public static T GetMenu<T>() where T : SR2EMenu
+        public static T GM<T>() where T : SR2EMenu
         {
             foreach (var pair in SR2EEntryPoint.menus)
                 if (pair.Key is T) return (T)pair.Key;

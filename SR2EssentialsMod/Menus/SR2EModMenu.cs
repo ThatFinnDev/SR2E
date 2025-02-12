@@ -191,7 +191,7 @@ public class SR2EModMenu : SR2EMenu
         toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
         themeButton = transform.getObjRec<Button>("ThemeMenuButtonRec");
-        themeButton.onClick.AddListener((Action)(() =>{ Close(); GetMenu<SR2EThemeMenu>().Open(); }));
+        themeButton.onClick.AddListener((Action)(() =>{ Close(); GM<SR2EThemeMenu>().Open(); }));
         toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
         {

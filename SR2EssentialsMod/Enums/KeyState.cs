@@ -1,9 +1,6 @@
 namespace SR2E.Enums;
 
-public enum KeyState : short
+public enum KeyState
 {
-    Released = 0,
-    JustReleased = 1,
-    JustPressed = -32767,
-    Pressed = -32768,
+    Released, JustPressed, Pressed, JustReleased,
 }

@@ -12,7 +12,7 @@ internal class ClearCommand : SR2ECommand
     {
         if (!args.IsBetween(0,0)) return SendNoArguments();
 
-        for (int i = 0; i < GetMenu<SR2EConsole>().consoleContent.childCount; i++) Object.Destroy(GetMenu<SR2EConsole>().consoleContent.GetChild(i).gameObject);
+        for (int i = 0; i < GM<SR2EConsole>().consoleContent.childCount; i++) Object.Destroy(GM<SR2EConsole>().consoleContent.GetChild(i).gameObject);
 
         return true;
     }
