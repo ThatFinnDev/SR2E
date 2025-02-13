@@ -23,7 +23,7 @@ public static class SR2EFeatureFlags
     };
 
     private static FeatureFlag[] extraDevFlags => new[] {
-        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors
+        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, ExperimentalSaveExport
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};
@@ -261,7 +261,8 @@ public static class SR2EFeatureFlags
         {EnableCheatMenu, new FFR[]{new FFRDeactivated(DisableCheats)}},
         {AddCheatMenuButton,new FFR[]{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
         {AddModMenuButton,new FFR[]{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
-
+        {ExperimentalSaveExport,new FFR[]{new FFRActivated(Experiments)}},
+        {ExperimentalSettingsInjection,new FFR[]{new FFRActivated(Experiments)}},
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {

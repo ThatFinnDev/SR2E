@@ -31,8 +31,8 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string CoAuthor = "PinkTarr";
-    public const string CodeVersion = "3.0.0";
-    public const string DownloadLink = "https://github.com/ThatFinnDev/SR2E";
+    public const string CodeVersion = "3.0.1";
+    public const string DownloadLink = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
     /// Should be the same as CodeVersion unless this is non release build.<br />
@@ -41,7 +41,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.0.0-dev";
+    public const string DisplayVersion = "3.0.1";
 
     //allowmetadata, checkupdatelink,
     internal static TripleDictionary<string, bool, string> getPreInfo()
