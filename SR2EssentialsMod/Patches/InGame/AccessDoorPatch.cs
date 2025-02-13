@@ -10,6 +10,11 @@ internal class AccessDoorPatch
     {
         RanchCommand.accessDoors.Add(__instance);
         RanchCommand.accessDoors.RemoveAll(item => item == null);
-        __instance.CurrState = GameContext.Instance.AutoSaveDirector.SavedGame.GameState.Ranch.AccessDoorStates[__instance.Id];
+        try
+        {
+            __instance.CurrState = GameContext.Instance.AutoSaveDirector.SavedGame.GameState.Ranch.AccessDoorStates[__instance.Id];
+        }
+        catch {}
+        
     }
 }

@@ -28,6 +28,10 @@ public enum FeatureFlag
     /// Enable the settings injection feature
     /// </summary>
     ExperimentalSettingsInjection,
+    /// <summary>
+    /// Enable the save export feature
+    /// </summary>
+    ExperimentalSaveExport,
     
     //Commands+Dev
     /// <summary>

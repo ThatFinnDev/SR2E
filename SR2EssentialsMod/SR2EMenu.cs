@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Il2CppTMPro;
 using SR2E.Commands;
@@ -90,7 +91,7 @@ public abstract class SR2EMenu : MonoBehaviour
         }
         menuBlock.SetActive(true);
         gameObject.SetActive(true);
-        
+        ExecuteInTicks((Action)(() => { gameObject.SetActive(true);}), 2);
         DoActions(SR2EEntryPoint.menus[this]["openActions"] as List<MenuActions>);
         try { OnOpen(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
