@@ -9,16 +9,6 @@ internal class NoClipCommand : SR2ECommand
     public override string Usage => "noclip";
     public override CommandType type => CommandType.Cheat;
 
-    public static void RemoteExc(bool n)
-    {
-        if (n)
-        {
-            //SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
-            //var cam = SR2EUtils.Get<GameObject>("PlayerCameraKCC");
-            SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
-        }
-    }
-
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(0, 0)) return SendNoArguments();

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Input;
+using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
 using Il2CppMonomiPark.SlimeRancher.UI.Framework.Layout;
 using UnityEngine.UI;
@@ -53,19 +54,27 @@ internal static class SaveGameRootUIPatch
                     if (GetOpenFileName(ofn))
                     {
                         string filePath = ofn.lpstrFile;
-                        if (!string.IsNullOrEmpty(filePath))
+                        if (!string.IsNullOrEmpty(filePath)) return;
+                        using (ZipArchive archive = ZipFile.OpenRead(filePath)) for (int i = 1; i < 6; i++)
                         {
-                            using (ZipArchive archive = ZipFile.OpenRead(filePath))
+                            ZipArchiveEntry entry = archive.GetEntry("saves/" + i + ".sav");
+                            if (entry != null) continue;
+                            
+                            string savePath = path + DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + selectedSave + "_" + i + ".sav";
+                            entry.ExtractToFile(savePath, overwrite: true);
+                            Il2CppSystem.IO.FileStream stream = new Il2CppSystem.IO.FileStream(savePath, Il2CppSystem.IO.FileMode.Open);
+                            try
                             {
-                                for (int i = 1; i < 6; i++)
-                                {
-                                    ZipArchiveEntry entry = archive.GetEntry("saves/"+i+".sav");
-                                    if (entry != null)
-                                        entry.ExtractToFile(path+DateTime.Now.ToString("yyyyMMddHHmmss")+"_"+selectedSave+"_"+i+".sav", overwrite: true);
-                                }
+                                GameV06 game = new GameV06();
+                                game.Load(stream);
+                                game.DisplayName = selectedSave.ToString();
+                                game.SaveSlotIndex = selectedSave-1;
+                                game.Write(stream);
+                                if(stream!=null) if(!stream.SafeFileHandle.IsClosed) stream.Close();
                             }
-                            SystemContext.Instance.SceneLoader.LoadMainMenuSceneGroup();
+                            catch (Exception e) { MelonLogger.Error(e); }
                         }
+                        SystemContext.Instance.SceneLoader.LoadMainMenuSceneGroup();
                     }
                 }
                 else
@@ -74,33 +83,25 @@ internal static class SaveGameRootUIPatch
                     if (GetSaveFileName(sfn))
                     {
                         string filePath = sfn.lpstrFile;
-                        if (!string.IsNullOrEmpty(filePath))
+                        if (!string.IsNullOrEmpty(filePath)) return;
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create)) using (ZipArchive archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true)) foreach (string savePath in Directory.GetFiles(path))
                         {
-                            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                            string file = Path.GetFileName(savePath);
+                            if(!file.EndsWith(".sav")) continue;
+                            if(!file.Contains("_")) continue;
+                            var split = file.Split("_");
+                            if(split.Length!=3) continue;
+                            if(split[1]!=selectedSave.ToString()) continue;
+                            var entry = archive.CreateEntry("saves/"+split[2],CompressionLevel.Fastest);
+                            using (var zipStream = entry.Open())
                             {
-                                using (ZipArchive archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
-                                {
-                                    foreach (string savePath in Directory.GetFiles(path))
-                                    {
-                                        string file = Path.GetFileName(savePath);
-                                        if(!file.EndsWith(".sav")) continue;
-                                        if(!file.Contains("_")) continue;
-                                        var split = file.Split("_");
-                                        if(split.Length!=3) continue;
-                                        if(split[1]!=selectedSave.ToString()) continue;
-                                        var entry = archive.CreateEntry("saves/"+split[2],CompressionLevel.Fastest);
-                                        using (var zipStream = entry.Open())
-                                        {
-                                            var bytes = File.ReadAllBytes(savePath);
-                                            zipStream.Write(bytes, 0, bytes.Length);
-                                        }
-                                    }
-                                }
+                                var bytes = File.ReadAllBytes(savePath); 
+                                zipStream.Write(bytes, 0, bytes.Length);
                             }
                         }
+                        
                     }
                 }
-                
             }));
         }), 2);
     }
