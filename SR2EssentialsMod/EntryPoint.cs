@@ -275,6 +275,7 @@ public class SR2EEntryPoint : MelonMod
         switch (sceneName)
         {
             case "MainMenuUI":
+                CustomTimeScale = 1f;
                 if (ExperimentalSettingsInjection.HasFlag())
                 {
                     bool tempLoad = alreadyLoadedSettings;
@@ -392,6 +393,9 @@ public class SR2EEntryPoint : MelonMod
                 NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
                 player = Get<GameObject>("PlayerControllerKCC");
                 break;
+            case "UICore":
+                CheckForTime();
+                break;
         }
 
         switch (sceneName)
@@ -406,6 +410,13 @@ public class SR2EEntryPoint : MelonMod
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
     }
 
+    void CheckForTime()
+    {
+        if (!inGame) return;
+        if (Time.timeScale == 1f) Time.timeScale = CustomTimeScale;
+        if (SceneContext.Instance.TimeDirector._timeFactor == 1f) SceneContext.Instance.TimeDirector._timeFactor = CustomTimeScale;
+        ExecuteInSeconds((Action)(() => { CheckForTime();}), 1);
+    }
     public static event EventHandler RegisterOptionMenuButtons;
     static bool useSR2Font = true;
 
