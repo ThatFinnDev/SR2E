@@ -31,7 +31,7 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string CoAuthor = "PinkTarr";
-    public const string CodeVersion = "3.0.1";
+    public const string CodeVersion = "3.0.2";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
@@ -41,7 +41,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.0.1";
+    public const string DisplayVersion = "3.0.2";
 
     //allowmetadata, checkupdatelink,
     internal static TripleDictionary<string, bool, string> getPreInfo()
@@ -275,6 +275,7 @@ public class SR2EEntryPoint : MelonMod
         switch (sceneName)
         {
             case "MainMenuUI":
+                CustomTimeScale = 1f;
                 if (ExperimentalSettingsInjection.HasFlag())
                 {
                     bool tempLoad = alreadyLoadedSettings;
@@ -392,6 +393,9 @@ public class SR2EEntryPoint : MelonMod
                 NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
                 player = Get<GameObject>("PlayerControllerKCC");
                 break;
+            case "UICore":
+                CheckForTime();
+                break;
         }
 
         switch (sceneName)
@@ -406,6 +410,13 @@ public class SR2EEntryPoint : MelonMod
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
     }
 
+    void CheckForTime()
+    {
+        if (!inGame) return;
+        if (Time.timeScale == 1f) Time.timeScale = CustomTimeScale;
+        if (SceneContext.Instance.TimeDirector._timeFactor == 1f) SceneContext.Instance.TimeDirector._timeFactor = CustomTimeScale;
+        ExecuteInSeconds((Action)(() => { CheckForTime();}), 1);
+    }
     public static event EventHandler RegisterOptionMenuButtons;
     static bool useSR2Font = true;
 

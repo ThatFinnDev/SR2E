@@ -1,7 +1,12 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+﻿using System;
+using System.Collections;
+using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI.Debug;
 using Il2CppTMPro;
+using Newtonsoft.Json;
 using SR2E.Managers;
+using Unity.TLS.LowLevel;
 using UnityEngine.UI;
 using Key = SR2E.Enums.Key;
 
@@ -94,9 +99,10 @@ internal class SR2EDebugDirector : MonoBehaviour
 		if (Key.KeypadMinus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks -1000", true);
 		if (Key.LeftBracket.OnKeyPressed()) SR2ECommandManager.ExecuteByString("fastforward -1", true);
 		if (Key.RightBracket.OnKeyPressed()) SR2ECommandManager.ExecuteByString("fastforward 1", true);
-
+		if (ExperimentalKeyCodes.HasFlag())
+		{
+		}
 	}
-
 	private void OnGUI()
 	{
 		if (isEnabled)

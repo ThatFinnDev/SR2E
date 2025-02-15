@@ -1,4 +1,4 @@
-using System.Linq;
+using System;
 using Il2CppMonomiPark.World;
 
 namespace SR2E.Commands;
@@ -13,32 +13,25 @@ internal class RanchCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0) return arg0List;
-        if (argIndex == 1) return translations.Keys.ToList();
+        if (argIndex == 1) return doors;
         return null;
     }
-    public Dictionary<string, string> translations = new Dictionary<string, string>()
-    {
-        { "Gully","door1733849867" },
-        { "Den","door0010140679"  },
-        { "Archway","door0749608168" },
-        { "Tidepoles","door0129604684" },
-        { "Digest","door1356553442" },
-        { "*","*"}
-    };
+
+    public List<string> doors = new List<string>();
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(2,2)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
-        if(!translations.Keys.ToList().Contains(args[1])) return SendNotValidOption(args[1]);
+        if(!doors.Contains(args[1])) return SendNotValidOption(args[1]);
         if (args[1] == "*")
         {
             bool isSilent = silent;
-            foreach (KeyValuePair<string, string> kvp in translations)
+            foreach (string door in doors)
             {
-                if(kvp.Key=="*") continue;
+                if(door=="*") continue;
                 silent = true;
-                Execute(new []{args[0], kvp.Key});
+                Execute(new []{args[0], door});
                 silent = true;
             }
             silent = isSilent;
@@ -50,29 +43,43 @@ internal class RanchCommand : SR2ECommand
             return true;
         }
 
-        string itemName = args[1];
-        string door = translations[args[1]];
-
         accessDoors.RemoveAll(item => item == null);
         var ranch = GameContext.Instance.AutoSaveDirector.SavedGame.GameState.Ranch;
         switch (args[0])
         {
             case "lock":
-                if (ranch.AccessDoorStates[door] == AccessDoor.State.LOCKED)
-                    return SendError(translation("cmd.ranch.errorlock",itemName));
-                ranch.AccessDoorStates[door] = AccessDoor.State.LOCKED;
-                foreach (AccessDoor accessDoor in accessDoors) if (accessDoor.Id == door) { accessDoor.CurrState=AccessDoor.State.LOCKED; break; }
-                SendMessage(translation("cmd.ranch.successlock",itemName)); 
+                if (ranch.AccessDoorStates[args[1]] == AccessDoor.State.LOCKED)
+                    return SendError(translation("cmd.ranch.errorlock",args[1]));
+                ranch.AccessDoorStates[args[1]] = AccessDoor.State.LOCKED;
+                foreach (AccessDoor accessDoor in accessDoors) if (accessDoor.Id == args[1]) { accessDoor.CurrState=AccessDoor.State.LOCKED; break; }
+                SendMessage(translation("cmd.ranch.successlock",args[1])); 
                 break;
             case "unlock":
-                if (ranch.AccessDoorStates[door] == AccessDoor.State.OPEN)
-                    return SendError(translation("cmd.ranch.errorunlock",itemName));
-                ranch.AccessDoorStates[door] = AccessDoor.State.OPEN;
-                foreach (AccessDoor accessDoor in accessDoors) if (accessDoor.Id == door) { accessDoor.CurrState=AccessDoor.State.OPEN; break; }
-                SendMessage(translation("cmd.ranch.successunlock",itemName)); 
+                if (ranch.AccessDoorStates[args[1]] == AccessDoor.State.OPEN)
+                    return SendError(translation("cmd.ranch.errorunlock",args[1]));
+                ranch.AccessDoorStates[args[1]] = AccessDoor.State.OPEN;
+                foreach (AccessDoor accessDoor in accessDoors) if (accessDoor.Id == args[1]) { accessDoor.CurrState=AccessDoor.State.OPEN; break; }
+                SendMessage(translation("cmd.ranch.successunlock",args[1])); 
                 break;
         }
 
         return false;
+    }
+
+    public override void OnUICoreLoad()
+    {
+        ExecuteInTicks((Action)(() =>
+        {
+            doors = new List<string>();
+            var ranch = GameContext.Instance.AutoSaveDirector.SavedGame.GameState.Ranch;
+            foreach (var door in ranch.AccessDoorStates) doors.Add(door.Key);
+            doors.Add("*");
+        }), 2);
+    }
+
+
+    public override void OnMainMenuUILoad()
+    {
+        doors = new List<string>();
     }
 }

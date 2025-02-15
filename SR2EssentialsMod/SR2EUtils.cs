@@ -950,55 +950,15 @@ namespace SR2E
 
         public static void TryPauseGame(bool usePauseMenu = true)
         {
-            try
-            {
-                SystemContext.Instance.SceneLoader.TryPauseGame();
-            }
-            catch (Exception e)
-            {
-                SR2ELogManager.SendError(e.ToString());
-            }
-
-            if (usePauseMenu)
-                try
-                {
-                    Object.FindObjectOfType<PauseMenuDirector>().PauseGame();
-                }
-                catch (Exception e)
-                {
-                    SR2ELogManager.SendError(e.ToString());
-                }
+            try { SystemContext.Instance.SceneLoader.TryPauseGame(); } catch { }
+            if (usePauseMenu) try { Object.FindObjectOfType<PauseMenuDirector>().PauseGame(); } catch { }
         }
 
         public static void TryUnPauseGame(bool usePauseMenu = true, bool usePauseMenuElse = true)
         {
-            try
-            {
-                SystemContext.Instance.SceneLoader.UnpauseGame();
-            }
-            catch (Exception e)
-            {
-                SR2ELogManager.SendError(e.ToString());
-            }
-            if(usePauseMenu)
-                try
-                {
-                    Object.FindObjectOfType<PauseMenuDirector>().UnPauseGame();
-                }
-                catch (Exception e)
-                {
-                    SR2ELogManager.SendError(e.ToString());
-                }
-            else if(usePauseMenuElse)
-                try
-                {
-                    if (Object.FindObjectOfType<PauseMenuRoot>() != null)
-                        Object.FindObjectOfType<PauseMenuDirector>().PauseGame();
-                }
-                catch (Exception e)
-                {
-                    SR2ELogManager.SendError(e.ToString());
-                }
+            try { SystemContext.Instance.SceneLoader.UnpauseGame(); } catch { }
+            if(usePauseMenu) try { Object.FindObjectOfType<PauseMenuDirector>().UnPauseGame(); } catch { }
+            else if(usePauseMenuElse) try { if (Object.FindObjectOfType<PauseMenuRoot>() != null) Object.FindObjectOfType<PauseMenuDirector>().PauseGame(); } catch { }
         }
         public static void TryUnHideMenus()
         {
@@ -1013,11 +973,10 @@ namespace SR2E
                     }
             }
 
-            if (inGame)
-            {
-                HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
-            }
+            if (inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
         }
+
+        public static float CustomTimeScale = 1f;
         public static void TryDisableSR2Input()
         {
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();

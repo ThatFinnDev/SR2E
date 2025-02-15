@@ -26,7 +26,7 @@ cheatmenu.cheatbuttons.betterScreenshoton,"BetterScreenshot [On]",Besserbildschi
 cheatmenu.cheatbuttons.betterScreenshotoff,"BetterScreenshot [Off]",Besserbildschirmfoto [Aus]
 modmenu.title,Mods,"Modifikationen"
 modmenu.warning.restart,"You've edited a value!\nPlease restart your game when you're finished!","Du hast einen Wert verändert! Du musst das Spiel neustarten um die Änderungen zu sehen!"
-modmenu.category.modmenu,"Mod Menu","Modifikationen"
+modmenu.category.modmenu,"Mods","Modifikationen"
 modmenu.category.modconfig,"Mod Config","Einstellungen"
 modmenu.modinfo.expansion,Expansion: $1,Erweiterung: $1
 modmenu.modinfo.brokenexpansion,"Broken expansion: $1",Kaputte Erweiterung: $1

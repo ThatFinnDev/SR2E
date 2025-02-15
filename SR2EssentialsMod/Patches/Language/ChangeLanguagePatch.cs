@@ -9,7 +9,8 @@ internal class ChangeLanguagePatch
 {
     internal static void Postfix(LocalizationDirector __instance, UnityEngine.Localization.Locale locale)
     {
-        ExecuteInTicks((Action)(() => { FixLanguage(__instance, locale);}), 2);
+        FixLanguage(__instance, locale);
+        ExecuteInTicks((Action)(() => { FixLanguage(__instance, locale);}), 10);
     }
 
     static void FixLanguage(LocalizationDirector director, UnityEngine.Localization.Locale curLocale)

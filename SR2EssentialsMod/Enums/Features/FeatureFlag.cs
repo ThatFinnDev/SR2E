@@ -32,6 +32,10 @@ public enum FeatureFlag
     /// Enable the save export feature
     /// </summary>
     ExperimentalSaveExport,
+    /// <summary>
+    /// Enable the enable dev key codes
+    /// </summary>
+    ExperimentalKeyCodes,
     
     //Commands+Dev
     /// <summary>
