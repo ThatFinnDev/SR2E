@@ -46,7 +46,7 @@ class Program
             return;
         }
         if (!SR2EWeb.Exists) { Console.WriteLine("sr2e-web missing?"); return; }
-        if (!XMLToMD.Exists) { Console.WriteLine("XMLToMD missing?"); return; }
+        if (!XMLToMD.Exists) { Console.WriteLine("XMLToMD missing?"); XMLToMD.Create(); return; }
         if (!apiDev.Exists) { Console.WriteLine("dev/api missing?"); return; }
         if (!api.Exists) { api.Create();}
 
