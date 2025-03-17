@@ -30,8 +30,8 @@ public static class BuildInfo
     public const string Name = "SR2E";
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
-    public const string CoAuthor = "PinkTarr";
-    public const string CodeVersion = "3.0.3";
+    public const string CoAuthors = "PinkTarr";
+    public const string CodeVersion = "3.1.0";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
@@ -41,7 +41,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.0.3-dev";
+    public const string DisplayVersion = "3.1.0";
 
     //allowmetadata, checkupdatelink,
     internal static TripleDictionary<string, bool, string> getPreInfo()
@@ -485,7 +485,6 @@ public class SR2EEntryPoint : MelonMod
 
     public override void OnUpdate()
     {
-        try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
 
         foreach (BaseUI ui in new List<BaseUI>(baseUIAddSliders))
         {
@@ -560,6 +559,7 @@ public class SR2EEntryPoint : MelonMod
         }
         else
         {
+            try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { if (GM<SR2EConsole>().openKey.OnKeyPressed()) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }

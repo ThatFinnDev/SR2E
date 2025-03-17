@@ -28,7 +28,7 @@ internal class GiveCommand : SR2ECommand
         if (type.isGadget()) return SendIsGadgetNotItem(itemName);
         
         int amount = 1;
-        if (args.Length == 2) if(!this.TryParseInt(args[2], out amount,0, false)) return false;
+        if (args.Length == 2) if(!this.TryParseInt(args[1], out amount,0, false)) return false;
 
         for (int i = 0; i < amount; i++)
             SceneContext.Instance.PlayerState.Ammo.MaybeAddToSlot(type, null);

@@ -194,9 +194,12 @@ public static class SR2EFeatureFlags
             flag.EnableFlag();
         featureInts = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
         featureStrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
-        if (File.Exists(flagfile_path)) LoadFromFlagFile();
-        else SaveToFlagFile();
-
+        try
+        {
+            if (File.Exists(flagfile_path)) LoadFromFlagFile();
+            else SaveToFlagFile();
+        }
+        catch { }
         
 
         if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= CommandType.DevOnly;

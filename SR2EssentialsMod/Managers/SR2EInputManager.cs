@@ -2,6 +2,8 @@ using System;
 using System.Runtime.InteropServices;
 using SR2E.Enums;
 using SR2E.Storage;
+using UnityEngine.InputSystem;
+using Key = SR2E.Enums.Key;
 
 namespace SR2E.Managers;
 
@@ -37,21 +39,15 @@ public static class SR2EInputManager
     /// <returns>If the key was pressed this frame</returns>
     public static bool OnKeyPressed(this MultiKey multiKey)
     {
+        int i = 0;
         foreach (Key key in multiKey.requiredKeys)
         {
             if (key.OnKeyPressed())
             {
-                bool allKeysPressed = true;
-                foreach (Key requiredKey in multiKey.requiredKeys)
-                    if (!(requiredKey.OnKey() || requiredKey.OnKeyPressed()))
-                    {
-                        allKeysPressed = false;
-                        break;
-                    }
-                if (allKeysPressed) return true;
+                i++;
             }
         }
-        return false;
+        return i == multiKey.requiredKeys.Count;
     }
     
     public static bool OnKeyUnpressed(this MultiKey multiKey)
