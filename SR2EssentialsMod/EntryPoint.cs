@@ -24,6 +24,14 @@ using UnityEngine.Networking;
 
 namespace SR2E;
 
+public enum Branch
+{
+    Release,
+    Beta,
+    Alpha,
+    Developer
+}
+
 // SR2E Build information. Please do not edit anything other than version numbers.
 public static class BuildInfo
 {
@@ -31,7 +39,7 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
-    public const string CodeVersion = "3.1.0";
+    public const string CodeVersion = "3.1.1";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
@@ -41,29 +49,29 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.1.0";
+    public const string DisplayVersion = "3.1.1";
+
+
 
     //allowmetadata, checkupdatelink,
-    internal static TripleDictionary<string, bool, string> getPreInfo()
-    {
-        return new TripleDictionary<string, bool, string>()
+    internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
+        new TripleDictionary<string, bool, string>()
         {
             { "alpha", (false, "https://api.sr2e.thatfinn.dev/downloads/sr2e/alpha.json") },
             { "beta", (false, "https://api.sr2e.thatfinn.dev/downloads/sr2e/beta.json") },
             { "dev", (true, "") },
         };
-    }
 }
+
 public class SR2EEntryPoint : MelonMod
 {
-    //Does console sync
     internal static ScriptedBool cheatsEnabledOnSave;
     internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
     internal static TMP_FontAsset SR2Font;
     internal static TMP_FontAsset normalFont;
     internal static TMP_FontAsset regularFont;
     internal static TMP_FontAsset boldFont;
-    internal static string updateBranch = "release";
+    internal static string updateBranch = BRANCHES[Branch.Release];
     internal static bool menusFinished = false;
     internal static bool mainMenuLoaded = false;
     internal static GameObject SR2EStuff;
@@ -106,7 +114,7 @@ public class SR2EEntryPoint : MelonMod
             if (preReleaseAndBuild != "dev") return false; /*Has no dot to indicate buildnumber*/
         string preRelease = preReleaseAndBuild != "dev" ? preReleaseAndBuild.Substring(0, dotIndex) : "dev";
         /*Check pre and meta*/ bool valid = false;
-        foreach (var pair in BuildInfo.getPreInfo())
+        foreach (var pair in BuildInfo.PRE_INFO)
             if (preRelease == pair.Key)
             {
                 if (!pair.Value.Item1 && hasMetadata) return false; //Has meta even though it's not allowed
@@ -170,7 +178,7 @@ public class SR2EEntryPoint : MelonMod
     IEnumerator GetBranchJson()
     {
         string checkLink = "https://api.sr2e.thatfinn.dev/downloads/sr2e/release.json";
-        if (updateBranch != "release") checkLink = BuildInfo.getPreInfo()[updateBranch].Item2;
+        if (updateBranch != "release") checkLink = BuildInfo.PRE_INFO[updateBranch].Item2;
         if (string.IsNullOrEmpty(checkLink)) yield break;
         UnityWebRequest uwr = UnityWebRequest.Get(checkLink);
         yield return uwr.SendWebRequest();
@@ -559,8 +567,7 @@ public class SR2EEntryPoint : MelonMod
         }
         else
         {
-            try { SR2EInputManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-            try { if (GM<SR2EConsole>().openKey.OnKeyPressed()) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
+            try { if (SR2EInputManager.OnKeyPressed(GM<SR2EConsole>().openKey)) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             if (DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();

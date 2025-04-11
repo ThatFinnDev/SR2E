@@ -1,4 +1,5 @@
-﻿using System;
+﻿global using static SR2E.Managers.SR2EInputManager;
+using System;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Linq;
 using System.Reflection;
@@ -26,7 +27,6 @@ using UnityEngine.Playables;
 using UnityEngine.TextCore;
 using UnityEngine.TextCore.LowLevel;
 using Enumerable = Il2CppSystem.Linq.Enumerable;
-using Key = SR2E.Enums.Key;
 
 namespace SR2E
 {
@@ -1011,5 +1011,12 @@ namespace SR2E
                 return mask;
             }
         }
+        public static readonly Dictionary<Branch, string> BRANCHES = new()
+        {
+            { Branch.Release, "release" },
+            { Branch.Beta, "beta" },
+            { Branch.Alpha, "alpha" },
+            { Branch.Developer, "dev" },
+        };
     }
 }

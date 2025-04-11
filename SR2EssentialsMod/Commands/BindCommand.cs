@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using SR2E.Enums;
 using SR2E.Managers;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;
 

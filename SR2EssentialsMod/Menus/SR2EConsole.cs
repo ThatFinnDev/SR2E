@@ -9,7 +9,6 @@ using SR2E.Managers;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using Key = SR2E.Enums.Key;
 
 namespace SR2E.Menus;
 
@@ -22,7 +21,7 @@ public class SR2EConsole : SR2EMenu
     public override bool createCommands => true;
     public override bool inGameOnly => false;
 
-    internal MultiKey openKey = new MultiKey(Key.Tab, Key.LeftControl);
+    internal MultiKey openKey = new MultiKey(Key.Tab, Key.LeftCtrl);
     internal Transform consoleContent;
     TMP_InputField commandInput;
     GameObject autoCompleteEntryPrefab;

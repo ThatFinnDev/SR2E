@@ -7,8 +7,8 @@ using Il2CppTMPro;
 using Newtonsoft.Json;
 using SR2E.Managers;
 using Unity.TLS.LowLevel;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using Key = SR2E.Enums.Key;
 
 namespace SR2E;
 
@@ -95,8 +95,8 @@ internal class SR2EDebugDirector : MonoBehaviour
 		if (Key.K.OnKeyPressed()) SR2ECommandManager.ExecuteByString("clearinv", true);
 		if (Key.L.OnKeyPressed()) SR2ECommandManager.ExecuteByString("refillinv", true);
 		if (Key.N.OnKeyPressed()) SR2ECommandManager.ExecuteByString("noclip", true);
-		if (Key.KeypadPlus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks 1000", true);
-		if (Key.KeypadMinus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks -1000", true);
+		if (Key.NumpadPlus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks 1000", true);
+		if (Key.NumpadMinus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks -1000", true);
 		if (Key.LeftBracket.OnKeyPressed()) SR2ECommandManager.ExecuteByString("fastforward -1", true);
 		if (Key.RightBracket.OnKeyPressed()) SR2ECommandManager.ExecuteByString("fastforward 1", true);
 		if (ExperimentalKeyCodes.HasFlag())
