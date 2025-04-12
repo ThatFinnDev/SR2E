@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json;
 using SR2E.Enums;
 using SR2E.Storage;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Managers;
 

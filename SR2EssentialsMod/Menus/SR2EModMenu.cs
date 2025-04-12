@@ -15,7 +15,6 @@ using UnityEngine.UIElements;
 using Action = System.Action;
 using Button = UnityEngine.UI.Button;
 using Image = UnityEngine.UI.Image;
-using Key = SR2E.Enums.Key;
 using Toggle = UnityEngine.UI.Toggle;
 
 namespace SR2E.Menus;

@@ -1,6 +1,5 @@
 using SR2E.Managers;
 using UnityEngine.InputSystem;
-using Key = SR2E.Enums.Key;
 
 namespace SR2E.Components;
 

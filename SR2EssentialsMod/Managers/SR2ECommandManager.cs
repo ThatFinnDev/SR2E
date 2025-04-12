@@ -159,6 +159,16 @@ public static class SR2ECommandManager
         return false;
     }
 
+    public static Dictionary<string, List<Action<string[]>>> commandAddons = new Dictionary<string, List<Action<string[]>>>();
+
+    public static void RegisterCommandAddon(string command, Action<string[]> action)
+    {
+        if (commandAddons.TryGetValue(command, out List<Action<string[]>> list))
+            list.Add(action);
+        else
+            commandAddons.Add(command, new List<Action<string[]>> { action });
+    }
+    
     public static void ExecuteByString(string input, bool silent = false)
     {
         ExecuteByString(input, silent, false);
@@ -216,7 +226,16 @@ public static class SR2ECommandManager
                             if (split.Count != 0) args = split.ToArray();
                             SR2ECommand command = commands[cmd];
                             command.silent = silent;
-                            try { successful = command.Execute(args); } catch (Exception e) { MelonLogger.Error(e); }
+                            try { successful = command.Execute(args); } catch (Exception e) { MelonLogger.Error($"Error in command execution!\n{e}"); }
+
+                            try
+                            {
+                                if (commandAddons.TryGetValue(cmd, out List<Action<string[]>> list))
+                                    foreach (var action in list)
+                                        action(args);
+                            }
+                            catch (Exception e) { MelonLogger.Error($"Error in command extension execution!\n{e}"); }
+                            
                             command.silent = false;
                         }
                     }
@@ -224,7 +243,16 @@ public static class SR2ECommandManager
                     {
                         SR2ECommand command = commands[cmd];
                         command.silent = silent;
-                        try { successful = command.Execute(null); } catch (Exception e) { MelonLogger.Error(e); }
+                        try { successful = command.Execute(null); } catch (Exception e) { MelonLogger.Error($"Error in command execution!\n{e}"); }
+
+                        try
+                        {
+                            if (commandAddons.TryGetValue(cmd, out List<Action<string[]>> list))
+                                foreach (var action in list)
+                                    action(null);
+                        }
+                        catch (Exception e) { MelonLogger.Error($"Error in command extension execution!\n{e}"); }
+                        
                         command.silent = false;
                     }
 

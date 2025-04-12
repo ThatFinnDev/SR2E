@@ -1,82 +1,71 @@
-using System;
-using System.Runtime.InteropServices;
-using SR2E.Enums;
+using System.Linq;
 using SR2E.Storage;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace SR2E.Managers;
 
-
+/// <summary>
+/// Taken from https://github.com/Atmudia/SRLE/blob/sr2/Utils/InputManager.cs
+/// </summary>
 public static class SR2EInputManager
 {
-    [DllImport("user32.dll")]
-    static extern short GetAsyncKeyState(int vKey);
-    
-    static KeyState[] keyStates = new KeyState[512];
+    public static Vector2 MousePosition => Mouse.current.position.ReadValue();
+    public static Vector2 MouseScrollDelta => Mouse.current.scroll.ReadValue();
 
-    internal static void Update()
+    public static bool GetMouseButtonDown(int btn)
     {
-        foreach (Key key in Enum.GetValues(typeof(Key)))
+        return btn switch
         {
-            KeyState state = keyStates[(int)key];
-            bool isPressed = false;
-            if (Application.isFocused) isPressed = (GetAsyncKeyState((int)key) & 0x8000) != 0;
-            if (isPressed && state == KeyState.Released) state=KeyState.JustPressed;
-            else if (isPressed && state == KeyState.JustPressed) state=KeyState.Pressed;
-            else if (isPressed && state == KeyState.Pressed) break;
-            else if (!isPressed && state == KeyState.JustPressed) state=KeyState.JustReleased;
-            else if (!isPressed && state == KeyState.Pressed) state=KeyState.JustReleased;
-            else if (!isPressed && state == KeyState.JustReleased) state=KeyState.Released;
-            else state = KeyState.Released;
-            keyStates[(int)key] = state;
-        }
+            0 => Mouse.current.leftButton.wasPressedThisFrame,
+            1 => Mouse.current.rightButton.wasPressedThisFrame,
+            2 => Mouse.current.middleButton.wasPressedThisFrame,
+            _ => false
+        };
     }
-    public static bool OnKeyPressed(this Key key) => keyStates[(int)key]==KeyState.JustPressed;
-    public static bool OnKeyUnpressed(this Key key) => keyStates[(int)key]==KeyState.JustReleased;
-    public static bool OnKey(this Key key) => keyStates[(int)key]==KeyState.Pressed;
-    
-    /// <returns>If the key was pressed this frame</returns>
-    public static bool OnKeyPressed(this MultiKey multiKey)
+    public static bool GetMouseButtonUp(int btn)
     {
-        foreach (Key key in multiKey.requiredKeys)
+        return btn switch
+        {
+            0 => Mouse.current.leftButton.wasReleasedThisFrame,
+            1 => Mouse.current.rightButton.wasReleasedThisFrame,
+            2 => Mouse.current.middleButton.wasReleasedThisFrame,
+            _ => false
+        };
+    }
+
+    public static bool GetMouseButton(int btn)
+    {
+        return btn switch
+        {
+            0 => Mouse.current.leftButton.isPressed,
+            1 => Mouse.current.rightButton.isPressed,
+            2 => Mouse.current.middleButton.isPressed,
+            _ => false
+        };
+    }
+
+    public static bool GetKey(Key code)
+    { 
+        return Keyboard.current[code].isPressed;
+    }
+    public static bool GetKeyDown(Key code)
+    {
+        return Keyboard.current[code].wasPressedThisFrame;
+    }
+
+    public static bool OnKeyPressed(this Key code) => GetKeyDown(code);
+    public static bool OnKey(this Key code) => GetKey(code);
+
+    public static bool OnKeyPressed(this MultiKey code)
+    {
+        int i = 0;
+        foreach (var key in code.requiredKeys)
         {
             if (key.OnKeyPressed())
-            {
-                bool allKeysPressed = true;
-                foreach (Key requiredKey in multiKey.requiredKeys)
-                    if (!(requiredKey.OnKey() || requiredKey.OnKeyPressed()))
-                    {
-                        allKeysPressed = false;
-                        break;
-                    }
-                if (allKeysPressed) return true;
-            }
+                i++;
         }
-        return false;
+        return i == code.requiredKeys.Count;
     }
     
-    public static bool OnKeyUnpressed(this MultiKey multiKey)
-    {
-        foreach (Key key in multiKey.requiredKeys)
-        {
-            if (key.OnKeyUnpressed())
-            {
-                bool allKeysUnpressed = true;
-                foreach (Key requiredKey in multiKey.requiredKeys)
-                    if (!(requiredKey.OnKey() || requiredKey.OnKeyUnpressed()))
-                    {
-                        allKeysUnpressed = false;
-                        break;
-                    }
-                if (allKeysUnpressed) return true;
-            }
-        }
-        return false;
-    }
-    
-    public static bool OnKey(this MultiKey multiKey)
-    {
-        foreach (Key key in multiKey.requiredKeys) if(!key.OnKey()) return false;
-        return true;
-    }
 }
-

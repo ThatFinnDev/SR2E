@@ -10,6 +10,7 @@ using SR2E.Enums;
 using SR2E.Enums.Features;
 using SR2E.Managers;
 using SR2E.Storage;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace SR2E.Menus;
