@@ -35,12 +35,12 @@ public enum Branch
 // SR2E Build information. Please do not edit anything other than version numbers.
 public static class BuildInfo
 {
-    public const string Name = "SR2E";
-    public const string Description = "Essential stuff for Slime Rancher 2";
-    public const string Author = "ThatFinn";
-    public const string CoAuthors = "PinkTarr";
-    public const string CodeVersion = "3.1.1";
-    public const string DownloadLink = "https://sr2e.thatfinn.dev/";
+    public const string NAME = "SR2E";
+    public const string DESCRIPTION = "Essential stuff for Slime Rancher 2";
+    public const string AUTHOR = "ThatFinn";
+    public const string CO_AUTHORS = "PinkTarr";
+    public const string CODE_VERSION = "3.1.2";
+    public const string DOWNLOAD_LINK = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
     /// Should be the same as CodeVersion unless this is non release build.<br />
@@ -49,7 +49,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.1.1";
+    public const string DISPLAY_VERSION = "3.1.2";
 
 
 
@@ -85,7 +85,7 @@ public class SR2EEntryPoint : MelonMod
     static MelonPreferences_Category prefs;
     static string branchJson = "";
     bool alreadyLoadedSettings = false;
-    static bool isLatestVersion => newVersion == BuildInfo.DisplayVersion;
+    static bool IsLatestVersion => newVersion == BuildInfo.DISPLAY_VERSION;
     
     internal static string onSaveLoadCommand => prefs.GetEntry<string>("onSaveLoadCommand").Value; 
     internal static string onMainMenuLoadCommand => prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
@@ -103,7 +103,7 @@ public class SR2EEntryPoint : MelonMod
     static bool IsDisplayVersionValid() 
     {
         /*Semver2 Regex*/ var semVerRegex = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+(?<build>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$");
-        var match = semVerRegex.Match(BuildInfo.DisplayVersion);
+        var match = semVerRegex.Match(BuildInfo.DISPLAY_VERSION);
         /*Not Semver2*/ if (!match.Success) return false;
         string metadata = match.Groups["build"].Value;
         bool hasMetadata = !string.IsNullOrEmpty(metadata);
@@ -198,7 +198,7 @@ public class SR2EEntryPoint : MelonMod
             var jobject = JObject.Parse(branchJson);
             string latest = jobject["latest"].ToObject<string>();
             newVersion = latest;
-            if (!isLatestVersion) if (AllowAutoUpdate.HasFlag()) if (autoUpdate)
+            if (!IsLatestVersion) if (AllowAutoUpdate.HasFlag()) if (autoUpdate)
                 MelonCoroutines.Start(UpdateVersion());
         }
         catch { MelonLogger.Msg("SR2E API either changed or is broken."); }
