@@ -94,9 +94,9 @@ namespace SR2E
             StringTable table2 = LocalizationUtil.GetTable(table);
 
 
-            var existing = table2.GetEntry(key);
+            StringTableEntry existing = null;
+            try { existing = table2.GetEntry(key); } catch { }
             if (existing != null) return new LocalizedString(table2.SharedData.TableCollectionName, existing.SharedEntry.Id);
-            
             System.Collections.Generic.Dictionary<string, string> dictionary;
             if (!addedTranslations.TryGetValue(table, out dictionary))
             {

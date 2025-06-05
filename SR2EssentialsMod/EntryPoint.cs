@@ -39,7 +39,7 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
-    public const string CodeVersion = "3.1.1";
+    public const string CodeVersion = "3.1.2";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
@@ -49,7 +49,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.1.1";
+    public const string DisplayVersion = "3.1.2-dev";
 
 
 
@@ -91,8 +91,8 @@ public class SR2EEntryPoint : MelonMod
     internal static string onMainMenuLoadCommand => prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
     internal static bool SR2ELogToMLLog => prefs.GetEntry<bool>("SR2ELogToMLLog").Value; 
     internal static bool mLLogToSR2ELog => prefs.GetEntry<bool>("mLLogToSR2ELog").Value; 
-    internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value; 
-    internal static bool quickStart => prefs.GetEntry<bool>("quickStart").Value; 
+    internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value;
+    internal static bool quickStart => false;//prefs.GetEntry<bool>("quickStart").Value; 
     internal static bool fixSaves => prefs.GetEntry<bool>("fixSaves").Value; 
     internal static float consoleMaxSpeed => prefs.GetEntry<float>("consoleMaxSpeed").Value; 
     internal static float noclipAdjustSpeed => prefs.GetEntry<float>("noclipAdjustSpeed").Value; 
@@ -147,7 +147,7 @@ public class SR2EEntryPoint : MelonMod
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
         if (!prefs.HasEntry("fixSaves")) prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).AddNullAction();
         //if (!prefs.HasEntry("consoleUsesSR2Font")) prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).AddAction((System.Action)(() => { SetupFonts(); }));
-        if (!prefs.HasEntry("quickStart")) prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
+        //if (!prefs.HasEntry("quickStart")) prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => 
             { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
         if (!prefs.HasEntry("enableCheatMenuButton")) prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).AddAction((System.Action)(() => 
@@ -567,10 +567,12 @@ public class SR2EEntryPoint : MelonMod
         }
         else
         {
-            try { if (SR2EInputManager.OnKeyPressed(GM<SR2EConsole>().openKey)) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
+            
+            try { if (SR2EConsole.openKey.OnKeyPressed()||SR2EConsole.openKey2.OnKeyPressed()) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             if (DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
+            foreach (var pair in menus) try { pair.Key.AlwaysUpdate(); } catch (Exception e) { MelonLogger.Error(e); }
         }
 
         if(actionCounter.Count>0) foreach (var pair in new Dictionary<Action, int>(actionCounter))

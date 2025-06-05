@@ -47,6 +47,12 @@ internal static class SR2ESaveManager
             foreach (var pair in data.themes)
                 if (!Enum.IsDefined(typeof(SR2EMenuTheme), pair.Value))
                     data.themes[pair.Key] = SR2EMenuTheme.Default;
+            if (data.keyBinds.ContainsKey(Key.F11))
+            {
+                string cmd = data.keyBinds[Key.F11];
+                if (cmd.Contains("toggleconsole") || cmd.Contains("closeconsole") || cmd.Contains("openconsole"))
+                    data.keyBinds[Key.F11] = cmd.Replace("toggleconsole", "").Replace("closeconsole", "").Replace("openconsole", "");
+            }
             Save();
         }
         else data = new SR2ESaveData();
