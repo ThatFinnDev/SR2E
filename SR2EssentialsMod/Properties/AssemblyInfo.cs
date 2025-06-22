@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Il2CppNewtonsoft.Json.Utilities;
 using SR2E.Expansion;
 
 [assembly: AssemblyTitle(SR2E.BuildInfo.Name)]
@@ -7,7 +8,7 @@ using SR2E.Expansion;
 [assembly: AssemblyProduct(SR2E.BuildInfo.Name)]
 [assembly: AssemblyCopyright($"Created by {SR2E.BuildInfo.Author}")]
 [assembly: AssemblyTrademark(null)]
-[assembly: VerifyLoaderVersion(0,7,0, true)]
+[assembly: VerifyLoaderVersion(0,7,1, true)]
 [assembly: AssemblyVersion(SR2E.BuildInfo.CodeVersion)]
 [assembly: MelonPriority(-10000)]
 [assembly: AssemblyFileVersion(SR2E.BuildInfo.CodeVersion)]

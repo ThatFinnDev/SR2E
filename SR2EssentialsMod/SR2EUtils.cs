@@ -723,7 +723,7 @@ namespace SR2E
         public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value, float min, bool inclusive, float max)
         {
             value = 0;
-            try { value = int.Parse(input); }
+            try { value = float.Parse(input); }
             catch { return cmd.SendNotValidFloat(input); }
             if (inclusive)
             {

@@ -33,7 +33,7 @@ internal class CheatMenuGadgetEntry : MonoBehaviour
                 dontChange = false; return;
             }
 
-            int newValue = int.Parse(valueFloat.ToString().Split(".")[0]);
+            int newValue = (int)valueFloat;
             if (newValue > 0 && !SceneContext.Instance.GadgetDirector.HasBlueprint(item.Cast<GadgetDefinition>()))
                 SceneContext.Instance.GadgetDirector.AddBlueprint(item.Cast<GadgetDefinition>());
             int oldValue = SceneContext.Instance.GadgetDirector.GetItemCount(item);

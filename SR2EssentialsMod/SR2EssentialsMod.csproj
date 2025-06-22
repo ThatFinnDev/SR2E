@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
@@ -268,14 +268,6 @@
       <HintPath>Libs\UnityEngine.ClothModule.dll</HintPath>
 
     </Reference>
-    <Reference Include="UnityEngine.ClusterInputModule">
-      <HintPath>Libs\UnityEngine.ClusterInputModule.dll</HintPath>
-
-    </Reference>
-    <Reference Include="UnityEngine.ClusterRendererModule">
-      <HintPath>Libs\UnityEngine.ClusterRendererModule.dll</HintPath>
-
-    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
 
@@ -330,10 +322,6 @@
     </Reference>
     <Reference Include="UnityEngine.LocalizationModule">
       <HintPath>Libs\UnityEngine.LocalizationModule.dll</HintPath>
-
-    </Reference>
-    <Reference Include="UnityEngine.NVIDIAModule">
-      <HintPath>Libs\UnityEngine.NVIDIAModule.dll</HintPath>
 
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
@@ -490,10 +478,6 @@
     </Reference>
     <Reference Include="UnityEngine.VideoModule">
       <HintPath>Libs\UnityEngine.VideoModule.dll</HintPath>
-
-    </Reference>
-    <Reference Include="UnityEngine.VirtualTexturingModule">
-      <HintPath>Libs\UnityEngine.VirtualTexturingModule.dll</HintPath>
 
     </Reference>
     <Reference Include="UnityEngine.VRModule">

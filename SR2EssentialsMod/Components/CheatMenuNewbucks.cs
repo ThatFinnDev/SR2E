@@ -24,8 +24,8 @@ internal class CheatMenuNewbucks : MonoBehaviour
             double newValue = Math.Pow(value, 3.51);
             if (newValue < 0) newValue = 0;
             if (newValue > 9999999) newValue = 999999999;
-            handleText.SetText(newValue.ToString().Split(".")[0]);
-            SceneContext.Instance.PlayerState._model.currency = int.Parse(newValue.ToString().Split(".")[0]);
+            handleText.SetText(((int)newValue).ToString());
+            SceneContext.Instance.PlayerState._model.currency = (int)newValue;
         }));
     }
 

@@ -22,7 +22,7 @@ internal class CheatMenuSlot : MonoBehaviour
         handleText = amountSlider.gameObject.getObjRec<TextMeshProUGUI>("Text");
         entryInput = gameObject.getObjRec<TMP_InputField>("EntryInput");
         applyButton.onClick.AddListener((Action)(() =>{Apply();}));
-        amountSlider.onValueChanged.AddListener((Action<float>)((value) => { handleText.SetText(value.ToString().Split(".")[0]); }));
+        amountSlider.onValueChanged.AddListener((Action<float>)((value) => { handleText.SetText(((int)value).ToString()); }));
     }
 
     public void Apply()
@@ -36,7 +36,7 @@ internal class CheatMenuSlot : MonoBehaviour
         entryInput.text = itemName;
         slot.Clear();
         SceneContext.Instance.PlayerState.Ammo.MaybeAddToSpecificSlot(type, null, slotID, 
-            int.Parse(amountSlider.value.ToString().Split(".")[0]));
+            (int)amountSlider.value);
     }
     private Ammo.Slot slot {
         get

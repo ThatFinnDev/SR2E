@@ -51,8 +51,6 @@ public static class BuildInfo
     /// </summary>
     public const string DisplayVersion = "3.1.2-dev";
 
-
-
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
         new TripleDictionary<string, bool, string>()
@@ -93,12 +91,12 @@ public class SR2EEntryPoint : MelonMod
     internal static bool mLLogToSR2ELog => prefs.GetEntry<bool>("mLLogToSR2ELog").Value; 
     internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value;
     internal static bool quickStart => false;//prefs.GetEntry<bool>("quickStart").Value; 
-    internal static bool fixSaves => prefs.GetEntry<bool>("fixSaves").Value; 
+    internal static bool disableFixSaves => prefs.GetEntry<bool>("disableFixSaves").Value; 
     internal static float consoleMaxSpeed => prefs.GetEntry<float>("consoleMaxSpeed").Value; 
     internal static float noclipAdjustSpeed => prefs.GetEntry<float>("noclipAdjustSpeed").Value; 
     internal static float noclipSpeedMultiplier => prefs.GetEntry<float>("noclipSpeedMultiplier").Value; 
-    internal static bool enableDebugDirector => prefs.GetEntry<bool>("enableDebugDirector").Value; 
-    internal static bool enableCheatMenuButton => prefs.GetEntry<bool>("enableCheatMenuButton").Value; 
+    internal static bool enableDebugDirector => prefs.GetEntry<bool>("enableDebugDirector").Value;
+    internal static bool enableCheatMenuButton => true;//prefs.GetEntry<bool>("enableCheatMenuButton").Value; 
     
     static bool IsDisplayVersionValid() 
     {
@@ -143,9 +141,10 @@ public class SR2EEntryPoint : MelonMod
         prefs.DeleteEntry("doesConsoleSync");
         prefs.DeleteEntry("mLLogToConsole");
         prefs.DeleteEntry("SR2ELogToMLLog");
+        prefs.DeleteEntry("fixSaves");
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
-        if (!prefs.HasEntry("fixSaves")) prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).AddNullAction();
+        if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
         //if (!prefs.HasEntry("consoleUsesSR2Font")) prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).AddAction((System.Action)(() => { SetupFonts(); }));
         //if (!prefs.HasEntry("quickStart")) prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => 
