@@ -201,6 +201,7 @@ public class SR2EConsole : SR2EMenu
         commandHistory = new List<string>();
 
         menuBlock = transform.parent.getObjRec<GameObject>("blockRec");
+        popUpBlock = transform.parent.getObjRec<Transform>("blockPopUpRec");
         consoleContent = transform.getObjRec<Transform>("ConsoleMenuConsoleContentRec");
         messagePrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateMessageRec");
         commandInput = transform.getObjRec<TMP_InputField>("ConsoleMenuCommandInputRec");

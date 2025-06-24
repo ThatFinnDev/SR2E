@@ -15,7 +15,15 @@ internal class SystemContextPatch
     
     static List<Object> assets = new List<Object>(); //Prefabs are destroyed
     const string menuPath = "Assets/Menus/";
+    const string popUpPath = "Assets/PopUps/";
     const string prefabSuffix = ".prefab";
+    internal static string getPopUpPath(string identifier,SR2EMenuTheme currentTheme)
+    {
+        //now, currentTheme exists
+        string extraTheme = "";
+        if (currentTheme != SR2EMenuTheme.Default) extraTheme = "_"+currentTheme.ToString().Split(".")[0];
+        return $"{popUpPath}{identifier}{extraTheme}{prefabSuffix}";
+    }
     internal static string getMenuPath(MenuIdentifier menuIdentifier)
     {
         SR2ESaveManager.data.themes.TryAdd(menuIdentifier.saveKey, menuIdentifier.defaultTheme);

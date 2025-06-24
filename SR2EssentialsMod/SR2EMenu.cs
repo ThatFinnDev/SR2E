@@ -84,6 +84,8 @@ public abstract class SR2EMenu : MonoBehaviour
         menuBlock.SetActive(false);
         gameObject.SetActive(false);
         changedOpenState = true;
+        foreach(SR2EPopUp popUp in openPopUps)
+            popUp.Close();
         DoActions(SR2EEntryPoint.menus[this]["closeActions"] as List<MenuActions>);
         try { OnClose(); }catch (Exception e) { MelonLogger.Error(e); }
     }
@@ -105,7 +107,7 @@ public abstract class SR2EMenu : MonoBehaviour
         menuBlock.SetActive(true);
         gameObject.SetActive(true);
         changedOpenState = true;
-        ExecuteInTicks((Action)(() => { gameObject.SetActive(true);}), 2);
+        ExecuteInTicks((Action)(() => { gameObject.SetActive(true);}), 1);
         DoActions(SR2EEntryPoint.menus[this]["openActions"] as List<MenuActions>);
         try { OnOpen(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));

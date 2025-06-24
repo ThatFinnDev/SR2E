@@ -142,7 +142,8 @@ public class SR2ECheatMenu : SR2EMenu
     protected override void OnUpdate()
     {
        if (Key.Escape.OnKeyPressed())
-           Close();
+           if(openPopUps.Count==0) 
+               Close();
         
     }
     protected override void OnLateAwake()

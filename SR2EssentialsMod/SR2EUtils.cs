@@ -987,6 +987,36 @@ namespace SR2E
         }
 
         internal static GameObject menuBlock;
+        internal static Transform popUpBlock;
+        internal static List<SR2EPopUp> openPopUps = new List<SR2EPopUp>();
+        internal static SR2EMenuTheme GetTheme(this SR2EMenu menu)
+        {
+            try
+            {
+                var methodInfo = menu.GetType().GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
+                var result = methodInfo.Invoke(null, null);
+                if (result is MenuIdentifier identifier)
+                {
+                    SR2ESaveManager.data.themes.TryAdd(identifier.saveKey, identifier.defaultTheme);
+                    SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[identifier.saveKey];
+                    List<SR2EMenuTheme> validThemes = getValidThemes(identifier.saveKey);
+                    if (validThemes.Count == 0) return SR2EMenuTheme.Default;
+                    if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
+                    return currentTheme;
+                }
+
+            }catch (Exception e) {}
+
+            return SR2EMenuTheme.Default;
+        }
+        internal static void OpenPopUpBlock(SR2EPopUp popUp)
+        {
+            if (popUpBlock.transform.GetParent() != popUp.transform.GetParent()) return;
+            var instance = GameObject.Instantiate(popUpBlock, popUpBlock);
+            instance.gameObject.SetActive(true);
+            instance.SetSiblingIndex(popUp.transform.GetSiblingIndex()-1);
+            popUp.block = instance;
+        }
         internal static Dictionary<Action, int> actionCounter = new Dictionary<Action, int>();
         public static void ExecuteInTicks(Action action, int ticks)
         {

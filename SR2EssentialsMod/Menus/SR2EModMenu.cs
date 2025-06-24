@@ -414,7 +414,8 @@ public class SR2EModMenu : SR2EMenu
     {
         if (listeninAction == null)
             if (Key.Escape.OnKeyPressed())
-                Close();
+                if(openPopUps.Count==0)
+                    Close();
         foreach (Key key in allPossibleKeys)
         {
             try
