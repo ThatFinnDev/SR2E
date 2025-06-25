@@ -60,12 +60,19 @@ public static class SR2EInputManager
     public static bool OnKeyPressed(this MultiKey code)
     {
         int i = 0;
+        bool wasThisFrame = false;
         foreach (var key in code.requiredKeys)
         {
-            if (key.OnKeyPressed())
+            if (key.OnKey())
                 i++;
+
+            if (wasThisFrame)
+                continue;
+            if (key.OnKeyPressed())
+                wasThisFrame = true;
         }
-        return i == code.requiredKeys.Count;
+
+        return i == code.requiredKeys.Count && wasThisFrame;
     }
     
 }
