@@ -39,7 +39,7 @@ public static class BuildInfo
     public const string DESCRIPTION = "Essential stuff for Slime Rancher 2";
     public const string AUTHOR = "ThatFinn";
     public const string CO_AUTHORS = "PinkTarr";
-    public const string CODE_VERSION = "3.1.2";
+    public const string CODE_VERSION = "3.1.3";
     public const string DOWNLOAD_LINK = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
