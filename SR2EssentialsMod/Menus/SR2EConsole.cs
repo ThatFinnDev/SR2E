@@ -21,7 +21,8 @@ public class SR2EConsole : SR2EMenu
     public override bool createCommands => true;
     public override bool inGameOnly => false;
 
-    internal MultiKey openKey = new MultiKey(Key.Tab, Key.LeftCtrl);
+    internal static readonly Key openKey = Key.F11;
+    internal static readonly MultiKey openKey2 = new MultiKey(Key.Tab, Key.LeftCtrl);
     internal Transform consoleContent;
     TMP_InputField commandInput;
     GameObject autoCompleteEntryPrefab;
@@ -200,6 +201,7 @@ public class SR2EConsole : SR2EMenu
         commandHistory = new List<string>();
 
         menuBlock = transform.parent.getObjRec<GameObject>("blockRec");
+        popUpBlock = transform.parent.getObjRec<Transform>("blockPopUpRec");
         consoleContent = transform.getObjRec<Transform>("ConsoleMenuConsoleContentRec");
         messagePrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateMessageRec");
         commandInput = transform.getObjRec<TMP_InputField>("ConsoleMenuCommandInputRec");

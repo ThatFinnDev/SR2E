@@ -10,7 +10,7 @@ internal static class SavedGamePatch
 {
 	internal static void Prefix(SavedGame __instance)
 	{
-		if (SR2EEntryPoint.fixSaves)
+		if (!SR2EEntryPoint.disableFixSaves)
 		{
 			FixActors(__instance);
 			FixPedia(__instance);

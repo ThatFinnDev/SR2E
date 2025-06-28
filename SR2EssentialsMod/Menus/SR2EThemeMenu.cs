@@ -147,6 +147,7 @@ public class SR2EThemeMenu : SR2EMenu
     protected override void OnUpdate()
     {
         if (Key.Escape.OnKeyPressed())
-            Close();
+            if(openPopUps.Count==0) 
+                Close();
     }
 }

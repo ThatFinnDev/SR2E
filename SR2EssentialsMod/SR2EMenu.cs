@@ -14,6 +14,7 @@ namespace SR2E;
 [RegisterTypeInIl2Cpp(false)]
 public abstract class SR2EMenu : MonoBehaviour
 {
+    private bool changedOpenState = false;
     public static MenuIdentifier GetMenuIdentifier() => new ();
     public virtual bool createCommands => false;
     public virtual bool inGameOnly => false;
@@ -62,22 +63,36 @@ public abstract class SR2EMenu : MonoBehaviour
         OnStart();
         gameObject.SetActive(false);
     } 
-    protected void Update() => OnUpdate(); protected virtual void OnUpdate() {}
+    protected internal void AlwaysUpdate()
+    {
+        changedOpenState = false;
+        OnAlwaysUpdate();
+    } protected virtual void OnAlwaysUpdate() {}
+    protected void Update()
+    {
+        changedOpenState = false;
+        OnUpdate();
+    } protected virtual void OnUpdate() {}
 
     
 
     public new void Close()
     {
+        if (changedOpenState) return;
         foreach (FeatureFlag featureFlag in SR2EEntryPoint.menus[this]["requiredFeatures"] as List<FeatureFlag>) if (!featureFlag.HasFlag()) return;
         if (!isOpen) return;
         menuBlock.SetActive(false);
         gameObject.SetActive(false);
+        changedOpenState = true;
+        foreach(SR2EPopUp popUp in openPopUps)
+            popUp.Close();
         DoActions(SR2EEntryPoint.menus[this]["closeActions"] as List<MenuActions>);
         try { OnClose(); }catch (Exception e) { MelonLogger.Error(e); }
     }
     
     public new void Open()
     {
+        if (changedOpenState) return;
         foreach (FeatureFlag featureFlag in SR2EEntryPoint.menus[this]["requiredFeatures"] as List<FeatureFlag>) if (!featureFlag.HasFlag()) return;
         if (isAnyMenuOpen) return;
         if(inGameOnly) if (!inGame) return;
@@ -91,7 +106,8 @@ public abstract class SR2EMenu : MonoBehaviour
         }
         menuBlock.SetActive(true);
         gameObject.SetActive(true);
-        ExecuteInTicks((Action)(() => { gameObject.SetActive(true);}), 2);
+        changedOpenState = true;
+        ExecuteInTicks((Action)(() => { gameObject.SetActive(true);}), 1);
         DoActions(SR2EEntryPoint.menus[this]["openActions"] as List<MenuActions>);
         try { OnOpen(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
@@ -99,7 +115,6 @@ public abstract class SR2EMenu : MonoBehaviour
     
     public new void Toggle()
     {
-        foreach (FeatureFlag featureFlag in SR2EEntryPoint.menus[this]["requiredFeatures"] as List<FeatureFlag>) if (!featureFlag.HasFlag()) return;
         if (isOpen) Close();
         else Open();
     }

@@ -52,7 +52,7 @@ internal class WeatherCommand : SR2ECommand
     
     public override bool Execute(string[] args)
     {
-        return SendCommandMaintenance();
+        //return SendCommandMaintenance();
         if (!args.IsBetween(0,3)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         

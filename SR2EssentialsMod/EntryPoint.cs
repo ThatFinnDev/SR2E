@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
@@ -35,12 +35,12 @@ public enum Branch
 // SR2E Build information. Please do not edit anything other than version numbers.
 public static class BuildInfo
 {
-    public const string NAME = "SR2E";
-    public const string DESCRIPTION = "Essential stuff for Slime Rancher 2";
-    public const string AUTHOR = "ThatFinn";
-    public const string CO_AUTHORS = "PinkTarr";
-    public const string CODE_VERSION = "3.1.2";
-    public const string DOWNLOAD_LINK = "https://sr2e.thatfinn.dev/";
+    public const string Name = "SR2E";
+    public const string Description = "Essential stuff for Slime Rancher 2";
+    public const string Author = "ThatFinn";
+    public const string CoAuthors = "PinkTarr";
+    public const string CodeVersion = "3.1.2";
+    public const string DownloadLink = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
     /// Should be the same as CodeVersion unless this is non release build.<br />
@@ -49,9 +49,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DISPLAY_VERSION = "3.1.2";
-
-
+    public const string DisplayVersion = "3.1.2";
 
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
@@ -85,25 +83,25 @@ public class SR2EEntryPoint : MelonMod
     static MelonPreferences_Category prefs;
     static string branchJson = "";
     bool alreadyLoadedSettings = false;
-    static bool IsLatestVersion => newVersion == BuildInfo.DISPLAY_VERSION;
+    static bool IsLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
     internal static string onSaveLoadCommand => prefs.GetEntry<string>("onSaveLoadCommand").Value; 
     internal static string onMainMenuLoadCommand => prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
     internal static bool SR2ELogToMLLog => prefs.GetEntry<bool>("SR2ELogToMLLog").Value; 
     internal static bool mLLogToSR2ELog => prefs.GetEntry<bool>("mLLogToSR2ELog").Value; 
-    internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value; 
-    internal static bool quickStart => prefs.GetEntry<bool>("quickStart").Value; 
-    internal static bool fixSaves => prefs.GetEntry<bool>("fixSaves").Value; 
+    internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value;
+    internal static bool quickStart => false;//prefs.GetEntry<bool>("quickStart").Value; 
+    internal static bool disableFixSaves => prefs.GetEntry<bool>("disableFixSaves").Value; 
     internal static float consoleMaxSpeed => prefs.GetEntry<float>("consoleMaxSpeed").Value; 
     internal static float noclipAdjustSpeed => prefs.GetEntry<float>("noclipAdjustSpeed").Value; 
     internal static float noclipSpeedMultiplier => prefs.GetEntry<float>("noclipSpeedMultiplier").Value; 
-    internal static bool enableDebugDirector => prefs.GetEntry<bool>("enableDebugDirector").Value; 
-    internal static bool enableCheatMenuButton => prefs.GetEntry<bool>("enableCheatMenuButton").Value; 
+    internal static bool enableDebugDirector => prefs.GetEntry<bool>("enableDebugDirector").Value;
+    internal static bool enableCheatMenuButton => true;//prefs.GetEntry<bool>("enableCheatMenuButton").Value; 
     
     static bool IsDisplayVersionValid() 
     {
         /*Semver2 Regex*/ var semVerRegex = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+(?<build>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$");
-        var match = semVerRegex.Match(BuildInfo.DISPLAY_VERSION);
+        var match = semVerRegex.Match(BuildInfo.DisplayVersion);
         /*Not Semver2*/ if (!match.Success) return false;
         string metadata = match.Groups["build"].Value;
         bool hasMetadata = !string.IsNullOrEmpty(metadata);
@@ -143,11 +141,12 @@ public class SR2EEntryPoint : MelonMod
         prefs.DeleteEntry("doesConsoleSync");
         prefs.DeleteEntry("mLLogToConsole");
         prefs.DeleteEntry("SR2ELogToMLLog");
+        prefs.DeleteEntry("fixSaves");
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
-        if (!prefs.HasEntry("fixSaves")) prefs.CreateEntry("fixSaves", (bool)false, "Fix broken saves (experimental)", false).AddNullAction();
+        if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
         //if (!prefs.HasEntry("consoleUsesSR2Font")) prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).AddAction((System.Action)(() => { SetupFonts(); }));
-        if (!prefs.HasEntry("quickStart")) prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
+        //if (!prefs.HasEntry("quickStart")) prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => 
             { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
         if (!prefs.HasEntry("enableCheatMenuButton")) prefs.CreateEntry("enableCheatMenuButton", (bool)false, "Enable cheat menu button in pause menu", false).AddAction((System.Action)(() => 
@@ -567,10 +566,12 @@ public class SR2EEntryPoint : MelonMod
         }
         else
         {
-            try { if (SR2EInputManager.OnKeyPressed(GM<SR2EConsole>().openKey)) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
+            
+            try { if (SR2EConsole.openKey.OnKeyPressed()||SR2EConsole.openKey2.OnKeyPressed()) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             if (DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
+            foreach (var pair in menus) try { pair.Key.AlwaysUpdate(); } catch (Exception e) { MelonLogger.Error(e); }
         }
 
         if(actionCounter.Count>0) foreach (var pair in new Dictionary<Action, int>(actionCounter))

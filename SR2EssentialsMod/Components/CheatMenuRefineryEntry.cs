@@ -32,7 +32,7 @@ internal class CheatMenuRefineryEntry : MonoBehaviour
                 dontChange = false; return;
             }
 
-            int newValue = int.Parse(valueFloat.ToString().Split(".")[0]);
+            int newValue = (int)valueFloat;
             int oldValue = SceneContext.Instance.GadgetDirector.GetItemCount(item);
             int difference = newValue - oldValue;
             if (difference == 0) return;

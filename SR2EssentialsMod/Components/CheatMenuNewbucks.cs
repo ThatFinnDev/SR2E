@@ -21,11 +21,11 @@ internal class CheatMenuNewbucks : MonoBehaviour
             if (dontChange>0)
             { dontChange--; return; }
             dontChange = 0;
-            double newValue = Math.Pow(value, 4.5);
+            double newValue = Math.Pow(value, 3.51);
             if (newValue < 0) newValue = 0;
-            if (newValue > 9999999999) newValue = 9999999999;
-            handleText.SetText(newValue.ToString().Split(".")[0]);
-            SceneContext.Instance.PlayerState._model.currency = int.Parse(newValue.ToString().Split(".")[0]);
+            if (newValue > 9999999) newValue = 999999999;
+            handleText.SetText(((int)newValue).ToString());
+            SceneContext.Instance.PlayerState._model.currency = (int)newValue;
         }));
     }
 
@@ -35,7 +35,7 @@ internal class CheatMenuNewbucks : MonoBehaviour
         if(!didStartRan) Start();
         try
         {
-            double newValue = Math.Pow(SceneContext.Instance.PlayerState._model.currency, (1.0 / 4.5));
+            double newValue = Math.Pow(SceneContext.Instance.PlayerState._model.currency, (1.0 / 3.51));
             dontChange = 2;
             amountSlider.value = float.Parse(newValue.ToString());
             handleText.SetText(SceneContext.Instance.PlayerState._model.currency.ToString());
