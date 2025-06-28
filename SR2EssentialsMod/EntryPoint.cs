@@ -540,6 +540,7 @@ public class SR2EEntryPoint : MelonMod
                 SR2ELogManager.Start();
                 SR2ESaveManager.Start();
                 SR2ECommandManager.Start();
+                SR2ERepoManager.Start();
                 SR2EStuff = obj;
                 obj.name = "SR2EStuff";
                 obj.tag = "";

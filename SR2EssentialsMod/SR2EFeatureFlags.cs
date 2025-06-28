@@ -18,7 +18,7 @@ public static class SR2EFeatureFlags
         AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
         InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectTranslations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
-        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu
+        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu,EnableRepoMenu
         
     };
 

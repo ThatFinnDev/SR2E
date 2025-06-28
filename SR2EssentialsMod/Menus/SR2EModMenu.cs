@@ -185,6 +185,9 @@ public class SR2EModMenu : SR2EMenu
         button1.sprite = whitePillBg;
         var button2 = transform.getObjRec<Image>("ModMenuConfigurationSelectionButtonRec");
         button2.sprite = whitePillBg;
+        var button3 = transform.getObjRec<Image>("ModMenuRepoSelectionButtonRec");
+        button2.sprite = whitePillBg;
+        button3.GetComponent<Button>().onClick.AddListener((Action)(() =>{ Close(); GM<SR2ERepoMenu>().Open(); }));
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modmenu");
         toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modconfig");
         toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");

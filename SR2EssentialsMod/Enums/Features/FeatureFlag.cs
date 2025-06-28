@@ -138,6 +138,10 @@ public enum FeatureFlag
     /// Enable the theme menu
     /// </summary>
     EnableThemeMenu, //
+    /// <summary>
+    /// Enable the repo menu
+    /// </summary>
+    EnableRepoMenu, //
     
     //UI
     /// <summary>

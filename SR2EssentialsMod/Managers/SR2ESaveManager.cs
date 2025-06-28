@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using SR2E.Enums;
+using SR2E.Repos;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 
@@ -41,6 +42,7 @@ internal static class SR2ESaveManager
             if (data.warps == null) data.warps = new Dictionary<string, Warp>();
             if(data.themes == null) data.themes = new Dictionary<string, SR2EMenuTheme>();
             if(data.fonts == null) data.fonts = new Dictionary<string, SR2EMenuFont>();
+            if (data.repos == null) data.repos = new List<RepoSave>();;
             foreach (var pair in data.fonts)
                 if (!Enum.IsDefined(typeof(SR2EMenuFont), pair.Value))
                     data.fonts[pair.Key] = SR2EMenuFont.Default;
@@ -66,5 +68,6 @@ internal static class SR2ESaveManager
         public Dictionary<Key, string> keyBinds = new Dictionary<Key, string>();
         public Dictionary<string, SR2EMenuTheme> themes = new Dictionary<string, SR2EMenuTheme>();
         public Dictionary<string, SR2EMenuFont> fonts = new Dictionary<string, SR2EMenuFont>();
+        public List<RepoSave> repos = new List<RepoSave>();
     }
 }

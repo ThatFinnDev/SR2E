@@ -36,6 +36,9 @@ public static class SR2ELogManager
         if (string.IsNullOrEmpty(message)) return;
         if (message.StartsWith($"[{logName}]")) return;
         if (message.StartsWith("[UnityExplorer]")) return;
+        if (message.StartsWith("[CinematicUnityExplorer]")) return;
+        if (message.StartsWith("[Il2CppInterop]")) return;
+        if (message.StartsWith("[Il2CppICallInjector]")) return;
         if (message.StartsWith("[]:")) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Msg(message);
         SR2EConsole console = GM<SR2EConsole>();
@@ -59,6 +62,9 @@ public static class SR2ELogManager
         if (string.IsNullOrEmpty(message)) return;
         if (message.StartsWith($"[{logName}]")) return;
         if (message.StartsWith("[UnityExplorer]")) return;
+        if (message.StartsWith("[CinematicUnityExplorer]")) return;
+        if (message.StartsWith("[Il2CppInterop]")) return;
+        if (message.StartsWith("[Il2CppICallInjector]")) return;
         if (message.StartsWith("[]:")) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Error(message);
         SR2EConsole console = GM<SR2EConsole>();
@@ -81,6 +87,9 @@ public static class SR2ELogManager
         if (string.IsNullOrEmpty(message)) return;
         if (message.StartsWith($"[{logName}]")) return;
         if (message.StartsWith("[UnityExplorer]")) return;
+        if (message.StartsWith("[CinematicUnityExplorer]")) return;
+        if (message.StartsWith("[Il2CppInterop]")) return;
+        if (message.StartsWith("[Il2CppICallInjector]")) return;
         if (message.StartsWith("[]:")) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Warning(message);
         SR2EConsole console = GM<SR2EConsole>();
@@ -108,6 +117,9 @@ public static class SR2ELogManager
         if (string.IsNullOrEmpty(message)) return;
         if (message.StartsWith($"[{logName}]")) return;
         if (message.StartsWith("[UnityExplorer]")) return;
+        if (message.StartsWith("[CinematicUnityExplorer]")) return;
+        if (message.StartsWith("[Il2CppInterop]")) return;
+        if (message.StartsWith("[Il2CppICallInjector]")) return;
         if (message.StartsWith("[]:")) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Msg(message);
         MessageBox(IntPtr.Zero, message, title, 0);
