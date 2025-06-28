@@ -21,7 +21,7 @@ class Program
         DirectoryInfo XMLToMD = null;
         string rootDir = "";
         string gitDir = "";
-        string apiDir = "api-"+BuildInfo.DISPLAY_VERSION;
+        string apiDir = "api-"+BuildInfo.DisplayVersion;
         try
         {
             rootDir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.Parent.Parent.Parent.FullName;
@@ -144,7 +144,7 @@ class Program
     {
         string categoryContent = 
             "{" + "\n" +
-            "\"label\": \"SR2E "+SR2E.BuildInfo.DISPLAY_VERSION+"\"," + "\n" +
+            "\"label\": \"SR2E "+SR2E.BuildInfo.DisplayVersion+"\"," + "\n" +
             "\"link\": {" + "\n" +
             "\"type\": \"generated-index\"," + "\n" +
             "\"description\": \"An API of SR2E and its expansions!\"" + "\n" +

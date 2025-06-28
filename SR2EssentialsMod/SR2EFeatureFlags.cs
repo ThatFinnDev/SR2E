@@ -113,8 +113,8 @@ public static class SR2EFeatureFlags
         {
             XmlElement xmlElement = xmlDoc.CreateElement("LAST_SR2EVERSION");
             strings.AppendChild(xmlElement);
-            xmlElement.SetAttribute("value",BuildInfo.DISPLAY_VERSION);
-            xmlElement.SetAttribute("default", BuildInfo.DISPLAY_VERSION);
+            xmlElement.SetAttribute("value",BuildInfo.DisplayVersion);
+            xmlElement.SetAttribute("default", BuildInfo.DisplayVersion);
             xmlElement.SetAttribute("DO_NOT_EDIT", "please");
         }
         // Save the XML document to a file
@@ -141,7 +141,7 @@ public static class SR2EFeatureFlags
         {
             if(strings["LAST_SR2EVERSION"]!=null)
             {
-                if (strings["LAST_SR2EVERSION"].GetAttribute("value") != BuildInfo.DISPLAY_VERSION)
+                if (strings["LAST_SR2EVERSION"].GetAttribute("value") != BuildInfo.DisplayVersion)
                 { SaveToFlagFile(); return; }
             }
             foreach (XmlElement stringElement in strings.ChildNodes)
