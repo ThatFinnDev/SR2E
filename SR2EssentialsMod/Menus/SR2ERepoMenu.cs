@@ -3,9 +3,12 @@ using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using Il2CppTMPro;
+using Newtonsoft.Json;
 using SR2E.Enums;
 using SR2E.Enums.Features;
 using SR2E.Managers;
+using SR2E.Popups;
+using SR2E.Repos;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -33,10 +36,55 @@ public class SR2ERepoMenu : SR2EMenu
 
     protected override void OnClose()
     {
-        
+        gameObject.getObjRec<Button>("RepoMenuMainSelectionButtonRec").onClick.Invoke();
+        Transform modContent = transform.getObjRec<Transform>("RepoMenuMainContentRec");
+        for (int i = 0; i < modContent.childCount; i++)
+            Object.Destroy(modContent.GetChild(i).gameObject);
     }
     protected override void OnOpen()
     {
+        GameObject buttonPrefab = transform.getObjRec<GameObject>("RepoMenuTemplateButton");
+        Transform modContent = transform.getObjRec<Transform>("RepoMenuMainContentRec");
+        Transform repoContent = transform.getObjRec<Transform>("RepoMenuRepoContentRec");
+        foreach (var repo in SR2ERepoManager.repos)
+        {
+            if (repo.Value == null)
+            {
+                continue;
+            }
+            try
+            {
+                GameObject obj = Instantiate(buttonPrefab, repoContent);
+                Button b = obj.GetComponent<Button>();
+                b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repo.Value.name;
+                obj.SetActive(true);
+                    
+                b.onClick.AddListener((Action)(() =>
+                {
+                    //open repo infos
+                    SR2ETextViewer.Open(JsonConvert.SerializeObject(repo));
+                }));
+            }
+            catch {}
+            foreach (var mod in repo.Value.mods)
+            {
+                try
+                {
+                    GameObject obj = Instantiate(buttonPrefab, modContent);
+                    Button b = obj.GetComponent<Button>();
+                    b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = mod.name;
+                    obj.SetActive(true);
+                    
+                    b.onClick.AddListener((Action)(() =>
+                    {
+                        //open repo infos
+                        SR2ETextViewer.Open(JsonConvert.SerializeObject(mod));
+                    }));
+                }
+                catch {}
+
+            }
+        }
         
     }
     

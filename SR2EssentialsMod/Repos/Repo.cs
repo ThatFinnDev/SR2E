@@ -6,5 +6,5 @@ public class Repo
     public string identifier;
     public string name;
     public string description;
-    List<RepoMod> mods = new List<RepoMod>();
+    public List<RepoMod> mods = new List<RepoMod>();
 }

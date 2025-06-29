@@ -214,6 +214,22 @@ namespace SR2E
             catch { SR2EEntryPoint.SendFontError(name); }
             return null;
         }
+        internal static void ReloadFont(this SR2EPopUp popUp)
+        {
+            var ident = getOpenMenu.GetIdentifierViaReflection();
+            if (string.IsNullOrEmpty(ident.saveKey)) return;
+            if(SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
+            var dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
+            TMP_FontAsset fontAsset = null;
+            switch (dataFont)
+            {
+                case SR2EMenuFont.Default: fontAsset = SR2EEntryPoint.normalFont; break;
+                case SR2EMenuFont.Bold: fontAsset = SR2EEntryPoint.boldFont; break;
+                case SR2EMenuFont.Regular: fontAsset = SR2EEntryPoint.regularFont; break;
+                case SR2EMenuFont.SR2: fontAsset = SR2EEntryPoint.SR2Font; break;
+            }
+            if(fontAsset!=null) popUp.ApplyFont(fontAsset);
+        }
         internal static void ReloadFont(this SR2EMenu menu)
         {
             var ident = menu.GetIdentifierViaReflection();

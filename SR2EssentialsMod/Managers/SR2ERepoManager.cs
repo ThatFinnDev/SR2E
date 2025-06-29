@@ -7,7 +7,7 @@ namespace SR2E.Managers;
 using SR2E.Repos;
 public static class SR2ERepoManager
 {
-    internal static List<Repo> repos = new List<Repo>();
+    internal static Dictionary<string,Repo> repos = new Dictionary<string, Repo>();
     internal static void Start()
     {
         
@@ -23,8 +23,7 @@ public static class SR2ERepoManager
         foreach (RepoSave repoSave in repoSaves)
         {
             var repo = CheckRepo(repoSave);
-            if(repo!=null)
-                repos.Add(repo);
+            repos.Add(repoSave.identifier,repo);
            
         }
     }
@@ -47,8 +46,18 @@ public static class SR2ERepoManager
             using (HttpClient client = new HttpClient())
             {
                 var response = client.GetStringAsync(repoSave.url).Result;
-                
-                try { return JsonConvert.DeserializeObject<Repo>(response, jsonSerializerSettings); }
+
+                try
+                {
+                    var repo = JsonConvert.DeserializeObject<Repo>(response, jsonSerializerSettings);
+                    if (repo.identifier != repoSave.identifier)
+                    {
+                        MelonLogger.Msg("SR2ERepo identifier changed"); 
+                        return null;
+                    }
+                    return repo;
+
+                }
                 catch (Exception e) 
                 { 
                     MelonLogger.Msg("SR2ERepo is broken"); 

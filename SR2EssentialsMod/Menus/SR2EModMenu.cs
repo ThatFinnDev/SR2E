@@ -190,6 +190,7 @@ public class SR2EModMenu : SR2EMenu
         button3.GetComponent<Button>().onClick.AddListener((Action)(() =>{ Close(); GM<SR2ERepoMenu>().Open(); }));
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modmenu");
         toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modconfig");
+        toTranslate.Add(button3.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.repo");
         toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
         themeButton = transform.getObjRec<Button>("ThemeMenuButtonRec");

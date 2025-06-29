@@ -20,4 +20,5 @@ public class RepoMod
     public byte colorA;
     public bool universal;
     public bool expansion;
+    public bool plugin;
 }
