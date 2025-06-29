@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using Il2CppTMPro;
 using Newtonsoft.Json;
@@ -11,6 +13,7 @@ using SR2E.Popups;
 using SR2E.Repos;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using Action = System.Action;
 
@@ -46,6 +49,45 @@ public class SR2ERepoMenu : SR2EMenu
     }
     Transform repoPanel;
     Transform modPanel;
+    
+    IEnumerator DownloadImageAsync(string url,Image targetImage)
+    {
+        Texture2D texture = null;
+        bool isDone = false;
+        string error = null;
+
+        // Run image download in a separate thread
+        Thread thread = new Thread(() =>
+        {
+            UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(url);
+            var asyncOp = uwr.SendWebRequest();
+
+            while (!asyncOp.isDone) { } // block in thread (not main)
+
+            if (uwr.result != UnityWebRequest.Result.Success)
+            {
+                error = uwr.error;
+            }
+            else
+            {
+                texture = DownloadHandlerTexture.GetContent(uwr);
+            }
+
+            isDone = true;
+        });
+
+        thread.Start();
+
+        while (!isDone)
+            yield return null;
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            yield break;
+        }
+
+        targetImage.sprite = texture.ConvertToSprite();
+    }
     protected override void OnOpen()
     {
         GameObject buttonPrefab = transform.getObjRec<GameObject>("RepoMenuTemplateButton");
@@ -84,6 +126,20 @@ public class SR2ERepoMenu : SR2EMenu
                 b.onClick.AddListener((Action)(() =>
                 {
                     repoPanel.gameObject.SetActive(true);
+                        var name = transform.getObjRec<TextMeshProUGUI>("RepoViewNameTextRec");
+                        var desc = transform.getObjRec<TextMeshProUGUI>("RepoViewDescriptionTextRec");
+                        
+                        if (!String.IsNullOrWhiteSpace(repo.Value.header_url))
+                        {
+                            MelonCoroutines.Start(DownloadImageAsync(repo.Value.header_url,
+                                transform.getObjRec<Image>("RepoViewHeaderImageRec")));
+                        }
+                        if(String.IsNullOrWhiteSpace(repo.Value.name)) name.gameObject.SetActive(false);
+                        else {name.gameObject.SetActive(true); name.SetText(repo.Value.name);}
+                        
+                        
+                        if(String.IsNullOrWhiteSpace(repo.Value.description)) desc.gameObject.SetActive(false);
+                        else {desc.gameObject.SetActive(true); desc.SetText("Description: "+repo.Value.description);}
                 }));
             }
             catch {}
@@ -108,6 +164,19 @@ public class SR2ERepoMenu : SR2EMenu
                         var trademark = transform.getObjRec<TextMeshProUGUI>("ModViewTrademarkTextRec");
                         var team = transform.getObjRec<TextMeshProUGUI>("ModViewTeamTextRec");
                         var copyright = transform.getObjRec<TextMeshProUGUI>("ModViewCopyrightTextRec");
+
+
+                        if (!String.IsNullOrWhiteSpace(mod.header_url))
+                        {
+                            MelonCoroutines.Start(DownloadImageAsync(mod.header_url,
+                                transform.getObjRec<Image>("ModViewHeaderImageRec")));
+                        }
+
+                        if (!String.IsNullOrWhiteSpace(mod.icon_url))
+                        {
+                            MelonCoroutines.Start(DownloadImageAsync(mod.icon_url,
+                                transform.getObjRec<Image>("ModViewIconImageRec")));
+                        }
                         
                         if(String.IsNullOrWhiteSpace(mod.name)) name.gameObject.SetActive(false);
                         else {name.gameObject.SetActive(true); name.SetText(mod.name);}

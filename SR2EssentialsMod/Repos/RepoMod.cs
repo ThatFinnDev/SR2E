@@ -14,6 +14,8 @@ public class RepoMod
     public string team;
     public string copyright;
     public string github_repository;
+    public string header_url;
+    public string icon_url;
     public byte colorR;
     public byte colorG;
     public byte colorB;
