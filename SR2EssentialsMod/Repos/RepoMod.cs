@@ -1,4 +1,6 @@
-﻿namespace SR2E.Repos;
+﻿using System;
+
+namespace SR2E.Repos;
 
 [System.Serializable]
 public class RepoMod
@@ -11,9 +13,7 @@ public class RepoMod
     public string trademark;
     public string team;
     public string copyright;
-    //public string mlversion;
-    //public string sr2version;
-    // public string version;
+    public string github_repository;
     public byte colorR;
     public byte colorG;
     public byte colorB;
@@ -21,4 +21,27 @@ public class RepoMod
     public bool universal;
     public bool expansion;
     public bool plugin;
+    public List<RepoModVersion> versions = new List<RepoModVersion>();
+
+    public RepoModVersion getLatestVersion(string branch)
+    {
+        RepoModVersion latestVersion = null;
+        foreach (var version in versions)
+        {
+            if (branch == version.branch)
+            {
+                if(latestVersion == null)
+                    latestVersion = version;
+                else
+                {
+                    DateTime dateNew = DateTime.Parse(version.release_date, null, System.Globalization.DateTimeStyles.AdjustToUniversal);
+                    DateTime dateOld = DateTime.Parse(latestVersion.release_date, null, System.Globalization.DateTimeStyles.AdjustToUniversal);
+                    if(dateNew>dateOld)
+                        latestVersion = version;
+                }
+            }
+        }
+
+        return latestVersion;
+    }
 }

@@ -18,7 +18,7 @@ public static class SR2ERepoManager
     static void StartSeperate()
     {
         
-        List<RepoSave> repoSaves = new List<RepoSave>(){new RepoSave("official","https://api.sr2e.thatfinn.dev/")};
+        List<RepoSave> repoSaves = new List<RepoSave>(){new RepoSave("official","https://api.sr2e.thatfinn.dev/repo.json")};
         repoSaves.AddRange(SR2ESaveManager.data.repos);
         foreach (RepoSave repoSave in repoSaves)
         {
@@ -60,14 +60,17 @@ public static class SR2ERepoManager
                 }
                 catch (Exception e) 
                 { 
-                    MelonLogger.Msg("SR2ERepo is broken"); 
+                    MelonLogger.Error("Error fetching repo: "+repoSave.url);
+                    MelonLogger.Msg("The json file is broken! Please contact the repo maintainer!"); 
                     MelonLogger.Msg(e);
                 }
             }
         }
         catch (System.Exception e)
         {
-            MelonLogger.Msg("Error fetching file: " + e.Message);
+                MelonLogger.Error("Error fetching repo: "+repoSave.url);
+                MelonLogger.Error(e.Message);
+                MelonLogger.Error("This is normal if you are not connected to the internet!");
         }
 
         return null;

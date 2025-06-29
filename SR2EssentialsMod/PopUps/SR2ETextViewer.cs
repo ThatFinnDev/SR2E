@@ -14,6 +14,7 @@ public class SR2ETextViewer : SR2EPopUp
     {
         var comp = obj.AddComponent<SR2ETextViewer>();
         comp._text = objects[0].ToString();
+        comp.ReloadFont();
     }
     protected override void OnOpen()
     {
