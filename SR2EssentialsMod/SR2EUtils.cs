@@ -74,7 +74,7 @@ namespace SR2E
 
         }
 
-        public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector.weatherStates.items.ToArray();
+        public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector._configuration.WeatherStates.items.ToArray();
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
 
@@ -213,6 +213,22 @@ namespace SR2E
             }
             catch { SR2EEntryPoint.SendFontError(name); }
             return null;
+        }
+        internal static void ReloadFont(this SR2EPopUp popUp)
+        {
+            var ident = getOpenMenu.GetIdentifierViaReflection();
+            if (string.IsNullOrEmpty(ident.saveKey)) return;
+            if(SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
+            var dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
+            TMP_FontAsset fontAsset = null;
+            switch (dataFont)
+            {
+                case SR2EMenuFont.Default: fontAsset = SR2EEntryPoint.normalFont; break;
+                case SR2EMenuFont.Bold: fontAsset = SR2EEntryPoint.boldFont; break;
+                case SR2EMenuFont.Regular: fontAsset = SR2EEntryPoint.regularFont; break;
+                case SR2EMenuFont.SR2: fontAsset = SR2EEntryPoint.SR2Font; break;
+            }
+            if(fontAsset!=null) popUp.ApplyFont(fontAsset);
         }
         internal static void ReloadFont(this SR2EMenu menu)
         {
@@ -490,7 +506,7 @@ namespace SR2E
             }
         }
 
-        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
+        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector._configuration.IdentifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType[] vaccableTypes { get { return vaccableGroup.GetAllMembers().ToArray(); } }
         internal static IdentifiableType getIdentByName(string name)
         {
@@ -916,7 +932,7 @@ namespace SR2E
                 }
                 catch (Exception e)
                 {
-                    SR2ELogManager.SendError(e.ToString());
+                    //SR2ELogManager.SendError(e.ToString());
                 }
             }
 
@@ -928,7 +944,7 @@ namespace SR2E
                 }
                 catch (Exception e)
                 {
-                    SR2ELogManager.SendError(e.ToString());
+                    //SR2ELogManager.SendError(e.ToString());
                 }
             }
         }

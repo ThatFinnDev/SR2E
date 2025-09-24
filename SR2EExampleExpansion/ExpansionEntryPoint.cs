@@ -1,4 +1,5 @@
-﻿using SR2E.Expansion;
+﻿using Il2CppMonomiPark.SlimeRancher;
+using SR2E.Expansion;
 
 namespace SR2EExampleExpansion
 {

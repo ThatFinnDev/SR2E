@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands;
+﻿using Il2CppMonomiPark.SlimeRancher.Player;
+
+namespace SR2E.Commands;
 
 internal class ClearInventoryCommand : SR2ECommand
 {
@@ -29,7 +31,7 @@ internal class ClearInventoryCommand : SR2ECommand
 
         if(slotToClear==-1)
         {
-            foreach (Ammo.Slot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
+            foreach (AmmoSlot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
                 if(slot.IsUnlocked) slot.Clear();
             SendMessage(translation("cmd.clearinv.success"));
             return true;

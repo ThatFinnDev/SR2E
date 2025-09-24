@@ -12,6 +12,7 @@ internal class ModsCommand : SR2ECommand
 
         SendMessage(translation("cmd.mods.success"));
 
+        
         foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
             SendMessage(translation("cmd.mods.successdesc", melonBase.Info.Name, melonBase.Info.Author));
 

@@ -1,4 +1,6 @@
 ﻿using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using Il2CppMonomiPark.SlimeRancher;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Rendering;
 
 namespace SR2E.Commands;
@@ -10,6 +12,7 @@ internal class GraphicsCommand : SR2ECommand
     public override CommandType type => CommandType.Fun;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     { 
+        return new List<string>(){"InMaintenance"};
         if (argIndex == 0)
             return new List<string> { "NORMAL", "POTATO", "SHINY", "FAKEDAY", "ORANGE" };
         return null;
@@ -17,6 +20,7 @@ internal class GraphicsCommand : SR2ECommand
 
     public override void OnMainMenuUILoad()
     {
+        return;
         if(rangeLightInstance!=null)
         {
             rangeLightInstance.transform.GetChild(0).gameObject.SetActive(false);
@@ -35,6 +39,7 @@ internal class GraphicsCommand : SR2ECommand
     internal static bool activated = false;
     public override bool Execute(string[] args)
     {
+        return SendCommandMaintenance();
         if (!args.IsBetween(1,1)) return SendUsage();
 
         if (rangeLightInstance == null) return SendError(translation("cmd.graphics.norangelights")); 

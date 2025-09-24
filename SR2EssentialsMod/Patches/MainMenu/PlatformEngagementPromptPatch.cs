@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace SR2E.Patches.MainMenu;
 
-[HarmonyPatch(typeof(PlatformEngagementPrompt), nameof(PlatformEngagementPrompt.Awake))]
+[HarmonyPatch(typeof(PlatformEngagementPrompt), nameof(PlatformEngagementPrompt.Start))]
 internal static class PlatformEngagementPromptPatch
 {
     internal static void Postfix(PlatformEngagementPrompt __instance)

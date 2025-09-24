@@ -22,6 +22,7 @@ public class SR2EGridMenuList : SR2EPopUp
         var comp = obj.AddComponent<SR2EGridMenuList>();
         comp._entries = (TripleDictionary<string,string, Sprite>) objects[0];
         comp._onSelect = (Action<string>) objects[1];
+        comp.ReloadFont();
     }
     protected override void OnOpen()
     {

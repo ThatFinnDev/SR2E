@@ -23,11 +23,6 @@ public abstract class SR2EPopUp : MonoBehaviour
         if(block!=null)
             Destroy(block.gameObject);
     }
-    public virtual void ApplyFont(TMP_FontAsset font)
-    {
-        foreach (var text in gameObject.getAllChildrenOfType<TMP_Text>())
-            text.font = font;
-    }
     
     public new void Close()
     {
@@ -35,7 +30,11 @@ public abstract class SR2EPopUp : MonoBehaviour
         openPopUps.Remove(this);
         Destroy(gameObject);
     }
-
+    public virtual void ApplyFont(TMP_FontAsset font)
+    {
+        foreach (var text in gameObject.getAllChildrenOfType<TMP_Text>())
+            text.font = font;
+    }
     protected static void _Open(string identifier,Type type,SR2EMenuTheme theme,List<object> objects)
     {
         var asset = SystemContextPatch.bundle.LoadAsset(SystemContextPatch.getPopUpPath(identifier,theme));

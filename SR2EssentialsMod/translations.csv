@@ -28,6 +28,7 @@ modmenu.title,Mods,"Modifikationen"
 modmenu.warning.restart,"You've edited a value!\nPlease restart your game when you're finished!","Du hast einen Wert verändert! Du musst das Spiel neustarten um die Änderungen zu sehen!"
 modmenu.category.modmenu,"Mods","Modifikationen"
 modmenu.category.modconfig,"Mod Config","Einstellungen"
+modmenu.category.repo,Repositories,Repos
 modmenu.modinfo.expansion,Expansion: $1,Erweiterung: $1
 modmenu.modinfo.brokenexpansion,"Broken expansion: $1",Kaputte Erweiterung: $1
 modmenu.modinfo.brokenexpansiontitle,Broken expansion,Kaputte Modifikation: $1
@@ -49,6 +50,8 @@ modmenu.modconfig.enterfloat,"Please enter a decimal number",Gib bitte eine Dezi
 modmenu.modconfig.enterdouble,"Please enter a decimal number",Gib bitte eine Dezimalzahl ein!
 modmenu.modconfig.entertext,"Please enter text",Gib bitte Text ein!
 modmenu.modconfig.keylistening,"Listening...",Warten auf Eingabe...
+repomenu.title,Repo Menu,Repos
+feature.indevelopment,This feature is currently in development!,Diese Funktion wird noch entwickelt!
 cmd.loadasavefirst,"Load a save first!",Du musst zuerst ein Speicherstand laden!
 cmd.usage,"Usage: $1",Benutzung: $1
 cmd.noarguments,"The '<color=white>$1</color>' command takes no arguments","Der Befehl '<color=white>$1</color>' nimmt keine Argumente!"

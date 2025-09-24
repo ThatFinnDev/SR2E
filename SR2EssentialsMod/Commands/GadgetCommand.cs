@@ -1,4 +1,5 @@
-﻿using Il2CppMonomiPark.SlimeRancher.UI;
+﻿using Il2CppMonomiPark.SlimeRancher.Economy;
+using Il2CppMonomiPark.SlimeRancher.UI;
 
 namespace SR2E.Commands;
 
@@ -88,8 +89,8 @@ internal class GadgetCommand : SR2ECommand
                 else if (difference < 0)
                 {
                     IdentCostEntry costEntry = new IdentCostEntry();
-                    costEntry.amount = -difference;
-                    costEntry.identType = type;
+                    costEntry.Amount = -difference;
+                    costEntry.IdentType = type;
                     var entries = new Il2CppSystem.Collections.Generic.List<IdentCostEntry>();
                     entries.Add(costEntry);
                     SceneContext.Instance.GadgetDirector.TryToSpendItems(entries);

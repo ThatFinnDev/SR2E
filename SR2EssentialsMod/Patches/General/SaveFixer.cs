@@ -2,9 +2,15 @@ using System;
 using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Persist;
+
 
 namespace SR2E.Patches.General;
-//Experimental
+/*
+ 
+   BROKEN SINCE 1.0.0!
+   May be unnecessary
+ 
 [HarmonyPatch(typeof(SavedGame), nameof(SavedGame.Push), typeof(GameModel))]
 internal static class SavedGamePatch
 {
@@ -111,4 +117,4 @@ internal static class SavedGamePatch
 		reverseLookup._indexTable = table.ToArray();
 		savedGame.gameState.WeatherIndex.StateIndexTable = table.ToArray();
 	}
-}
+}*/

@@ -12,6 +12,7 @@ internal class RanchCommand : SR2ECommand
     public override CommandType type => CommandType.Cheat;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
+        return new List<string>(){"InMaintenance"};
         if (argIndex == 0) return arg0List;
         if (argIndex == 1) return doors;
         return null;
@@ -20,6 +21,7 @@ internal class RanchCommand : SR2ECommand
     public List<string> doors = new List<string>();
     public override bool Execute(string[] args)
     {
+        return SendCommandMaintenance();
         if (!args.IsBetween(2,2)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
@@ -42,7 +44,7 @@ internal class RanchCommand : SR2ECommand
             }
             return true;
         }
-
+/*
         accessDoors.RemoveAll(item => item == null);
         var ranch = GameContext.Instance.AutoSaveDirector.SavedGame.GameState.Ranch;
         switch (args[0])
@@ -61,11 +63,11 @@ internal class RanchCommand : SR2ECommand
                 foreach (AccessDoor accessDoor in accessDoors) if (accessDoor.Id == args[1]) { accessDoor.CurrState=AccessDoor.State.OPEN; break; }
                 SendMessage(translation("cmd.ranch.successunlock",args[1])); 
                 break;
-        }
+        }*/
 
         return false;
     }
-
+/*
     public override void OnUICoreLoad()
     {
         ExecuteInTicks((Action)(() =>
@@ -76,7 +78,7 @@ internal class RanchCommand : SR2ECommand
             doors.Add("*");
         }), 2);
     }
-
+*/
 
     public override void OnMainMenuUILoad()
     {
