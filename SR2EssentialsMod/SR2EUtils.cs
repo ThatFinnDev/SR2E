@@ -74,7 +74,7 @@ namespace SR2E
 
         }
 
-        public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector.weatherStates.items.ToArray();
+        public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector._configuration.WeatherStates.items.ToArray();
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
 
@@ -506,7 +506,7 @@ namespace SR2E
             }
         }
 
-        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector.identifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
+        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector._configuration.IdentifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType[] vaccableTypes { get { return vaccableGroup.GetAllMembers().ToArray(); } }
         internal static IdentifiableType getIdentByName(string name)
         {
@@ -932,7 +932,7 @@ namespace SR2E
                 }
                 catch (Exception e)
                 {
-                    SR2ELogManager.SendError(e.ToString());
+                    //SR2ELogManager.SendError(e.ToString());
                 }
             }
 
@@ -944,7 +944,7 @@ namespace SR2E
                 }
                 catch (Exception e)
                 {
-                    SR2ELogManager.SendError(e.ToString());
+                    //SR2ELogManager.SendError(e.ToString());
                 }
             }
         }

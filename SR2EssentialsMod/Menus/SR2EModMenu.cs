@@ -8,6 +8,7 @@ using SR2E.Enums;
 using SR2E.Enums.Features;
 using SR2E.Expansion;
 using SR2E.Managers;
+using SR2E.Popups;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -187,7 +188,17 @@ public class SR2EModMenu : SR2EMenu
         button2.sprite = whitePillBg;
         var button3 = transform.getObjRec<Image>("ModMenuRepoSelectionButtonRec");
         button2.sprite = whitePillBg;
-        button3.GetComponent<Button>().onClick.AddListener((Action)(() =>{ Close(); GM<SR2ERepoMenu>().Open(); }));
+        button3.GetComponent<Button>().onClick.AddListener((Action)(() =>
+        {
+            if (EnableRepoMenu.HasFlag())
+            {
+                Close(); GM<SR2ERepoMenu>().Open();
+            }
+            else
+            {
+                SR2ETextViewer.Open(translation("feature.indevelopment"));
+            }
+        }));
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modmenu");
         toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modconfig");
         toTranslate.Add(button3.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.repo");

@@ -1,4 +1,5 @@
 using System;
+using Il2CppMonomiPark.SlimeRancher.Player;
 using Il2CppTMPro;
 using SR2E.Menus;
 using SR2E.Popups;
@@ -63,7 +64,7 @@ internal class CheatMenuSlot : MonoBehaviour
         }
         SR2EGridMenuList.Open(dict, (Action<string>)((value) => { entryInput.SetText(value); }));
     }
-    private Ammo.Slot slot {
+    private AmmoSlot slot {
         get
         {
             try { return SceneContext.Instance.PlayerState.Ammo.Slots[slotID]; }

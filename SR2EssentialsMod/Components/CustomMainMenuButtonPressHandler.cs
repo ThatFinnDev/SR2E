@@ -8,7 +8,7 @@ internal class CustomMainMenuButtonPressHandler : MonoBehaviour
 {
     public void OnEnable()
     {
-        foreach (CustomMainMenuButton button in SR2MainMenuButtonPatch.buttons)
+        foreach (CustomMainMenuButton button in MainMenuLandingRootUIInitPatch.buttons)
             if (button.label.TableEntryReference.Key+"ButtonStarter(Clone)" == gameObject.name)
             {
                 button.action.Invoke();

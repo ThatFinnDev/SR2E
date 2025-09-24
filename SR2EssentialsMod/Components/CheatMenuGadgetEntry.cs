@@ -1,4 +1,5 @@
 using System;
+using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppTMPro;
 using UnityEngine.UI;
@@ -44,8 +45,8 @@ internal class CheatMenuGadgetEntry : MonoBehaviour
             if (difference < 0)
             {
                 IdentCostEntry costEntry = new IdentCostEntry();
-                costEntry.amount = -difference;
-                costEntry.identType = item;
+                costEntry.Amount = -difference;
+                costEntry.IdentType = item;
                 Il2CppSystem.Collections.Generic.List<IdentCostEntry> entries =
                     new Il2CppSystem.Collections.Generic.List<IdentCostEntry>();
                 entries.Add(costEntry);

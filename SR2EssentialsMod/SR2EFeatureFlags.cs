@@ -18,12 +18,12 @@ public static class SR2EFeatureFlags
         AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
         InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectTranslations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
-        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu,EnableRepoMenu
+        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu
         
     };
 
     private static FeatureFlag[] extraDevFlags => new[] {
-        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, ExperimentalSaveExport, ExperimentalKeyCodes
+        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, ExperimentalSaveExport, ExperimentalKeyCodes, EnableRepoMenu
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};

@@ -344,7 +344,7 @@ public static class CustomSettingsCreator
         
         var presetsSet = new OptionPresetSet(presets2.Cast<Il2CppSystem.Collections.Generic.IEnumerable<OptionPresetSet.OptionPreset>>());
         
-        button._optionsItemModels._items[0].presets = presetsSet;
+        button._optionsItemModels._items[0]._presets = presetsSet;
         
         button._optionsItemModels._items[0].OnSelectionChanged += new System.Action<int>(i =>
         {

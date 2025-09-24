@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands;
+﻿using Il2CppMonomiPark.SlimeRancher.Player;
+
+namespace SR2E.Commands;
 
 internal class RefillInvCommand : SR2ECommand
 {
@@ -34,10 +36,10 @@ internal class RefillInvCommand : SR2ECommand
         {
             for (int i = 0; i < SceneContext.Instance.PlayerState.Ammo.Slots.Count; i++)
             {
-                Ammo.Slot slot = SceneContext.Instance.PlayerState.Ammo.Slots[i];
+                AmmoSlot slot = SceneContext.Instance.PlayerState.Ammo.Slots[i];
                 if (slot.IsUnlocked)
                     if (slot.Id != null)
-                        slot.Count = SceneContext.Instance.PlayerState.Ammo._ammoModel.GetSlotMaxCount(slot.Id, i);
+                        slot.Count = slot.MaxCount;
             }
 
             SendMessage(translation("cmd.refillinv.success"));
@@ -52,8 +54,8 @@ internal class RefillInvCommand : SR2ECommand
         if (SceneContext.Instance.PlayerState.Ammo.Slots[slotToFill].Id == null)
             return SendError(translation("cmd.refillinv.error.slotempty", slotToFill + 1));
 
-        Ammo.Slot invSlot = SceneContext.Instance.PlayerState.Ammo.Slots[slotToFill];
-        invSlot.Count = SceneContext.Instance.PlayerState.Ammo._ammoModel.GetSlotMaxCount(invSlot.Id, slotToFill);
+        AmmoSlot invSlot = SceneContext.Instance.PlayerState.Ammo.Slots[slotToFill];
+        invSlot.Count = invSlot.MaxCount;
         SendMessage(translation("cmd.refillinv.successsingle", slotToFill + 1));
         return true;
     }

@@ -2,7 +2,10 @@ using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 
 namespace SR2E.Patches.InGame;
-
+/*
+ 
+ BROKEN SINCE 1.0.0!
+ Needs fixing
 
 [HarmonyPatch(typeof(SavedGame), nameof(SavedGame.Push), typeof(GameModel))]
 public static class LoadPatch
@@ -34,4 +37,4 @@ public static class SavePatch
         MelonLogger.Error($"Error occured while pulling saved game!\nThe error: {__exception}");
         return __exception;
     }
-}
+}*/

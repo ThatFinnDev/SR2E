@@ -51,6 +51,7 @@ modmenu.modconfig.enterdouble,"Please enter a decimal number",Gib bitte eine Dez
 modmenu.modconfig.entertext,"Please enter text",Gib bitte Text ein!
 modmenu.modconfig.keylistening,"Listening...",Warten auf Eingabe...
 repomenu.title,Repo Menu,Repos
+feature.indevelopment,This feature is currently in development!,Diese Funktion wird noch entwickelt!
 cmd.loadasavefirst,"Load a save first!",Du musst zuerst ein Speicherstand laden!
 cmd.usage,"Usage: $1",Benutzung: $1
 cmd.noarguments,"The '<color=white>$1</color>' command takes no arguments","Der Befehl '<color=white>$1</color>' nimmt keine Argumente!"
