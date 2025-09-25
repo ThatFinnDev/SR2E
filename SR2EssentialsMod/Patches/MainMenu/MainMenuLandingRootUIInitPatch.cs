@@ -74,6 +74,7 @@ internal static class MainMenuLandingRootUIInitPatch
     private static void Postfix()
     {
         ChangeVersionLabel();
+        ExecuteInTicks((Action)(() => { ChangeVersionLabel();}), 3);
         ExecuteInTicks((Action)(() => { ChangeVersionLabel();}), 10);
     }
 }

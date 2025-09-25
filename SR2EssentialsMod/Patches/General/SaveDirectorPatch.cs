@@ -1,4 +1,5 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
+using Il2CppSystem.Reflection;
 
 namespace SR2E.Patches.General;
 
@@ -13,6 +14,7 @@ internal static class SaveDirectorPatch
     internal static void Postfix(AutoSaveDirector __instance)
     {
         __instance._configuration._saveSlotCount = SAVESLOT_COUNT.Get();
+        MelonLogger.Msg(__instance._configuration._saveSlotCount);
         SR2EEntryPoint.SaveDirectorLoaded();
     }
 }

@@ -160,7 +160,8 @@ namespace SR2E
             return FXHelpers.SpawnFX(fx, pos, rot);
         }
         public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-  
+        public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
+
         public static Sprite ConvertToSprite(this Texture2D texture)
         {
             return Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
@@ -1047,7 +1048,7 @@ namespace SR2E
         public static void ExecuteInTicks(Action action, int ticks)
         {
             if (action == null) return;
-            actionCounter.Add(new Action(action),ticks);
+            actionCounter.Add((Action)(() => { action.Invoke(); }),ticks);
         }
         public static void ExecuteInSeconds(Action action, float seconds)
         {

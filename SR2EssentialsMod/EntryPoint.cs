@@ -285,6 +285,10 @@ public class SR2EEntryPoint : MelonMod
         switch (sceneName)
         {
             case "MainMenuUI":
+                //For some reason there are 2 configurations? And due to Il2CPP, just patching via Harmony isn't sufficient
+                foreach (var configuration in GetAll<AutoSaveDirectorConfiguration>())
+                    configuration._saveSlotCount = SAVESLOT_COUNT.Get();
+                
                 CustomTimeScale = 1f;
                 if (ExperimentalSettingsInjection.HasFlag())
                 {
