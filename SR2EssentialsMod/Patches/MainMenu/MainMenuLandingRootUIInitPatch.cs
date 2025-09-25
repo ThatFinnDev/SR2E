@@ -58,15 +58,16 @@ internal static class MainMenuLandingRootUIInitPatch
             try
             {
                 var versionLabel = Get<LocalizedVersionText>("Version Label").GetComponent<TextMeshProUGUI>();
-
-                if (SR2EEntryPoint.newVersion != null)
-                    if(SR2EEntryPoint.newVersion!=BuildInfo.DisplayVersion)
-                    {
-                        if (SR2EEntryPoint.updatedSR2E) 
-                            versionLabel.text = translation("patches.localizedversionpatch.downloadedversion",SR2EEntryPoint.newVersion,versionLabel.text);
-                        else versionLabel.text = translation("patches.localizedversionpatch.newversion",SR2EEntryPoint.newVersion,versionLabel.text);
-                    }
-                versionLabel.text = translation("patches.localizedversionpatch.default",MelonLoader.BuildInfo.Version,versionLabel.text);
+                if(!versionLabel.text.Contains("Mel"))
+                {
+                    if (SR2EEntryPoint.newVersion != null)
+                        if (SR2EEntryPoint.newVersion != BuildInfo.DisplayVersion)
+                        {
+                            if (SR2EEntryPoint.updatedSR2E) versionLabel.text = translation("patches.localizedversionpatch.downloadedversion", SR2EEntryPoint.newVersion, versionLabel.text);
+                            else versionLabel.text = translation("patches.localizedversionpatch.newversion", SR2EEntryPoint.newVersion, versionLabel.text);
+                        }
+                    versionLabel.text = translation("patches.localizedversionpatch.default", MelonLoader.BuildInfo.Version, versionLabel.text);
+                }
             }
             catch (Exception e) { MelonLogger.Error(e); }
     }

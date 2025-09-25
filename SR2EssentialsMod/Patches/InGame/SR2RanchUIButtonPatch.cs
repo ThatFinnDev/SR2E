@@ -1,4 +1,5 @@
-﻿using SR2E.Buttons;
+﻿using Il2CppMonomiPark.SlimeRancher;
+using SR2E.Buttons;
 using Il2CppMonomiPark.SlimeRancher.UI.RanchHouse;
 
 namespace SR2E.Patches.InGame;
