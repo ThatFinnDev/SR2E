@@ -2,6 +2,7 @@ using System;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
+using SR2E.Commands;
 
 namespace SR2E.Patches.SaveFixer;
 
@@ -12,6 +13,7 @@ internal static class SaverFixerPushRanch
     {
         try
         {
+            RanchCommand.LoadAutoComplete(ranch);
             if (!SR2EEntryPoint.disableFixSaves) foreach(var plot in ranch.Plots)
             {
                 //Remove invalid plot
