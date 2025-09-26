@@ -8,8 +8,6 @@ internal static class SaveButtonPatch
 {
     internal static void Postfix(ButtonBehaviorViewHolder __instance)
     {
-        GameContext.Instance.AutoSaveDirector._configuration._saveSlotCount=SAVESLOT_COUNT.Get();
-        ExecuteInTicks((Action)(() => { GameContext.Instance.AutoSaveDirector._configuration._saveSlotCount=SAVESLOT_COUNT.Get();}), 3);
         if (!ExperimentalSaveExport.HasFlag()) return;
         if (!SR2EEntryPoint.mainMenuLoaded) return;
         if (__instance.gameObject.name == "SaveGameSlotButton(Clone)")

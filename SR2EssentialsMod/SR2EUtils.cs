@@ -1,5 +1,6 @@
 ﻿global using static SR2E.Managers.SR2EInputManager;
 using System;
+using System.Diagnostics;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Linq;
 using System.Reflection;
@@ -311,8 +312,12 @@ namespace SR2E
 
         internal static Texture2D LoadImage(string filename)
         {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            System.IO.Stream manifestResourceStream = executingAssembly.GetManifestResourceStream(executingAssembly.GetName().Name + "." + filename + ".png");
+            var realFilename = filename;
+            if(!realFilename.EndsWith(".png")&&!realFilename.EndsWith(".jpg")&&!realFilename.EndsWith(".exr"))
+                realFilename += ".png";
+            var method = new StackTrace().GetFrame(1).GetMethod();
+            var assembly = method.ReflectedType.Assembly;
+            System.IO.Stream manifestResourceStream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + realFilename);
             byte[] array = new byte[manifestResourceStream.Length];
             manifestResourceStream.Read(array, 0, array.Length);
             Texture2D texture2D = new Texture2D(1, 1);
@@ -320,7 +325,38 @@ namespace SR2E
             texture2D.filterMode = FilterMode.Bilinear;
             return texture2D;
         }
+        internal static Dictionary<string, byte[]> LoadEmbeddedResources(string folderNamespace, bool recursive = false)
+        {
+            var method = new StackTrace().GetFrame(1).GetMethod();
+            var assembly = method.ReflectedType.Assembly;
+            var baseNamespace = assembly.GetName().Name + "." + folderNamespace;
 
+            var resourceNames = assembly.GetManifestResourceNames().Where(r => recursive ? r.StartsWith(baseNamespace + ".") : r.Substring(0, r.LastIndexOf('.')).Equals(baseNamespace)).ToArray();
+            var result = new Dictionary<string, byte[]>();
+
+            foreach (var resourceName in resourceNames)
+            {
+                using (var stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    if (stream == null) continue;
+                    byte[] bytes = new byte[stream.Length];
+                    stream.Read(bytes, 0, bytes.Length);
+
+                    string fileName = resourceName.Substring(baseNamespace.Length + 1);
+                    result[fileName] = bytes;
+                }
+            }
+            return result;
+        }
+        internal static byte[] LoadEmbeddedResource(string filename)
+        {
+            var method = new StackTrace().GetFrame(1).GetMethod();
+            var assembly = method.ReflectedType.Assembly;
+            System.IO.Stream manifestResourceStream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
+            byte[] array = new byte[manifestResourceStream.Length];
+            manifestResourceStream.Read(array, 0, array.Length);
+            return array;
+        }
 
         internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithActions = new Dictionary<MelonPreferences_Entry, Action>();
         public static void AddNullAction(this MelonPreferences_Entry entry) => entriesWithActions.Add(entry, null);

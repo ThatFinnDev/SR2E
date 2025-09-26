@@ -19,9 +19,7 @@ internal class GameContextPatch
             Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
         };
         SR2EUtils._killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
-        AutoSaveDirector autoSaveDirector = GameContext.Instance.AutoSaveDirector;
-        autoSaveDirector._configuration._saveSlotCount = SAVESLOT_COUNT.Get();
-
+        
         foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
         {
             var pname = particle.gameObject.name.Replace(' ', '_');
@@ -42,7 +40,7 @@ internal class GameContextPatch
             if (AddModMenuButton.HasFlag())
             {
                 LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                new CustomMainMenuButton(label, LoadSprite("modsMenuIcon"), 4, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
+                new CustomMainMenuButton(label, LoadSprite("Assets.modsMenuIcon"), 4, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
             }
 
