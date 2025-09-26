@@ -35,8 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="*.csv" />
-    <EmbeddedResource Include="Assets\VolumePresets\POTATO" />
-    <EmbeddedResource Include="Assets\modsMenuIcon.png" />
+    <EmbeddedResource Include="Assets\**" />
     <EmbeddedResource Include="srtwoessentials.assetbundle" />
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />

@@ -37,34 +37,40 @@ public static class SR2EVolumeProfileManager
     }
     public static bool LoadProfile(string preset, byte[] bytes)
     {
-        if (preset == "NORMAL") return false;
-        if(presets.ContainsKey(preset)) return false;
-        if (bytes == null || bytes.Length == 0) return false;
-        
-        VolumeProfileData data;
-        var ms = new MemoryStream(bytes);
-        
-        var serializer = new XmlSerializer(typeof(VolumeProfileData));
-        data = (VolumeProfileData)serializer.Deserialize(ms);
-        
-        var newProfile = ScriptableObject.CreateInstance<VolumeProfile>();
-
-        foreach (var compData in data.components)
+        try
         {
-            var type = Il2CppSystem.Type.GetType(compData.typeName);
-            if (type == null) continue;
+
+            if (preset == "NORMAL") return false;
+            if(presets.ContainsKey(preset)) return false;
+            if (bytes == null || bytes.Length == 0) return false;
+        
+            VolumeProfileData data;
+            var ms = new MemoryStream(bytes);
+        
+            var serializer = new XmlSerializer(typeof(VolumeProfileData));
+            data = (VolumeProfileData)serializer.Deserialize(ms);
+        
+            var newProfile = ScriptableObject.CreateInstance<VolumeProfile>();
+
+            foreach (var compData in data.components)
+            {
+                var type = Il2CppSystem.Type.GetType(compData.typeName);
+                if (type == null) continue;
             
 
-            var comp = ScriptableObject.CreateInstance(type).TryCast<VolumeComponent>();
-            comp.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-            JsonUtility.FromJsonOverwrite(compData.jsonData, comp);
+                var comp = ScriptableObject.CreateInstance(type).TryCast<VolumeComponent>();
+                comp.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+                JsonUtility.FromJsonOverwrite(compData.jsonData, comp);
 
-            newProfile.components.Add(comp);
-        }
+                newProfile.components.Add(comp);
+            }
         
-        newProfile.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-        presets[preset]=newProfile;
-        return true;
+            newProfile.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            presets[preset]=newProfile;
+            return true;
+        }
+        catch (Exception e) { MelonLogger.Error("Error loading preset "+preset+"\n"+e); }
+        return false;
     }
 
     public static bool UnloadProfile(string preset)
