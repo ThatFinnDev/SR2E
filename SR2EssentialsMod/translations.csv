@@ -210,6 +210,7 @@ cmd.scale.success,"Successfully changed the scale of the actor!","Die Charakterg
 cmd.scale.description,"Changes the scale of an actor","Verändert die Größe eines Charakters"
 cmd.scale.usegordocmd,"Gordos only have a base scale, please use the 'gordo' command to scale the gordo!","Gordos haben leider nur eine veränderbare Basisgröße, bitte benütze den Befehl names 'gordo' um die Gordogröße zu verändern!"
 cmd.newbucks.success,"Successfully added $1 newbucks!","Du hast nun $1 Newbucks mehr!"
+cmd.newbucks.error,"There was an error adding newbucks!","Es ist ein Fehler aufgetreten beider Newbucksveränderung!"
 cmd.newbucks.description,"Adds or removes newbucks","Gibt oder entfernt Newbucks"
 cmd.noclip.success,"Successfully activated noclip!","Noclip wurde erfolgreich aktiviert"
 cmd.noclip.success2,"Successfully deactivated noclip!","Noclip wurde erfolgreich deaktiviert"
