@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Economy;
+using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -46,10 +48,82 @@ namespace SR2E
         // public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE, WEATHER }
         public static SystemContext systemContext => SystemContext.Instance;
         public static GameContext gameContext => GameContext.Instance;
+
+
         public static SceneContext sceneContext => SceneContext.Instance;
         internal static Damage _killDamage;
         public static Damage killDamage => _killDamage;
 
+        public static ICurrency toICurrency(this CurrencyDefinition currencyDefinition) => currencyDefinition.TryCast<ICurrency>();
+        public static bool SetCurrency(string referenceID,int amount)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return false;
+            if (!inGame) return false;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            SceneContext.Instance.PlayerState._model.SetCurrency(def.toICurrency(), amount);
+            return true;
+        }
+        public static bool SetCurrency(string referenceID,int amount, int amountEverCollected)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return false;
+            if (!inGame) return false;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(), amount, amountEverCollected);
+            return true;
+        }
+        public static bool SetCurrencyEverCollected(string referenceID,int amountEverCollected)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return false;
+            if (!inGame) return false;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(), GetCurrency(referenceID),amountEverCollected);
+            return true;
+        }
+
+        public static bool AddCurrency(string referenceID,int amount)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return false;
+            if (!inGame) return false;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            SceneContext.Instance.PlayerState._model.AddCurrency(def.toICurrency(), amount);
+            return true;
+        }
+        public static int GetCurrency(string referenceID)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return -1;
+            if (!inGame) return -1;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            var curr = SceneContext.Instance.PlayerState._model.GetCurrencyAmount(def.toICurrency());
+            if (curr.ToString() == "NaN") return 0;
+            return curr;
+        }
+        public static int GetCurrencyEverCollected(string referenceID)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return -1;
+            if (!inGame) return -1;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            var curr = SceneContext.Instance.PlayerState._model.GetCurrencyAmountEverCollected(def.toICurrency());
+            if (curr.ToString() == "NaN") return 0;
+            return curr;
+        }
         public static WeatherStateDefinition getWeatherStateByName(string name)
         {
             foreach (WeatherStateDefinition state in weatherStateDefinitions)

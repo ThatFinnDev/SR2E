@@ -16,15 +16,3 @@ public class AutoSaveDirectorSaveSlotPatch
         __result = SAVESLOT_COUNT.Get();
     }
 }
-[HarmonyPatch(typeof(AutoSaveDirectorConfiguration), nameof(AutoSaveDirectorConfiguration._saveSlotCount), MethodType.Getter)]
-public class AutoSaveDirectorSaveSlotPatch2
-{
-    public static void Prefix(AutoSaveDirectorConfiguration __instance, ref int __result)
-    {
-        __result = SAVESLOT_COUNT.Get();
-    }
-    public static void Postfix(AutoSaveDirectorConfiguration __instance, ref int __result)
-    {
-        __result = SAVESLOT_COUNT.Get();
-    }
-}
