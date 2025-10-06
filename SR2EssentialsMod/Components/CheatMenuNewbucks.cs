@@ -21,13 +21,9 @@ internal class CheatMenuNewbucks : MonoBehaviour
             if (dontChange>0)
             { dontChange--; return; }
             dontChange = 0;
-            double newValue = Math.Pow(value, 3.51);
-            if (newValue < 0) newValue = 0;
-            if (newValue > 9999999) newValue = 999999999;
-            handleText.SetText(((int)newValue).ToString());
-            
-            //I don't know what ICurrency does, but using null works, it may break in the future tho.
-            SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(null, (int)newValue, (int)newValue);
+            int newValue = Mathf.Clamp((int)Math.Pow(value, 3.51),0,SceneContext.Instance.PlayerState._model.maxCurrency);
+            handleText.SetText(newValue.ToString());
+            SetCurrency("newbuck", newValue, newValue);
         }));
     }
 
@@ -37,12 +33,11 @@ internal class CheatMenuNewbucks : MonoBehaviour
         if(!didStartRan) Start();
         try
         {
-            //I don't know what ICurrency does, but using null works, it may break in the future tho.
-            double newValue = Math.Pow(SceneContext.Instance.PlayerState._model.GetCurrencyAmount(null), (1.0 / 3.51));
+            double newValue = Math.Pow(GetCurrency("newbuck"), (1.0 / 3.51));
+            if (newValue.ToString() == "NaN") newValue = 0;
             dontChange = 2;
             amountSlider.value = float.Parse(newValue.ToString());
-            //I don't know what ICurrency does, but using null works, it may break in the future tho.
-            handleText.SetText(SceneContext.Instance.PlayerState._model.GetCurrencyAmount(null).ToString());
+            handleText.SetText(GetCurrency("newbuck").ToString());
         }
         catch { }
     }

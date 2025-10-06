@@ -1,10 +1,13 @@
 ﻿global using static SR2E.Managers.SR2EInputManager;
 using System;
+using System.Diagnostics;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Economy;
+using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -45,10 +48,82 @@ namespace SR2E
         // public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE, WEATHER }
         public static SystemContext systemContext => SystemContext.Instance;
         public static GameContext gameContext => GameContext.Instance;
+
+
         public static SceneContext sceneContext => SceneContext.Instance;
         internal static Damage _killDamage;
         public static Damage killDamage => _killDamage;
 
+        public static ICurrency toICurrency(this CurrencyDefinition currencyDefinition) => currencyDefinition.TryCast<ICurrency>();
+        public static bool SetCurrency(string referenceID,int amount)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return false;
+            if (!inGame) return false;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            SceneContext.Instance.PlayerState._model.SetCurrency(def.toICurrency(), amount);
+            return true;
+        }
+        public static bool SetCurrency(string referenceID,int amount, int amountEverCollected)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return false;
+            if (!inGame) return false;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(), amount, amountEverCollected);
+            return true;
+        }
+        public static bool SetCurrencyEverCollected(string referenceID,int amountEverCollected)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return false;
+            if (!inGame) return false;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(), GetCurrency(referenceID),amountEverCollected);
+            return true;
+        }
+
+        public static bool AddCurrency(string referenceID,int amount)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return false;
+            if (!inGame) return false;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            SceneContext.Instance.PlayerState._model.AddCurrency(def.toICurrency(), amount);
+            return true;
+        }
+        public static int GetCurrency(string referenceID)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return -1;
+            if (!inGame) return -1;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            var curr = SceneContext.Instance.PlayerState._model.GetCurrencyAmount(def.toICurrency());
+            if (curr.ToString() == "NaN") return 0;
+            return curr;
+        }
+        public static int GetCurrencyEverCollected(string referenceID)
+        {
+            if (string.IsNullOrWhiteSpace(referenceID)) return -1;
+            if (!inGame) return -1;
+            var id = referenceID;
+            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
+            
+            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
+            var curr = SceneContext.Instance.PlayerState._model.GetCurrencyAmountEverCollected(def.toICurrency());
+            if (curr.ToString() == "NaN") return 0;
+            return curr;
+        }
         public static WeatherStateDefinition getWeatherStateByName(string name)
         {
             foreach (WeatherStateDefinition state in weatherStateDefinitions)
@@ -160,11 +235,22 @@ namespace SR2E
             return FXHelpers.SpawnFX(fx, pos, rot);
         }
         public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-  
+        public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
+
         public static Sprite ConvertToSprite(this Texture2D texture)
         {
             return Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
         }
+
+        public static Texture2D Base64ToTexture2D(string base64)
+        {
+            if (string.IsNullOrEmpty(base64)) return null;
+            byte[] bytes = System.Convert.FromBase64String(base64);
+            Texture2D texture = new Texture2D(2, 2);
+            if (texture.LoadImage(bytes, false)) return texture;
+            return null;
+        }
+
         public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
         internal static TMP_FontAsset FontFromGame(string name)
         {
@@ -300,8 +386,12 @@ namespace SR2E
 
         internal static Texture2D LoadImage(string filename)
         {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            System.IO.Stream manifestResourceStream = executingAssembly.GetManifestResourceStream(executingAssembly.GetName().Name + "." + filename + ".png");
+            var realFilename = filename;
+            if(!realFilename.EndsWith(".png")&&!realFilename.EndsWith(".jpg")&&!realFilename.EndsWith(".exr"))
+                realFilename += ".png";
+            var method = new StackTrace().GetFrame(1).GetMethod();
+            var assembly = method.ReflectedType.Assembly;
+            System.IO.Stream manifestResourceStream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + realFilename);
             byte[] array = new byte[manifestResourceStream.Length];
             manifestResourceStream.Read(array, 0, array.Length);
             Texture2D texture2D = new Texture2D(1, 1);
@@ -309,7 +399,38 @@ namespace SR2E
             texture2D.filterMode = FilterMode.Bilinear;
             return texture2D;
         }
+        internal static Dictionary<string, byte[]> LoadEmbeddedResources(string folderNamespace, bool recursive = false)
+        {
+            var method = new StackTrace().GetFrame(1).GetMethod();
+            var assembly = method.ReflectedType.Assembly;
+            var baseNamespace = assembly.GetName().Name + "." + folderNamespace;
 
+            var resourceNames = assembly.GetManifestResourceNames().Where(r => recursive ? r.StartsWith(baseNamespace + ".") : r.Substring(0, r.LastIndexOf('.')).Equals(baseNamespace)).ToArray();
+            var result = new Dictionary<string, byte[]>();
+
+            foreach (var resourceName in resourceNames)
+            {
+                using (var stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    if (stream == null) continue;
+                    byte[] bytes = new byte[stream.Length];
+                    stream.Read(bytes, 0, bytes.Length);
+
+                    string fileName = resourceName.Substring(baseNamespace.Length + 1);
+                    result[fileName] = bytes;
+                }
+            }
+            return result;
+        }
+        internal static byte[] LoadEmbeddedResource(string filename)
+        {
+            var method = new StackTrace().GetFrame(1).GetMethod();
+            var assembly = method.ReflectedType.Assembly;
+            System.IO.Stream manifestResourceStream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
+            byte[] array = new byte[manifestResourceStream.Length];
+            manifestResourceStream.Read(array, 0, array.Length);
+            return array;
+        }
 
         internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithActions = new Dictionary<MelonPreferences_Entry, Action>();
         public static void AddNullAction(this MelonPreferences_Entry entry) => entriesWithActions.Add(entry, null);
@@ -1037,7 +1158,7 @@ namespace SR2E
         public static void ExecuteInTicks(Action action, int ticks)
         {
             if (action == null) return;
-            actionCounter.Add(new Action(action),ticks);
+            actionCounter.Add((Action)(() => { action.Invoke(); }),ticks);
         }
         public static void ExecuteInSeconds(Action action, float seconds)
         {

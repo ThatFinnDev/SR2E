@@ -1,4 +1,5 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
+using Il2CppSystem.Reflection;
 
 namespace SR2E.Patches.General;
 
@@ -9,7 +10,7 @@ internal static class SaveDirectorPatch
     {
         SR2EEntryPoint.OnSaveDirectorLoading(__instance);
     }
-    internal static void Postfix()
+    internal static void Postfix(AutoSaveDirector __instance)
     {
         SR2EEntryPoint.SaveDirectorLoaded();
     }

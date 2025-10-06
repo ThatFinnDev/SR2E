@@ -126,7 +126,8 @@ public class SR2EConsole : SR2EMenu
                 string[] args = null;
                 if (split.Count != 0)
                     args = split.ToArray();
-                List<string> possibleAutoCompletes = (SR2ECommandManager.commands[cmd].GetAutoComplete(argIndex, args));
+                List<string> possibleAutoCompletes = null;
+                try { possibleAutoCompletes = SR2ECommandManager.commands[cmd].GetAutoComplete(argIndex, args); } catch (Exception e) { MelonLogger.Error($"Error in command auto complete!\n{e}"); }
                 if (possibleAutoCompletes != null)
                     if (possibleAutoCompletes.Count == 0)
                         possibleAutoCompletes = null;

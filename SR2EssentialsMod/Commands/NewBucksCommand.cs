@@ -1,4 +1,5 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Economy;
+using Il2CppPlayFab.ClientModels;
 
 namespace SR2E.Commands;
 
@@ -21,11 +22,9 @@ internal class NewBucksCommand : SR2ECommand
 
         int amount = 0;
         if (!this.TryParseInt(args[0], out amount)) return false;
-        
-        //I don't know what ICurrency does, but using null works, it may break in the future tho.
-        int newNewBuckAmount = Mathf.Clamp(amount + SceneContext.Instance.PlayerState._model.GetCurrencyAmount(null), 0, int.MaxValue);
-        //I don't know what ICurrency does, but using null works, it may break in the future tho.
-        SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(null,newNewBuckAmount,newNewBuckAmount);
+
+        if (!AddCurrency("newbuck", amount))
+            return SendError(translation("cmd.newbucks.error"));
         SendMessage(translation("cmd.newbucks.success",amount));
         return true;
     }

@@ -84,17 +84,11 @@ internal class GadgetCommand : SR2ECommand
                 newValue=Mathf.Clamp(newValue, 0, int.MaxValue);
                 
                 if (newValue > 0 && !SceneContext.Instance.GadgetDirector.HasBlueprint(type)) SceneContext.Instance.GadgetDirector.AddBlueprint(type);
-                int difference = newValue - oldValue;
-                if (difference > 0) SceneContext.Instance.GadgetDirector.AddItem(type,difference);
-                else if (difference < 0)
-                {
-                    IdentCostEntry costEntry = new IdentCostEntry();
-                    costEntry.Amount = -difference;
-                    costEntry.IdentType = type;
-                    var entries = new Il2CppSystem.Collections.Generic.List<IdentCostEntry>();
-                    entries.Add(costEntry);
-                    SceneContext.Instance.GadgetDirector.TryToSpendItems(entries);
-                }
+                
+                //Adding one updates the new value everywhere. Not doing can causes issues
+                SceneContext.Instance.GadgetDirector._model.SetCount(type,newValue-1);
+                SceneContext.Instance.GadgetDirector.AddItem(type,1);
+                
                 switch (args[0])
                 {
                     case "set": SendMessage(translation("cmd.gadget.successset", itemName, amount)); break;

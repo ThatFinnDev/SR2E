@@ -16,6 +16,8 @@ public abstract class SR2EMenu : MonoBehaviour
 {
     private bool changedOpenState = false;
     public static MenuIdentifier GetMenuIdentifier() => new ();
+    //SR2EMenu doesnt work for whatever reason
+    private SR2EMenu _menuToOpenOnClose;
     public virtual bool createCommands => false;
     public virtual bool inGameOnly => false;
     //private List<FeatureFlag> requiredFeatures => SR2EEntryPoint.menus[this][nameof(requiredFeatures)] as List<FeatureFlag>;
@@ -88,8 +90,23 @@ public abstract class SR2EMenu : MonoBehaviour
             popUp.Close();
         DoActions(SR2EEntryPoint.menus[this]["closeActions"] as List<MenuActions>);
         try { OnClose(); }catch (Exception e) { MelonLogger.Error(e); }
+        
+        if(_menuToOpenOnClose!=null)
+            ExecuteInTicks((Action)(() =>
+            {
+                _menuToOpenOnClose.TryCast<SR2EMenu>().Open();
+                _menuToOpenOnClose = null;
+            }), 2);
     }
-    
+
+    //SR2EMenu doesnt work for whatever reason
+    public void OpenC(MonoBehaviour menuToOpenOnClose)
+    {
+        if (!(menuToOpenOnClose is SR2EMenu)) return;
+        _menuToOpenOnClose = menuToOpenOnClose.TryCast<SR2EMenu>();
+        Open();
+    }
+
     public new void Open()
     {
         if (changedOpenState) return;
@@ -97,6 +114,9 @@ public abstract class SR2EMenu : MonoBehaviour
         if (isAnyMenuOpen) return;
         if(inGameOnly) if (!inGame) return;
         if (SR2EWarpManager.warpTo != null) return;
+        foreach (var pair in SR2EEntryPoint.menus)
+            if(pair.Key!=this) pair.Key._menuToOpenOnClose = null;
+        
         switch (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name)
         {
             case "StandaloneStart":

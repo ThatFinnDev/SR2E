@@ -1,7 +1,4 @@
-﻿using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppMonomiPark.SlimeRancher;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Rendering;
+﻿using SR2E.Managers;
 
 namespace SR2E.Commands;
 
@@ -12,69 +9,41 @@ internal class GraphicsCommand : SR2ECommand
     public override CommandType type => CommandType.Fun;
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     { 
-        return new List<string>(){"InMaintenance"};
+        //return new List<string>(){"InMaintenance"};
         if (argIndex == 0)
-            return new List<string> { "NORMAL", "POTATO", "SHINY", "FAKEDAY", "ORANGE" };
+        {
+            var list = new List<string> { "NORMAL" };
+            list.AddRange(SR2EVolumeProfileManager.presets.Keys);
+            return list;
+        }
         return null;
     }
 
-    public override void OnMainMenuUILoad()
-    {
-        return;
-        if(rangeLightInstance!=null)
-        {
-            rangeLightInstance.transform.GetChild(0).gameObject.SetActive(false);
-            rangeLightInstance.transform.GetChild(1).gameObject.SetActive(false);
-            rangeLightInstance.transform.GetChild(2).gameObject.SetActive(false);
-            rangeLightInstance.GetComponent<SunAndMoonVector>().enabled = false;
-            return;
-        }
-        GameObject obj = GameObject.Instantiate(Get<GameObject>("Range Lights"));
-        obj.transform.GetChild(1).gameObject.SetActive(false);
-        Object.DontDestroyOnLoad(obj);
-        rangeLightInstance = obj;
-    }
 
     internal static GameObject rangeLightInstance;
     internal static bool activated = false;
     public override bool Execute(string[] args)
     {
-        return SendCommandMaintenance();
         if (!args.IsBetween(1,1)) return SendUsage();
-
-        if (rangeLightInstance == null) return SendError(translation("cmd.graphics.norangelights")); 
-
-        rangeLightInstance.transform.GetChild(0).gameObject.SetActive(false);
-        rangeLightInstance.transform.GetChild(1).gameObject.SetActive(false);
-        rangeLightInstance.transform.GetChild(2).gameObject.SetActive(false);
-        rangeLightInstance.GetComponent<SunAndMoonVector>().enabled = false;
-        Il2CppArrayBase<ShaderGlobalVectorUpdater> vectorUpdaters = rangeLightInstance.GetComponents<ShaderGlobalVectorUpdater>();
-        for (int i = 0; i < vectorUpdaters.Length; i++)
-            vectorUpdaters[i].enabled = false;
         
-        switch (args[0].ToUpper())
+        if (args[0] == "NORMAL")
         {
-            default:
-                SendMessage(translation("cmd.graphics.success","normal"));
-                return true;
-            case "POTATO":
-                rangeLightInstance.transform.GetChild(2).gameObject.SetActive(true);
-                SendMessage(translation("cmd.graphics.success","potato"));
-                return true;
-            case "SHINY":
-                rangeLightInstance.transform.GetChild(0).gameObject.SetActive(true);
-                SendMessage(translation("cmd.graphics.success","shiny"));
-                return true;
-            case "FAKEDAY":
-                rangeLightInstance.transform.GetChild(1).gameObject.SetActive(true);
-                SendMessage(translation("cmd.graphics.success","fakeday"));
-                return true;
-            case "ORANGE":
-                rangeLightInstance.transform.GetChild(1).gameObject.SetActive(true);
-                rangeLightInstance.GetComponent<SunAndMoonVector>().enabled = true;
-                for (int i = 0; i < vectorUpdaters.Length; i++) vectorUpdaters[i].enabled = true;
-                SendMessage(translation("cmd.graphics.success","orange"));
-                return true;
+            SR2EVolumeProfileManager.DisableProfile();
+            SendMessage(translation("cmd.graphics.success","NORMAL"));
+            return true;
         }
+
+        foreach (var preset in SR2EVolumeProfileManager.presets.Keys)
+            if (preset == args[0])
+            {
+                SR2EVolumeProfileManager.DisableProfile();
+                SR2EVolumeProfileManager.EnableProfile(preset);
+                SendMessage(translation("cmd.graphics.success",preset));
+                return true;
+            }
+        
+        SR2EVolumeProfileManager.DisableProfile();
+        SendMessage(translation("cmd.graphics.success","NORMAL"));
+        return true;
     }
 }

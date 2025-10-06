@@ -1,3 +1,4 @@
+using System;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 
 namespace SR2E.Patches.MainMenu;

@@ -40,7 +40,7 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
-    public const string CodeVersion = "3.1.3";
+    public const string CodeVersion = "3.1.4";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
 
     /// <summary>
@@ -50,7 +50,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.1.3";
+    public const string DisplayVersion = "3.1.4";
 
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
@@ -92,7 +92,7 @@ public class SR2EEntryPoint : MelonMod
     internal static bool mLLogToSR2ELog => prefs.GetEntry<bool>("mLLogToSR2ELog").Value; 
     internal static bool autoUpdate => prefs.GetEntry<bool>("autoUpdate").Value;
     internal static bool quickStart => false;//prefs.GetEntry<bool>("quickStart").Value; 
-    //internal static bool disableFixSaves => prefs.GetEntry<bool>("disableFixSaves").Value; 
+    internal static bool disableFixSaves => prefs.GetEntry<bool>("disableFixSaves").Value; 
     internal static float consoleMaxSpeed => prefs.GetEntry<float>("consoleMaxSpeed").Value; 
     internal static float noclipAdjustSpeed => prefs.GetEntry<float>("noclipAdjustSpeed").Value; 
     internal static float noclipSpeedMultiplier => prefs.GetEntry<float>("noclipSpeedMultiplier").Value; 
@@ -145,7 +145,7 @@ public class SR2EEntryPoint : MelonMod
         prefs.DeleteEntry("fixSaves");
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
-        //if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
+        if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
         //if (!prefs.HasEntry("consoleUsesSR2Font")) prefs.CreateEntry("consoleUsesSR2Font", (bool)false, "Console uses SR2 font", false).AddAction((System.Action)(() => { SetupFonts(); }));
         //if (!prefs.HasEntry("quickStart")) prefs.CreateEntry("quickStart", (bool)false, "Quickstart (may break other mods)");
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => 
@@ -285,6 +285,11 @@ public class SR2EEntryPoint : MelonMod
         switch (sceneName)
         {
             case "MainMenuUI":
+                SR2EVolumeProfileManager.OnMainMenuUILoad();
+                //For some reason there are 2 configurations? And due to Il2CPP, just patching via the Getter Harmony isn't sufficient
+                foreach (var configuration in GetAll<AutoSaveDirectorConfiguration>())
+                    configuration._saveSlotCount = SAVESLOT_COUNT.Get();
+                
                 CustomTimeScale = 1f;
                 if (ExperimentalSettingsInjection.HasFlag())
                 {

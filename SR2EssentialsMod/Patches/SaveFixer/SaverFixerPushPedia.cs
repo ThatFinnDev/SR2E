@@ -1,0 +1,22 @@
+using Il2CppMonomiPark.SlimeRancher;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Persist;
+
+namespace SR2E.Patches.SaveFixer;
+
+[HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushPedia))]
+internal static class SaverFixerPushPedia
+{
+    internal static void Postfix(GameModel gameModel, PediaV01 pedia, ILoadReferenceTranslation loadReferenceTranslation)
+    {
+        try {
+            //Remove invalid Pedia entries
+            if (!SR2EEntryPoint.disableFixSaves)
+                foreach (string unlockedID in pedia.UnlockedIds)
+                    if(loadReferenceTranslation.GetPediaEntry(unlockedID)==null)
+                        pedia.UnlockedIds.Remove(unlockedID);
+        }
+        catch (Exception e) { MelonLogger.Error(e); }
+    }
+
+}

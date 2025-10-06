@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Il2CppInterop.Generator.MetadataAccess;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
@@ -126,16 +127,38 @@ public class SR2EModMenu : SR2EMenu
                     modInfoText.text = translation("modmenu.modinfo.expansion",melonBase.Info.Name);
                 modInfoText.text += "\n" + translation("modmenu.modinfo.author",melonBase.Info.Author);
                 
-                SR2ECoAuthorAttribute coAuthor = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2ECoAuthorAttribute>();
-                if (coAuthor != null)
-                    if (!String.IsNullOrWhiteSpace(coAuthor.CoAuthor))
-                        modInfoText.text += "\n" + translation("modmenu.modinfo.coauthor",coAuthor.CoAuthor);
-
                 string versionText = "\n" + translation("modmenu.modinfo.version",melonBase.Info.Version);
-                SR2EDisplayVersion display = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EDisplayVersion>();
-                if (display != null)
-                    if (!String.IsNullOrWhiteSpace(display.Version))
-                        versionText = "\n" + translation("modmenu.modinfo.version",display.Version);
+                ;
+                
+                
+                foreach (var meta in melonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
+                {
+                    if (meta == null) continue;
+                    if(string.IsNullOrWhiteSpace(meta.Key)) continue;
+                    if(string.IsNullOrWhiteSpace(meta.Value)) continue;
+                    switch (meta.Key)
+                    {
+                        case "display_version":
+                            try {
+                                versionText = "\n" + translation("modmenu.modinfo.version",meta.Value);
+                            } catch{ }
+                            break;
+                        case "co_authors":
+                            try {
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.coauthor",meta.Value);
+                            } catch{ }
+                            break;
+                        case "icon_b64":
+                            try
+                            {
+                                b.transform.GetChild(1).gameObject.SetActive(true);
+                                b.transform.GetChild(1).GetComponent<Image>().sprite = Base64ToTexture2D(meta.Value).ConvertToSprite(); 
+                            }
+                            catch (Exception e) { MelonLogger.Error("There was an error loading the icon of the mod "+melonBase.Info.Name); }
+                            break;
+                    }
+                }
+                
                 modInfoText.text += versionText;
                 modInfoText.text += "\n";
 
@@ -192,7 +215,7 @@ public class SR2EModMenu : SR2EMenu
         {
             if (EnableRepoMenu.HasFlag())
             {
-                Close(); GM<SR2ERepoMenu>().Open();
+                Close(); GM<SR2ERepoMenu>().OpenC(this);
             }
             else
             {
@@ -205,7 +228,7 @@ public class SR2EModMenu : SR2EMenu
         toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
         themeButton = transform.getObjRec<Button>("ThemeMenuButtonRec");
-        themeButton.onClick.AddListener((Action)(() =>{ Close(); GM<SR2EThemeMenu>().Open(); }));
+        themeButton.onClick.AddListener((Action)(() =>{ Close(); GM<SR2EThemeMenu>().OpenC(this); }));
         toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
         {

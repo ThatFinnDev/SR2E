@@ -34,21 +34,11 @@ internal class CheatMenuRefineryEntry : MonoBehaviour
             }
 
             int newValue = (int)valueFloat;
-            int oldValue = SceneContext.Instance.GadgetDirector.GetItemCount(item);
-            int difference = newValue - oldValue;
-            if (difference == 0) return;
-            if (difference > 0)
-                SceneContext.Instance.GadgetDirector.AddItem(item,difference);
-            if (difference < 0)
-            {
-                IdentCostEntry costEntry = new IdentCostEntry();
-                costEntry.Amount = -difference;
-                costEntry.IdentType = item;
-                Il2CppSystem.Collections.Generic.List<IdentCostEntry> entries =
-                    new Il2CppSystem.Collections.Generic.List<IdentCostEntry>();
-                entries.Add(costEntry);
-                SceneContext.Instance.GadgetDirector.TryToSpendItems(entries);
-            }
+            
+            //Adding one updates the new value everywhere. Not doing can cause issues
+            SceneContext.Instance.GadgetDirector._model.SetCount(item,newValue-1);
+            SceneContext.Instance.GadgetDirector.AddItem(item,1);
+            
             handleText.SetText(newValue.ToString());
         }));}
 
