@@ -7,9 +7,9 @@ using SR2E.Commands;
 namespace SR2E.Patches.SaveFixer;
 
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushRanch))]
-internal static class SaverFixerPushRanch
+internal static class SaveFixerPushRanch
 {
-    internal static void Postfix(GameModel gameModel, RanchV02 ranch, ILoadReferenceTranslation loadReferenceTranslation)
+    internal static void Prefix(GameModel gameModel, RanchV02 ranch, ILoadReferenceTranslation loadReferenceTranslation)
     {
         try
         {

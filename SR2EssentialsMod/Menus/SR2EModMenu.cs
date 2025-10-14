@@ -148,6 +148,11 @@ public class SR2EModMenu : SR2EMenu
                                 modInfoText.text += "\n" + translation("modmenu.modinfo.coauthor",meta.Value);
                             } catch{ }
                             break;
+                        case "contributors":
+                            try {
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.contributors",meta.Value);
+                            } catch{ }
+                            break;
                         case "icon_b64":
                             try
                             {
@@ -161,7 +166,25 @@ public class SR2EModMenu : SR2EMenu
                 
                 modInfoText.text += versionText;
                 modInfoText.text += "\n";
-
+                foreach (var meta in melonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
+                {
+                    if (meta == null) continue;
+                    if(string.IsNullOrWhiteSpace(meta.Key)) continue;
+                    if(string.IsNullOrWhiteSpace(meta.Value)) continue;
+                    switch (meta.Key)
+                    {
+                        case "source_code":
+                            try {
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode",meta.Value);
+                            } catch{ }
+                            break;
+                        case "nexus":
+                            try {
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.nexus",meta.Value);
+                            } catch{ }
+                            break;
+                    }
+                }
                 if (!String.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
                     modInfoText.text += "\n" + translation("modmenu.modinfo.link",melonBase.Info.DownloadLink);
 

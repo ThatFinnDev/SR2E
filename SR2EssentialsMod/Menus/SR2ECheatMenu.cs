@@ -65,6 +65,7 @@ public class SR2ECheatMenu : SR2EMenu
     {
         //Refinery
         List<IdentifiableType> refineryItems = SceneContext.Instance.GadgetDirector._refineryTypeGroup.GetAllMembers().ToArray().ToList();
+        refineryItems.Sort((x, y) => string.Compare(x.getName(), y.getName(), StringComparison.OrdinalIgnoreCase));
         foreach (IdentifiableType refineryItem in refineryItems)
         {
             GameObject entry = Instantiate(refineryEntryTemplate, refineryContent);
@@ -75,8 +76,9 @@ public class SR2ECheatMenu : SR2EMenu
             refineryEntries.Add(entry.GetComponent<CheatMenuRefineryEntry>());
         }
         //Gadgets
-        
+
         List<IdentifiableType> gadgetItems = SceneContext.Instance.GadgetDirector._gadgetsGroup.GetAllMembers().ToArray().ToList();
+        gadgetItems.Sort((x, y) => string.Compare(x.getName(), y.getName(), StringComparison.OrdinalIgnoreCase));
         foreach (IdentifiableType gadgetItem in gadgetItems)
         {
             GameObject entry = Instantiate(gadgetsEntryTemplate, gadgetsContent);
