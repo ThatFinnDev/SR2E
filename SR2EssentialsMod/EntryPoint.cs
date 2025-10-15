@@ -475,10 +475,10 @@ public class SR2EEntryPoint : MelonMod
     }
     internal static void SetupFonts()
     {
-        if (SR2Font == null) SR2Font = FontFromGame("Runsell Type - HemispheresCaps2");
-        if (regularFont == null) regularFont = FontFromGame("Lexend-Regular (Latin)"); 
-        if (boldFont == null) boldFont = FontFromGame("Lexend-Bold (Latin)"); 
-        if (normalFont == null) normalFont = FontFromOS("Tahoma"); 
+        if (SR2Font == null) SR2Font = FontUtil.FontFromGame("Runsell Type - HemispheresCaps2");
+        if (regularFont == null) regularFont = FontUtil.FontFromGame("Lexend-Regular (Latin)"); 
+        if (boldFont == null) boldFont = FontUtil.FontFromGame("Lexend-Bold (Latin)"); 
+        if (normalFont == null) normalFont = FontUtil.FontFromOS("Tahoma"); 
         foreach (var expansion in expansions) try { expansion.OnSR2FontLoad(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in menus) pair.Key.ReloadFont();
     }

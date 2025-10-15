@@ -13,7 +13,7 @@ public static class MenuUtil
     internal static Dictionary<string, List<SR2EMenuTheme>> validThemes = new Dictionary<string, List<SR2EMenuTheme>>();
     internal static void ReloadFont(this SR2EPopUp popUp)
     {
-        var ident = GetOpenMenu().GetIdentifierViaReflection();
+        var ident = GetOpenMenu().GetMenuIdentifier();
         if (string.IsNullOrEmpty(ident.saveKey)) return;
         if (SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
         var dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
@@ -30,7 +30,7 @@ public static class MenuUtil
     }
     internal static void ReloadFont(this SR2EMenu menu)
     {
-        var ident = menu.GetIdentifierViaReflection();
+        var ident = menu.GetMenuIdentifier();
         if (string.IsNullOrEmpty(ident.saveKey)) return;
         if (SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
         var dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
@@ -46,7 +46,6 @@ public static class MenuUtil
         if (fontAsset != null) menu.ApplyFont(fontAsset);
     }
 
-    internal static MenuIdentifier GetIdentifierViaReflection(this SR2EMenu menu) => menu.GetType().GetIdentifierViaReflection();
     internal static MenuIdentifier GetIdentifierViaReflection(this Type type)
     {
         try
@@ -59,19 +58,41 @@ public static class MenuUtil
         return new MenuIdentifier();
     }
 
-    internal static SR2EMenu GetSR2EMenu(this MenuIdentifier identifier)
+    public static MenuIdentifier GetMenuIdentifier(this SR2EMenu menu) => menu.GetType().GetIdentifierViaReflection();
+    public static SR2EMenu GetMenu(this MenuIdentifier identifier)
     {
         try
         {
             foreach (var pair in SR2EEntryPoint.menus)
             {
-                var ident = pair.Key.GetIdentifierViaReflection();
+                var ident = pair.Key.GetMenuIdentifier();
                 if (ident.saveKey == identifier.saveKey) return pair.Key;
             }
         }
         catch (Exception e) { MelonLogger.Error(e); }
         return null;
     }
+    public static SR2EMenuTheme GetTheme(this SR2EMenu menu)
+    {
+        try
+        {
+            var methodInfo = menu.GetType().GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
+            var result = methodInfo.Invoke(null, null);
+            if (result is MenuIdentifier identifier)
+            {
+                SR2ESaveManager.data.themes.TryAdd(identifier.saveKey, identifier.defaultTheme);
+                SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[identifier.saveKey];
+                List<SR2EMenuTheme> validThemes = MenuUtil.GetValidThemes(identifier.saveKey);
+                if (validThemes.Count == 0) return SR2EMenuTheme.Default;
+                if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
+                return currentTheme;
+            }
+
+        }catch (Exception e) {}
+
+        return SR2EMenuTheme.Default;
+    }
+    
     
     internal static void DoMenuActions(this MenuActions[] actions) => DoMenuActions(actions.ToList());
     internal static void DoMenuActions(this List<MenuActions> actions)

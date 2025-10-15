@@ -6,6 +6,7 @@ namespace SR2E.Utils;
 public static class LookupUtil
 {
 
+    public static bool isGadget(this IdentifiableType type) => type.TryCast<GadgetDefinition>() != null;
     /// <summary>
     /// Get an IdentifiableType either by its code name or localized name
     /// </summary>

@@ -6,6 +6,7 @@ global using HarmonyLib;
 global using SR2E;
 global using SR2E.Utils;
 global using static SR2E.SR2EUtils;
+global using static SR2E.Utils.ActionsUtil;
 global using static SR2E.Utils.SpawnUtil;
 global using static SR2E.Managers.SR2ELanguageManger;
 global using Console = System.Console;

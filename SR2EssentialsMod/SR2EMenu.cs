@@ -46,7 +46,7 @@ public abstract class SR2EMenu : MonoBehaviour
             //Requires Reflection to get overriden one
             try
             {
-                MenuIdentifier identifier = this.GetIdentifierViaReflection();
+                MenuIdentifier identifier = this.GetMenuIdentifier();
                 if (!string.IsNullOrEmpty(identifier.saveKey))
                 {
                     try { SR2ECommandManager.RegisterCommand(new MenuVisibilityCommands.OpenCommand(identifier,this,inGameOnly)); } catch (Exception e) { MelonLogger.Error(e); }

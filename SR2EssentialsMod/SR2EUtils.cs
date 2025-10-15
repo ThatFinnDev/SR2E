@@ -1,14 +1,11 @@
 ﻿global using static SR2E.Managers.SR2EInputManager;
 using System;
-using System.Diagnostics;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Linq;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Damage;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Economy;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -16,33 +13,17 @@ using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
-using Il2CppMonomiPark.SlimeRancher.World;
 using Il2CppSystem.IO;
-using Il2CppTMPro;
 using SR2E.Enums;
-using SR2E.Managers;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
 using Unity.Mathematics;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.TextCore;
-using UnityEngine.TextCore.LowLevel;
 
 namespace SR2E
 {
     public static partial class SR2EUtils
     {
-        
-        //
-        // GET NAMES FOR DIFFERENT SR2 TYPES
-        //
-
-        
-        
-        
-        
-        
-        
         
         internal static Dictionary<string, InputActionMap> actionMaps = new Dictionary<string, InputActionMap>();
         internal static Dictionary<string, InputAction> MainGameActions = new Dictionary<string, InputAction>();
@@ -63,7 +44,6 @@ namespace SR2E
         internal static Damage _killDamage;
         public static Damage killDamage => _killDamage;
 
-        public static ICurrency toICurrency(this CurrencyDefinition currencyDefinition) => currencyDefinition.TryCast<ICurrency>();
         
 
         public static string LoadTextFile(string name)
@@ -140,54 +120,6 @@ namespace SR2E
 
 
         public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
-        internal static TMP_FontAsset FontFromGame(string name)
-        {
-            try
-            {
-                return Get<TMP_FontAsset>(name);
-            }
-            catch { SR2EEntryPoint.SendFontError(name); }
-
-            return null;
-        }
-        internal static TMP_FontAsset FontFromOS(string name)
-        {
-            try
-            { 
-                string path = $"C:\\Windows\\Fonts\\{name}.ttf";
-                if(!File.Exists(path)) throw new Exception();
-                FontEngine.InitializeFontEngine();
-                if (FontEngine.LoadFontFace(path, 90) != FontEngineError.Success) throw new Exception();
-                TMP_FontAsset fontAsset = ScriptableObject.CreateInstance<TMP_FontAsset>();
-                fontAsset.m_Version = "1.1.0";
-                fontAsset.faceInfo = FontEngine.GetFaceInfo();
-                fontAsset.sourceFontFile = Font.CreateDynamicFontFromOSFont(name, 16);
-                fontAsset.atlasPopulationMode = AtlasPopulationMode.Dynamic;
-                fontAsset.atlasWidth = 1024;
-                fontAsset.atlasHeight = 1024;
-                fontAsset.atlasPadding = 9;
-                fontAsset.atlasRenderMode = GlyphRenderMode.SDFAA;
-                fontAsset.atlasTextures = new Texture2D[1];
-                Texture2D texture = new Texture2D(0, 0, TextureFormat.Alpha8, false);
-                fontAsset.atlasTextures[0] = texture;
-                fontAsset.isMultiAtlasTexturesEnabled = true;
-                Material material = new Material(ShaderUtilities.ShaderRef_MobileSDF);
-                material.SetTexture(ShaderUtilities.ID_MainTex, texture);
-                material.SetFloat(ShaderUtilities.ID_WeightNormal, fontAsset.normalStyle); 
-                material.SetFloat(ShaderUtilities.ID_WeightBold, fontAsset.boldStyle);
-                material.SetFloat(ShaderUtilities.ID_TextureHeight, 1024);
-                material.SetFloat(ShaderUtilities.ID_TextureWidth, 1024);
-                material.SetFloat(ShaderUtilities.ID_GradientScale, 10);
-                fontAsset.material = material;
-                fontAsset.freeGlyphRects = new Il2CppSystem.Collections.Generic.List<GlyphRect>(8);
-                fontAsset.freeGlyphRects.Add(new GlyphRect(0, 0, 1023, 1023));
-                fontAsset.usedGlyphRects = new Il2CppSystem.Collections.Generic.List<GlyphRect>(8);
-                fontAsset.ReadFontAssetDefinition();
-                return fontAsset;
-            }
-            catch { SR2EEntryPoint.SendFontError(name); }
-            return null;
-        }
         public static GameObject? Get(string name) => Get<GameObject>(name);
 
         public static void MakePrefab(this GameObject obj)
@@ -396,120 +328,8 @@ namespace SR2E
         // PARSING STRINGS INTO VALUES
         // EXLUSIVELY FOR SR2ECOMMANDS
         //
-        public static bool TryParseVector3(this SR2ECommand cmd, string inputX, string inputY, string inputZ, out Vector3 value)
-        {
-            value = Vector3.zero;
-            try { value = new Vector3(float.Parse(inputX),float.Parse(inputY),float.Parse(inputZ)); }
-            catch { return cmd.SendNotValidVector3(inputX,inputY,inputZ); }
-            return true;
-        }
-        public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value, float min, bool inclusive, float max)
-        {
-            value = 0;
-            try { value = float.Parse(input); }
-            catch { return cmd.SendNotValidFloat(input); }
-            if (inclusive)
-            {
-                if (value < min) return cmd.SendNotFloatAtLeast(input, min);
-            }
-            else if (value <= min) return cmd.SendNotFloatAbove(input,min);
-            if (value >= max) return cmd.SendNotFloatUnder(input, max);
-            return true;
-        }
-        public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value, float min, bool inclusive)
-        {
-            value = 0;
-            try { value = float.Parse(input); }
-            catch { return cmd.SendNotValidFloat(input); }
-            if (inclusive)
-            {
-                if (value < min) return cmd.SendNotFloatAtLeast(input, min);
-            }
-            else if (value <= min) return cmd.SendNotFloatAbove(input,min);
-            return true;
-        }
-        public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value, float max)
-        {
-            value = 0;
-            try { value = float.Parse(input); }
-            catch { return cmd.SendNotValidFloat(input); }
-            if (value >= max) return cmd.SendNotFloatUnder(input, max);
-            return true;
-        }
-        public static bool TryParseFloat(this SR2ECommand cmd, string input, out float value)
-        {
-            value = 0;
-            try { value = float.Parse(input); }
-            catch { return cmd.SendNotValidFloat(input); }
-            return true;
-        }
-        public static bool TryParseInt(this SR2ECommand cmd, string input, out int value, int min, bool inclusive, int max)
-        {
-            value = 0;
-            try { value = int.Parse(input); }
-            catch { return cmd.SendNotValidInt(input); }
-            if (inclusive)
-            {
-                if (value < min) return cmd.SendNotIntAtLeast(input, min);
-            }
-            else if (value <= min) return cmd.SendNotIntAbove(input,min);
-            if (value >= max) return cmd.SendNotIntUnder(input, max);
-            return true;
-        }
-        public static bool TryParseInt(this SR2ECommand cmd, string input, out int value, int min, bool inclusive)
-        {
-            value = 0;
-            try { value = int.Parse(input); }
-            catch { return cmd.SendNotValidInt(input); }
-            if (inclusive)
-            {
-                if (value < min) return cmd.SendNotIntAtLeast(input, min);
-            }
-            else if (value <= min) return cmd.SendNotIntAbove(input,min);
-            return true;
-        }
-        public static bool TryParseInt(this SR2ECommand cmd, string input, out int value, int max)
-        {
-            value = 0;
-            try { value = int.Parse(input); }
-            catch { return cmd.SendNotValidInt(input); }
-            if (value >= max) return cmd.SendNotIntUnder(input, max);
-            return true;
-        }
-        public static bool TryParseInt(this SR2ECommand cmd, string input, out int value)
-        {
-            value = 0;
-            try { value = int.Parse(input); }
-            catch { return cmd.SendNotValidInt(input); }
-            return true;
-        }
-        public static bool TryParseBool(this SR2ECommand cmd, string input, out bool value)
-        {
-            value = false;
-            if (input.ToLower() != "true" && input.ToLower() != "false") cmd.SendNotValidBool(input);
-            if (input.ToLower() == "true") value = true;
-            return true;
-        }
-        public static bool TryParseTrool(this SR2ECommand cmd, string input, out Trool value)
-        {
-            value = Trool.False;
-            if (input.ToLower() != "true" && input.ToLower() != "false" && input.ToLower() != "toggle") cmd.SendNotValidTrool(input);
-            if (input.ToLower() == "true") value = Trool.True;
-            if (input.ToLower() == "toggle") value = Trool.Toggle;
-            return true;
-        }
-        public static bool TryParseKeyCode(this SR2ECommand cmd, string input, out Key value)
-        {
-            string keyToParse = input;
-            if (input.ToCharArray().Length == 1)
-                if (int.TryParse(input, out int ignored))
-                    keyToParse = "Digit" + input;
-            Key key;
-            if (Key.TryParse(keyToParse, true, out key)) { value = key; return true; }
-            value = Key.None;
-            cmd.SendNotValidKeyCode(input);
-            return false;
-        }
+        
+        
         public static bool IsBetween(this string[] list, uint min, int max)
         {
             if (list == null)
@@ -525,7 +345,6 @@ namespace SR2E
             return true;
         }
         
-        public static bool isGadget(this IdentifiableType type) => type.ReferenceId.StartsWith("GadgetDefinition");
 
         
         
@@ -645,26 +464,7 @@ namespace SR2E
         internal static GameObject menuBlock;
         internal static Transform popUpBlock;
         internal static List<SR2EPopUp> openPopUps = new List<SR2EPopUp>();
-        internal static SR2EMenuTheme GetTheme(this SR2EMenu menu)
-        {
-            try
-            {
-                var methodInfo = menu.GetType().GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
-                var result = methodInfo.Invoke(null, null);
-                if (result is MenuIdentifier identifier)
-                {
-                    SR2ESaveManager.data.themes.TryAdd(identifier.saveKey, identifier.defaultTheme);
-                    SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[identifier.saveKey];
-                    List<SR2EMenuTheme> validThemes = MenuUtil.GetValidThemes(identifier.saveKey);
-                    if (validThemes.Count == 0) return SR2EMenuTheme.Default;
-                    if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
-                    return currentTheme;
-                }
 
-            }catch (Exception e) {}
-
-            return SR2EMenuTheme.Default;
-        }
         internal static void OpenPopUpBlock(SR2EPopUp popUp)
         {
             if (popUpBlock.transform.GetParent() != popUp.transform.GetParent()) return;
@@ -673,21 +473,7 @@ namespace SR2E
             instance.SetSiblingIndex(popUp.transform.GetSiblingIndex()-1);
             popUp.block = instance;
         }
-        internal static Dictionary<Action, int> actionCounter = new Dictionary<Action, int>();
-        public static void ExecuteInTicks(Action action, int ticks)
-        {
-            if (action == null) return;
-            actionCounter.Add((Action)(() => { action.Invoke(); }),ticks);
-        }
-        public static void ExecuteInSeconds(Action action, float seconds)
-        {
-            MelonCoroutines.Start(waitForSeconds(seconds, action));
-        }
-        static System.Collections.IEnumerator waitForSeconds(float seconds, Action action)
-        {
-            yield return new WaitForSeconds(seconds);
-            try { action.Invoke(); }catch (Exception e) { MelonLogger.Error(e); }
-        }
+
         public static LayerMask defaultMask
         {
             get
@@ -734,13 +520,14 @@ namespace SR2E
         [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.GetOpenMenu),true)] public static SR2EMenu getOpenMenu => MenuUtil.GetOpenMenu();
         [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.GetValidThemes),true)] public static List<SR2EMenuTheme> getValidThemes(string saveKey) => MenuUtil.GetValidThemes(saveKey);
         
-        [Obsolete("Please use "+nameof(NamingUtil)+"."+nameof(NamingUtil.GetName),true)] public static string getName(this IdentifiableType type) => NamingUtil.GetName(type);
+        [Obsolete("Please use "+nameof(NamingUtil)+"."+nameof(NamingUtil.GetName),true)] public static string getName(IdentifiableType type) => NamingUtil.GetName(type);
         
         
-        [Obsolete("Please use "+nameof(ConvertUtil)+"."+nameof(ConvertUtil.Texture2DToSprite),true)] public static Sprite ConvertToSprite(this Texture2D texture) => ConvertUtil.Texture2DToSprite(texture);
+        [Obsolete("Please use "+nameof(ConvertUtil)+"."+nameof(ConvertUtil.Texture2DToSprite),true)] public static Sprite ConvertToSprite(Texture2D texture) => ConvertUtil.Texture2DToSprite(texture);
         [Obsolete("Please use "+nameof(ConvertUtil)+"."+nameof(ConvertUtil.Base64ToTexture2D),true)] public static Texture2D Base64ToTexture2D(string base64) => ConvertUtil.Base64ToTexture2D(base64);
         
         
+        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.toICurrency),true)] public static ICurrency toICurrency(CurrencyDefinition currencyDefinition) => CurrencyUtil.toICurrency(currencyDefinition);
         [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrency),true)] public static bool SetCurrency(string referenceID, int amount) => CurrencyUtil.SetCurrency(referenceID, amount);
         [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrency),true)] public static bool SetCurrency(string referenceID,int amount, int amountEverCollected) => CurrencyUtil.SetCurrency(referenceID, amount,amountEverCollected);
         [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrencyEverCollected),true)] public static bool SetCurrencyEverCollected(string referenceID,int amountEverCollected) => CurrencyUtil.SetCurrencyEverCollected(referenceID, amountEverCollected);
@@ -748,10 +535,27 @@ namespace SR2E
         [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.GetCurrency),true)] public static int GetCurrency(string referenceID) => CurrencyUtil.GetCurrency(referenceID);
         [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.GetCurrencyEverCollected),true)] public static int GetCurrencyEverCollected(string referenceID) => CurrencyUtil.GetCurrencyEverCollected(referenceID);
 
-        
+
+        [Obsolete("Please use " + nameof(LookupUtil) + "." + nameof(LookupUtil.isGadget), true)] public static bool isGadget(IdentifiableType type) => LookupUtil.isGadget(type);
         [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetWeatherStateByName),true)] public static WeatherStateDefinition getWeatherStateByName(string name) => LookupUtil.GetWeatherStateByName(name);
         [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetVaccableListByPartialName),true)] public static List<string> getVaccableListByPartialName(string input, bool useContain) => LookupUtil.GetVaccableListByPartialName(input, useContain);
         [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetIdentListByPartialName),true)] public static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain,bool includeStars = false) => LookupUtil.GetIdentListByPartialName(input,includeNormal,includeGadget,useContain,includeStars);
         [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetKeyListByPartialName),true)] public static List<string> getKeyListByPartialName(string input, bool useContain) => LookupUtil.GetKeyListByPartialName(input,useContain);
+        
+        
+        
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseVector3)+ "in this class", true)] public static bool TryParseVector3(SR2ECommand cmd, string inputX, string inputY, string inputZ, out Vector3 value) => cmd.TryParseVector3(inputX, inputY, inputZ, out value);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseFloat)+ "in this class", true)] public static bool TryParseFloat(SR2ECommand cmd, string input, out float value, float min, bool inclusive, float max) => cmd.TryParseFloat(input, out value, min, inclusive, max);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseFloat)+ "in this class", true)] public static bool TryParseFloat(SR2ECommand cmd, string input, out float value, float min, bool inclusive) => cmd.TryParseFloat(input, out value, min, inclusive);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseFloat)+ "in this class", true)] public static bool TryParseFloat(SR2ECommand cmd, string input, out float value, float max) => cmd.TryParseFloat(input, out value, max);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseFloat)+ "in this class", true)] public static bool TryParseFloat(SR2ECommand cmd, string input, out float value) => cmd.TryParseFloat(input, out value);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseInt)+ "in this class", true)] public static bool TryParseInt(SR2ECommand cmd, string input, out int value, int min, bool inclusive, int max) => cmd.TryParseInt(input, out value, min, inclusive, max);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseInt)+ "in this class", true)] public static bool TryParseInt(SR2ECommand cmd, string input, out int value, int min, bool inclusive) => cmd.TryParseInt(input, out value, min, inclusive);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseInt)+ "in this class", true)] public static bool TryParseInt(SR2ECommand cmd, string input, out int value, int max) => cmd.TryParseInt(input, out value, max);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseInt)+ "in this class", true)] public static bool TryParseInt(SR2ECommand cmd, string input, out int value) => cmd.TryParseInt(input,out value);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseBool)+ "in this class", true)] public static bool TryParseBool(SR2ECommand cmd, string input, out bool value) => cmd.TryParseBool(input, out value);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseTrool)+ "in this class", true)] public static bool TryParseTrool(SR2ECommand cmd, string input, out Trool value) => cmd.TryParseTrool(input, out value);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseKeyCode)+ "in this class", true)] public static bool TryParseKeyCode(SR2ECommand cmd, string input, out Key value) => cmd.TryParseKeyCode(input, out value);
+        
     }
 }

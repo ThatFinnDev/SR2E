@@ -42,7 +42,7 @@ public class SR2EThemeMenu : SR2EMenu
         List<MenuIdentifier> identifiers = new List<MenuIdentifier>();
         foreach (var pair in SR2EEntryPoint.menus)
         {
-            var ident = pair.Key.GetIdentifierViaReflection();
+            var ident = pair.Key.GetMenuIdentifier();
             
             if (!string.IsNullOrEmpty(ident.saveKey)) identifiers.Add(ident);
         }
@@ -76,7 +76,7 @@ public class SR2EThemeMenu : SR2EMenu
             {
                 SR2ESaveManager.data.fonts[identifier.saveKey]=fonts[value];
                 SR2ESaveManager.Save();
-                var menu = identifier.GetSR2EMenu();
+                var menu = identifier.GetMenu();
                 if (menu != null)
                     menu.ReloadFont();
             }));
