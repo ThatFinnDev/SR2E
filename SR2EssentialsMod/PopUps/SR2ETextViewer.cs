@@ -1,8 +1,5 @@
-﻿using System;
-using Il2CppTMPro;
-using SR2E.Storage;
+﻿using Il2CppTMPro;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace SR2E.Popups;
 
@@ -15,6 +12,7 @@ public class SR2ETextViewer : SR2EPopUp
         var comp = obj.AddComponent<SR2ETextViewer>();
         comp._text = objects[0].ToString();
         comp.ReloadFont();
+        
     }
     protected override void OnOpen()
     {
@@ -24,8 +22,8 @@ public class SR2ETextViewer : SR2EPopUp
     
     public static void Open(string text)
     {
-        if (!isAnyMenuOpen) return;
-        _Open("TextViewer",typeof(SR2ETextViewer),getOpenMenu.GetTheme(),new List<object>(){text});
+        if (!MenuUtil.isAnyMenuOpen) return;
+        _Open("TextViewer",typeof(SR2ETextViewer),MenuUtil.GetOpenMenu().GetTheme(),new List<object>(){text});
     }
 
     protected override void OnUpdate()

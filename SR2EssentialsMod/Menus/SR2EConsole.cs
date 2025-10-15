@@ -49,6 +49,7 @@ public class SR2EConsole : SR2EMenu
     protected override void OnStart()
     {
         SendMessage(translation("console.helloworld"));
+        SendMessage(translation("console.info"));
     }
 
     public void Send(string message, Color32 color)

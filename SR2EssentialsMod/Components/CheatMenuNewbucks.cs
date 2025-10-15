@@ -23,7 +23,7 @@ internal class CheatMenuNewbucks : MonoBehaviour
             dontChange = 0;
             int newValue = Mathf.Clamp((int)Math.Pow(value, 3.51),0,SceneContext.Instance.PlayerState._model.maxCurrency);
             handleText.SetText(newValue.ToString());
-            SetCurrency("newbuck", newValue, newValue);
+            CurrencyUtil.SetCurrency("newbuck", newValue, newValue);
         }));
     }
 
@@ -33,11 +33,11 @@ internal class CheatMenuNewbucks : MonoBehaviour
         if(!didStartRan) Start();
         try
         {
-            double newValue = Math.Pow(GetCurrency("newbuck"), (1.0 / 3.51));
+            double newValue = Math.Pow(CurrencyUtil.GetCurrency("newbuck"), (1.0 / 3.51));
             if (newValue.ToString() == "NaN") newValue = 0;
             dontChange = 2;
             amountSlider.value = float.Parse(newValue.ToString());
-            handleText.SetText(GetCurrency("newbuck").ToString());
+            handleText.SetText(CurrencyUtil.GetCurrency("newbuck").ToString());
         }
         catch { }
     }

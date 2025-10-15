@@ -25,7 +25,7 @@ internal class CheatMenuRefineryEntry : MonoBehaviour
         itemName = gameObject.getObjRec<TextMeshProUGUI>("Name");
         icon = gameObject.getObjRec<Image>("Icon");
         icon.sprite = item.icon;
-        itemName.text = item.getName().Replace("'", "");
+        itemName.text = item.GetName().Replace("'", "");
         amountSlider.onValueChanged.AddListener((Action<float>)((valueFloat) =>
         {
             if (dontChange)

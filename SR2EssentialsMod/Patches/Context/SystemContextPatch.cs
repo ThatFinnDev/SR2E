@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Reflection;
-using Il2CppMonomiPark.SlimeRancher.Damage;
 using System;
 using SR2E.Enums;
 using SR2E.Managers;
@@ -28,7 +27,7 @@ internal class SystemContextPatch
     {
         SR2ESaveManager.data.themes.TryAdd(menuIdentifier.saveKey, menuIdentifier.defaultTheme);
         SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[menuIdentifier.saveKey];
-        List<SR2EMenuTheme> validThemes = getValidThemes(menuIdentifier.saveKey);
+        List<SR2EMenuTheme> validThemes = MenuUtil.GetValidThemes(menuIdentifier.saveKey);
         if (validThemes.Count == 0) return null;
         if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
         SR2ESaveManager.Save();
@@ -64,8 +63,8 @@ internal class SystemContextPatch
                             theme = (SR2EMenuTheme)result;
                         else continue;
                     }
-                    if (!validThemes.ContainsKey(key)) validThemes.Add(key,new List<SR2EMenuTheme>());
-                    validThemes[key].Add(theme);
+                    if (!MenuUtil.validThemes.ContainsKey(key)) MenuUtil.validThemes.Add(key,new List<SR2EMenuTheme>());
+                    MenuUtil.validThemes[key].Add(theme);
                 }
         }
         foreach (var obj in assets)

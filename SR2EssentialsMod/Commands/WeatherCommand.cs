@@ -1,6 +1,5 @@
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Weather;
-
 namespace SR2E.Commands;
 
 internal class WeatherCommand : SR2ECommand
@@ -97,7 +96,7 @@ internal class WeatherCommand : SR2ECommand
                 if (args[0] == "modify")
                 {
                     
-                    WeatherStateDefinition def = getWeatherStateByName(args[1]);
+                    WeatherStateDefinition def = LookupUtil.GetWeatherStateByName(args[1]);
                     if (def == null) return SendNotValidWeather(args[1]); 
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());
@@ -112,7 +111,7 @@ internal class WeatherCommand : SR2ECommand
                 if (args[0] == "modify")
                 {
                     
-                    WeatherStateDefinition def = getWeatherStateByName(args[1]);
+                    WeatherStateDefinition def = LookupUtil.GetWeatherStateByName(args[1]);
                     if (def == null) return SendNotValidWeather(args[1]); 
 
                     bool isRunning = weatherDirector._runningStates.Contains(def.Cast<IWeatherState>());

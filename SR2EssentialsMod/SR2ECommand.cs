@@ -171,6 +171,7 @@ public abstract class SR2ECommand
     /// <summary>
     /// Sends the cheats disabled message
     /// </summary>
+    [Obsolete("This is deprecated, it will get removed in subsequent releases.",true)]
     public bool SendCheatsDisabled() => SendError(translation("cmd.cheatsdisabled"));
 
     /// <summary>

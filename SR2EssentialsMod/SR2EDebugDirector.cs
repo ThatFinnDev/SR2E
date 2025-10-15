@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Reflection;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI.Debug;
 using Il2CppTMPro;
-using Newtonsoft.Json;
 using SR2E.Managers;
-using Unity.TLS.LowLevel;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace SR2E;
 
@@ -82,7 +76,7 @@ internal class SR2EDebugDirector : MonoBehaviour
 	{
 		if (!isEnabled) return;
 
-		if (isAnyMenuOpen) return;
+		if (MenuUtil.isAnyMenuOpen) return;
 		if (Time.timeScale == 0)  return;
 		if (!inGame) return;
 		if (SR2EWarpManager.warpTo != null) return;

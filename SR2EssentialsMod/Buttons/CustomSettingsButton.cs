@@ -1,4 +1,4 @@
-using Il2CppInterop.Runtime.Injection;
+/*using Il2CppInterop.Runtime.Injection;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.ScriptedValue;
 using Il2CppMonomiPark.SlimeRancher.Options;
@@ -385,13 +385,13 @@ public static class CustomSettingsCreator
     /// 
     /// options.Add(CustomSettingsCreator.Create(
     ///     CustomSettingsCreator.BuiltinSettingsCategory.ManualOrCustom,
-    ///     /* input rest of parameters */
+    ///     // input rest of parameters 
     /// ));
     /// 
     /// // second option
     /// options.Add(CustomSettingsCreator.Create(
     ///     CustomSettingsCreator.BuiltinSettingsCategory.ManualOrCustom,
-    ///     /* input rest of parameters */
+    ///     // input rest of parameters 
     /// ));
     ///
     /// // Category
@@ -421,4 +421,4 @@ public static class CustomSettingsCreator
 
         return category;
     }
-}
+}*/

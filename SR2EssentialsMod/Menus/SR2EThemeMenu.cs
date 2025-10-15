@@ -1,7 +1,4 @@
 using System;
-using System.Linq;
-using System.Reflection;
-using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using Il2CppTMPro;
 using SR2E.Enums;
 using SR2E.Enums.Features;
@@ -46,6 +43,7 @@ public class SR2EThemeMenu : SR2EMenu
         foreach (var pair in SR2EEntryPoint.menus)
         {
             var ident = pair.Key.GetIdentifierViaReflection();
+            
             if (!string.IsNullOrEmpty(ident.saveKey)) identifiers.Add(ident);
         }
         foreach (var identifier in identifiers)
@@ -82,7 +80,7 @@ public class SR2EThemeMenu : SR2EMenu
                 if (menu != null)
                     menu.ReloadFont();
             }));
-            foreach (SR2EMenuTheme theme in getValidThemes(identifier.saveKey))
+            foreach (SR2EMenuTheme theme in MenuUtil.GetValidThemes(identifier.saveKey))
             {
                 GameObject button = Instantiate(buttonTemplate, contentRec);
                 button.SetActive(true);
@@ -117,7 +115,7 @@ public class SR2EThemeMenu : SR2EMenu
                 }
 
                 texture.Apply();
-                button.transform.GetChild(0).GetComponent<Image>().sprite = SR2EUtils.ConvertToSprite(texture);
+                button.transform.GetChild(0).GetComponent<Image>().sprite = ConvertUtil.Texture2DToSprite(texture);
                 if (SR2ESaveManager.data.themes.ContainsKey(identifier.saveKey))
                 {
                     if (SR2ESaveManager.data.themes[identifier.saveKey] == theme)

@@ -9,7 +9,7 @@ internal class KillAllCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return getIdentListByPartialName(args == null ? null : args[0], true, false,true);
+            return LookupUtil.GetIdentListByPartialName(args == null ? null : args[0], true, false,true);
         return null;
     }
     public override bool Execute(string[] args)
@@ -36,9 +36,9 @@ internal class KillAllCommand : SR2ECommand
         {
             
             string identifierTypeName = args[0];
-            IdentifiableType type = getIdentByName(identifierTypeName);
+            IdentifiableType type = LookupUtil.GetIdentByName(identifierTypeName);
             if (type == null) return SendNotValidIdentType(identifierTypeName);
-            if (type.isGadget()) return SendIsGadgetNotItem(type.getName());
+            if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
                 
             foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                 if (ident.hasStarted)
@@ -48,7 +48,7 @@ internal class KillAllCommand : SR2ECommand
                         Object.Destroy(ident.gameObject);
                         SceneContext.Instance.GameModel.identifiables.Remove(id);
                     }
-            SendMessage(translation("cmd.killall.successspecific",type.getName()));
+            SendMessage(translation("cmd.killall.successspecific",type.GetName()));
             return true;
         }
         return false;

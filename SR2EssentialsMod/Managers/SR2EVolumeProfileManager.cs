@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
-using SR2E.Components;
-using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.HighDefinition;
 
 namespace SR2E.Managers;
 
@@ -136,7 +130,7 @@ public static class SR2EVolumeProfileManager
         obj.AddComponent<Volume>().enabled = false;
         Object.DontDestroyOnLoad(obj);
         volumeHolder= obj.GetComponent<Volume>();
-        foreach (var pair in LoadEmbeddedResources("Assets.VolumePresets"))
+        foreach (var pair in EmbeddedResourceUtil.LoadResources("Assets.VolumePresets"))
             LoadProfile(pair.Key, pair.Value);
         
         

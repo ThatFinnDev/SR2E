@@ -1,7 +1,6 @@
 using System;
 using Il2CppMonomiPark.SlimeRancher.Player;
 using Il2CppTMPro;
-using SR2E.Menus;
 using SR2E.Popups;
 using SR2E.Storage;
 using UnityEngine.UI;
@@ -37,10 +36,10 @@ internal class CheatMenuSlot : MonoBehaviour
     {
         if (amountSlider.value == 0) { entryInput.text = ""; slot.Clear(); return; }
         
-        IdentifiableType type = getIdentByName(entryInput.text);
+        IdentifiableType type = LookupUtil.GetIdentByName(entryInput.text);
         if (type == null) { entryInput.text = ""; slot.Clear(); amountSlider.value = 0; return; }
         
-        string itemName = type.getName().Replace("'","").Replace(" ","");
+        string itemName = type.GetName().Replace("'","").Replace(" ","");
         entryInput.text = itemName;
         slot.Clear();
         SceneContext.Instance.PlayerState.Ammo.MaybeAddToSpecificSlot(type, null, slotID, 
@@ -58,7 +57,7 @@ internal class CheatMenuSlot : MonoBehaviour
                 {
                     string localizedString = identType.LocalizedName.GetLocalizedString();
                     if(localizedString.StartsWith("!")) continue;
-                    dict.Add(identType.getName().Replace("'","").Replace(" ",""), (localizedString, identType.icon));
+                    dict.Add(identType.GetName().Replace("'","").Replace(" ",""), (localizedString, identType.icon));
                 }
             }catch { }
         }
@@ -80,7 +79,7 @@ internal class CheatMenuSlot : MonoBehaviour
         amountSlider.maxValue = slot.MaxCount;
         amountSlider.value = slot.Count;
         string identName = "";
-        if (slot.Id != null) identName = slot.Id.getName().Replace("'","").Replace(" ","");
+        if (slot.Id != null) identName = slot.Id.GetName().Replace("'","").Replace(" ","");
         
         entryInput.text = identName;
     }

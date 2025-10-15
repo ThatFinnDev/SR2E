@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection;
 using SR2E.Commands;
 
 namespace SR2E.Managers;
@@ -194,12 +193,12 @@ public static class SR2ECommandManager
                 if (commands.ContainsKey(cmd))
                 {
                     bool canPlay = false;
-                    if (!isAnyMenuOpen)
+                    if (!MenuUtil.isAnyMenuOpen)
                         if (Time.timeScale != 0)
                             canPlay = true;
                     if (!canPlay)
                     {
-                        SR2EMenu openMenu = getOpenMenu;
+                        SR2EMenu openMenu = MenuUtil.GetOpenMenu();
                         if (openMenu != null)
                         {   
                             Type openMenuType = openMenu.GetType();
@@ -259,7 +258,7 @@ public static class SR2ECommandManager
                     if (DebugLogging.HasFlag()) MelonLogger.Msg($"Command success: {successful}");
                 }
                 else if (!silent)
-                    if (isAnyMenuOpen)
+                    if (MenuUtil.isAnyMenuOpen)
                         SR2ELogManager.SendError(translation("cmd.unknowncommand"));
             }
         }

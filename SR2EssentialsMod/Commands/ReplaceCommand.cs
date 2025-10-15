@@ -11,7 +11,7 @@ internal class ReplaceCommand : SR2ECommand
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0) return getIdentListByPartialName(args == null ? null : args[0], true, true,true);
+        if (argIndex == 0) return LookupUtil.GetIdentListByPartialName(args == null ? null : args[0], true, true,true);
         return null;
     }
 
@@ -21,9 +21,9 @@ internal class ReplaceCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
         
         string identifierTypeName = args[0];
-        IdentifiableType type = getIdentByName(identifierTypeName);
+        IdentifiableType type = LookupUtil.GetIdentByName(identifierTypeName);
         if (type == null) return SendNotValidIdentType(identifierTypeName);
-        if (type.isGadget()) return SendIsGadgetNotItem(type.getName());
+        if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
@@ -34,7 +34,7 @@ internal class ReplaceCommand : SR2ECommand
             if (gameobject.GetComponent<Identifiable>())
             {
                 isValid = true;
-                oldObjectName = gameobject.GetComponent<Identifiable>().identType.getName();
+                oldObjectName = gameobject.GetComponent<Identifiable>().identType.GetName();
                 //Remove old one
                 DeathHandler.Kill(gameobject, killDamage);
 
@@ -42,7 +42,7 @@ internal class ReplaceCommand : SR2ECommand
             else if (gameobject.GetComponentInParent<Gadget>())
             {
                 isValid = true;
-                oldObjectName = gameobject.GetComponentInParent<Gadget>().identType.getName();
+                oldObjectName = gameobject.GetComponentInParent<Gadget>().identType.GetName();
                 //Remove old one
                 gameobject.GetComponentInParent<Gadget>().DestroyGadget();
             }
@@ -56,7 +56,7 @@ internal class ReplaceCommand : SR2ECommand
                 Quaternion rotation = gameobject.transform.rotation;
                 spawned.transform.position = position;
                 spawned.transform.rotation = rotation;
-                SendMessage(translation("cmd.replace.success",oldObjectName,type.getName()));
+                SendMessage(translation("cmd.replace.success",oldObjectName,type.GetName()));
                 return true;
             }
             return SendNotLookingAtValidObject();

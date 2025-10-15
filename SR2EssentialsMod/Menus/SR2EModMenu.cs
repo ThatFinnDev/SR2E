@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Il2CppInterop.Generator.MetadataAccess;
-using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
-using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
 using SR2E.Enums;
 using SR2E.Enums.Features;
@@ -13,7 +9,6 @@ using SR2E.Popups;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using Action = System.Action;
 using Button = UnityEngine.UI.Button;
 using Image = UnityEngine.UI.Image;
@@ -157,7 +152,7 @@ public class SR2EModMenu : SR2EMenu
                             try
                             {
                                 b.transform.GetChild(1).gameObject.SetActive(true);
-                                b.transform.GetChild(1).GetComponent<Image>().sprite = Base64ToTexture2D(meta.Value).ConvertToSprite(); 
+                                b.transform.GetChild(1).GetComponent<Image>().sprite = ConvertUtil.Base64ToTexture2D(meta.Value).Texture2DToSprite(); 
                             }
                             catch (Exception e) { MelonLogger.Error("There was an error loading the icon of the mod "+melonBase.Info.Name); }
                             break;

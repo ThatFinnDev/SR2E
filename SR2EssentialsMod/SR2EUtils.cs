@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Linq;
 using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Economy;
@@ -20,21 +21,72 @@ using Il2CppSystem.IO;
 using Il2CppTMPro;
 using SR2E.Enums;
 using SR2E.Managers;
-using SR2E.Menus;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
 using Unity.Mathematics;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.Playables;
 using UnityEngine.TextCore;
 using UnityEngine.TextCore.LowLevel;
-using Enumerable = Il2CppSystem.Linq.Enumerable;
 
 namespace SR2E
 {
-    public static class SR2EUtils
+    public static partial class SR2EUtils
     {
+        
+        //
+        // GET NAMES FOR DIFFERENT SR2 TYPES
+        //
+        public static string GetName(this IdentifiableType type)
+        {
+            try
+            {
+                string itemName = "";
+                string name = type.LocalizedName.GetLocalizedString();
+                if (name.Contains(" ")) itemName = "'" + name + "'";
+                else itemName = name;
+                return itemName;
+            }
+            catch
+            { return type.name; }
+        }
+        public static string GetCompactName(this IdentifiableType type)
+        {
+            try
+            {
+                string itemName = type.LocalizedName.GetLocalizedString().Replace(" ","").Replace("_","");
+                return itemName;
+            }
+            catch
+            { return type.name.Replace(" ","").Replace("_",""); }
+        }
+        public static string GetCompactUpperName(this IdentifiableType type)
+        {
+            if (type == null) return null;
+            try
+            {
+                string itemName = type.LocalizedName.GetLocalizedString().Replace(" ","").Replace("_","");
+                return itemName.ToUpper();
+            }
+            catch
+            { return type.name.Replace(" ","").Replace("_","").ToUpper(); }
+        }
+        public static string GetCompactName(this WeatherStateDefinition definition)
+        {
+            try { return definition.name.Replace(" ","").Replace("_",""); } catch {  }
+            return null;
+        }
+        public static string GetCompactUpperName(this WeatherStateDefinition definition)
+        {
+            try { return definition.name.Replace(" ","").Replace("_","").ToUpper(); } catch {  }
+            return null;
+        }
+        
+        
+        
+        
+        
+        
+        
         internal static Dictionary<string, InputActionMap> actionMaps = new Dictionary<string, InputActionMap>();
         internal static Dictionary<string, InputAction> MainGameActions = new Dictionary<string, InputAction>();
         internal static Dictionary<string, InputAction> PausedActions = new Dictionary<string, InputAction>();
@@ -45,9 +97,9 @@ namespace SR2E
 
         public static GameObject? player;
 
-        // public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE, WEATHER }
         public static SystemContext systemContext => SystemContext.Instance;
         public static GameContext gameContext => GameContext.Instance;
+        public static AutoSaveDirector autoSaveDirector => GameContext.Instance.AutoSaveDirector;
 
 
         public static SceneContext sceneContext => SceneContext.Instance;
@@ -55,87 +107,7 @@ namespace SR2E
         public static Damage killDamage => _killDamage;
 
         public static ICurrency toICurrency(this CurrencyDefinition currencyDefinition) => currencyDefinition.TryCast<ICurrency>();
-        public static bool SetCurrency(string referenceID,int amount)
-        {
-            if (string.IsNullOrWhiteSpace(referenceID)) return false;
-            if (!inGame) return false;
-            var id = referenceID;
-            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
-            
-            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-            SceneContext.Instance.PlayerState._model.SetCurrency(def.toICurrency(), amount);
-            return true;
-        }
-        public static bool SetCurrency(string referenceID,int amount, int amountEverCollected)
-        {
-            if (string.IsNullOrWhiteSpace(referenceID)) return false;
-            if (!inGame) return false;
-            var id = referenceID;
-            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
-            
-            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-            SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(), amount, amountEverCollected);
-            return true;
-        }
-        public static bool SetCurrencyEverCollected(string referenceID,int amountEverCollected)
-        {
-            if (string.IsNullOrWhiteSpace(referenceID)) return false;
-            if (!inGame) return false;
-            var id = referenceID;
-            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
-            
-            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-            SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(), GetCurrency(referenceID),amountEverCollected);
-            return true;
-        }
-
-        public static bool AddCurrency(string referenceID,int amount)
-        {
-            if (string.IsNullOrWhiteSpace(referenceID)) return false;
-            if (!inGame) return false;
-            var id = referenceID;
-            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
-            
-            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-            SceneContext.Instance.PlayerState._model.AddCurrency(def.toICurrency(), amount);
-            return true;
-        }
-        public static int GetCurrency(string referenceID)
-        {
-            if (string.IsNullOrWhiteSpace(referenceID)) return -1;
-            if (!inGame) return -1;
-            var id = referenceID;
-            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
-            
-            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-            var curr = SceneContext.Instance.PlayerState._model.GetCurrencyAmount(def.toICurrency());
-            if (curr.ToString() == "NaN") return 0;
-            return curr;
-        }
-        public static int GetCurrencyEverCollected(string referenceID)
-        {
-            if (string.IsNullOrWhiteSpace(referenceID)) return -1;
-            if (!inGame) return -1;
-            var id = referenceID;
-            if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
-            
-            var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-            var curr = SceneContext.Instance.PlayerState._model.GetCurrencyAmountEverCollected(def.toICurrency());
-            if (curr.ToString() == "NaN") return 0;
-            return curr;
-        }
-        public static WeatherStateDefinition getWeatherStateByName(string name)
-        {
-            foreach (WeatherStateDefinition state in weatherStateDefinitions)
-                try
-                {
-                    if (state.name.ToUpper().Replace(" ", "") == name.ToUpper())
-                        return state;
-                }
-                catch (System.Exception ignored)
-                { }
-            return null;
-        }
+        
 
         public static string LoadTextFile(string name)
         {
@@ -149,7 +121,7 @@ namespace SR2E
 
         }
 
-        public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => GameContext.Instance.AutoSaveDirector._configuration.WeatherStates.items.ToArray();
+        public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => autoSaveDirector._configuration.WeatherStates.items.ToArray();
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
 
@@ -237,19 +209,6 @@ namespace SR2E
         public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
         public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
 
-        public static Sprite ConvertToSprite(this Texture2D texture)
-        {
-            return Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
-        }
-
-        public static Texture2D Base64ToTexture2D(string base64)
-        {
-            if (string.IsNullOrEmpty(base64)) return null;
-            byte[] bytes = System.Convert.FromBase64String(base64);
-            Texture2D texture = new Texture2D(2, 2);
-            if (texture.LoadImage(bytes, false)) return texture;
-            return null;
-        }
 
         public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
         internal static TMP_FontAsset FontFromGame(string name)
@@ -300,64 +259,6 @@ namespace SR2E
             catch { SR2EEntryPoint.SendFontError(name); }
             return null;
         }
-        internal static void ReloadFont(this SR2EPopUp popUp)
-        {
-            var ident = getOpenMenu.GetIdentifierViaReflection();
-            if (string.IsNullOrEmpty(ident.saveKey)) return;
-            if(SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
-            var dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
-            TMP_FontAsset fontAsset = null;
-            switch (dataFont)
-            {
-                case SR2EMenuFont.Default: fontAsset = SR2EEntryPoint.normalFont; break;
-                case SR2EMenuFont.Bold: fontAsset = SR2EEntryPoint.boldFont; break;
-                case SR2EMenuFont.Regular: fontAsset = SR2EEntryPoint.regularFont; break;
-                case SR2EMenuFont.SR2: fontAsset = SR2EEntryPoint.SR2Font; break;
-            }
-            if(fontAsset!=null) popUp.ApplyFont(fontAsset);
-        }
-        internal static void ReloadFont(this SR2EMenu menu)
-        {
-            var ident = menu.GetIdentifierViaReflection();
-            if (string.IsNullOrEmpty(ident.saveKey)) return;
-            if(SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
-            var dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
-            TMP_FontAsset fontAsset = null;
-            switch (dataFont)
-            {
-                case SR2EMenuFont.Default: fontAsset = SR2EEntryPoint.normalFont; break;
-                case SR2EMenuFont.Bold: fontAsset = SR2EEntryPoint.boldFont; break;
-                case SR2EMenuFont.Regular: fontAsset = SR2EEntryPoint.regularFont; break;
-                case SR2EMenuFont.SR2: fontAsset = SR2EEntryPoint.SR2Font; break;
-            }
-            if(fontAsset!=null) menu.ApplyFont(fontAsset);
-        }
-        internal static MenuIdentifier GetIdentifierViaReflection(this SR2EMenu menu) => menu.GetType().GetIdentifierViaReflection();
-        
-        internal static MenuIdentifier GetIdentifierViaReflection(this Type type)
-        {
-            try
-            {
-                var methodInfo = type.GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
-                var result = methodInfo.Invoke(null, null);
-                if(result is MenuIdentifier identifier) return identifier;
-            }
-            catch (Exception e) { MelonLogger.Error(e); }
-            return new MenuIdentifier(); 
-        }
-        internal static SR2EMenu GetSR2EMenu(this MenuIdentifier identifier)
-        {
-            try
-            {
-                foreach (var pair in SR2EEntryPoint.menus)
-                {
-                    var ident = pair.Key.GetIdentifierViaReflection();
-                    if (ident.saveKey == identifier.saveKey) return pair.Key;
-                }
-            }
-            catch (Exception e) { MelonLogger.Error(e); }
-            return null; 
-        }
         public static GameObject? Get(string name) => Get<GameObject>(name);
 
         public static void MakePrefab(this GameObject obj)
@@ -365,83 +266,12 @@ namespace SR2E
             UnityEngine.Object.DontDestroyOnLoad(obj);
             obj.transform.parent = rootOBJ.transform;
         }
-        internal static void DoActions(List<MenuActions> actions)
-        {
-            if(actions.Contains(MenuActions.UnPauseGame)) TryUnPauseGame();
-            if(actions.Contains(MenuActions.UnPauseGameFalse)) TryUnPauseGame(false);
-            if(actions.Contains(MenuActions.PauseGameFalse)) TryPauseGame(false);
-            if(actions.Contains(MenuActions.UnHideMenus)) TryUnHideMenus();
-            if(actions.Contains(MenuActions.EnableInput)) TryEnableSR2Input();
-            if(actions.Contains(MenuActions.DisableInput)) TryDisableSR2Input();
-            if(actions.Contains(MenuActions.PauseGame)&&actions.Contains(MenuActions.HideMenus)) TryPauseAndHide();
-            else
-            {
-                if(actions.Contains(MenuActions.HideMenus)) TryHideMenus();
-                if(actions.Contains(MenuActions.PauseGame)) TryPauseGame();
-            }
 
-        }
 
-        internal static Sprite LoadSprite(string fileName) => ConvertToSprite(LoadImage(fileName));
-
-        internal static Texture2D LoadImage(string filename)
-        {
-            var realFilename = filename;
-            if(!realFilename.EndsWith(".png")&&!realFilename.EndsWith(".jpg")&&!realFilename.EndsWith(".exr"))
-                realFilename += ".png";
-            var method = new StackTrace().GetFrame(1).GetMethod();
-            var assembly = method.ReflectedType.Assembly;
-            System.IO.Stream manifestResourceStream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + realFilename);
-            byte[] array = new byte[manifestResourceStream.Length];
-            manifestResourceStream.Read(array, 0, array.Length);
-            Texture2D texture2D = new Texture2D(1, 1);
-            ImageConversion.LoadImage(texture2D, array);
-            texture2D.filterMode = FilterMode.Bilinear;
-            return texture2D;
-        }
-        internal static Dictionary<string, byte[]> LoadEmbeddedResources(string folderNamespace, bool recursive = false)
-        {
-            var method = new StackTrace().GetFrame(1).GetMethod();
-            var assembly = method.ReflectedType.Assembly;
-            var baseNamespace = assembly.GetName().Name + "." + folderNamespace;
-
-            var resourceNames = assembly.GetManifestResourceNames().Where(r => recursive ? r.StartsWith(baseNamespace + ".") : r.Substring(0, r.LastIndexOf('.')).Equals(baseNamespace)).ToArray();
-            var result = new Dictionary<string, byte[]>();
-
-            foreach (var resourceName in resourceNames)
-            {
-                using (var stream = assembly.GetManifestResourceStream(resourceName))
-                {
-                    if (stream == null) continue;
-                    byte[] bytes = new byte[stream.Length];
-                    stream.Read(bytes, 0, bytes.Length);
-
-                    string fileName = resourceName.Substring(baseNamespace.Length + 1);
-                    result[fileName] = bytes;
-                }
-            }
-            return result;
-        }
-        internal static byte[] LoadEmbeddedResource(string filename)
-        {
-            var method = new StackTrace().GetFrame(1).GetMethod();
-            var assembly = method.ReflectedType.Assembly;
-            System.IO.Stream manifestResourceStream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
-            byte[] array = new byte[manifestResourceStream.Length];
-            manifestResourceStream.Read(array, 0, array.Length);
-            return array;
-        }
 
         internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithActions = new Dictionary<MelonPreferences_Entry, Action>();
         public static void AddNullAction(this MelonPreferences_Entry entry) => entriesWithActions.Add(entry, null);
         public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => entriesWithActions.Add(entry, action);
-        internal static Dictionary<string, List<SR2EMenuTheme>> validThemes = new Dictionary<string, List<SR2EMenuTheme>>();
-        public static List<SR2EMenuTheme> getValidThemes(string saveKey)
-        {
-            if (validThemes.ContainsKey(saveKey.ToLower()))
-                return validThemes[saveKey.ToLower()];
-            return new List<SR2EMenuTheme>();
-        }
         public static bool AddComponent<T>(this Transform obj) where T : Component => obj.gameObject.AddComponent<T>();
         public static bool HasComponent<T>(this Transform obj) where T : Component => HasComponent<T>(obj.gameObject);
         public static bool HasComponent<T>(this GameObject obj) where T : Component
@@ -627,229 +457,16 @@ namespace SR2E
             }
         }
 
-        internal static IdentifiableType[] identifiableTypes { get { return GameContext.Instance.AutoSaveDirector._configuration.IdentifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
+        internal static IdentifiableType[] identifiableTypes { get { return autoSaveDirector._configuration.IdentifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray(); } }
         internal static IdentifiableType[] vaccableTypes { get { return vaccableGroup.GetAllMembers().ToArray(); } }
-        internal static IdentifiableType getIdentByName(string name)
-        {
-            if (String.IsNullOrWhiteSpace(name)) return null;
-            if (name.ToLower() == "none" || name.ToLower() == "player") return null;
-            foreach (IdentifiableType type in identifiableTypes)
-                if (type.name.ToUpper() == name.ToUpper()) return type;
-            foreach (IdentifiableType type in identifiableTypes) 
-                try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","").Replace("_","") == name.Replace("_","").ToUpper()) return type; }catch {}
-            return null;
-        }
-        internal static GadgetDefinition getGadgetDefByName(string name)
-        {
-            if (String.IsNullOrWhiteSpace(name)) return null;
-            if (name.ToLower() == "none" || name.ToLower() == "player") return null;
-            GadgetDefinition[] ids = Resources.FindObjectsOfTypeAll<GadgetDefinition>();
-            foreach (GadgetDefinition type in ids)
-                if (type.name.ToUpper() == name.ToUpper()) return type;
-            foreach (GadgetDefinition type in ids) 
-                try { if (type.LocalizedName.GetLocalizedString().ToUpper().Replace(" ","").Replace("_","") == name.Replace("_","").ToUpper()) return type; }catch {}
-            return null;
-        }
-
-        static bool StartsWithContain(this string input, string value, bool useContain)
-        {
-            if (useContain) return input.Contains(value);
-            return input.StartsWith(value);
-        }
-
         public static IdentifiableTypeGroup vaccableGroup;
-        public static List<string> getVaccableListByPartialName(string input, bool useContain)
-        {
-            IdentifiableType[] types = vaccableTypes;
-            if (String.IsNullOrWhiteSpace(input))
-            {
-                List<string> cleanList = new List<string>();
-                int j = 0;
-                foreach (IdentifiableType type in types)
-                {
-                    bool isGadget = type.isGadget();
-                    if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
-                    if (j > MAX_AUTOCOMPLETE.Get()) break;
-                    try
-                    {if (type.LocalizedName != null)
-                        {
-                            string localizedString = type.LocalizedName.GetLocalizedString();
-                            if(localizedString.StartsWith("!")) continue;
-                            j++;
-                            cleanList.Add(localizedString.Replace(" ", ""));
-                        }
-                    }catch { }
-                }
-                cleanList.Sort();
-                return cleanList;
-            }
-            
-            List<string> list = new List<string>();
-            List<string> listTwo = new List<string>();
-            int i = 0;
-            foreach (IdentifiableType type in types)
-            {
-                if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
-                
-                if (i > MAX_AUTOCOMPLETE.Get()) break;
-                try
-                {
-                    if (type.LocalizedName != null)
-                    {
-                        string localizedString = type.LocalizedName.GetLocalizedString();
-                        if (localizedString.ToLower().Replace(" ", "").StartsWith(input.ToLower()))
-                        {
-                            if(localizedString.StartsWith("!")) continue;
-                            i++;
-                            list.Add(localizedString.Replace(" ", ""));
-                        }
-                    }
-                }catch { }
-            }
-            if(useContain)
-                foreach (IdentifiableType type in types)
-                {
-                    if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
-                
-                    if (i > MAX_AUTOCOMPLETE.Get()) break;
-                    try
-                    {
-                        if (type.LocalizedName != null)
-                        {
-                            string localizedString = type.LocalizedName.GetLocalizedString();
-                            if (localizedString.ToLower().Replace(" ", "").Contains(input.ToLower()))
-                                if(!list.Contains(localizedString.Replace(" ", "")))
-                                {
-                                    if(localizedString.StartsWith("!")) continue;
-                                    i++;
-                                    listTwo.Add(localizedString.Replace(" ", ""));
-                                }
-                        }
-                    }catch { }
-                }
-            list.Sort();
-            listTwo.Sort();
-            list.AddRange(listTwo);
-            return list;
-        }
-        public static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain,bool includeStars = false)
-        {
-            if (!includeGadget && !includeNormal)
-                if (includeStars) return new List<string>() { "*" };
-                else return new List<string>();
-            if (String.IsNullOrWhiteSpace(input))
-            {
-                List<string> cleanList = new List<string>();
-                int j = 0;
-                foreach (IdentifiableType type in identifiableTypes)
-                {
-                    bool isGadget = type.isGadget();
-                    if(type.ReferenceId.ToLower().Contains("Gordo")) continue;
-                    if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
-                    if (!includeGadget && isGadget) continue;
-                    if (!includeNormal && !isGadget) continue;
-                    if (j > MAX_AUTOCOMPLETE.Get()) break;
-                    try
-                    {if (type.LocalizedName != null)
-                        {
-                            string localizedString = type.LocalizedName.GetLocalizedString();
-                            if(localizedString.StartsWith("!")) continue;
-                            j++;
-                            cleanList.Add(localizedString.Replace(" ", ""));
-                        }
-                    }catch { }
-                }
-                cleanList.Add("*");
-                cleanList.Sort();
-                return cleanList;
-            }
-            
-            List<string> list = new List<string>();
-            List<string> listTwo = new List<string>();
-            int i = 0;
-            foreach (IdentifiableType type in identifiableTypes)
-            {
-                bool isGadget = type.isGadget();
-                if(type.ReferenceId.ToLower().Contains("Gordo")) continue;
-                if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
-                if (!includeGadget && isGadget) continue;
-                if (!includeNormal && !isGadget) continue;
-                
-                if (i > MAX_AUTOCOMPLETE.Get()) break;
-                try
-                {
-                    if (type.LocalizedName != null)
-                    {
-                        string localizedString = type.LocalizedName.GetLocalizedString();
-                        if (localizedString.ToLower().Replace(" ", "").StartsWith(input.ToLower()))
-                        {
-                            if(localizedString.StartsWith("!")) continue;
-                            i++;
-                            list.Add(localizedString.Replace(" ", ""));
-                        }
-                    }
-                }catch { }
-            }
-            if(useContain)
-                foreach (IdentifiableType type in identifiableTypes)
-                {
-                    bool isGadget = type.isGadget();
-                    if(type.ReferenceId.ToLower().Contains("Gordo")) continue;
-                    if (type.ReferenceId.ToLower() == "none" || type.ReferenceId.ToLower() == "player") continue;
-                    if (!includeGadget && isGadget) continue;
-                    if (!includeNormal && !isGadget) continue;
-                
-                    if (i > MAX_AUTOCOMPLETE.Get()) break;
-                    try
-                    {
-                        if (type.LocalizedName != null)
-                        {
-                            string localizedString = type.LocalizedName.GetLocalizedString();
-                            if (localizedString.ToLower().Replace(" ", "").Contains(input.ToLower()))
-                                if(!list.Contains(localizedString.Replace(" ", "")))
-                                {
-                                    if(localizedString.StartsWith("!")) continue;
-                                    i++;
-                                    listTwo.Add(localizedString.Replace(" ", ""));
-                                }
-                        }
-                    }catch { }
-                }
-            list.Sort();
-            listTwo.Sort();
-            list.AddRange(listTwo);
-            return list;
-        }
-        public static List<string> getKeyListByPartialName(string input, bool useContain)
-        {
-            if (String.IsNullOrWhiteSpace(input))
-            {
-                List<string> nullList = new List<string>();
-                foreach (Key key in System.Enum.GetValues<Key>())
-                    if (key != Key.None)
-                        if (key.ToString().ToLower().StartsWith(input.ToLower()))
-                            nullList.Add(key.ToString());
-                nullList.Sort();
-                return nullList;
-            }
-            
-            List<string> list = new List<string>();
-            List<string> listTwo = new List<string>();
-            foreach (Key key in System.Enum.GetValues<Key>())
-                if (key != Key.None)
-                    if (key.ToString().ToLower().StartsWith(input.ToLower()))
-                        list.Add(key.ToString());
-            if(useContain)
-                foreach (Key key in System.Enum.GetValues<Key>())
-                    if (key != Key.None)
-                        if (key.ToString().ToLower().Contains(input.ToLower()))
-                            if(!list.Contains(key.ToString()))
-                                listTwo.Add(key.ToString());
-            list.Sort();
-            listTwo.Sort();
-            list.AddRange(listTwo);
-            return list;
-        }
+        
+        
+        
+        //
+        // PARSING STRINGS INTO VALUES
+        // EXLUSIVELY FOR SR2ECOMMANDS
+        //
         public static bool TryParseVector3(this SR2ECommand cmd, string inputX, string inputY, string inputZ, out Vector3 value)
         {
             value = Vector3.zero;
@@ -978,21 +595,16 @@ namespace SR2E
 
             return true;
         }
+        
         public static bool isGadget(this IdentifiableType type) => type.ReferenceId.StartsWith("GadgetDefinition");
 
-        public static string getName(this IdentifiableType type)
-        {
-            try
-            {
-                string itemName = "";
-                string name = type.LocalizedName.GetLocalizedString();
-                if (name.Contains(" ")) itemName = "'" + name + "'";
-                else itemName = name;
-                return itemName;
-            }
-            catch
-            { return type.name; }
-        }
+        
+        
+        
+        
+        
+        
+        
         public static TripleDictionary<GameObject, ParticleSystemRenderer, string> FXLibrary = new TripleDictionary<GameObject, ParticleSystemRenderer, string>();
         public static TripleDictionary<string, ParticleSystemRenderer, GameObject> FXLibraryReversable = new TripleDictionary<string, ParticleSystemRenderer, GameObject>();
 
@@ -1006,39 +618,7 @@ namespace SR2E
             );
         }
 
-        public static bool isAnyMenuOpen
-        {
-            get
-            {
-                for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
-                    if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).name.Contains("(Clone)"))
-                    {
-                        if(SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.activeSelf)
-                            return true;
-                    }
-                return false;
-            }
-        }
 
-        public static void CloseOpenMenu()
-        {
-            SR2EMenu menu = getOpenMenu;
-            if(menu!=null)
-                menu.Close();
-        }
-        public static SR2EMenu getOpenMenu
-        {
-            get
-            {
-                for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
-                    if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).name.Contains("(Clone)"))
-                    {
-                        if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.activeSelf)
-                            return SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.GetComponent<SR2EMenu>();
-                    }
-                return null;
-            }
-        }
 
         public static void TryHideMenus()
         {
@@ -1113,7 +693,17 @@ namespace SR2E
             if (inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
         }
 
-        public static float CustomTimeScale = 1f;
+        internal static float _CustomTimeScale = 1f;
+        public static float CustomTimeScale {
+            get {
+                return _CustomTimeScale;
+            }
+            set
+            {
+                _CustomTimeScale = value;
+                SR2EEntryPoint.CheckForTime();
+            }
+        }
         public static void TryDisableSR2Input()
         {
             Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
@@ -1136,7 +726,7 @@ namespace SR2E
                 {
                     SR2ESaveManager.data.themes.TryAdd(identifier.saveKey, identifier.defaultTheme);
                     SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[identifier.saveKey];
-                    List<SR2EMenuTheme> validThemes = getValidThemes(identifier.saveKey);
+                    List<SR2EMenuTheme> validThemes = MenuUtil.GetValidThemes(identifier.saveKey);
                     if (validThemes.Count == 0) return SR2EMenuTheme.Default;
                     if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
                     return currentTheme;
@@ -1185,5 +775,45 @@ namespace SR2E
             { Branch.Alpha, "alpha" },
             { Branch.Developer, "dev" },
         };
+        
+        
+        
+        
+        ///
+        ///
+        ///    ///
+        ///    ///
+        ///    /// OBSOLETE THINGS
+        ///    ///
+        ///    ///
+        ///
+        ///
+
+        
+        
+        [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.CloseOpenMenu),true)] public static void CloseOpenMenu() => MenuUtil.CloseOpenMenu();
+        [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.isAnyMenuOpen),true)]  public static bool isAnyMenuOpen => MenuUtil.isAnyMenuOpen;
+        [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.GetOpenMenu),true)] public static SR2EMenu getOpenMenu => MenuUtil.GetOpenMenu();
+        [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.GetValidThemes),true)] public static List<SR2EMenuTheme> getValidThemes(string saveKey) => MenuUtil.GetValidThemes(saveKey);
+        
+        public static string getName(this IdentifiableType type) => GetName(type);
+        
+        
+        [Obsolete("Please use "+nameof(ConvertUtil)+"."+nameof(ConvertUtil.Texture2DToSprite),true)] public static Sprite ConvertToSprite(this Texture2D texture) => ConvertUtil.Texture2DToSprite(texture);
+        [Obsolete("Please use "+nameof(ConvertUtil)+"."+nameof(ConvertUtil.Base64ToTexture2D),true)] public static Texture2D Base64ToTexture2D(string base64) => ConvertUtil.Base64ToTexture2D(base64);
+        
+        
+        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrency),true)] public static bool SetCurrency(string referenceID, int amount) => CurrencyUtil.SetCurrency(referenceID, amount);
+        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrency),true)] public static bool SetCurrency(string referenceID,int amount, int amountEverCollected) => CurrencyUtil.SetCurrency(referenceID, amount,amountEverCollected);
+        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrencyEverCollected),true)] public static bool SetCurrencyEverCollected(string referenceID,int amountEverCollected) => CurrencyUtil.SetCurrencyEverCollected(referenceID, amountEverCollected);
+        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.AddCurrency),true)] public static bool AddCurrency(string referenceID,int amount) => CurrencyUtil.AddCurrency(referenceID, amount);
+        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.GetCurrency),true)] public static int GetCurrency(string referenceID) => CurrencyUtil.GetCurrency(referenceID);
+        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.GetCurrencyEverCollected),true)] public static int GetCurrencyEverCollected(string referenceID) => CurrencyUtil.GetCurrencyEverCollected(referenceID);
+
+        
+        [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetWeatherStateByName),true)] public static WeatherStateDefinition getWeatherStateByName(string name) => LookupUtil.GetWeatherStateByName(name);
+        [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetVaccableListByPartialName),true)] public static List<string> getVaccableListByPartialName(string input, bool useContain) => LookupUtil.GetVaccableListByPartialName(input, useContain);
+        [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetIdentListByPartialName),true)] public static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain,bool includeStars = false) => LookupUtil.GetIdentListByPartialName(input,includeNormal,includeGadget,useContain,includeStars);
+        [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetKeyListByPartialName),true)] public static List<string> getKeyListByPartialName(string input, bool useContain) => LookupUtil.GetKeyListByPartialName(input,useContain);
     }
 }

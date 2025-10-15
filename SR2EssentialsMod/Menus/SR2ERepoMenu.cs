@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
-using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using Il2CppTMPro;
-using Newtonsoft.Json;
 using SR2E.Enums;
 using SR2E.Enums.Features;
 using SR2E.Managers;
 using SR2E.Popups;
-using SR2E.Repos;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.Networking;
@@ -86,7 +81,7 @@ public class SR2ERepoMenu : SR2EMenu
             yield break;
         }
 
-        targetImage.sprite = texture.ConvertToSprite();
+        targetImage.sprite = texture.Texture2DToSprite();
     }
     protected override void OnOpen()
     {

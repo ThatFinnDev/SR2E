@@ -5,6 +5,7 @@ buttons.debugplayer.label,"Debug Player",Debuginformationen
 buttons.thememenu.label,"Theme Menu",Designmenü
 console.title,"Console","Konsole"
 console.helloworld,"Hello World! :)","Hallo Welt! :)"
+console.info,"Type 'help' for help!\nExecute multiple commands at the same time by separating them with a semicolon (;)!","Schreib 'help' für Hilfe!\nFür mehrere Befehle gleichzeitig aus, indem du sie mit einem Punkt-Strich trennst (;)!"
 thememenu.title,"Themes","Designs"
 thememenu.warning.restart,"You've changed a theme!\nThey will apply once you restart your game!","Du hast ein Design verändert! Du musst das Spiel neustarten um die Änderungen zu sehen!"
 thememenu.category.selector,"Theme Selector","Designauswahl"
@@ -43,8 +44,8 @@ modmenu.modinfo.coauthor,"Co-Author: $1",Mitentwickler: $1
 modmenu.modinfo.contributors,"Contributors: $1","Beiträger: $1"
 modmenu.modinfo.version,"Version: $1",Version: $1
 modmenu.modinfo.link,"Link: $1",Link: $1
-modmenu.modinfo.sourcode,"Source code: $1",Quellcode: $1
-modmenu.modinfo.nexus,"Nexusmods: $1",Nexusmods: $1
+modmenu.modinfo.sourcecode,"Source code: $1",Quellcode: $1
+modmenu.modinfo.nexus,"Nexus: $1",Nexus: $1
 modmenu.modinfo.unknown,"Unknown",Unbekannt
 modmenu.modinfo.isuniversal,"Is Universal Mod: $1",Universalmodifikation: $1
 modmenu.modinfo.description,"Description: $1",Beschreibung: $1

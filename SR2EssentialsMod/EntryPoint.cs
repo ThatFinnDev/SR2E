@@ -297,7 +297,7 @@ public class SR2EEntryPoint : MelonMod
     }
     public override void OnApplicationQuit()
     {
-        try { if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay()) GameContext.Instance.AutoSaveDirector.SaveGame(); }catch { }
+        try { if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay()) autoSaveDirector.SaveGame(); }catch { }
     }
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
@@ -311,7 +311,9 @@ public class SR2EEntryPoint : MelonMod
                     configuration._saveSlotCount = SAVESLOT_COUNT.Get();
                 
                 CustomTimeScale = 1f;
-                if (ExperimentalSettingsInjection.HasFlag())
+                Time.timeScale = 1;
+                try {SceneContext.Instance.TimeDirector._timeFactor = 1;} catch {}
+                /*if (ExperimentalSettingsInjection.HasFlag())
                 {
                     bool tempLoad = alreadyLoadedSettings;
                     if (tempLoad)
@@ -416,10 +418,12 @@ public class SR2EEntryPoint : MelonMod
                         //MelonLogger.BigError("SR2E TODO", "PLEASE IMPLEMENT THE GAMEPLAY_INGAME SETTINGS CATEGORY");
                     }
                     CustomSettingsCreator.ApplyModel();
-                }
+                }*/
                 break;
             case "StandaloneEngagementPrompt":
-                Object.FindObjectOfType<CompanyLogoScene>().StartLoadingIndicator();
+                var cls = Object.FindObjectOfType<CompanyLogoScene>();
+                cls.StartLoadingIndicator();
+                cls.startupMusic = null;
                 break;
             case "PlayerCore":
                 NoClipComponent.playerSettings = Get<KCCSettings>("");
@@ -445,14 +449,23 @@ public class SR2EEntryPoint : MelonMod
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
     }
 
-    void CheckForTime()
+    internal static void CheckForTime()
     {
         if (!inGame) return;
-        if (Time.timeScale == 1f) Time.timeScale = CustomTimeScale;
-        if (SceneContext.Instance.TimeDirector._timeFactor == 1f) SceneContext.Instance.TimeDirector._timeFactor = CustomTimeScale;
+        try
+        {
+            if(Time.timeScale!=0&&Time.timeScale != CustomTimeScale) 
+                Time.timeScale = CustomTimeScale; 
+        } catch {}
+        try 
+        {
+            var factor = SceneContext.Instance.TimeDirector._timeFactor;
+            if (factor!=0&&factor!= CustomTimeScale) 
+                SceneContext.Instance.TimeDirector._timeFactor = CustomTimeScale;
+        } catch {}
         ExecuteInSeconds((Action)(() => { CheckForTime();}), 1);
     }
-    public static event EventHandler RegisterOptionMenuButtons;
+   // public static event EventHandler RegisterOptionMenuButtons;
     static bool useSR2Font = true;
 
     internal static void SendFontError(string name)
@@ -482,7 +495,7 @@ public class SR2EEntryPoint : MelonMod
     {
         if (isSaveDirectorLoaded) return;
         isSaveDirectorLoaded = true;
-        foreach (var expansion in expansions) try { expansion.SaveDirectorLoaded(GameContext.Instance.AutoSaveDirector); } catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var expansion in expansions) try { expansion.SaveDirectorLoaded(autoSaveDirector); } catch (Exception e) { MelonLogger.Error(e); }
     }
 
     public override void OnSceneWasInitialized(int buildIndex, string sceneName)

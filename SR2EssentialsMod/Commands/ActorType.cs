@@ -12,7 +12,7 @@ internal class ActorType : SR2ECommand
     List<string> disabledActors = new List<string>();
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0) return getIdentListByPartialName(args==null?null:args[0], true,true,true, true);
+        if (argIndex == 0) return LookupUtil.GetIdentListByPartialName(args==null?null:args[0], true,true,true, true);
         if (argIndex == 1) return new List<string> { "true", "false", "toggle" };
         return null;
     }
@@ -44,26 +44,26 @@ internal class ActorType : SR2ECommand
             }
             return true;
         }
-        IdentifiableType type = getIdentByName(args[0]);
+        IdentifiableType type = LookupUtil.GetIdentByName(args[0]);
         if (type == null) return SendNotValidIdentType(args[0]);
-        if (type.isGadget()) return SendIsGadgetNotItem(type.getName());
+        if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
         bool enabled = !disabledActors.Contains(type.ReferenceId);
         if (!this.TryParseTrool(args[1], out Trool trool)) return false;
         switch (trool)
         {
             case Trool.False:
-                if (!enabled) return SendError(translation("cmd.actortype.alreadydisabled", type.getName()));
+                if (!enabled) return SendError(translation("cmd.actortype.alreadydisabled", type.GetName()));
                 disabledActors.Add(type.ReferenceId);
                 foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                     if (actor.identType == type) actor.gameObject.AddComponent<ObjectBlocker>();
-                SendMessage(translation("cmd.actortype.disable",type.getName()));
+                SendMessage(translation("cmd.actortype.disable",type.GetName()));
                 return true;
             case Trool.True:
-                if (enabled) return SendError(translation("cmd.actortype.alreadyenabled", type.getName()));
+                if (enabled) return SendError(translation("cmd.actortype.alreadyenabled", type.GetName()));
                 disabledActors.Remove(type.ReferenceId);
                 foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                     if (actor.identType == type) actor.gameObject.RemoveComponent<ObjectBlocker>();
-                SendMessage(translation("cmd.actortype.enable",type.getName()));
+                SendMessage(translation("cmd.actortype.enable",type.GetName()));
                 return true;
             case Trool.Toggle:
                 if (enabled)
@@ -71,13 +71,13 @@ internal class ActorType : SR2ECommand
                     disabledActors.Add(type.ReferenceId);
                     foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                         if (actor.identType == type) actor.gameObject.AddComponent<ObjectBlocker>();
-                    SendMessage(translation("cmd.actortype.disable",type.getName()));
+                    SendMessage(translation("cmd.actortype.disable",type.GetName()));
                     return true;
                 }
                 disabledActors.Remove(type.ReferenceId);
                 foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                     if (actor.identType == type) actor.gameObject.RemoveComponent<ObjectBlocker>();
-                SendMessage(translation("cmd.actortype.enable",type.getName()));
+                SendMessage(translation("cmd.actortype.enable",type.GetName()));
                 return true;
         }
         return SendUnknown();

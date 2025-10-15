@@ -45,8 +45,8 @@ public class SR2EGridMenuList : SR2EPopUp
     
     public static void Open(TripleDictionary<string,string,Sprite> entries,Action<string> onSelect)
     {
-        if (!isAnyMenuOpen) return;
-        _Open("GridMenuList",typeof(SR2EGridMenuList),getOpenMenu.GetTheme(),new List<object>(){entries,onSelect});
+        if (!MenuUtil.isAnyMenuOpen) return;
+        _Open("GridMenuList",typeof(SR2EGridMenuList),MenuUtil.GetOpenMenu().GetTheme(),new List<object>(){entries,onSelect});
     }
 
     protected override void OnUpdate()

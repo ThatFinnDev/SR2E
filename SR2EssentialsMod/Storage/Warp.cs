@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using SR2E.Components;
 using SR2E.Enums;
 using SR2E.Managers;
-using SR2E.Patches;
 using SR2E.Patches.General;
 
 namespace SR2E.Storage;
@@ -22,7 +21,7 @@ public class Warp
         if (p == null) return SR2EError.TeleportablePlayerNull;
         SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
         if (cc == null) return SR2EError.SRCharacterControllerNull;
-        CloseOpenMenu();
+        MenuUtil.CloseOpenMenu();
         if (sceneGroup == p.SceneGroup.ReferenceId)
         {
             cc.Position = position;
