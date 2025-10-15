@@ -36,50 +36,7 @@ namespace SR2E
         //
         // GET NAMES FOR DIFFERENT SR2 TYPES
         //
-        public static string GetName(this IdentifiableType type)
-        {
-            try
-            {
-                string itemName = "";
-                string name = type.LocalizedName.GetLocalizedString();
-                if (name.Contains(" ")) itemName = "'" + name + "'";
-                else itemName = name;
-                return itemName;
-            }
-            catch
-            { return type.name; }
-        }
-        public static string GetCompactName(this IdentifiableType type)
-        {
-            try
-            {
-                string itemName = type.LocalizedName.GetLocalizedString().Replace(" ","").Replace("_","");
-                return itemName;
-            }
-            catch
-            { return type.name.Replace(" ","").Replace("_",""); }
-        }
-        public static string GetCompactUpperName(this IdentifiableType type)
-        {
-            if (type == null) return null;
-            try
-            {
-                string itemName = type.LocalizedName.GetLocalizedString().Replace(" ","").Replace("_","");
-                return itemName.ToUpper();
-            }
-            catch
-            { return type.name.Replace(" ","").Replace("_","").ToUpper(); }
-        }
-        public static string GetCompactName(this WeatherStateDefinition definition)
-        {
-            try { return definition.name.Replace(" ","").Replace("_",""); } catch {  }
-            return null;
-        }
-        public static string GetCompactUpperName(this WeatherStateDefinition definition)
-        {
-            try { return definition.name.Replace(" ","").Replace("_","").ToUpper(); } catch {  }
-            return null;
-        }
+
         
         
         
@@ -177,34 +134,6 @@ namespace SR2E
         public static void SetTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
         {
             SetTranslation(translation(sr2eTranslationID), key, table);
-        }
-        public static GameObject SpawnGadget(this GadgetDefinition def, Vector3 pos) => SpawnGadget(def, pos, Quaternion.identity);
-        public static GameObject SpawnGadget(this GadgetDefinition def, Vector3 pos, Vector3 rot)=> SpawnGadget(def, pos, Quaternion.Euler(rot));
-        public static GameObject SpawnGadget(this GadgetDefinition def, Vector3 pos, Quaternion rot)
-        {
-            throw new Exception("Currently broken");
-            GameObject gadget = GadgetDirector.InstantiateGadget(def.prefab, SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, rot);
-            return gadget;
-        }
-        public static GameObject SpawnActor(this IdentifiableType ident, Vector3 pos) => SpawnActor(ident, pos, Quaternion.identity);
-        public static GameObject SpawnActor(this IdentifiableType ident, Vector3 pos, Vector3 rot)=> SpawnActor(ident, pos, Quaternion.Euler(rot));
-        public static GameObject SpawnActor(this IdentifiableType ident, Vector3 pos, Quaternion rot)
-        {
-            if (ident is GadgetDefinition gadgetDefinition) return SpawnGadget(gadgetDefinition, pos, rot);
-            return InstantiationHelpers.InstantiateActor(ident.prefab,
-                SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, rot,
-                false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
-        }
-        public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos, Quaternion rot)
-        {
-            return InstantiationHelpers.InstantiateDynamic(obj, pos, rot);
-        }
-        
-        public static GameObject SpawnFX(this GameObject fx, Vector3 pos) => SpawnFX(fx, pos, Quaternion.identity);
-        
-        public static GameObject SpawnFX(this GameObject fx, Vector3 pos, Quaternion rot)
-        {
-            return FXHelpers.SpawnFX(fx, pos, rot);
         }
         public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
         public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
@@ -790,13 +719,22 @@ namespace SR2E
         ///
 
         
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos) => SpawnUtil.SpawnGadget(def, pos).GetGameObject();
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos, Vector3 rot) => SpawnUtil.SpawnGadget(def, pos,rot).GetGameObject();
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos, Quaternion rot) => SpawnUtil.SpawnGadget(def, pos,rot).GetGameObject();
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnActor),true)] public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos) => SpawnUtil.SpawnActor(ident, pos);
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnActor),true)] public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos, Vector3 rot) => SpawnUtil.SpawnActor(ident, pos,rot);
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnActor),true)]  public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos, Quaternion rot) => SpawnUtil.SpawnActor(ident, pos,rot);
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnDynamic),true)] public static GameObject SpawnDynamic(GameObject obj, Vector3 pos, Quaternion rot)=>SpawnUtil.SpawnDynamic(obj, pos, rot);
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnFX),true)] public static GameObject SpawnFX(GameObject fx, Vector3 pos) => SpawnUtil.SpawnFX(fx, pos);
+        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnFX),true)] public static GameObject SpawnFX(GameObject fx, Vector3 pos, Quaternion rot) => SpawnUtil.SpawnFX(fx, pos,rot);
         
         [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.CloseOpenMenu),true)] public static void CloseOpenMenu() => MenuUtil.CloseOpenMenu();
         [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.isAnyMenuOpen),true)]  public static bool isAnyMenuOpen => MenuUtil.isAnyMenuOpen;
         [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.GetOpenMenu),true)] public static SR2EMenu getOpenMenu => MenuUtil.GetOpenMenu();
         [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.GetValidThemes),true)] public static List<SR2EMenuTheme> getValidThemes(string saveKey) => MenuUtil.GetValidThemes(saveKey);
         
-        public static string getName(this IdentifiableType type) => GetName(type);
+        [Obsolete("Please use "+nameof(NamingUtil)+"."+nameof(NamingUtil.GetName),true)] public static string getName(this IdentifiableType type) => NamingUtil.GetName(type);
         
         
         [Obsolete("Please use "+nameof(ConvertUtil)+"."+nameof(ConvertUtil.Texture2DToSprite),true)] public static Sprite ConvertToSprite(this Texture2D texture) => ConvertUtil.Texture2DToSprite(texture);

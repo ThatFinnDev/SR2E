@@ -50,7 +50,7 @@ internal class ReplaceCommand : SR2ECommand
             {
                 //Add new one 
                 GameObject spawned = null;
-                if (type is GadgetDefinition gadgetDefinition) spawned = gadgetDefinition.SpawnGadget(hit.point,Quaternion.identity);
+                if (type is GadgetDefinition gadgetDefinition) spawned = gadgetDefinition.SpawnGadget(hit.point,Quaternion.identity).GetGameObject();
                 else spawned = type.SpawnActor(hit.point, Quaternion.identity);
                 Vector3 position = gameobject.transform.position;
                 Quaternion rotation = gameobject.transform.rotation;

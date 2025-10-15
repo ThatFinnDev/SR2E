@@ -21,7 +21,7 @@ internal class SpawnCommand : SR2ECommand
         string identifierTypeName = args[0];
         IdentifiableType type = LookupUtil.GetIdentByName(identifierTypeName);
         if (type == null) return SendNotValidIdentType(identifierTypeName);
-        if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
+        //if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
         int amount = 1;
         if (args.Length == 2) if(!this.TryParseInt(args[1], out amount,0, false)) return false;
@@ -33,7 +33,7 @@ internal class SpawnCommand : SR2ECommand
                 try
                 {
                     GameObject spawned = null;
-                    if (type is GadgetDefinition gadgetDefinition) spawned = gadgetDefinition.SpawnGadget(hit.point,Quaternion.identity);
+                    if (type.TryCast<GadgetDefinition>()!=null) spawned = type.TryCast<GadgetDefinition>().SpawnGadget(hit.point,Quaternion.identity).GetGameObject();
                     else spawned = type.SpawnActor(hit.point, Quaternion.identity);
                     spawned.transform.position = hit.point + hit.normal * PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
                     var delta = -(hit.point - cam.transform.position).normalized;
