@@ -45,7 +45,7 @@ namespace SR2E
         [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.changeValue),true)] public static float4 changeValue(float4 float4, int index, float value) => MiscEUtil.changeValue(float4, index, value);
         [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.defaultMask), true)] public static LayerMask defaultMask => MiscEUtil.defaultMask;
         [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.BRANCHES), true)] public static readonly Dictionary<Branch,string> BRANCHES = MiscEUtil.BRANCHES;
-        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.IsBetween), true)] public static bool IsBetween(string[] list, uint min, int max)=>ContextShortcuts.IsBetween(list, min, max);
+        [Obsolete("Please use "+nameof(ContextShortcuts)+"."+nameof(ContextShortcuts.IsBetween), true)] public static bool IsBetween(string[] list, uint min, int max)=>ContextShortcuts.IsBetween(list, min, max);
         
         [Obsolete("Please use SceneContext.Instance.player")] public static GameObject? player;
         

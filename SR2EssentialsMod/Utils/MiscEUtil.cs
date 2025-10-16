@@ -37,23 +37,5 @@ public static class MiscEUtil
     public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => SR2EModMenu.entriesWithActions.Add(entry, action);
 
     public static Il2CppSystem.Type il2cppTypeof(this Type type) => Il2CppType.From(type);
-        
-
-
-
-        
-    public static bool IsBetween(this string[] list, uint min, int max)
-    {
-        if (list == null)
-        {
-            if (min > 0) return false;
-        }
-        else 
-        {
-            if (list.Length < min) return false;
-            if(max!=-1) if (list.Length > max) return false;
-        }
-
-        return true;
-    }
+    
 }
