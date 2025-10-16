@@ -286,7 +286,7 @@ public class SR2EEntryPoint : MelonMod
         RefreshPrefs();
 
         Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
-        try { AddLanguages(LoadTextFile("SR2E.translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }
+        try { AddLanguages(EmbeddedResourceEUtil.LoadString("SR2E.translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }
         foreach (MelonBase melonBase in new List<MelonBase>(MelonBase.RegisteredMelons))
         {
             if (melonBase is SR2EExpansionV1)
@@ -475,10 +475,10 @@ public class SR2EEntryPoint : MelonMod
     }
     internal static void SetupFonts()
     {
-        if (SR2Font == null) SR2Font = FontUtil.FontFromGame("Runsell Type - HemispheresCaps2");
-        if (regularFont == null) regularFont = FontUtil.FontFromGame("Lexend-Regular (Latin)"); 
-        if (boldFont == null) boldFont = FontUtil.FontFromGame("Lexend-Bold (Latin)"); 
-        if (normalFont == null) normalFont = FontUtil.FontFromOS("Tahoma"); 
+        if (SR2Font == null) SR2Font = FontEUtil.FontFromGame("Runsell Type - HemispheresCaps2");
+        if (regularFont == null) regularFont = FontEUtil.FontFromGame("Lexend-Regular (Latin)"); 
+        if (boldFont == null) boldFont = FontEUtil.FontFromGame("Lexend-Bold (Latin)"); 
+        if (normalFont == null) normalFont = FontEUtil.FontFromOS("Tahoma"); 
         foreach (var expansion in expansions) try { expansion.OnSR2FontLoad(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in menus) pair.Key.ReloadFont();
     }
@@ -543,7 +543,7 @@ public class SR2EEntryPoint : MelonMod
                 {
                     ScrollRect rect = scrollView.GetComponent<ScrollRect>();
                     rect.vertical = true;
-                    Scrollbar scrollBar = GameObject.Instantiate(SR2EStuff.getObjRec<Scrollbar>("saveFilesSliderRec"),
+                    Scrollbar scrollBar = GameObject.Instantiate(SR2EStuff.GetObjectRecursively<Scrollbar>("saveFilesSliderRec"),
                         rect.transform);
                     rect.verticalScrollbar = scrollBar;
                     rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;

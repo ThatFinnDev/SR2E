@@ -130,7 +130,7 @@ public static class SR2EVolumeProfileManager
         obj.AddComponent<Volume>().enabled = false;
         Object.DontDestroyOnLoad(obj);
         volumeHolder= obj.GetComponent<Volume>();
-        foreach (var pair in EmbeddedResourceUtil.LoadResources("Assets.VolumePresets"))
+        foreach (var pair in EmbeddedResourceEUtil.LoadResources("Assets.VolumePresets"))
             LoadProfile(pair.Key, pair.Value);
         
         

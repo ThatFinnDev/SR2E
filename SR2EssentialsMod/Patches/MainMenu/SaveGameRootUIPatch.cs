@@ -34,9 +34,9 @@ internal static class SaveGameRootUIPatch
         if (provider != null) path = provider.savePath+"/";
         if(path!=null) ExecuteInTicks((Action)(() =>
         {
-            RectTransform actionPanel = __instance.gameObject.getObjRec<RectTransform>("ActionPanel");
-            if (actionPanel.getObjRec<Button>("ExportButton") != null) return;
-            iconButton = actionPanel.getObjRec<Button>("IconButton");
+            RectTransform actionPanel = __instance.gameObject.GetObjectRecursively<RectTransform>("ActionPanel");
+            if (actionPanel.GetObjectRecursively<Button>("ExportButton") != null) return;
+            iconButton = actionPanel.GetObjectRecursively<Button>("IconButton");
             exportButton = GameObject.Instantiate(iconButton, actionPanel);
             exportButton.name = "ExportButton";
             exportButton.onClick.RemoveAllListeners();

@@ -2,7 +2,7 @@ using Il2CppMonomiPark.SlimeRancher.Economy;
 
 namespace SR2E.Utils;
 
-public static class CurrencyUtil
+public static class CurrencyEUtil
 {
     public static ICurrency toICurrency(this CurrencyDefinition currencyDefinition) => currencyDefinition.TryCast<ICurrency>();
     public static bool SetCurrency(string referenceID, int amount)

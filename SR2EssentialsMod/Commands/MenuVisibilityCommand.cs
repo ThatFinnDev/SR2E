@@ -36,7 +36,7 @@ internal class MenuVisibilityCommands
             if (!args.IsBetween(0,0)) return SendNoArguments();
             if (inGameOnly) if(!inGame) return SendLoadASaveFirst();
             if (menu.isOpen) return false;
-            MenuUtil.CloseOpenMenu();
+            MenuEUtil.CloseOpenMenu();
             menu.Open();
             return true;
         }
@@ -104,7 +104,7 @@ internal class MenuVisibilityCommands
         {
             if (!args.IsBetween(0,0)) return SendNoArguments();
             if (inGameOnly) if(!inGame) return SendLoadASaveFirst();
-            if (!menu.isOpen) MenuUtil.CloseOpenMenu();
+            if (!menu.isOpen) MenuEUtil.CloseOpenMenu();
             menu.Toggle();
             return true;
         }

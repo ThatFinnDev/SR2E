@@ -14,7 +14,7 @@ internal class BindCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return LookupUtil.GetKeyListByPartialName(args[0],true);
+            return LookupEUtil.GetKeyStringListByPartialName(args[0],true,MAX_AUTOCOMPLETE.Get());
         if (argIndex == 1)
         {
             List<string> list = new List<string>();

@@ -76,7 +76,7 @@ internal class SR2EDebugDirector : MonoBehaviour
 	{
 		if (!isEnabled) return;
 
-		if (MenuUtil.isAnyMenuOpen) return;
+		if (MenuEUtil.isAnyMenuOpen) return;
 		if (Time.timeScale == 0)  return;
 		if (!inGame) return;
 		if (SR2EWarpManager.warpTo != null) return;

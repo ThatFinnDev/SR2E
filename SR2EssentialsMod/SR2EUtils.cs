@@ -15,6 +15,7 @@ using UnityEngine.Localization.Tables;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppSystem.IO;
 using SR2E.Enums;
+using SR2E.Managers;
 using UnityEngine.InputSystem;
 using SR2E.Storage;
 using Unity.Mathematics;
@@ -22,8 +23,22 @@ using UnityEngine.InputSystem.UI;
 
 namespace SR2E
 {
-    public static partial class SR2EUtils
+    public static class SR2EUtils
     {
+        //Remove the comments after removing SR2EUtils from global using
+        //
+        //[Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.Get),true)] public static T? Get<T>(string name) where T : Object => UnityEUtil.Get<T>(name);
+        //[Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetAll),true)] public static List<T> GetAll<T>() where T : Object => UnityEUtil.GetAll<T>();
+        //[Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.Get),true)] public static GameObject? Get(string name) => UnityEUtil.Get<GameObject>(name);
+
+        //[Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.AddTranslation),true)] public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.AddTranslation(key, localized, table);
+        //[Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.AddTranslationFromSR2E),true)]public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.AddTranslationFromSR2E(sr2eTranslationID, key, table);
+        //[Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.SetTranslation),true)] public static void SetTranslation(string localized, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.SetTranslation(localized,key, table);
+        //[Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.SetTranslationFromSR2E),true)] public static void SetTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.SetTranslationFromSR2E(sr2eTranslationID, key, table);
+
+
+        
+        
         
         internal static Dictionary<string, InputActionMap> actionMaps = new Dictionary<string, InputActionMap>();
         internal static Dictionary<string, InputAction> MainGameActions = new Dictionary<string, InputAction>();
@@ -44,83 +59,18 @@ namespace SR2E
         internal static Damage _killDamage;
         public static Damage killDamage => _killDamage;
 
-        
 
-        public static string LoadTextFile(string name)
-        {
-            System.IO.Stream stream = Assembly.GetCallingAssembly().GetManifestResourceStream(name);
-            byte[] buffer = new byte[16 * 1024];
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            int read;
-            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                ms.Write(buffer, 0, read);
-            return System.Text.Encoding.Default.GetString(ms.ToArray());
 
-        }
 
         public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => autoSaveDirector._configuration.WeatherStates.items.ToArray();
         public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
 
 
-        public static List<LocalizedString> createdTranslations = new List<LocalizedString>();
-        
         public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
 
-        internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new Dictionary<string, LocalizedString>();
-        internal static Dictionary<string, (string, string, LocalizedString)> sr2eReplaceOnLanguageChange = new Dictionary<string, (string, string, LocalizedString)>();
-        public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
-        {
-            if (!InjectTranslations.HasFlag())
-            {
-                var tutorial = LocalizationUtil.GetTable("Tutorial");
-                foreach (var pair in tutorial.m_TableEntries) return new LocalizedString(tutorial.SharedData.TableCollectionName, pair.Value.SharedEntry.Id);
-            }
-            StringTable table2 = LocalizationUtil.GetTable(table);
-
-
-            StringTableEntry existing = null;
-            try { existing = table2.GetEntry(key); } catch { }
-            if (existing != null) return new LocalizedString(table2.SharedData.TableCollectionName, existing.SharedEntry.Id);
-            System.Collections.Generic.Dictionary<string, string> dictionary;
-            if (!addedTranslations.TryGetValue(table, out dictionary))
-            {
-                dictionary = new System.Collections.Generic.Dictionary<string, string>();
-
-                addedTranslations.Add(table, dictionary);
-            }
-
-            dictionary.Add(key, localized);
-            StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
-            return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
-        }
-        public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
-        {
-            LocalizedString localizedString = AddTranslation(translation(sr2eTranslationID), key, table);
-            
-            sr2etosrlanguage.TryAdd(sr2eTranslationID,localizedString);
-            sr2eReplaceOnLanguageChange.TryAdd(sr2eTranslationID, (key, table, localizedString));
-            
-            return localizedString;
-        }
-        
-        public static void SetTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
-        {
-            if (!InjectTranslations.HasFlag()) return;
-            
-            StringTable table2 = LocalizationUtil.GetTable(table);
-            
-            table2.GetEntry(key).Value = localized;
-        }
-        public static void SetTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
-        {
-            SetTranslation(translation(sr2eTranslationID), key, table);
-        }
-        public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
-        public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
 
 
         public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
-        public static GameObject? Get(string name) => Get<GameObject>(name);
 
         public static void MakePrefab(this GameObject obj)
         {
@@ -133,28 +83,6 @@ namespace SR2E
         internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithActions = new Dictionary<MelonPreferences_Entry, Action>();
         public static void AddNullAction(this MelonPreferences_Entry entry) => entriesWithActions.Add(entry, null);
         public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => entriesWithActions.Add(entry, action);
-        public static bool AddComponent<T>(this Transform obj) where T : Component => obj.gameObject.AddComponent<T>();
-        public static bool HasComponent<T>(this Transform obj) where T : Component => HasComponent<T>(obj.gameObject);
-        public static bool HasComponent<T>(this GameObject obj) where T : Component
-        {
-            try
-            {
-                return obj.GetComponent<T>()!=null;
-            }
-            catch { return false; }
-        }
-        public static bool RemoveComponent<T>(this Transform obj) where T : Component => RemoveComponent<T>(obj.gameObject);
-        public static bool RemoveComponent<T>(this GameObject obj) where T : Component
-        {
-            try
-            {
-                T comp = obj.GetComponent<T>();
-                var check = comp.gameObject;
-                Object.Destroy(comp);
-                return true;
-            }
-            catch { return false; }
-        }
         public static T GM<T>() where T : SR2EMenu
         {
             foreach (var pair in SR2EEntryPoint.menus)
@@ -175,89 +103,6 @@ namespace SR2E
             return il2cppType;
         }
 
-        public static T getObjRec<T>(this GameObject obj, string name) where T : class
-        {
-            var transform = obj.transform;
-
-            List<GameObject> totalChildren = getAllChildren(transform);
-            for (int i = 0; i < totalChildren.Count; i++)
-                if (totalChildren[i].name == name)
-                {
-                    if (typeof(T) == typeof(GameObject))
-                        return totalChildren[i] as T;
-                    if (typeof(T) == typeof(Transform))
-                        return totalChildren[i].transform as T;
-                    if (totalChildren[i].GetComponent<T>() != null)
-                        return totalChildren[i].GetComponent<T>();
-                }
-            return null;
-        }
-        public static T getObjRec<T>(this Transform transform, string name) where T : class
-        {
-            List<GameObject> totalChildren = getAllChildren(transform);
-            for (int i = 0; i < totalChildren.Count; i++)
-                if (totalChildren[i].name == name)
-                {
-                    if (typeof(T) == typeof(GameObject))
-                        return totalChildren[i] as T;
-                    if (typeof(T) == typeof(Transform))
-                        return totalChildren[i].transform as T;
-                    if (totalChildren[i].GetComponent<T>() != null)
-                        return totalChildren[i].GetComponent<T>();
-                }
-            return null;
-        }
-        
-
-        public static List<Transform> GetChildren(this Transform obj)
-        {
-            List<Transform> children = new List<Transform>();
-            for (int i = 0; i < obj.childCount; i++)
-                children.Add(obj.GetChild(i)); 
-            return children;
-        }
-        public static void DestroyAllChildren(this Transform obj)
-        {
-            for (int i = 0; i < obj.childCount; i++) GameObject.Destroy(obj.GetChild(i).gameObject); 
-        }
-        public static List<GameObject> getAllChildren(this GameObject obj)
-        {
-            var container = obj.transform;
-            List<GameObject> allChildren = new List<GameObject>();
-            for (int i = 0; i < container.childCount; i++)
-            {
-                var child = container.GetChild(i);
-                allChildren.Add(child.gameObject);
-                allChildren.AddRange(getAllChildren(child));
-            }
-            return allChildren;
-        }
-
-        public static T[] getAllChildrenOfType<T>(this GameObject obj) where T : Component
-        {
-            List<T> children = new List<T>();
-            foreach (var child in obj.getAllChildren())
-            {
-                if (child.GetComponent<T>() != null)
-                {
-                    children.Add(child.GetComponent<T>());
-                }
-            }
-            return children.ToArray();
-        }
-
-        public static T[] getAllChildrenOfType<T>(this Transform obj) where T : Component
-        {
-            List<T> children = new List<T>();
-            foreach (var child in obj.getAllChildren())
-            {
-                if (child.GetComponent<T>() != null)
-                {
-                    children.Add(child.GetComponent<T>());
-                }
-            }
-            return children.ToArray();
-        }
 
 
         private static Sprite _whitePillBg;
@@ -292,17 +137,7 @@ namespace SR2E
                 return _whitePillBgTex;
             }
         }
-        public static List<GameObject> getAllChildren(this Transform container)
-        {
-            List<GameObject> allChildren = new List<GameObject>();
-            for (int i = 0; i < container.childCount; i++)
-            {
-                var child = container.GetChild(i);
-                allChildren.Add(child.gameObject);
-                allChildren.AddRange(getAllChildren(child));
-            }
-            return allChildren;
-        }
+
         public static bool inGame
         {
             get
@@ -504,43 +339,45 @@ namespace SR2E
         ///
         ///
 
-        
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos) => SpawnUtil.SpawnGadget(def, pos).GetGameObject();
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos, Vector3 rot) => SpawnUtil.SpawnGadget(def, pos,rot).GetGameObject();
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos, Quaternion rot) => SpawnUtil.SpawnGadget(def, pos,rot).GetGameObject();
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnActor),true)] public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos) => SpawnUtil.SpawnActor(ident, pos);
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnActor),true)] public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos, Vector3 rot) => SpawnUtil.SpawnActor(ident, pos,rot);
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnActor),true)]  public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos, Quaternion rot) => SpawnUtil.SpawnActor(ident, pos,rot);
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnDynamic),true)] public static GameObject SpawnDynamic(GameObject obj, Vector3 pos, Quaternion rot)=>SpawnUtil.SpawnDynamic(obj, pos, rot);
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnFX),true)] public static GameObject SpawnFX(GameObject fx, Vector3 pos) => SpawnUtil.SpawnFX(fx, pos);
-        [Obsolete("Please use "+nameof(SpawnUtil)+"."+nameof(SpawnUtil.SpawnFX),true)] public static GameObject SpawnFX(GameObject fx, Vector3 pos, Quaternion rot) => SpawnUtil.SpawnFX(fx, pos,rot);
-        
-        [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.CloseOpenMenu),true)] public static void CloseOpenMenu() => MenuUtil.CloseOpenMenu();
-        [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.isAnyMenuOpen),true)]  public static bool isAnyMenuOpen => MenuUtil.isAnyMenuOpen;
-        [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.GetOpenMenu),true)] public static SR2EMenu getOpenMenu => MenuUtil.GetOpenMenu();
-        [Obsolete("Please use "+nameof(MenuUtil)+"."+nameof(MenuUtil.GetValidThemes),true)] public static List<SR2EMenuTheme> getValidThemes(string saveKey) => MenuUtil.GetValidThemes(saveKey);
-        
-        [Obsolete("Please use "+nameof(NamingUtil)+"."+nameof(NamingUtil.GetName),true)] public static string getName(IdentifiableType type) => NamingUtil.GetName(type);
+        [Obsolete("Please use "+nameof(EmbeddedResourceEUtil)+"."+nameof(EmbeddedResourceEUtil.LoadString),true)] public static string LoadTextFile(string name) => EmbeddedResourceEUtil.LoadString(name);
         
         
-        [Obsolete("Please use "+nameof(ConvertUtil)+"."+nameof(ConvertUtil.Texture2DToSprite),true)] public static Sprite ConvertToSprite(Texture2D texture) => ConvertUtil.Texture2DToSprite(texture);
-        [Obsolete("Please use "+nameof(ConvertUtil)+"."+nameof(ConvertUtil.Base64ToTexture2D),true)] public static Texture2D Base64ToTexture2D(string base64) => ConvertUtil.Base64ToTexture2D(base64);
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos) => SpawnEUtil.SpawnGadget(def, pos).GetGameObject();
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos, Vector3 rot) => SpawnEUtil.SpawnGadget(def, pos,rot).GetGameObject();
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos, Quaternion rot) => SpawnEUtil.SpawnGadget(def, pos,rot).GetGameObject();
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnActor),true)] public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos) => SpawnEUtil.SpawnActor(ident, pos);
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnActor),true)] public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos, Vector3 rot) => SpawnEUtil.SpawnActor(ident, pos,rot);
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnActor),true)]  public static GameObject SpawnActor(IdentifiableType ident, Vector3 pos, Quaternion rot) => SpawnEUtil.SpawnActor(ident, pos,rot);
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnDynamic),true)] public static GameObject SpawnDynamic(GameObject obj, Vector3 pos, Quaternion rot)=>SpawnEUtil.SpawnDynamic(obj, pos, rot);
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnFX),true)] public static GameObject SpawnFX(GameObject fx, Vector3 pos) => SpawnEUtil.SpawnFX(fx, pos);
+        [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnFX),true)] public static GameObject SpawnFX(GameObject fx, Vector3 pos, Quaternion rot) => SpawnEUtil.SpawnFX(fx, pos,rot);
+        
+        [Obsolete("Please use "+nameof(MenuEUtil)+"."+nameof(MenuEUtil.CloseOpenMenu),true)] public static void CloseOpenMenu() => MenuEUtil.CloseOpenMenu();
+        [Obsolete("Please use "+nameof(MenuEUtil)+"."+nameof(MenuEUtil.isAnyMenuOpen),true)]  public static bool isAnyMenuOpen => MenuEUtil.isAnyMenuOpen;
+        [Obsolete("Please use "+nameof(MenuEUtil)+"."+nameof(MenuEUtil.GetOpenMenu),true)] public static SR2EMenu getOpenMenu => MenuEUtil.GetOpenMenu();
+        [Obsolete("Please use "+nameof(MenuEUtil)+"."+nameof(MenuEUtil.GetValidThemes),true)] public static List<SR2EMenuTheme> getValidThemes(string saveKey) => MenuEUtil.GetValidThemes(saveKey);
+        
+        [Obsolete("Please use "+nameof(NamingEUtil)+"."+nameof(NamingEUtil.GetName),true)] public static string getName(IdentifiableType type) => NamingEUtil.GetName(type);
         
         
-        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.toICurrency),true)] public static ICurrency toICurrency(CurrencyDefinition currencyDefinition) => CurrencyUtil.toICurrency(currencyDefinition);
-        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrency),true)] public static bool SetCurrency(string referenceID, int amount) => CurrencyUtil.SetCurrency(referenceID, amount);
-        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrency),true)] public static bool SetCurrency(string referenceID,int amount, int amountEverCollected) => CurrencyUtil.SetCurrency(referenceID, amount,amountEverCollected);
-        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.SetCurrencyEverCollected),true)] public static bool SetCurrencyEverCollected(string referenceID,int amountEverCollected) => CurrencyUtil.SetCurrencyEverCollected(referenceID, amountEverCollected);
-        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.AddCurrency),true)] public static bool AddCurrency(string referenceID,int amount) => CurrencyUtil.AddCurrency(referenceID, amount);
-        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.GetCurrency),true)] public static int GetCurrency(string referenceID) => CurrencyUtil.GetCurrency(referenceID);
-        [Obsolete("Please use "+nameof(CurrencyUtil)+"."+nameof(CurrencyUtil.GetCurrencyEverCollected),true)] public static int GetCurrencyEverCollected(string referenceID) => CurrencyUtil.GetCurrencyEverCollected(referenceID);
+        [Obsolete("Please use "+nameof(ConvertEUtil)+"."+nameof(ConvertEUtil.Texture2DToSprite),true)] public static Sprite ConvertToSprite(Texture2D texture) => ConvertEUtil.Texture2DToSprite(texture);
+        [Obsolete("Please use "+nameof(ConvertEUtil)+"."+nameof(ConvertEUtil.Base64ToTexture2D),true)] public static Texture2D Base64ToTexture2D(string base64) => ConvertEUtil.Base64ToTexture2D(base64);
+        
+        
+        [Obsolete("Please use "+nameof(CurrencyEUtil)+"."+nameof(CurrencyEUtil.toICurrency),true)] public static ICurrency toICurrency(CurrencyDefinition currencyDefinition) => CurrencyEUtil.toICurrency(currencyDefinition);
+        [Obsolete("Please use "+nameof(CurrencyEUtil)+"."+nameof(CurrencyEUtil.SetCurrency),true)] public static bool SetCurrency(string referenceID, int amount) => CurrencyEUtil.SetCurrency(referenceID, amount);
+        [Obsolete("Please use "+nameof(CurrencyEUtil)+"."+nameof(CurrencyEUtil.SetCurrency),true)] public static bool SetCurrency(string referenceID,int amount, int amountEverCollected) => CurrencyEUtil.SetCurrency(referenceID, amount,amountEverCollected);
+        [Obsolete("Please use "+nameof(CurrencyEUtil)+"."+nameof(CurrencyEUtil.SetCurrencyEverCollected),true)] public static bool SetCurrencyEverCollected(string referenceID,int amountEverCollected) => CurrencyEUtil.SetCurrencyEverCollected(referenceID, amountEverCollected);
+        [Obsolete("Please use "+nameof(CurrencyEUtil)+"."+nameof(CurrencyEUtil.AddCurrency),true)] public static bool AddCurrency(string referenceID,int amount) => CurrencyEUtil.AddCurrency(referenceID, amount);
+        [Obsolete("Please use "+nameof(CurrencyEUtil)+"."+nameof(CurrencyEUtil.GetCurrency),true)] public static int GetCurrency(string referenceID) => CurrencyEUtil.GetCurrency(referenceID);
+        [Obsolete("Please use "+nameof(CurrencyEUtil)+"."+nameof(CurrencyEUtil.GetCurrencyEverCollected),true)] public static int GetCurrencyEverCollected(string referenceID) => CurrencyEUtil.GetCurrencyEverCollected(referenceID);
 
 
-        [Obsolete("Please use " + nameof(LookupUtil) + "." + nameof(LookupUtil.isGadget), true)] public static bool isGadget(IdentifiableType type) => LookupUtil.isGadget(type);
-        [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetWeatherStateByName),true)] public static WeatherStateDefinition getWeatherStateByName(string name) => LookupUtil.GetWeatherStateByName(name);
-        [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetVaccableListByPartialName),true)] public static List<string> getVaccableListByPartialName(string input, bool useContain) => LookupUtil.GetVaccableListByPartialName(input, useContain);
-        [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetIdentListByPartialName),true)] public static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain,bool includeStars = false) => LookupUtil.GetIdentListByPartialName(input,includeNormal,includeGadget,useContain,includeStars);
-        [Obsolete("Please use "+nameof(LookupUtil)+"."+nameof(LookupUtil.GetKeyListByPartialName),true)] public static List<string> getKeyListByPartialName(string input, bool useContain) => LookupUtil.GetKeyListByPartialName(input,useContain);
+        [Obsolete("Please use " + nameof(LookupEUtil) + "." + nameof(LookupEUtil.isGadget), true)] public static bool isGadget(IdentifiableType type) => LookupEUtil.isGadget(type);
+        [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.GetWeatherStateDefinitionByName),true)] public static WeatherStateDefinition getWeatherStateByName(string name) => LookupEUtil.GetWeatherStateDefinitionByName(name);
+        [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.GetVaccableStringListByPartialName),true)] public static List<string> getVaccableListByPartialName(string input, bool useContain) => LookupEUtil.GetVaccableStringListByPartialName(input, useContain,MAX_AUTOCOMPLETE.Get());
+        [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.GetFilteredIdentifiableTypeStringListByPartialName),true)] public static List<string> getIdentListByPartialName(string input, bool includeNormal, bool includeGadget, bool useContain,bool includeStars = false) => LookupEUtil.GetFilteredIdentifiableTypeStringListByPartialName(input,useContain,MAX_AUTOCOMPLETE.Get(),includeStars);
+        [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.GetKeyStringListByPartialName),true)] public static List<string> getKeyListByPartialName(string input, bool useContain) => LookupEUtil.GetKeyStringListByPartialName(input,useContain,MAX_AUTOCOMPLETE.Get());
         
         
         
@@ -557,5 +394,25 @@ namespace SR2E
         [Obsolete("Please use " + nameof(SR2ECommand.TryParseTrool)+ "in this class", true)] public static bool TryParseTrool(SR2ECommand cmd, string input, out Trool value) => cmd.TryParseTrool(input, out value);
         [Obsolete("Please use " + nameof(SR2ECommand.TryParseKeyCode)+ "in this class", true)] public static bool TryParseKeyCode(SR2ECommand cmd, string input, out Key value) => cmd.TryParseKeyCode(input, out value);
         
+        
+
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.AddComponent),true)]  public static bool AddComponent<T>(Transform obj) where T : Component => UnityEUtil.AddComponent<T>(obj);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.HasComponent),true)] public static bool HasComponent<T>(Transform obj) where T : Component => UnityEUtil.HasComponent<T>(obj);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.HasComponent),true)] public static bool HasComponent<T>(GameObject obj) where T : Component => UnityEUtil.HasComponent<T>(obj);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.RemoveComponent),true)]  public static bool RemoveComponent<T>(Transform obj) where T : Component => UnityEUtil.RemoveComponent<T>(obj);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.RemoveComponent),true)] public static bool RemoveComponent<T>(GameObject obj) where T : Component => UnityEUtil.RemoveComponent<T>(obj);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetObjectRecursively),true)] public static T getObjRec<T>(GameObject obj, string name) where T : class => UnityEUtil.GetObjectRecursively<T>(obj,name);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetObjectRecursively),true)] public static T getObjRec<T>(Transform transform, string name) where T : class => UnityEUtil.GetObjectRecursively<T>(transform,name);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetChildren),true)] public static List<Transform> GetChildren(Transform obj) => UnityEUtil.GetChildren(obj);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.DestroyAllChildren),true)] public static void DestroyAllChildren(Transform obj) => UnityEUtil.DestroyAllChildren(obj);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetAllChildren),true)] public static List<GameObject> getAllChildren(GameObject obj) => UnityEUtil.GetAllChildren(obj);
+
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetAllChildren),true)] public static List<GameObject> getAllChildren(Transform container) => UnityEUtil.GetAllChildren(container);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetAllChildrenOfType),true)] public static T[] getAllChildrenOfType<T>(GameObject obj) where T : Component => UnityEUtil.GetAllChildrenOfType<T>(obj);
+        [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetAllChildrenOfType),true)] public static T[] getAllChildrenOfType<T>(Transform obj) where T : Component => UnityEUtil.GetAllChildrenOfType<T>(obj);
+        
+        [Obsolete("Was never used/never worked",true)] public static List<LocalizedString> createdTranslations = new List<LocalizedString>();
+
+
     }
 }

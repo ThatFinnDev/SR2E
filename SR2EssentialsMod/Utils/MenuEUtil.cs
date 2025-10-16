@@ -8,7 +8,7 @@ using SR2E.Storage;
 
 namespace SR2E.Utils;
 
-public static class MenuUtil
+public static class MenuEUtil
 {
     internal static Dictionary<string, List<SR2EMenuTheme>> validThemes = new Dictionary<string, List<SR2EMenuTheme>>();
     internal static void ReloadFont(this SR2EPopUp popUp)
@@ -82,7 +82,7 @@ public static class MenuUtil
             {
                 SR2ESaveManager.data.themes.TryAdd(identifier.saveKey, identifier.defaultTheme);
                 SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[identifier.saveKey];
-                List<SR2EMenuTheme> validThemes = MenuUtil.GetValidThemes(identifier.saveKey);
+                List<SR2EMenuTheme> validThemes = MenuEUtil.GetValidThemes(identifier.saveKey);
                 if (validThemes.Count == 0) return SR2EMenuTheme.Default;
                 if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
                 return currentTheme;

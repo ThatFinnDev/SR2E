@@ -50,12 +50,12 @@ public class SR2EThemeMenu : SR2EMenu
         {
             GameObject entry = Object.Instantiate(entryTemplate, content);
             entry.SetActive(true);
-            entry.getObjRec<TextMeshProUGUI>("Title").text = translation(identifier.translationKey+".title");
+            entry.GetObjectRecursively<TextMeshProUGUI>("Title").text = translation(identifier.translationKey+".title");
 
-            Transform contentRec = entry.getObjRec<Transform>("ContentRec");
+            Transform contentRec = entry.GetObjectRecursively<Transform>("ContentRec");
             GameObject dropDownObj = Instantiate(dropdownTemplate, contentRec);
             dropDownObj.SetActive(true);
-            TMP_Dropdown dropdown = dropDownObj.getObjRec<TMP_Dropdown>("Dropdown");
+            TMP_Dropdown dropdown = dropDownObj.GetObjectRecursively<TMP_Dropdown>("Dropdown");
             dropdown.ClearOptions();
             //idk how to convert to il2cpp list
             var options = new Il2CppSystem.Collections.Generic.List<string>();
@@ -80,7 +80,7 @@ public class SR2EThemeMenu : SR2EMenu
                 if (menu != null)
                     menu.ReloadFont();
             }));
-            foreach (SR2EMenuTheme theme in MenuUtil.GetValidThemes(identifier.saveKey))
+            foreach (SR2EMenuTheme theme in MenuEUtil.GetValidThemes(identifier.saveKey))
             {
                 GameObject button = Instantiate(buttonTemplate, contentRec);
                 button.SetActive(true);
@@ -115,7 +115,7 @@ public class SR2EThemeMenu : SR2EMenu
                 }
 
                 texture.Apply();
-                button.transform.GetChild(0).GetComponent<Image>().sprite = ConvertUtil.Texture2DToSprite(texture);
+                button.transform.GetChild(0).GetComponent<Image>().sprite = ConvertEUtil.Texture2DToSprite(texture);
                 if (SR2ESaveManager.data.themes.ContainsKey(identifier.saveKey))
                 {
                     if (SR2ESaveManager.data.themes[identifier.saveKey] == theme)
@@ -128,18 +128,18 @@ public class SR2EThemeMenu : SR2EMenu
     GameObject warningText;
     protected override void OnLateAwake()
     {
-        entryTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryRec");
-        buttonTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryButtonEntryRec");
-        dropdownTemplate = transform.getObjRec<GameObject>("ThemeSelectorEntryDropdownEntryRec");
-        warningText = transform.getObjRec<GameObject>("ThemeMenuRestartWarningRec");
+        entryTemplate = transform.GetObjectRecursively<GameObject>("ThemeSelectorEntryRec");
+        buttonTemplate = transform.GetObjectRecursively<GameObject>("ThemeSelectorEntryButtonEntryRec");
+        dropdownTemplate = transform.GetObjectRecursively<GameObject>("ThemeSelectorEntryDropdownEntryRec");
+        warningText = transform.GetObjectRecursively<GameObject>("ThemeMenuRestartWarningRec");
         toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"thememenu.warning.restart");
-        content = transform.getObjRec<Transform>("ThemeMenuThemeSelectorContentRec");
+        content = transform.GetObjectRecursively<Transform>("ThemeMenuThemeSelectorContentRec");
         
-        var button1 = transform.getObjRec<Image>("ThemeMenuThemeSelectorSelectionButtonRec");
+        var button1 = transform.GetObjectRecursively<Image>("ThemeMenuThemeSelectorSelectionButtonRec");
         button1.sprite = whitePillBg;
         
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
-        toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"thememenu.title");
+        toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"thememenu.title");
     }
 
     protected override void OnUpdate()

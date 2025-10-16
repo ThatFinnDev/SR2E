@@ -193,12 +193,12 @@ public static class SR2ECommandManager
                 if (commands.ContainsKey(cmd))
                 {
                     bool canPlay = false;
-                    if (!MenuUtil.isAnyMenuOpen)
+                    if (!MenuEUtil.isAnyMenuOpen)
                         if (Time.timeScale != 0)
                             canPlay = true;
                     if (!canPlay)
                     {
-                        SR2EMenu openMenu = MenuUtil.GetOpenMenu();
+                        SR2EMenu openMenu = MenuEUtil.GetOpenMenu();
                         if (openMenu != null)
                         {   
                             Type openMenuType = openMenu.GetType();
@@ -258,7 +258,7 @@ public static class SR2ECommandManager
                     if (DebugLogging.HasFlag()) MelonLogger.Msg($"Command success: {successful}");
                 }
                 else if (!silent)
-                    if (MenuUtil.isAnyMenuOpen)
+                    if (MenuEUtil.isAnyMenuOpen)
                         SR2ELogManager.SendError(translation("cmd.unknowncommand"));
             }
         }

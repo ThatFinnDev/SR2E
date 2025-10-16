@@ -6,10 +6,10 @@ using UnityEngine.TextCore.LowLevel;
 
 namespace SR2E.Utils;
 
-public static class FontUtil
+public static class FontEUtil
 {
-    internal static void ReloadFont(SR2EPopUp popUp) => MenuUtil.ReloadFont(popUp);
-    internal static void ReloadFont(SR2EMenu menu) => MenuUtil.ReloadFont(menu);
+    internal static void ReloadFont(SR2EPopUp popUp) => MenuEUtil.ReloadFont(popUp);
+    internal static void ReloadFont(SR2EMenu menu) => MenuEUtil.ReloadFont(menu);
     public static TMP_FontAsset FontFromGame(string name)
     {
         try { return Get<TMP_FontAsset>(name); }

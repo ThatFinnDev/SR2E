@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace SR2E.Utils;
 
-internal static class EmbeddedResourceUtil
+public static class EmbeddedResourceEUtil
 {
-    public static Sprite LoadSprite(string fileName) => ConvertUtil.Texture2DToSprite(LoadTexture2D(fileName));
+    public static Sprite LoadSprite(string fileName) => ConvertEUtil.Texture2DToSprite(LoadTexture2D(fileName));
     public static Texture2D LoadTexture2D(string filename)
     {
         var realFilename = filename.Replace("/",".");
@@ -62,5 +62,19 @@ internal static class EmbeddedResourceUtil
         byte[] array = new byte[manifestResourceStream.Length];
         manifestResourceStream.Read(array, 0, array.Length);
         return array;
+    }
+    public static string LoadString(string filename)
+    {
+        filename=filename.Replace("/",".");
+        var method = new StackTrace().GetFrame(1).GetMethod();
+        var assembly = method.ReflectedType.Assembly;
+        System.IO.Stream stream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
+        byte[] buffer = new byte[16 * 1024];
+        System.IO.MemoryStream ms = new System.IO.MemoryStream();
+        int read;
+        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+            ms.Write(buffer, 0, read);
+        return System.Text.Encoding.Default.GetString(ms.ToArray());
+
     }
 }

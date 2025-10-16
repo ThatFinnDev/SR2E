@@ -12,7 +12,7 @@ internal class ActorType : SR2ECommand
     List<string> disabledActors = new List<string>();
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0) return LookupUtil.GetIdentListByPartialName(args==null?null:args[0], true,true,true, true);
+        if (argIndex == 0) return LookupEUtil.GetStrongFilteredIdentifiableTypeStringListByPartialName(args==null?null:args[0], true,MAX_AUTOCOMPLETE.Get(),true);
         if (argIndex == 1) return new List<string> { "true", "false", "toggle" };
         return null;
     }
@@ -44,7 +44,7 @@ internal class ActorType : SR2ECommand
             }
             return true;
         }
-        IdentifiableType type = LookupUtil.GetIdentByName(args[0]);
+        IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(args[0]);
         if (type == null) return SendNotValidIdentType(args[0]);
         if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
         bool enabled = !disabledActors.Contains(type.ReferenceId);

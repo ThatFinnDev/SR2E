@@ -28,7 +28,7 @@ public abstract class SR2EMenu : MonoBehaviour
 
     public virtual void ApplyFont(TMP_FontAsset font)
     {
-        foreach (var text in gameObject.getAllChildrenOfType<TMP_Text>())
+        foreach (var text in gameObject.GetAllChildrenOfType<TMP_Text>())
             text.font = font;
     }
     public static void PreAwake(GameObject obj) {}
@@ -88,7 +88,7 @@ public abstract class SR2EMenu : MonoBehaviour
         changedOpenState = true;
         foreach(SR2EPopUp popUp in openPopUps)
             popUp.Close();
-        MenuUtil.DoMenuActions(SR2EEntryPoint.menus[this]["closeActions"] as List<MenuActions>);
+        MenuEUtil.DoMenuActions(SR2EEntryPoint.menus[this]["closeActions"] as List<MenuActions>);
         try { OnClose(); }catch (Exception e) { MelonLogger.Error(e); }
         
         if(_menuToOpenOnClose!=null)
@@ -111,7 +111,7 @@ public abstract class SR2EMenu : MonoBehaviour
     {
         if (changedOpenState) return;
         foreach (FeatureFlag featureFlag in SR2EEntryPoint.menus[this]["requiredFeatures"] as List<FeatureFlag>) if (!featureFlag.HasFlag()) return;
-        if (MenuUtil.isAnyMenuOpen) return;
+        if (MenuEUtil.isAnyMenuOpen) return;
         if(inGameOnly) if (!inGame) return;
         if (SR2EWarpManager.warpTo != null) return;
         foreach (var pair in SR2EEntryPoint.menus)
@@ -128,7 +128,7 @@ public abstract class SR2EMenu : MonoBehaviour
         gameObject.SetActive(true);
         changedOpenState = true;
         ExecuteInTicks((Action)(() => { gameObject.SetActive(true);}), 1);
-        MenuUtil.DoMenuActions(SR2EEntryPoint.menus[this]["openActions"] as List<MenuActions>);
+        MenuEUtil.DoMenuActions(SR2EEntryPoint.menus[this]["openActions"] as List<MenuActions>);
         try { OnOpen(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
     }

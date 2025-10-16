@@ -39,7 +39,7 @@ internal class GameContextPatch
             if (AddModMenuButton.HasFlag())
             {
                 LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                new CustomMainMenuButton(label, EmbeddedResourceUtil.LoadSprite("Assets.modsMenuIcon.png"), 4, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
+                new CustomMainMenuButton(label, EmbeddedResourceEUtil.LoadSprite("Assets.modsMenuIcon.png"), 4, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
             }
 
@@ -106,7 +106,7 @@ internal class GameContextPatch
     };
     internal static void AddTeleporter(string sceneGroup, string gadgetName)
     {
-        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupUtil.GetGadgetDefByName(gadgetName).prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupEUtil.GetGadgetDefinitionByName(gadgetName).prefab.transform.GetObjectRecursively<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
         teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
         SR2EWarpManager.teleporters.TryAdd(sceneGroup, teleporter);
     }

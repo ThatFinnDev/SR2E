@@ -10,7 +10,7 @@ internal class UnbindCommand : SR2ECommand
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0) return LookupUtil.GetKeyListByPartialName(args[0],true);
+        if (argIndex == 0) return LookupEUtil.GetKeyStringListByPartialName(args[0],true,MAX_AUTOCOMPLETE.Get());
         return null;
     }
 

@@ -21,7 +21,7 @@ public class Warp
         if (p == null) return SR2EError.TeleportablePlayerNull;
         SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
         if (cc == null) return SR2EError.SRCharacterControllerNull;
-        MenuUtil.CloseOpenMenu();
+        MenuEUtil.CloseOpenMenu();
         if (sceneGroup == p.SceneGroup.ReferenceId)
         {
             cc.Position = position;

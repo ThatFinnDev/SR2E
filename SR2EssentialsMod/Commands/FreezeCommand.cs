@@ -25,16 +25,16 @@ internal class FreezeCommand : SR2ECommand
                 {
                     ident.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
                     ident.GetComponent<Vacuumable>().enabled = false;
-                    if (ident.transform.getObjRec<Animator>("Appearance"))
-                        ident.transform.getObjRec<Animator>("Appearance").enabled = false;
+                    if (ident.transform.GetObjectRecursively<Animator>("Appearance"))
+                        ident.transform.GetObjectRecursively<Animator>("Appearance").enabled = false;
                     SendMessage(translation("cmd.freeze.successfroze"));
                 }
                 else
                 {
                     ident.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
                     ident.GetComponent<Vacuumable>().enabled = true;
-                    if (ident.transform.getObjRec<Animator>("Appearance"))
-                        ident.transform.getObjRec<Animator>("Appearance").enabled = true;
+                    if (ident.transform.GetObjectRecursively<Animator>("Appearance"))
+                        ident.transform.GetObjectRecursively<Animator>("Appearance").enabled = true;
                     SendMessage(translation("cmd.freeze.successthaw"));
                 }
                 return true;

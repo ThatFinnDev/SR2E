@@ -12,7 +12,7 @@ internal class GadgetCommand : SR2ECommand
         if (argIndex == 0)
             return arg0List;
         if (argIndex == 1)
-            return LookupUtil.GetIdentListByPartialName(args == null ? null : args[1], false, true,true);
+            return LookupEUtil.GetFilteredIdentifiableTypeStringListByPartialName(args == null ? null : args[1], false, MAX_AUTOCOMPLETE.Get(),true);
         if (argIndex == 2)
             if(args[0]!="get")
                 return new List<string> { "1", "5", "10", "20", "30", "50" };
@@ -61,7 +61,7 @@ internal class GadgetCommand : SR2ECommand
             return true;
         }
         string identifierTypeName = args[1];
-        GadgetDefinition type = LookupUtil.GetGadgetDefByName(identifierTypeName);
+        GadgetDefinition type = LookupEUtil.GetGadgetDefinitionByName(identifierTypeName);
         if (type == null) return SendNotValidGadget(identifierTypeName);
         string itemName = type.GetName();
 

@@ -1,4 +1,6 @@
-﻿namespace SR2E.Commands;
+﻿using System;
+
+namespace SR2E.Commands;
 
 internal class KillAllCommand : SR2ECommand
 {
@@ -9,15 +11,18 @@ internal class KillAllCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return LookupUtil.GetIdentListByPartialName(args == null ? null : args[0], true, false,true);
+            return LookupEUtil.GetStrongFilteredIdentifiableTypeStringListByPartialName(args == null ? null : args[0], true, MAX_AUTOCOMPLETE.Get(),true);
         return null;
     }
     public override bool Execute(string[] args)
     {
         if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
-        
-        if (args == null)
+
+        bool killall = false;
+        if(args==null) killall = true;
+        else if(args.Length==1&&args[0]=="*") killall = true;
+        if (killall)
         {
             foreach (var ident in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                 if (ident.hasStarted)
@@ -36,7 +41,7 @@ internal class KillAllCommand : SR2ECommand
         {
             
             string identifierTypeName = args[0];
-            IdentifiableType type = LookupUtil.GetIdentByName(identifierTypeName);
+            IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(identifierTypeName);
             if (type == null) return SendNotValidIdentType(identifierTypeName);
             if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
                 

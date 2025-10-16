@@ -54,7 +54,7 @@ public class SR2ECheatMenu : SR2EMenu
     
     protected override void OnClose()
     {
-        gameObject.getObjRec<Button>("CheatMenuMainSelectionButtonRec").onClick.Invoke();
+        gameObject.GetObjectRecursively<Button>("CheatMenuMainSelectionButtonRec").onClick.Invoke();
         refineryContent.DestroyAllChildren();
         gadgetsContent.DestroyAllChildren();
         cheatButtonContent.DestroyAllChildren();
@@ -150,37 +150,37 @@ public class SR2ECheatMenu : SR2EMenu
     }
     protected override void OnLateAwake()
     {
-        cheatButtonContent = transform.getObjRec<Transform>("CheatMenuCheatButtonsContentRec");
-        refineryContent = transform.getObjRec<Transform>("CheatMenuRefineryContentRec");
-        warpsContent = transform.getObjRec<Transform>("CheatMenuWarpsContentRec");
-        gadgetsContent = transform.getObjRec<Transform>("CheatMenuGadgetContentRec");
-        buttonTemplate = transform.getObjRec<GameObject>("CheatMenuTemplateButton");
-        refineryEntryTemplate = transform.getObjRec<GameObject>("CheatMenuRefineryTemplateEntry");
-        gadgetsEntryTemplate = transform.getObjRec<GameObject>("CheatMenuGadgetsTemplateEntry");
+        cheatButtonContent = transform.GetObjectRecursively<Transform>("CheatMenuCheatButtonsContentRec");
+        refineryContent = transform.GetObjectRecursively<Transform>("CheatMenuRefineryContentRec");
+        warpsContent = transform.GetObjectRecursively<Transform>("CheatMenuWarpsContentRec");
+        gadgetsContent = transform.GetObjectRecursively<Transform>("CheatMenuGadgetContentRec");
+        buttonTemplate = transform.GetObjectRecursively<GameObject>("CheatMenuTemplateButton");
+        refineryEntryTemplate = transform.GetObjectRecursively<GameObject>("CheatMenuRefineryTemplateEntry");
+        gadgetsEntryTemplate = transform.GetObjectRecursively<GameObject>("CheatMenuGadgetsTemplateEntry");
         
         CheatButtons();
-        cheatSlots.Add(transform.getObjRec<GameObject>("CheatMenuStatsSlot1Rec").AddComponent<CheatMenuSlot>());
-        cheatSlots.Add(transform.getObjRec<GameObject>("CheatMenuStatsSlot2Rec").AddComponent<CheatMenuSlot>());
-        cheatSlots.Add(transform.getObjRec<GameObject>("CheatMenuStatsSlot3Rec").AddComponent<CheatMenuSlot>());
-        cheatSlots.Add(transform.getObjRec<GameObject>("CheatMenuStatsSlot4Rec").AddComponent<CheatMenuSlot>());
-        cheatSlots.Add(transform.getObjRec<GameObject>("CheatMenuStatsSlot5Rec").AddComponent<CheatMenuSlot>());
-        cheatSlots.Add(transform.getObjRec<GameObject>("CheatMenuStatsSlot6Rec").AddComponent<CheatMenuSlot>());
+        cheatSlots.Add(transform.GetObjectRecursively<GameObject>("CheatMenuStatsSlot1Rec").AddComponent<CheatMenuSlot>());
+        cheatSlots.Add(transform.GetObjectRecursively<GameObject>("CheatMenuStatsSlot2Rec").AddComponent<CheatMenuSlot>());
+        cheatSlots.Add(transform.GetObjectRecursively<GameObject>("CheatMenuStatsSlot3Rec").AddComponent<CheatMenuSlot>());
+        cheatSlots.Add(transform.GetObjectRecursively<GameObject>("CheatMenuStatsSlot4Rec").AddComponent<CheatMenuSlot>());
+        cheatSlots.Add(transform.GetObjectRecursively<GameObject>("CheatMenuStatsSlot5Rec").AddComponent<CheatMenuSlot>());
+        cheatSlots.Add(transform.GetObjectRecursively<GameObject>("CheatMenuStatsSlot6Rec").AddComponent<CheatMenuSlot>());
 
-        transform.getObjRec<GameObject>("CheatMenuStatsNewbucksRec").AddComponent<CheatMenuNewbucks>();
+        transform.GetObjectRecursively<GameObject>("CheatMenuStatsNewbucksRec").AddComponent<CheatMenuNewbucks>();
         
-        var button1 = transform.getObjRec<Image>("CheatMenuMainSelectionButtonRec");
+        var button1 = transform.GetObjectRecursively<Image>("CheatMenuMainSelectionButtonRec");
         button1.sprite = whitePillBg;
-        var button2 = transform.getObjRec<Image>("CheatMenuRefinerySelectionButtonRec");
+        var button2 = transform.GetObjectRecursively<Image>("CheatMenuRefinerySelectionButtonRec");
         button2.sprite = whitePillBg;
-        var button3 = transform.getObjRec<Image>("CheatMenuGadgetsSelectionButtonRec");
+        var button3 = transform.GetObjectRecursively<Image>("CheatMenuGadgetsSelectionButtonRec");
         button3.sprite = whitePillBg;
-        var button4 = transform.getObjRec<Image>("CheatMenuSpawnSelectionButtonRec");
+        var button4 = transform.GetObjectRecursively<Image>("CheatMenuSpawnSelectionButtonRec");
         button4.sprite = whitePillBg;
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.main");
         toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.refinery");
         toTranslate.Add(button3.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.gadgets");
         toTranslate.Add(button4.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.spawn");
-        toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"cheatmenu.title");
+        toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"cheatmenu.title");
     }
     void CheatButtons()
     {

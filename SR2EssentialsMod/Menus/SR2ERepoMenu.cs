@@ -34,9 +34,9 @@ public class SR2ERepoMenu : SR2EMenu
 
     protected override void OnClose()
     {
-        gameObject.getObjRec<Button>("RepoMenuMainSelectionButtonRec").onClick.Invoke();
-        Transform modContent = transform.getObjRec<Transform>("RepoMenuMainContentRec");
-        Transform repoContent = transform.getObjRec<Transform>("RepoMenuRepoContentRec");
+        gameObject.GetObjectRecursively<Button>("RepoMenuMainSelectionButtonRec").onClick.Invoke();
+        Transform modContent = transform.GetObjectRecursively<Transform>("RepoMenuMainContentRec");
+        Transform repoContent = transform.GetObjectRecursively<Transform>("RepoMenuRepoContentRec");
         for (int i = 0; i < modContent.childCount; i++)
             Destroy(modContent.GetChild(i).gameObject);
         for (int i = 0; i < repoContent.childCount; i++)
@@ -85,11 +85,11 @@ public class SR2ERepoMenu : SR2EMenu
     }
     protected override void OnOpen()
     {
-        GameObject buttonPrefab = transform.getObjRec<GameObject>("RepoMenuTemplateButton");
-        Transform modContent = transform.getObjRec<Transform>("RepoMenuMainContentRec");
-        Transform repoContent = transform.getObjRec<Transform>("RepoMenuRepoContentRec");
-        repoPanel = transform.getObjRec<Transform>("RepoViewPanelRec");
-        modPanel = transform.getObjRec<Transform>("ModViewPanelRec");
+        GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("RepoMenuTemplateButton");
+        Transform modContent = transform.GetObjectRecursively<Transform>("RepoMenuMainContentRec");
+        Transform repoContent = transform.GetObjectRecursively<Transform>("RepoMenuRepoContentRec");
+        repoPanel = transform.GetObjectRecursively<Transform>("RepoViewPanelRec");
+        modPanel = transform.GetObjectRecursively<Transform>("ModViewPanelRec");
         foreach (var repo in SR2ERepoManager.repos)
         {
             if (repo.Value == null)
@@ -121,13 +121,13 @@ public class SR2ERepoMenu : SR2EMenu
                 b.onClick.AddListener((Action)(() =>
                 {
                     repoPanel.gameObject.SetActive(true);
-                        var name = transform.getObjRec<TextMeshProUGUI>("RepoViewNameTextRec");
-                        var desc = transform.getObjRec<TextMeshProUGUI>("RepoViewDescriptionTextRec");
+                        var name = transform.GetObjectRecursively<TextMeshProUGUI>("RepoViewNameTextRec");
+                        var desc = transform.GetObjectRecursively<TextMeshProUGUI>("RepoViewDescriptionTextRec");
                         
                         if (!String.IsNullOrWhiteSpace(repo.Value.header_url))
                         {
                             MelonCoroutines.Start(DownloadImageAsync(repo.Value.header_url,
-                                transform.getObjRec<Image>("RepoViewHeaderImageRec")));
+                                transform.GetObjectRecursively<Image>("RepoViewHeaderImageRec")));
                         }
                         if(String.IsNullOrWhiteSpace(repo.Value.name)) name.gameObject.SetActive(false);
                         else {name.gameObject.SetActive(true); name.SetText(repo.Value.name);}
@@ -151,26 +151,26 @@ public class SR2ERepoMenu : SR2EMenu
                     b.onClick.AddListener((Action)(() =>
                     {
                         modPanel.gameObject.SetActive(true);
-                        var name = transform.getObjRec<TextMeshProUGUI>("ModViewNameTextRec");
-                        var author = transform.getObjRec<TextMeshProUGUI>("ModViewAuthorTextRec");
-                        var coauthor = transform.getObjRec<TextMeshProUGUI>("ModViewCoAuthorTextRec");
-                        var desc = transform.getObjRec<TextMeshProUGUI>("ModViewDescriptionTextRec");
-                        var company = transform.getObjRec<TextMeshProUGUI>("ModViewCompanyTextRec");
-                        var trademark = transform.getObjRec<TextMeshProUGUI>("ModViewTrademarkTextRec");
-                        var team = transform.getObjRec<TextMeshProUGUI>("ModViewTeamTextRec");
-                        var copyright = transform.getObjRec<TextMeshProUGUI>("ModViewCopyrightTextRec");
+                        var name = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewNameTextRec");
+                        var author = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewAuthorTextRec");
+                        var coauthor = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewCoAuthorTextRec");
+                        var desc = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewDescriptionTextRec");
+                        var company = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewCompanyTextRec");
+                        var trademark = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewTrademarkTextRec");
+                        var team = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewTeamTextRec");
+                        var copyright = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewCopyrightTextRec");
 
 
                         if (!String.IsNullOrWhiteSpace(mod.header_url))
                         {
                             MelonCoroutines.Start(DownloadImageAsync(mod.header_url,
-                                transform.getObjRec<Image>("ModViewHeaderImageRec")));
+                                transform.GetObjectRecursively<Image>("ModViewHeaderImageRec")));
                         }
 
                         if (!String.IsNullOrWhiteSpace(mod.icon_url))
                         {
                             MelonCoroutines.Start(DownloadImageAsync(mod.icon_url,
-                                transform.getObjRec<Image>("ModViewIconImageRec")));
+                                transform.GetObjectRecursively<Image>("ModViewIconImageRec")));
                         }
                         
                         if(String.IsNullOrWhiteSpace(mod.name)) name.gameObject.SetActive(false);
@@ -214,7 +214,7 @@ public class SR2ERepoMenu : SR2EMenu
         //button1.sprite = whitePillBg;
         
         //toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
-        toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"repomenu.title");
+        toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"repomenu.title");
     }
 
     protected override void OnUpdate()

@@ -3,7 +3,7 @@ using Il2CppMonomiPark.SlimeRancher.World;
 
 namespace SR2E.Utils;
 
-public static class SpawnUtil
+public static class SpawnEUtil
 {        
     public static GadgetModel SpawnGadget(this GadgetDefinition def, Vector3 pos) => SpawnGadget(def, pos, Quaternion.identity);
     public static GadgetModel SpawnGadget(this GadgetDefinition def, Vector3 pos, Vector3 rot)=> SpawnGadget(def, pos, Quaternion.Euler(rot));

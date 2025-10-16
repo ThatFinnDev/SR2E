@@ -8,7 +8,7 @@ internal class SpawnCommand : SR2ECommand
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0) return LookupUtil.GetIdentListByPartialName(args == null ? null : args[0], true, true,true);
+        if (argIndex == 0) return LookupEUtil.GetFilteredIdentifiableTypeStringListByPartialName(args == null ? null : args[0], true, MAX_AUTOCOMPLETE.Get());
         if (argIndex == 1) return new List<string> { "1", "5", "10", "20", "30", "50" };
         return null;
     }
@@ -19,7 +19,7 @@ internal class SpawnCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         string identifierTypeName = args[0];
-        IdentifiableType type = LookupUtil.GetIdentByName(identifierTypeName);
+        IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(identifierTypeName);
         if (type == null) return SendNotValidIdentType(identifierTypeName);
         //if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();

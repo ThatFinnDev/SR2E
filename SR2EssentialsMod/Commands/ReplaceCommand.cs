@@ -11,7 +11,7 @@ internal class ReplaceCommand : SR2ECommand
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0) return LookupUtil.GetIdentListByPartialName(args == null ? null : args[0], true, true,true);
+        if (argIndex == 0) return LookupEUtil.GetFilteredIdentifiableTypeStringListByPartialName(args == null ? null : args[0], true, MAX_AUTOCOMPLETE.Get());
         return null;
     }
 
@@ -21,9 +21,8 @@ internal class ReplaceCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
         
         string identifierTypeName = args[0];
-        IdentifiableType type = LookupUtil.GetIdentByName(identifierTypeName);
+        IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(identifierTypeName);
         if (type == null) return SendNotValidIdentType(identifierTypeName);
-        if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
 
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
@@ -50,7 +49,7 @@ internal class ReplaceCommand : SR2ECommand
             {
                 //Add new one 
                 GameObject spawned = null;
-                if (type is GadgetDefinition gadgetDefinition) spawned = gadgetDefinition.SpawnGadget(hit.point,Quaternion.identity).GetGameObject();
+                if (type.TryCast<GadgetDefinition>()!=null) spawned = type.TryCast<GadgetDefinition>().SpawnGadget(hit.point,Quaternion.identity).GetGameObject();
                 else spawned = type.SpawnActor(hit.point, Quaternion.identity);
                 Vector3 position = gameobject.transform.position;
                 Quaternion rotation = gameobject.transform.rotation;

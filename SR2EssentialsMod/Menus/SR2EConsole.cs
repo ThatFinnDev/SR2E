@@ -202,15 +202,15 @@ public class SR2EConsole : SR2EMenu
     {
         commandHistory = new List<string>();
 
-        menuBlock = transform.parent.getObjRec<GameObject>("blockRec");
-        popUpBlock = transform.parent.getObjRec<Transform>("blockPopUpRec");
-        consoleContent = transform.getObjRec<Transform>("ConsoleMenuConsoleContentRec");
-        messagePrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateMessageRec");
-        commandInput = transform.getObjRec<TMP_InputField>("ConsoleMenuCommandInputRec");
-        _scrollbar = transform.getObjRec<Scrollbar>("ConsoleMenuConsoleScrollbarRec");
-        autoCompleteContent = transform.getObjRec<Transform>("ConsoleMenuAutoCompleteContentRec");
-        autoCompleteEntryPrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateAutoCompleteEntryRec");
-        autoCompleteScrollView = transform.getObjRec<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
+        menuBlock = transform.parent.GetObjectRecursively<GameObject>("blockRec");
+        popUpBlock = transform.parent.GetObjectRecursively<Transform>("blockPopUpRec");
+        consoleContent = transform.GetObjectRecursively<Transform>("ConsoleMenuConsoleContentRec");
+        messagePrefab = transform.GetObjectRecursively<GameObject>("ConsoleMenuTemplateMessageRec");
+        commandInput = transform.GetObjectRecursively<TMP_InputField>("ConsoleMenuCommandInputRec");
+        _scrollbar = transform.GetObjectRecursively<Scrollbar>("ConsoleMenuConsoleScrollbarRec");
+        autoCompleteContent = transform.GetObjectRecursively<Transform>("ConsoleMenuAutoCompleteContentRec");
+        autoCompleteEntryPrefab = transform.GetObjectRecursively<GameObject>("ConsoleMenuTemplateAutoCompleteEntryRec");
+        autoCompleteScrollView = transform.GetObjectRecursively<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
         autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
         autoCompleteScrollView.SetActive(false);
 

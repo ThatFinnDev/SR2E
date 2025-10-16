@@ -21,12 +21,12 @@ internal class CheatMenuSlot : MonoBehaviour
     {
         if (didStartRan) return;
         didStartRan = true;
-        slotID = int.Parse(gameObject.getObjRec<TextMeshProUGUI>("Text").text.Replace(" ", "").Replace(":", "").Replace("Slot", ""))-1;
-        applyButton = gameObject.getObjRec<Button>("Apply");
-        selectButton = gameObject.getObjRec<Button>("Select");
-        amountSlider = gameObject.getObjRec<Slider>("Slider");
-        handleText = amountSlider.gameObject.getObjRec<TextMeshProUGUI>("Text");
-        entryInput = gameObject.getObjRec<TMP_InputField>("EntryInput");
+        slotID = int.Parse(gameObject.GetObjectRecursively<TextMeshProUGUI>("Text").text.Replace(" ", "").Replace(":", "").Replace("Slot", ""))-1;
+        applyButton = gameObject.GetObjectRecursively<Button>("Apply");
+        selectButton = gameObject.GetObjectRecursively<Button>("Select");
+        amountSlider = gameObject.GetObjectRecursively<Slider>("Slider");
+        handleText = amountSlider.gameObject.GetObjectRecursively<TextMeshProUGUI>("Text");
+        entryInput = gameObject.GetObjectRecursively<TMP_InputField>("EntryInput");
         applyButton.onClick.AddListener((Action)(() =>{Apply();}));
         selectButton.onClick.AddListener((Action)(() =>{Select();}));
         amountSlider.onValueChanged.AddListener((Action<float>)((value) => { handleText.SetText(((int)value).ToString()); }));
@@ -36,7 +36,7 @@ internal class CheatMenuSlot : MonoBehaviour
     {
         if (amountSlider.value == 0) { entryInput.text = ""; slot.Clear(); return; }
         
-        IdentifiableType type = LookupUtil.GetIdentByName(entryInput.text);
+        IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(entryInput.text);
         if (type == null) { entryInput.text = ""; slot.Clear(); amountSlider.value = 0; return; }
         
         string itemName = type.GetName().Replace("'","").Replace(" ","");

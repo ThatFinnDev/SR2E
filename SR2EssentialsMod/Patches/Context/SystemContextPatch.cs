@@ -27,7 +27,7 @@ internal class SystemContextPatch
     {
         SR2ESaveManager.data.themes.TryAdd(menuIdentifier.saveKey, menuIdentifier.defaultTheme);
         SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[menuIdentifier.saveKey];
-        List<SR2EMenuTheme> validThemes = MenuUtil.GetValidThemes(menuIdentifier.saveKey);
+        List<SR2EMenuTheme> validThemes = MenuEUtil.GetValidThemes(menuIdentifier.saveKey);
         if (validThemes.Count == 0) return null;
         if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
         SR2ESaveManager.Save();
@@ -63,8 +63,8 @@ internal class SystemContextPatch
                             theme = (SR2EMenuTheme)result;
                         else continue;
                     }
-                    if (!MenuUtil.validThemes.ContainsKey(key)) MenuUtil.validThemes.Add(key,new List<SR2EMenuTheme>());
-                    MenuUtil.validThemes[key].Add(theme);
+                    if (!MenuEUtil.validThemes.ContainsKey(key)) MenuEUtil.validThemes.Add(key,new List<SR2EMenuTheme>());
+                    MenuEUtil.validThemes[key].Add(theme);
                 }
         }
         foreach (var obj in assets)

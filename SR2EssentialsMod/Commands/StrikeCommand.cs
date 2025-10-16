@@ -35,7 +35,7 @@ internal class StrikeCommand : SR2ECommand
     }
     public override void OnGameContext(GameContext gameContext)
     {
-        lightningPrefab = Object.Instantiate(Get("LightningStrike"));
+        lightningPrefab = Object.Instantiate(Get<GameObject>("LightningStrike"));
         lightningPrefab.MakePrefab();
         lightningPrefab.name = "InstantLightning";
         var l = lightningPrefab.GetComponent<LightningStrike>();

@@ -1,6 +1,6 @@
 namespace SR2E.Utils;
 
-public static class ConvertUtil
+public static class ConvertEUtil
 {
     public static Sprite Texture2DToSprite(this Texture2D texture)
     {

@@ -2,7 +2,7 @@ using System;
 
 namespace SR2E.Utils;
 
-public static class ActionsUtil
+public static class ActionsEUtil
 {
     internal static Dictionary<Action, int> actionCounter = new Dictionary<Action, int>();
     public static void ExecuteInTicks(Action action, int ticks)
