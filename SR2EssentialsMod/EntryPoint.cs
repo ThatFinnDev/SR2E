@@ -41,7 +41,7 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
-    public const string Contributors = "Aureumapes";
+    public const string Contributors = "Atmudia, Aureumapes";
     public const string CodeVersion = "3.2.0";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
