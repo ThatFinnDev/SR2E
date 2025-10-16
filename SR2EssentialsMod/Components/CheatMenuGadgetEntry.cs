@@ -19,14 +19,14 @@ internal class CheatMenuGadgetEntry : MonoBehaviour
     private void Start()
     {
         didStartRan = true;
-        amountSlider = gameObject.getObjRec<Slider>("Slider");
+        amountSlider = gameObject.GetObjectRecursively<Slider>("Slider");
         amountSlider.maxValue = GadgetDirector.REFINERY_MAX;
-        handleText = amountSlider.gameObject.getObjRec<TextMeshProUGUI>("Text");
-        itemName = gameObject.getObjRec<TextMeshProUGUI>("Name");
-        icon = gameObject.getObjRec<Image>("Icon");
+        handleText = amountSlider.gameObject.GetObjectRecursively<TextMeshProUGUI>("Text");
+        itemName = gameObject.GetObjectRecursively<TextMeshProUGUI>("Name");
+        icon = gameObject.GetObjectRecursively<Image>("Icon");
         icon.sprite = item.icon;
         
-        itemName.text = item.getName().Replace("'", "");
+        itemName.text = item.GetName(false);
         amountSlider.onValueChanged.AddListener((Action<float>)((valueFloat) =>
         {
             if (dontChange)

@@ -10,8 +10,8 @@ internal static class MapCheatPatch
     {
         if (SR2ECheatMenu.removeFog)
         {
-            __instance.gameObject.getObjRec<GameObject>("fog_static").SetActive(false);
-            __instance.gameObject.getObjRec<GameObject>("zone_fog_areas").SetActive(false);
+            __instance.gameObject.GetObjectRecursively<GameObject>("fog_static").SetActive(false);
+            __instance.gameObject.GetObjectRecursively<GameObject>("zone_fog_areas").SetActive(false);
         }
     }
 }

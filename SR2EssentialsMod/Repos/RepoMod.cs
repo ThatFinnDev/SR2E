@@ -8,6 +8,7 @@ public class RepoMod
     public string name;
     public string author;
     public string coauthor;
+    public string contributors;
     public string description;
     public string company;
     public string trademark;

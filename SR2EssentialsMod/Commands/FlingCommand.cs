@@ -12,7 +12,7 @@ internal class FlingCommand : SR2ECommand
         if (!args.IsBetween(1,1)) return SendUsage();
         
         Camera cam = Camera.main; if (cam == null) return SendNoCamera(); 
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             Rigidbody rb = hit.rigidbody;
             if (rb == null) return SendNotLookingAtValidObject();

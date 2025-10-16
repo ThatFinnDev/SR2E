@@ -1,5 +1,7 @@
 ﻿using System;
+using SR2E.Enums;
 using SR2E.Managers;
+using UnityEngine.InputSystem;
 
 namespace SR2E;
 
@@ -22,7 +24,7 @@ public abstract class SR2ECommand
     /// <summary>
     /// The description of this command
     /// </summary>
-    public virtual string Description => translation($"cmd.{ID.ToLower()}.description");
+    public virtual string Description => translation($"{ID.ToLower()}.description");
 
     /// <summary>
     /// The full description of this command
@@ -31,7 +33,7 @@ public abstract class SR2ECommand
     {
         get
         {
-            string key = $"cmd.{ID.ToLower()}.extendeddescription";
+            string key = $"{ID.ToLower()}.extendeddescription";
             string translation = SR2ELanguageManger.translation(key);
             return key == translation ? Description : translation;
         }
@@ -155,23 +157,24 @@ public abstract class SR2ECommand
     /// </summary>
     public bool SendUsage()
     {
-        SendMessage(translation("cmd.usage", Usage));
+        SendMessage(translation("usage", Usage));
         return false;
     }
     /// <summary>
     /// Sends the no arguments message
     /// </summary>
-    public bool SendNoArguments() => SendError(translation("cmd.noarguments"));
+    public bool SendNoArguments() => SendError(translation("noarguments"));
     
     
     /// <summary>
     /// Sends the load a save first message
     /// </summary>
-    public bool SendLoadASaveFirst() => SendError(translation("cmd.loadasavefirst"));
+    public bool SendLoadASaveFirst() => SendError(translation("loadasavefirst"));
     /// <summary>
     /// Sends the cheats disabled message
     /// </summary>
-    public bool SendCheatsDisabled() => SendError(translation("cmd.cheatsdisabled"));
+    [Obsolete("This is deprecated, it will get removed in subsequent releases.",true)]
+    public bool SendCheatsDisabled() => SendError(translation("cheatsdisabled"));
 
     /// <summary>
     /// Display a message in the console
@@ -199,38 +202,155 @@ public abstract class SR2ECommand
         if (!silent) SR2ELogManager.SendWarning(message, SR2EEntryPoint.SR2ELogToMLLog);
     }
 
-    public bool SendCommandMaintenance() => SendError(translation("cmd.error.maintenance"));
-    public bool SendNotValidPedia(object obj) => SendError(translation("cmd.error.notvalidpedia",obj));
-    public bool SendNotValidVacMode(object obj) => SendError(translation("cmd.error.notvalidvacmode",obj));
-    public bool SendNotValidWeather(object obj) => SendError(translation("cmd.error.notvalidweather",obj));
-    public bool SendNotValidKeyCode(object obj) => SendError(translation("cmd.error.notvalidkeycode",obj));
-    public bool SendNotValidInt(object obj) => SendError(translation("cmd.error.notvalidint",obj));
-    public bool SendNotValidFloat(object obj) => SendError(translation("cmd.error.notvalidfloat",obj));
-    public bool SendNotValidDouble(object obj) => SendError(translation("cmd.error.notvaliddouble",obj));
-    public bool SendNotValidBool(object obj) => SendError(translation("cmd.error.notvalidbool",obj));
-    public bool SendNotValidTrool(object obj) => SendError(translation("cmd.error.notvalidtrool",obj));
-    public bool SendNotValidVector3(object objX,object objY,object objZ) => SendError(translation("cmd.error.notvalidvector3",objX,objY,objZ));
-    public bool SendNotValidIdentType(object obj) => SendError(translation("cmd.error.notvalididenttype",obj));
-    public bool SendNotValidGadget(object obj) => SendError(translation("cmd.error.notvalidgadget",obj));
-    public bool SendNotValidUpgrade(object obj) => SendError(translation("cmd.error.notvalidupgrade",obj));
-    public bool SendNotIntAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notintatleast",currValue,obj));
-    public bool SendNotIntAbove(object currValue, object obj) => SendError(translation("cmd.error.notintabove",currValue,obj));
-    public bool SendNotIntUnder(object currValue, object obj) => SendError(translation("cmd.error.notintbelow",currValue,obj));
-    public bool SendNotFloatAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notfloatatleast",currValue,obj));
-    public bool SendNotFloatAbove(object currValue, object obj) => SendError(translation("cmd.error.notfloatabove",currValue,obj));
-    public bool SendNotFloatUnder(object currValue, object obj) => SendError(translation("cmd.error.notfloatbelow",currValue,obj));
-    public bool SendNotDoubleAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notdoubleatleast",currValue,obj));
-    public bool SendNotDoubleAbove(object currValue, object obj) => SendError(translation("cmd.error.notdoubleabove",currValue,obj));
-    public bool SendNotDoubleUnder(object currValue, object obj) => SendError(translation("cmd.error.notdoublebelow",currValue,obj));
-    public bool SendNullSRCharacterController() => SendError(translation("cmd.error.srccnull"));
-    public bool SendNullTeleportablePlayer() => SendError(translation("cmd.error.teleportableplayernull"));
-    public bool SendNullKinematicCharacterMotor() => SendError(translation("cmd.error.kinematiccharactermotornull"));
-    public bool SendUnsupportedSceneGroup(object obj) => SendError(translation("cmd.error.scenegroupnotsupported",obj));
-    public bool SendNoCamera() => SendError(translation("cmd.error.nocamera"));
-    public bool SendNotLookingAtValidObject() => SendError(translation("cmd.error.notlookingatvalidobject"));
-    public bool SendNotLookingAtAnything() => SendError(translation("cmd.error.notlookingatanything"));
-    public bool SendUnknown() => SendError(translation("cmd.error.unknown"));
-    public bool SendIsGadgetNotItem(object obj) => SendError(translation("cmd.error.isgadgetnotitem",obj));
-    public bool SendErrorToManyArgs(object obj) => SendError(translation("cmd.error.errortoomanyargs",obj));
-    public bool SendNotValidOption(object obj) => SendError(translation("cmd.error.notvalidoption",obj));
+    public bool SendCommandMaintenance() => SendError(translation("error.maintenance"));
+    public bool SendNotValidPedia(object obj) => SendError(translation("error.notvalidpedia",obj));
+    public bool SendNotValidVacMode(object obj) => SendError(translation("error.notvalidvacmode",obj));
+    public bool SendNotValidWeather(object obj) => SendError(translation("error.notvalidweather",obj));
+    public bool SendNotValidKeyCode(object obj) => SendError(translation("error.notvalidkeycode",obj));
+    public bool SendNotValidInt(object obj) => SendError(translation("error.notvalidint",obj));
+    public bool SendNotValidFloat(object obj) => SendError(translation("error.notvalidfloat",obj));
+    public bool SendNotValidDouble(object obj) => SendError(translation("error.notvaliddouble",obj));
+    public bool SendNotValidBool(object obj) => SendError(translation("error.notvalidbool",obj));
+    public bool SendNotValidTrool(object obj) => SendError(translation("error.notvalidtrool",obj));
+    public bool SendNotValidVector3(object objX,object objY,object objZ) => SendError(translation("error.notvalidvector3",objX,objY,objZ));
+    public bool SendNotValidIdentType(object obj) => SendError(translation("error.notvalididenttype",obj));
+    public bool SendNotValidGadget(object obj) => SendError(translation("error.notvalidgadget",obj));
+    public bool SendNotValidUpgrade(object obj) => SendError(translation("error.notvalidupgrade",obj));
+    public bool SendNotIntAtLeast(object currValue, object obj) => SendError(translation("error.notintatleast",currValue,obj));
+    public bool SendNotIntAbove(object currValue, object obj) => SendError(translation("error.notintabove",currValue,obj));
+    public bool SendNotIntUnder(object currValue, object obj) => SendError(translation("error.notintbelow",currValue,obj));
+    public bool SendNotFloatAtLeast(object currValue, object obj) => SendError(translation("error.notfloatatleast",currValue,obj));
+    public bool SendNotFloatAbove(object currValue, object obj) => SendError(translation("error.notfloatabove",currValue,obj));
+    public bool SendNotFloatUnder(object currValue, object obj) => SendError(translation("error.notfloatbelow",currValue,obj));
+    public bool SendNotDoubleAtLeast(object currValue, object obj) => SendError(translation("error.notdoubleatleast",currValue,obj));
+    public bool SendNotDoubleAbove(object currValue, object obj) => SendError(translation("error.notdoubleabove",currValue,obj));
+    public bool SendNotDoubleUnder(object currValue, object obj) => SendError(translation("error.notdoublebelow",currValue,obj));
+    public bool SendNullSRCharacterController() => SendError(translation("error.srccnull"));
+    public bool SendNullTeleportablePlayer() => SendError(translation("error.teleportableplayernull"));
+    public bool SendNullKinematicCharacterMotor() => SendError(translation("error.kinematiccharactermotornull"));
+    public bool SendUnsupportedSceneGroup(object obj) => SendError(translation("error.scenegroupnotsupported",obj));
+    public bool SendNoCamera() => SendError(translation("error.nocamera"));
+    public bool SendNotLookingAtValidObject() => SendError(translation("error.notlookingatvalidobject"));
+    public bool SendNotLookingAtAnything() => SendError(translation("error.notlookingatanything"));
+    public bool SendUnknown() => SendError(translation("error.unknown"));
+    public bool SendIsGadgetNotItem(object obj) => SendError(translation("error.isgadgetnotitem",obj));
+    public bool SendErrorToManyArgs(object obj) => SendError(translation("error.errortoomanyargs",obj));
+    public bool SendNotValidOption(object obj) => SendError(translation("error.notvalidoption",obj));
+
+
+    public bool TryParseVector3(string inputX, string inputY, string inputZ, out Vector3 value)
+    {
+        value = Vector3.zero;
+        try { value = new Vector3(float.Parse(inputX),float.Parse(inputY),float.Parse(inputZ)); }
+        catch { return SendNotValidVector3(inputX,inputY,inputZ); }
+        return true;
+    }
+    public bool TryParseFloat(string input, out float value, float min, bool inclusive, float max)
+    {
+        value = 0;
+        try { value = float.Parse(input); }
+        catch { return SendNotValidFloat(input); }
+        if (inclusive)
+        {
+            if (value < min) return SendNotFloatAtLeast(input, min);
+        }
+        else if (value <= min) return SendNotFloatAbove(input,min);
+        if (value >= max) return SendNotFloatUnder(input, max);
+        return true;
+    }
+    public bool TryParseFloat(string input, out float value, float min, bool inclusive)
+    {
+        value = 0;
+        try { value = float.Parse(input); }
+        catch { return SendNotValidFloat(input); }
+        if (inclusive)
+        {
+            if (value < min) return SendNotFloatAtLeast(input, min);
+        }
+        else if (value <= min) return SendNotFloatAbove(input,min);
+        return true;
+    }
+    public bool TryParseFloat(string input, out float value, float max)
+    {
+        value = 0;
+        try { value = float.Parse(input); }
+        catch { return SendNotValidFloat(input); }
+        if (value >= max) return SendNotFloatUnder(input, max);
+        return true;
+    }
+    public bool TryParseFloat(string input, out float value)
+    {
+        value = 0;
+        try { value = float.Parse(input); }
+        catch { return SendNotValidFloat(input); }
+        return true;
+    }
+    public bool TryParseInt(string input, out int value, int min, bool inclusive, int max)
+    {
+        value = 0;
+        try { value = int.Parse(input); }
+        catch { return SendNotValidInt(input); }
+        if (inclusive)
+        {
+            if (value < min) return SendNotIntAtLeast(input, min);
+        }
+        else if (value <= min) return SendNotIntAbove(input,min);
+        if (value >= max) return SendNotIntUnder(input, max);
+        return true;
+    }
+    public bool TryParseInt(string input, out int value, int min, bool inclusive)
+    {
+        value = 0;
+        try { value = int.Parse(input); }
+        catch { return SendNotValidInt(input); }
+        if (inclusive)
+        { 
+            if (value < min) return SendNotIntAtLeast(input, min);
+        }
+        else if (value <= min) return SendNotIntAbove(input,min);
+        return true;
+    }
+    public bool TryParseInt(string input, out int value, int max)
+    {
+        value = 0;
+        try { value = int.Parse(input); }
+        catch { return SendNotValidInt(input); }
+        if (value >= max) return SendNotIntUnder(input, max);
+        return true;
+    }
+    public bool TryParseInt(string input, out int value)
+    {
+        value = 0;
+        try { value = int.Parse(input); }
+        catch { return SendNotValidInt(input); }
+        return true;
+    }
+    public bool TryParseBool(string input, out bool value)
+    {
+        value = false;
+        if (input.ToLower() != "true" && input.ToLower() != "false") SendNotValidBool(input);
+        if (input.ToLower() == "true") value = true;
+        return true;
+    }
+    public bool TryParseTrool(string input, out Trool value)
+    {
+        value = Trool.False;
+        if (input.ToLower() != "true" && input.ToLower() != "false" && input.ToLower() != "toggle") SendNotValidTrool(input);
+        if (input.ToLower() == "true") value = Trool.True;
+        if (input.ToLower() == "toggle") value = Trool.Toggle;
+        return true;
+    }
+    public bool TryParseKeyCode( string input, out Key value)
+    {
+        string keyToParse = input;
+        if (input.ToCharArray().Length == 1)
+        if (int.TryParse(input, out int ignored))
+            keyToParse = "Digit" + input;
+        Key key;
+        if (Key.TryParse(keyToParse, true, out key)) { value = key; return true; }
+        value = Key.None;
+        SendNotValidKeyCode(input);
+        return false;
+    }
+    
 }

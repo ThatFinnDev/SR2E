@@ -1,12 +1,20 @@
 using System;
 using System.IO;
+using Il2CppMonomiPark.SlimeRancher.Script.Util;
 using Microsoft.VisualBasic.FileIO;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Tables;
 
 namespace SR2E.Managers;
 
 public static class SR2ELanguageManger
 {
+    public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
+
+    internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new Dictionary<string, LocalizedString>();
+    internal static Dictionary<string, (string, string, LocalizedString)> sr2eReplaceOnLanguageChange = new Dictionary<string, (string, string, LocalizedString)>();
     internal static Dictionary<string, List<Dictionary<string, string>>> languages = new Dictionary<string, List<Dictionary<string, string>>>();
+    
     static Dictionary<string, string> loadedLanguage = new Dictionary<string, string>();
     static Dictionary<string, string> defaultLang = null;
     public static string translation(string key)
@@ -100,5 +108,55 @@ public static class SR2ELanguageManger
                 foreach (var translation in languageDicts)
                     loadedLanguage[translation.Key] = translation.Value;
     }
+    
+    
+    
+    public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
+    {
+        if (!InjectTranslations.HasFlag())
+        { 
+            var tutorial = LocalizationUtil.GetTable("Tutorial");
+            foreach (var pair in tutorial.m_TableEntries) return new LocalizedString(tutorial.SharedData.TableCollectionName, pair.Value.SharedEntry.Id);
+        }
+        StringTable table2 = LocalizationUtil.GetTable(table);
+
+
+        StringTableEntry existing = null;
+        try { existing = table2.GetEntry(key); } catch { }
+        if (existing != null) return new LocalizedString(table2.SharedData.TableCollectionName, existing.SharedEntry.Id);
+        System.Collections.Generic.Dictionary<string, string> dictionary;
+        if (!addedTranslations.TryGetValue(table, out dictionary))
+        {
+            dictionary = new System.Collections.Generic.Dictionary<string, string>();
+
+            addedTranslations.Add(table, dictionary);
+        }
+
+        dictionary.Add(key, localized);
+        StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
+        return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
+        }
+    public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
+    {
+        LocalizedString localizedString = AddTranslation(translation(sr2eTranslationID), key, table);
+            
+        sr2etosrlanguage.TryAdd(sr2eTranslationID,localizedString);
+        sr2eReplaceOnLanguageChange.TryAdd(sr2eTranslationID, (key, table, localizedString));
+            
+        return localizedString;
+    }
+        
+    public static void SetTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
+    {
+        if (!InjectTranslations.HasFlag()) return;
+            
+        StringTable table2 = LocalizationUtil.GetTable(table);
+            
+        table2.GetEntry(key).Value = localized;
+    }
+    public static void SetTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor") => SetTranslation(translation(sr2eTranslationID), key, table);
+        
+    
+    
     
 }

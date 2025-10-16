@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Il2CppInterop.Generator.MetadataAccess;
-using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
-using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppTMPro;
 using SR2E.Enums;
 using SR2E.Enums.Features;
@@ -13,7 +9,6 @@ using SR2E.Popups;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using Action = System.Action;
 using Button = UnityEngine.UI.Button;
 using Image = UnityEngine.UI.Image;
@@ -24,7 +19,6 @@ namespace SR2E.Menus;
 public class SR2EModMenu : SR2EMenu
 {
     public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier("modmenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"ModMenu");
-    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EModMenu>();
     public override bool createCommands => true;
     public override bool inGameOnly => false;
     
@@ -39,6 +33,7 @@ public class SR2EModMenu : SR2EMenu
     }
     
     
+    internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithActions = new Dictionary<MelonPreferences_Entry, Action>();
     TextMeshProUGUI modInfoText;
     GameObject entryTemplate;
     GameObject headerTemplate;
@@ -50,16 +45,16 @@ public class SR2EModMenu : SR2EMenu
 
     protected override void OnClose()
     {
-        gameObject.getObjRec<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
-        Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
+        gameObject.GetObjectRecursively<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
+        Transform modContent = transform.GetObjectRecursively<Transform>("ModMenuModMenuContentRec");
         for (int i = 0; i < modContent.childCount; i++)
             Object.Destroy(modContent.GetChild(i).gameObject);
     }
     
     protected override void OnOpen()
     {
-        GameObject buttonPrefab = transform.getObjRec<GameObject>("ModMenuModMenuTemplateButtonRec");
-        Transform modContent = transform.getObjRec<Transform>("ModMenuModMenuContentRec");
+        GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("ModMenuModMenuTemplateButtonRec");
+        Transform modContent = transform.GetObjectRecursively<Transform>("ModMenuModMenuContentRec");
         foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (RottenMelon rotten in loadedAssembly.RottenMelons)
         {
             try
@@ -148,11 +143,16 @@ public class SR2EModMenu : SR2EMenu
                                 modInfoText.text += "\n" + translation("modmenu.modinfo.coauthor",meta.Value);
                             } catch{ }
                             break;
+                        case "contributors":
+                            try {
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.contributors",meta.Value);
+                            } catch{ }
+                            break;
                         case "icon_b64":
                             try
                             {
                                 b.transform.GetChild(1).gameObject.SetActive(true);
-                                b.transform.GetChild(1).GetComponent<Image>().sprite = Base64ToTexture2D(meta.Value).ConvertToSprite(); 
+                                b.transform.GetChild(1).GetComponent<Image>().sprite = ConvertEUtil.Base64ToTexture2D(meta.Value).Texture2DToSprite(); 
                             }
                             catch (Exception e) { MelonLogger.Error("There was an error loading the icon of the mod "+melonBase.Info.Name); }
                             break;
@@ -161,7 +161,25 @@ public class SR2EModMenu : SR2EMenu
                 
                 modInfoText.text += versionText;
                 modInfoText.text += "\n";
-
+                foreach (var meta in melonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
+                {
+                    if (meta == null) continue;
+                    if(string.IsNullOrWhiteSpace(meta.Key)) continue;
+                    if(string.IsNullOrWhiteSpace(meta.Value)) continue;
+                    switch (meta.Key)
+                    {
+                        case "source_code":
+                            try {
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode",meta.Value);
+                            } catch{ }
+                            break;
+                        case "nexus":
+                            try {
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.nexus",meta.Value);
+                            } catch{ }
+                            break;
+                    }
+                }
                 if (!String.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
                     modInfoText.text += "\n" + translation("modmenu.modinfo.link",melonBase.Info.DownloadLink);
 
@@ -184,12 +202,12 @@ public class SR2EModMenu : SR2EMenu
     }
     protected override void OnLateAwake()
     {
-        entryTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateEntryRec");
-        headerTemplate = transform.getObjRec<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
-        warningText = transform.getObjRec<GameObject>("ModMenuModConfigurationRestartWarningRec");
+        entryTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateEntryRec");
+        headerTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
+        warningText = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationRestartWarningRec");
         toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"modmenu.warning.restart");
-        Transform content = transform.getObjRec<Transform>("ModMenuModConfigurationContentRec");
-        modInfoText = transform.getObjRec<TextMeshProUGUI>("ModMenuModInfoTextRec");
+        Transform content = transform.GetObjectRecursively<Transform>("ModMenuModConfigurationContentRec");
+        modInfoText = transform.GetObjectRecursively<TextMeshProUGUI>("ModMenuModInfoTextRec");
         foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
             if (!String.IsNullOrEmpty(stringKey))
                 if (stringKey != "None")
@@ -205,17 +223,17 @@ public class SR2EModMenu : SR2EMenu
         allPossibleKeys.Remove(Key.LeftWindows);
         allPossibleKeys.Remove(Key.RightWindows);
 
-        var button1 = transform.getObjRec<Image>("ModMenuModMenuSelectionButtonRec");
+        var button1 = transform.GetObjectRecursively<Image>("ModMenuModMenuSelectionButtonRec");
         button1.sprite = whitePillBg;
-        var button2 = transform.getObjRec<Image>("ModMenuConfigurationSelectionButtonRec");
+        var button2 = transform.GetObjectRecursively<Image>("ModMenuConfigurationSelectionButtonRec");
         button2.sprite = whitePillBg;
-        var button3 = transform.getObjRec<Image>("ModMenuRepoSelectionButtonRec");
+        var button3 = transform.GetObjectRecursively<Image>("ModMenuRepoSelectionButtonRec");
         button2.sprite = whitePillBg;
         button3.GetComponent<Button>().onClick.AddListener((Action)(() =>
         {
             if (EnableRepoMenu.HasFlag())
             {
-                Close(); GM<SR2ERepoMenu>().OpenC(this);
+                Close(); MenuEUtil.GetMenu<SR2ERepoMenu>().OpenC(this);
             }
             else
             {
@@ -225,10 +243,10 @@ public class SR2EModMenu : SR2EMenu
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modmenu");
         toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.modconfig");
         toTranslate.Add(button3.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"modmenu.category.repo");
-        toTranslate.Add(transform.getObjRec<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
+        toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
-        themeButton = transform.getObjRec<Button>("ThemeMenuButtonRec");
-        themeButton.onClick.AddListener((Action)(() =>{ Close(); GM<SR2EThemeMenu>().OpenC(this); }));
+        themeButton = transform.GetObjectRecursively<Button>("ThemeMenuButtonRec");
+        themeButton.onClick.AddListener((Action)(() =>{ Close(); MenuEUtil.GetMenu<SR2EThemeMenu>().OpenC(this); }));
         toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
         {
@@ -452,7 +470,7 @@ public class SR2EModMenu : SR2EMenu
     {
         if (listeninAction == null)
             if (Key.Escape.OnKeyPressed())
-                if(openPopUps.Count==0)
+                if(MenuEUtil.openPopUps.Count==0)
                     Close();
         foreach (Key key in allPossibleKeys)
         {

@@ -1,4 +1,3 @@
-using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using SR2E.Buttons;
@@ -14,22 +13,22 @@ internal class GameContextPatch
 {
     internal static void Postfix(GameContext __instance)
     {
-        SR2EUtils._killDamage = new Damage
+        _killDamage = new Damage
         {
             Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
         };
-        SR2EUtils._killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
+        _killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
         
         foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
         {
             var pname = particle.gameObject.name.Replace(' ', '_');
-            if (!FXLibrary.ContainsKey(particle.gameObject))
-                FXLibrary.AddItems(particle.gameObject, particle, pname);
-            if (!FXLibraryReversable.ContainsKey(pname))
-                FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
+            if (!LookupEUtil.FXLibrary.ContainsKey(particle.gameObject))
+                LookupEUtil.FXLibrary.AddItems(particle.gameObject, particle, pname);
+            if (!LookupEUtil.FXLibraryReversable.ContainsKey(pname))
+                LookupEUtil.FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
         }
 
-        vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
+        LookupEUtil.vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
 
         foreach (KeyValuePair<string, string> pair in teleportersToAdd)
             AddTeleporter(pair.Key, pair.Value);
@@ -40,14 +39,14 @@ internal class GameContextPatch
             if (AddModMenuButton.HasFlag())
             {
                 LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                new CustomMainMenuButton(label, LoadSprite("Assets.modsMenuIcon"), 4, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
-                new CustomPauseMenuButton(label, 3, (System.Action)(() => { GM<SR2EModMenu>().Open(); }));
+                new CustomMainMenuButton(label, EmbeddedResourceEUtil.LoadSprite("Assets.modsMenuIcon.png"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
+                new CustomPauseMenuButton(label, 3, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
             }
 
             if (!SR2EEntryPoint.cheatsEnabledOnSave)
                 if (AddCheatMenuButton.HasFlag())
                 {
-                    SR2EEntryPoint.cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { GM<SR2ECheatMenu>().Open(); }));
+                    SR2EEntryPoint.cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
                     if (!SR2EEntryPoint.enableCheatMenuButton) SR2EEntryPoint.cheatMenuButton.Remove();
                 }
             if (DevMode.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI(); }));
@@ -57,18 +56,18 @@ internal class GameContextPatch
         Time.timeScale = 1f;
         try
         {
-            actionMaps = new Dictionary<string, InputActionMap>();
-            MainGameActions = new Dictionary<string, InputAction>();
-            PausedActions = new Dictionary<string, InputAction>();
-            DebugActions = new Dictionary<string, InputAction>();
-            foreach (InputActionMap map in GameContext.Instance.InputDirector._inputActions.actionMaps)
-                actionMaps.Add(map.name, map);
-            foreach (InputAction action in actionMaps["MainGame"].actions)
-                MainGameActions.Add(action.name, action);
-            foreach (InputAction action in actionMaps["Paused"].actions)
-                PausedActions.Add(action.name, action);
-            foreach (InputAction action in actionMaps["Debug"].actions)
-                DebugActions.Add(action.name, action);
+            LookupEUtil.actionMaps = new Dictionary<string, InputActionMap>();
+            LookupEUtil.MainGameActions = new Dictionary<string, InputAction>();
+            LookupEUtil.PausedActions = new Dictionary<string, InputAction>();
+            LookupEUtil.DebugActions = new Dictionary<string, InputAction>();
+            foreach (InputActionMap map in gameContext.InputDirector._inputActions.actionMaps)
+                LookupEUtil.actionMaps.Add(map.name, map);
+            foreach (InputAction action in LookupEUtil.actionMaps["MainGame"].actions)
+                LookupEUtil.MainGameActions.Add(action.name, action);
+            foreach (InputAction action in LookupEUtil.actionMaps["Paused"].actions)
+                LookupEUtil.PausedActions.Add(action.name, action);
+            foreach (InputAction action in LookupEUtil.actionMaps["Debug"].actions)
+                LookupEUtil.DebugActions.Add(action.name, action);
         }
         catch (Exception e)
         {
@@ -107,7 +106,7 @@ internal class GameContextPatch
     };
     internal static void AddTeleporter(string sceneGroup, string gadgetName)
     {
-        StaticTeleporterNode teleporter = GameObject.Instantiate(getGadgetDefByName(gadgetName).prefab.transform.getObjRec<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
+        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupEUtil.GetGadgetDefinitionByName(gadgetName).prefab.transform.GetObjectRecursively<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
         teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
         SR2EWarpManager.teleporters.TryAdd(sceneGroup, teleporter);
     }

@@ -16,8 +16,6 @@ public class SR2EConsole : SR2EMenu
 {
     public new static MenuIdentifier GetMenuIdentifier() =>
         new MenuIdentifier("console",SR2EMenuFont.Regular, SR2EMenuTheme.Black, "Console");
-
-    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EConsole>();
     public override bool createCommands => true;
     public override bool inGameOnly => false;
 
@@ -49,6 +47,7 @@ public class SR2EConsole : SR2EMenu
     protected override void OnStart()
     {
         SendMessage(translation("console.helloworld"));
+        SendMessage(translation("console.info"));
     }
 
     public void Send(string message, Color32 color)
@@ -201,15 +200,13 @@ public class SR2EConsole : SR2EMenu
     {
         commandHistory = new List<string>();
 
-        menuBlock = transform.parent.getObjRec<GameObject>("blockRec");
-        popUpBlock = transform.parent.getObjRec<Transform>("blockPopUpRec");
-        consoleContent = transform.getObjRec<Transform>("ConsoleMenuConsoleContentRec");
-        messagePrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateMessageRec");
-        commandInput = transform.getObjRec<TMP_InputField>("ConsoleMenuCommandInputRec");
-        _scrollbar = transform.getObjRec<Scrollbar>("ConsoleMenuConsoleScrollbarRec");
-        autoCompleteContent = transform.getObjRec<Transform>("ConsoleMenuAutoCompleteContentRec");
-        autoCompleteEntryPrefab = transform.getObjRec<GameObject>("ConsoleMenuTemplateAutoCompleteEntryRec");
-        autoCompleteScrollView = transform.getObjRec<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
+        consoleContent = transform.GetObjectRecursively<Transform>("ConsoleMenuConsoleContentRec");
+        messagePrefab = transform.GetObjectRecursively<GameObject>("ConsoleMenuTemplateMessageRec");
+        commandInput = transform.GetObjectRecursively<TMP_InputField>("ConsoleMenuCommandInputRec");
+        _scrollbar = transform.GetObjectRecursively<Scrollbar>("ConsoleMenuConsoleScrollbarRec");
+        autoCompleteContent = transform.GetObjectRecursively<Transform>("ConsoleMenuAutoCompleteContentRec");
+        autoCompleteEntryPrefab = transform.GetObjectRecursively<GameObject>("ConsoleMenuTemplateAutoCompleteEntryRec");
+        autoCompleteScrollView = transform.GetObjectRecursively<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
         autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
         autoCompleteScrollView.SetActive(false);
 

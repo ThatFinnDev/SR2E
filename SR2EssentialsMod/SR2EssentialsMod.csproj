@@ -39,7 +39,6 @@
     <EmbeddedResource Include="srtwoessentials.assetbundle" />
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />
-    <EmbeddedResource Include="category.png" />
     <EmbeddedResource Remove="DocGenerator\**" />
   </ItemGroup>
   <ItemGroup>

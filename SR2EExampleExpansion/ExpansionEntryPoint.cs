@@ -1,5 +1,6 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
 using SR2E.Expansion;
+using SR2E.Utils;
 
 namespace SR2EExampleExpansion
 {
@@ -17,7 +18,7 @@ namespace SR2EExampleExpansion
     {
         public override void OnNormalInitializeMelon()
         {
-            AddLanguages(LoadTextFile("SR2EExampleExpansion.translations.csv"));
+            AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv"));
         }
 
         public override void OnSR2FontLoad()

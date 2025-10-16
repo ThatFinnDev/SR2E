@@ -26,8 +26,8 @@ public class SR2EGridMenuList : SR2EPopUp
     }
     protected override void OnOpen()
     {
-        var content = gameObject.getObjRec<Transform>("MenuListContentRec");
-        var prefab = gameObject.getObjRec<Button>("MenuListTemplateEntry");
+        var content = gameObject.GetObjectRecursively<Transform>("MenuListContentRec");
+        var prefab = gameObject.GetObjectRecursively<Button>("MenuListTemplateEntry");
         foreach (var entry in _entries)
         {
             var value = entry.Value;
@@ -45,8 +45,8 @@ public class SR2EGridMenuList : SR2EPopUp
     
     public static void Open(TripleDictionary<string,string,Sprite> entries,Action<string> onSelect)
     {
-        if (!isAnyMenuOpen) return;
-        _Open("GridMenuList",typeof(SR2EGridMenuList),getOpenMenu.GetTheme(),new List<object>(){entries,onSelect});
+        if (!MenuEUtil.isAnyMenuOpen) return;
+        _Open("GridMenuList",typeof(SR2EGridMenuList),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){entries,onSelect});
     }
 
     protected override void OnUpdate()

@@ -1,11 +1,12 @@
+using System;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
-using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using Newtonsoft.Json;
 using SR2E.Components;
 using SR2E.Enums;
 using SR2E.Managers;
+using SR2E.Patches.General;
 
 namespace SR2E.Storage;
 
@@ -20,7 +21,7 @@ public class Warp
         if (p == null) return SR2EError.TeleportablePlayerNull;
         SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
         if (cc == null) return SR2EError.SRCharacterControllerNull;
-        CloseOpenMenu();
+        MenuEUtil.CloseOpenMenu();
         if (sceneGroup == p.SceneGroup.ReferenceId)
         {
             cc.Position = position;
@@ -31,23 +32,35 @@ public class Warp
         {
             try
             {
-                if (!SR2EWarpManager.teleporters.ContainsKey(sceneGroup)) return SR2EError.SceneGroupNotSupported;
-
-                StaticTeleporterNode node = SR2EWarpManager.teleporters[sceneGroup];
+                var sg = SystemContext.Instance.SceneLoader.SceneGroupList.GetSceneGroupFromReferenceId(sceneGroup);
+                if (sg == null) return SR2EError.SceneGroupNotSupported;
+                if(!sg.IsGameplay) return SR2EError.SceneGroupNotSupported;
+                SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();;
+                NativeEUtil.TryHideMenus();
+                NativeEUtil.TryUnPauseGame();
                 SR2EWarpManager.warpTo = this;
-
-                StaticTeleporterNode obj = GameObject.Instantiate(node, SceneContext.Instance.Player.transform.position,
-                    Quaternion.identity);
-                obj.gameObject.SetActive(true);
-                obj.UpdateFX();
-                SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();
-                TryHideMenus();
-                TryUnPauseGame();
-                //SR2ESavableDataV2.Instance.playerSavedData.noclipState = false;
+                ExecuteInTicks((Action)(() =>
+                {
+                    try
+                    {
+                        
+                        var e = SceneLoaderLoadSceneGroupPatch._loadingParameters;
+                        //When you just set the position to your target position, the zones don't load properly
+                        //By setting the player's pos really far away and then to the correct one after the loading screen, it works fine
+                        e.TeleportPosition = new Il2CppSystem.Nullable<Vector3>(new Vector3(0,9999999,0));
+                        SystemContext.Instance.SceneLoader.LoadSceneGroup(sg, e);
+                    }
+                    catch (Exception e)
+                    {
+                        MelonLogger.Error(e); 
+                    }
+                    //Anything lower than 5 ticks breaks it. I guess smth with Timescaling but idk
+                }), 5);
 
             }
-            catch
+            catch (Exception e)
             {
+                MelonLogger.Error(e); 
             }
         }
 

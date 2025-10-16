@@ -27,12 +27,12 @@ public abstract class SR2EPopUp : MonoBehaviour
     public new void Close()
     {
         disableBlock();
-        openPopUps.Remove(this);
+        MenuEUtil.openPopUps.Remove(this);
         Destroy(gameObject);
     }
     public virtual void ApplyFont(TMP_FontAsset font)
     {
-        foreach (var text in gameObject.getAllChildrenOfType<TMP_Text>())
+        foreach (var text in gameObject.GetAllChildrenOfType<TMP_Text>())
             text.font = font;
     }
     protected static void _Open(string identifier,Type type,SR2EMenuTheme theme,List<object> objects)
@@ -59,8 +59,8 @@ public abstract class SR2EPopUp : MonoBehaviour
     protected virtual void OnOpen() {}
     public void Awake()
     {
-        OpenPopUpBlock(this);
-        openPopUps.Add(this);
+        MenuEUtil.OpenPopUpBlock(this);
+        MenuEUtil.openPopUps.Add(this);
         
     }
 

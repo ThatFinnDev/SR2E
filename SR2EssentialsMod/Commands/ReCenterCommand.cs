@@ -10,7 +10,7 @@ internal class ReCenterCommand : SR2ECommand
     {
         if (!args.IsBetween(0, 0)) return SendNoArguments();
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, 10000f, defaultMask))
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, 10000f, MiscEUtil.defaultMask))
         {
             cam.transform.LookAt(hit.transform);
             SendMessage(translation("cmd.recentercamera.success"));

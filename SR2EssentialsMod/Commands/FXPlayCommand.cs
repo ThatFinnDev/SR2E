@@ -15,7 +15,7 @@ internal class FXPlayCommand : SR2ECommand
         if (argIndex == 0)
         {
             List<string> list = new List<string>();
-            foreach (var p in FXLibrary)
+            foreach (var p in LookupEUtil.FXLibrary)
                 list.Add(p.Value.Item2);
             return list;
         }
@@ -47,10 +47,10 @@ internal class FXPlayCommand : SR2ECommand
         }
 
 
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             GameObject fxobj;
-            try { fxobj = FXLibraryReversable[args[0]].Item2; }
+            try { fxobj = LookupEUtil.FXLibraryReversable[args[0]].Item2; }
             catch { return SendError(translation("cmd.fxplayer.invalidfxname")); }
 
             fxobj.SpawnFX(cam.transform.position + hit.transform.position);

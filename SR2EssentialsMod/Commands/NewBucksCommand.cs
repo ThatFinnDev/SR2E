@@ -1,7 +1,4 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Economy;
-using Il2CppPlayFab.ClientModels;
-
-namespace SR2E.Commands;
+﻿namespace SR2E.Commands;
 
 internal class NewBucksCommand : SR2ECommand
 {
@@ -23,7 +20,7 @@ internal class NewBucksCommand : SR2ECommand
         int amount = 0;
         if (!this.TryParseInt(args[0], out amount)) return false;
 
-        if (!AddCurrency("newbuck", amount))
+        if (!CurrencyEUtil.AddCurrency("newbuck", amount))
             return SendError(translation("cmd.newbucks.error"));
         SendMessage(translation("cmd.newbucks.success",amount));
         return true;

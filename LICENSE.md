@@ -1,0 +1,37 @@
+# SR2E Source-Available License (SR2E-SAL)
+
+© 2025 ThatFinn
+
+## 1. Permission to View and Modify
+You may view, modify, and use the source code of **SR2E** for personal, non-commercial, or compatible modding purposes.
+
+## 2. Copyleft on Derivatives
+If you redistribute or release a modified version of this project, your derivative work must:
+- Remain under this same license,
+- Credit the original project and its official creator,
+- Not present itself as the official version of this project or replace it.
+
+## 3. Contributions / Pull Requests
+- Any code submitted via pull request, patch, or contribution to this project automatically becomes part of the project’s codebase and is licensed under this same license.
+- Contributors retain ownership of their original work, but agree that it is licensed under these terms for inclusion in the project.
+- Redistributing a modified version of the project **does not require permission from individual contributors**; the project license governs all code in the repository.
+
+## 4. Dependency Use
+Other mods or projects may use this project as a dependency without triggering copyleft obligations, as long as the project remains required and unmodified.
+
+## 5. No Replacement / Commercial Exploitation
+You may not redistribute this project, or a derivative work, in a way that:
+- Replaces or competes with the official project,
+- Uses the project’s name, logo, or branding without express permission from the author.
+
+## 6. Permission Exemption
+If you wish to use any part of this project in a way that would normally be restricted under this license, you may request explicit permission from the author. **Any granted permission applies only to the requester and the specified use.** Permission must be documented and granted by the author directly; no implied permission exists.
+
+## 7. Special Exception – Monomi Park
+Monomi Park, the developer of **Slime Rancher 2**, is granted permission to use any and all parts of **SR2E**—including code, assets, and contributions—**without restriction**, and may modify, redistribute, or integrate it in any way they choose.
+
+## 8. Attribution
+All uses of the code outside the project must give clear credit to the original project and its official author, except as allowed under the Monomi Park exception or granted permission.
+
+## 9. Disclaimer
+This project is provided “as-is” without any warranty. The author is not liable for damages arising from its use.

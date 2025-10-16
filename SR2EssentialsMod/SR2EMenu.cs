@@ -28,10 +28,9 @@ public abstract class SR2EMenu : MonoBehaviour
 
     public virtual void ApplyFont(TMP_FontAsset font)
     {
-        foreach (var text in gameObject.getAllChildrenOfType<TMP_Text>())
+        foreach (var text in gameObject.GetAllChildrenOfType<TMP_Text>())
             text.font = font;
     }
-    public static void PreAwake(GameObject obj) {}
     public void Awake()
     {
         OnAwake();
@@ -46,7 +45,7 @@ public abstract class SR2EMenu : MonoBehaviour
             //Requires Reflection to get overriden one
             try
             {
-                MenuIdentifier identifier = this.GetIdentifierViaReflection();
+                MenuIdentifier identifier = this.GetMenuIdentifier();
                 if (!string.IsNullOrEmpty(identifier.saveKey))
                 {
                     try { SR2ECommandManager.RegisterCommand(new MenuVisibilityCommands.OpenCommand(identifier,this,inGameOnly)); } catch (Exception e) { MelonLogger.Error(e); }
@@ -56,6 +55,8 @@ public abstract class SR2EMenu : MonoBehaviour
             }
             catch {MelonLogger.Error("There was an error creating menu commands");}
         }
+        if(MenuEUtil.menuBlock==null) MenuEUtil.menuBlock = transform.parent.GetObjectRecursively<GameObject>("blockRec");
+        if(MenuEUtil.popUpBlock==null) MenuEUtil.popUpBlock = transform.parent.GetObjectRecursively<Transform>("blockPopUpRec");
         OnLateAwake();
     } 
     protected virtual void OnAwake() {}
@@ -83,12 +84,12 @@ public abstract class SR2EMenu : MonoBehaviour
         if (changedOpenState) return;
         foreach (FeatureFlag featureFlag in SR2EEntryPoint.menus[this]["requiredFeatures"] as List<FeatureFlag>) if (!featureFlag.HasFlag()) return;
         if (!isOpen) return;
-        menuBlock.SetActive(false);
+        MenuEUtil.menuBlock.SetActive(false);
         gameObject.SetActive(false);
         changedOpenState = true;
-        foreach(SR2EPopUp popUp in openPopUps)
+        foreach(SR2EPopUp popUp in MenuEUtil.openPopUps)
             popUp.Close();
-        DoActions(SR2EEntryPoint.menus[this]["closeActions"] as List<MenuActions>);
+        MenuEUtil.DoMenuActions(SR2EEntryPoint.menus[this]["closeActions"] as List<MenuActions>);
         try { OnClose(); }catch (Exception e) { MelonLogger.Error(e); }
         
         if(_menuToOpenOnClose!=null)
@@ -111,7 +112,7 @@ public abstract class SR2EMenu : MonoBehaviour
     {
         if (changedOpenState) return;
         foreach (FeatureFlag featureFlag in SR2EEntryPoint.menus[this]["requiredFeatures"] as List<FeatureFlag>) if (!featureFlag.HasFlag()) return;
-        if (isAnyMenuOpen) return;
+        if (MenuEUtil.isAnyMenuOpen) return;
         if(inGameOnly) if (!inGame) return;
         if (SR2EWarpManager.warpTo != null) return;
         foreach (var pair in SR2EEntryPoint.menus)
@@ -124,11 +125,11 @@ public abstract class SR2EMenu : MonoBehaviour
             case "LoadScene":
                 return;
         }
-        menuBlock.SetActive(true);
+        MenuEUtil.menuBlock.SetActive(true);
         gameObject.SetActive(true);
         changedOpenState = true;
         ExecuteInTicks((Action)(() => { gameObject.SetActive(true);}), 1);
-        DoActions(SR2EEntryPoint.menus[this]["openActions"] as List<MenuActions>);
+        MenuEUtil.DoMenuActions(SR2EEntryPoint.menus[this]["openActions"] as List<MenuActions>);
         try { OnOpen(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));
     }
@@ -143,5 +144,9 @@ public abstract class SR2EMenu : MonoBehaviour
         foreach (FeatureFlag featureFlag in SR2EEntryPoint.menus[this]["requiredFeatures"] as List<FeatureFlag>) if (!featureFlag.HasFlag()) return false;
             return gameObject.activeSelf; } }
     protected Dictionary<TextMeshProUGUI, string> toTranslate = new Dictionary<TextMeshProUGUI, string>();
+
+
+    protected Sprite whitePillBg => MenuEUtil.whitePillBg; 
+    protected Texture2D whitePillBgTex => MenuEUtil.whitePillBgTex;
 }
 

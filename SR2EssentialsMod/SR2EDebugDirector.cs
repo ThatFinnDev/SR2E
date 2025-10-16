@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Reflection;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI.Debug;
 using Il2CppTMPro;
-using Newtonsoft.Json;
 using SR2E.Managers;
-using Unity.TLS.LowLevel;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace SR2E;
 
 [RegisterTypeInIl2Cpp(false)]
 internal class SR2EDebugDirector : MonoBehaviour
-{
+{ 
+	static GameObject player;
 	internal static bool isEnabled;
 	internal Font _helpFont;
 	internal class DebugStatsManager
@@ -45,6 +40,7 @@ internal class SR2EDebugDirector : MonoBehaviour
             if(playerDebugHudUI==null) return;
             if(!playerDebugHudUI.gameObject.activeSelf)
                 playerDebugHudUI.transform.gameObject.SetActive(true);
+	        player = Get<GameObject>("PlayerControllerKCC");
             if(player==null) return;
             cc = player.GetComponent<SRCharacterController>();
             for (int i = 0; i < playerDebugHudUI.transform.childCount; i++)
@@ -82,7 +78,7 @@ internal class SR2EDebugDirector : MonoBehaviour
 	{
 		if (!isEnabled) return;
 
-		if (isAnyMenuOpen) return;
+		if (MenuEUtil.isAnyMenuOpen) return;
 		if (Time.timeScale == 0)  return;
 		if (!inGame) return;
 		if (SR2EWarpManager.warpTo != null) return;

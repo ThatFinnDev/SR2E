@@ -1,8 +1,5 @@
-﻿using System;
-using Il2CppTMPro;
-using SR2E.Storage;
+﻿using Il2CppTMPro;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace SR2E.Popups;
 
@@ -15,17 +12,18 @@ public class SR2ETextViewer : SR2EPopUp
         var comp = obj.AddComponent<SR2ETextViewer>();
         comp._text = objects[0].ToString();
         comp.ReloadFont();
+        
     }
     protected override void OnOpen()
     {
-        var textMesh = gameObject.getObjRec<TextMeshProUGUI>("TextViewerText");
+        var textMesh = gameObject.GetObjectRecursively<TextMeshProUGUI>("TextViewerText");
         textMesh.SetText(_text);
     }
     
     public static void Open(string text)
     {
-        if (!isAnyMenuOpen) return;
-        _Open("TextViewer",typeof(SR2ETextViewer),getOpenMenu.GetTheme(),new List<object>(){text});
+        if (!MenuEUtil.isAnyMenuOpen) return;
+        _Open("TextViewer",typeof(SR2ETextViewer),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){text});
     }
 
     protected override void OnUpdate()

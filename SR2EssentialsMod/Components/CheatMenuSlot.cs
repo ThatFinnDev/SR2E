@@ -1,7 +1,6 @@
 using System;
 using Il2CppMonomiPark.SlimeRancher.Player;
 using Il2CppTMPro;
-using SR2E.Menus;
 using SR2E.Popups;
 using SR2E.Storage;
 using UnityEngine.UI;
@@ -22,12 +21,12 @@ internal class CheatMenuSlot : MonoBehaviour
     {
         if (didStartRan) return;
         didStartRan = true;
-        slotID = int.Parse(gameObject.getObjRec<TextMeshProUGUI>("Text").text.Replace(" ", "").Replace(":", "").Replace("Slot", ""))-1;
-        applyButton = gameObject.getObjRec<Button>("Apply");
-        selectButton = gameObject.getObjRec<Button>("Select");
-        amountSlider = gameObject.getObjRec<Slider>("Slider");
-        handleText = amountSlider.gameObject.getObjRec<TextMeshProUGUI>("Text");
-        entryInput = gameObject.getObjRec<TMP_InputField>("EntryInput");
+        slotID = int.Parse(gameObject.GetObjectRecursively<TextMeshProUGUI>("Text").text.Replace(" ", "").Replace(":", "").Replace("Slot", ""))-1;
+        applyButton = gameObject.GetObjectRecursively<Button>("Apply");
+        selectButton = gameObject.GetObjectRecursively<Button>("Select");
+        amountSlider = gameObject.GetObjectRecursively<Slider>("Slider");
+        handleText = amountSlider.gameObject.GetObjectRecursively<TextMeshProUGUI>("Text");
+        entryInput = gameObject.GetObjectRecursively<TMP_InputField>("EntryInput");
         applyButton.onClick.AddListener((Action)(() =>{Apply();}));
         selectButton.onClick.AddListener((Action)(() =>{Select();}));
         amountSlider.onValueChanged.AddListener((Action<float>)((value) => { handleText.SetText(((int)value).ToString()); }));
@@ -37,10 +36,10 @@ internal class CheatMenuSlot : MonoBehaviour
     {
         if (amountSlider.value == 0) { entryInput.text = ""; slot.Clear(); return; }
         
-        IdentifiableType type = getIdentByName(entryInput.text);
+        IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(entryInput.text);
         if (type == null) { entryInput.text = ""; slot.Clear(); amountSlider.value = 0; return; }
         
-        string itemName = type.getName().Replace("'","").Replace(" ","");
+        string itemName = type.GetName().Replace("'","").Replace(" ","");
         entryInput.text = itemName;
         slot.Clear();
         SceneContext.Instance.PlayerState.Ammo.MaybeAddToSpecificSlot(type, null, slotID, 
@@ -49,7 +48,7 @@ internal class CheatMenuSlot : MonoBehaviour
     public void Select()
     {
         var dict = new TripleDictionary<string, string, Sprite>();
-        foreach (IdentifiableType identType in vaccableTypes)
+        foreach (IdentifiableType identType in LookupEUtil.vaccableTypes)
         {
             if (identType.isGadget()) continue;
             if (identType.ReferenceId.ToLower() == "none" || identType.ReferenceId.ToLower() == "player") continue;
@@ -58,7 +57,7 @@ internal class CheatMenuSlot : MonoBehaviour
                 {
                     string localizedString = identType.LocalizedName.GetLocalizedString();
                     if(localizedString.StartsWith("!")) continue;
-                    dict.Add(identType.getName().Replace("'","").Replace(" ",""), (localizedString, identType.icon));
+                    dict.Add(identType.GetName().Replace("'","").Replace(" ",""), (localizedString, identType.icon));
                 }
             }catch { }
         }
@@ -80,7 +79,7 @@ internal class CheatMenuSlot : MonoBehaviour
         amountSlider.maxValue = slot.MaxCount;
         amountSlider.value = slot.Count;
         string identName = "";
-        if (slot.Id != null) identName = slot.Id.getName().Replace("'","").Replace(" ","");
+        if (slot.Id != null) identName = slot.Id.GetName().Replace("'","").Replace(" ","");
         
         entryInput.text = identName;
     }

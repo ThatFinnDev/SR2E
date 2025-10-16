@@ -6,7 +6,7 @@ namespace SR2E.Patches.General
     {
         internal static void Postfix(BaseUI __instance)
         {
-            foreach (var input in PausedActions.Values)
+            foreach (var input in LookupEUtil.PausedActions.Values)
                 input.Enable();
         } 
     }

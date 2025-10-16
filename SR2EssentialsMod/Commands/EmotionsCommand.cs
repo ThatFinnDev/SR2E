@@ -30,14 +30,14 @@ internal class EmotionsCommand : SR2ECommand
             default: return SendUnknown();
         }
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             var slime = hit.collider.gameObject.GetComponent<SlimeEmotions>();
             if (slime != null)
             {
                 if (args.Length == 1)
                 {
-                    SendMessage(translation($"cmd.emotion.{args[0]}.show", slime.gameObject.GetComponent<Identifiable>().identType.getName(), slime.Get(emotion)));
+                    SendMessage(translation($"cmd.emotion.{args[0]}.show", slime.gameObject.GetComponent<Identifiable>().identType.GetName(), slime.Get(emotion)));
                     return true;
                 }
                 if (args.Length == 2)
@@ -45,7 +45,7 @@ internal class EmotionsCommand : SR2ECommand
                     if (!this.TryParseFloat(args[1], out float newValue, 0,true)) return false;
                     if (newValue > 1) newValue = 1;
                     slime.Set(emotion, newValue);
-                    SendMessage(translation($"cmd.util.emotion.{args[0]}.edit", slime.gameObject.GetComponent<Identifiable>().identType.getName(), newValue));
+                    SendMessage(translation($"cmd.util.emotion.{args[0]}.edit", slime.gameObject.GetComponent<Identifiable>().identType.GetName(), newValue));
                     return true;
                 }
 

@@ -9,7 +9,7 @@ internal class GiveCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return getVaccableListByPartialName(args == null ? null : args[0], true);
+            return LookupEUtil.GetVaccableStringListByPartialName(args == null ? null : args[0], true,MAX_AUTOCOMPLETE.Get());
         if (argIndex == 1)
             return new List<string> { "1", "5", "10", "20", "30", "50" };
 
@@ -22,9 +22,9 @@ internal class GiveCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         string identifierTypeName = args[0];
-        IdentifiableType type = getIdentByName(identifierTypeName);
+        IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(identifierTypeName);
         if (type == null) return SendNotValidIdentType(identifierTypeName);
-        string itemName = type.getName();
+        string itemName = type.GetName();
         if (type.isGadget()) return SendIsGadgetNotItem(itemName);
         
         int amount = 1;

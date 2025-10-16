@@ -19,7 +19,7 @@ internal class StrikeCommand : SR2ECommand
         if (!args.IsBetween(0,1)) return SendUsage();
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
         
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             var newPrefab = Object.Instantiate(lightningPrefab);
             newPrefab.transform.position = hit.point;
@@ -35,7 +35,7 @@ internal class StrikeCommand : SR2ECommand
     }
     public override void OnGameContext(GameContext gameContext)
     {
-        lightningPrefab = Object.Instantiate(Get("LightningStrike"));
+        lightningPrefab = Object.Instantiate(Get<GameObject>("LightningStrike"));
         lightningPrefab.MakePrefab();
         lightningPrefab.name = "InstantLightning";
         var l = lightningPrefab.GetComponent<LightningStrike>();
