@@ -25,7 +25,7 @@ internal class ReplaceCommand : SR2ECommand
         if (type == null) return SendNotValidIdentType(identifierTypeName);
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
 
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             var gameobject = hit.collider.gameObject;
             string oldObjectName = "";

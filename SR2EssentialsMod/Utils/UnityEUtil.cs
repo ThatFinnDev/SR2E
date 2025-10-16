@@ -114,6 +114,9 @@ public static class UnityEUtil
     public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
     public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
     public static bool AddComponent<T>(this Transform obj) where T : Component => obj.gameObject.AddComponent<T>();
+    public static bool AddComponent(this Transform obj, Il2CppSystem.Type componentType) => obj.gameObject.AddComponent(componentType);
+    public static bool AddComponent(this Transform obj, System.Type componentType) => obj.gameObject.AddComponent(componentType.il2cppTypeof());
+    public static bool AddComponent(this GameObject obj, System.Type componentType) => obj.AddComponent(componentType.il2cppTypeof());
     public static bool HasComponent<T>(this Transform obj) where T : Component => HasComponent<T>(obj.gameObject);
     public static bool HasComponent<T>(this GameObject obj) where T : Component
     {
@@ -131,4 +134,13 @@ public static class UnityEUtil
         }
         catch { return false; }
     }
+    
+    public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, prefabHolder.transform);
+
+    public static void MakePrefab(this GameObject obj)
+    {
+        UnityEngine.Object.DontDestroyOnLoad(obj);
+        obj.transform.parent = prefabHolder.transform;
+    }
+
 }

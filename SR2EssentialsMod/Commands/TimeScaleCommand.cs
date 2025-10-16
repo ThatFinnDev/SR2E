@@ -19,7 +19,7 @@ internal class TimeScaleCommand : SR2ECommand
         float speed;
         if (!this.TryParseFloat(args[0], out speed, 0.25f, true, 15f)) return false;
 
-        CustomTimeScale = speed;
+        NativeEUtil.CustomTimeScale = speed;
         SendMessage(translation("cmd.timescale.success",speed));
         return true;
     }

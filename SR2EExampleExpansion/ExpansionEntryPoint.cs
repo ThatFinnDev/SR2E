@@ -18,7 +18,7 @@ namespace SR2EExampleExpansion
     {
         public override void OnNormalInitializeMelon()
         {
-            AddLanguages(EmbeddedResourceEUtil.LoadString("SR2EExampleExpansion.translations.csv"));
+            AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv"));
         }
 
         public override void OnSR2FontLoad()

@@ -19,7 +19,6 @@ namespace SR2E.Menus;
 public class SR2EModMenu : SR2EMenu
 {
     public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier("modmenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"ModMenu");
-    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EModMenu>();
     public override bool createCommands => true;
     public override bool inGameOnly => false;
     
@@ -34,6 +33,7 @@ public class SR2EModMenu : SR2EMenu
     }
     
     
+    internal static Dictionary<MelonPreferences_Entry, System.Action> entriesWithActions = new Dictionary<MelonPreferences_Entry, Action>();
     TextMeshProUGUI modInfoText;
     GameObject entryTemplate;
     GameObject headerTemplate;
@@ -233,7 +233,7 @@ public class SR2EModMenu : SR2EMenu
         {
             if (EnableRepoMenu.HasFlag())
             {
-                Close(); GM<SR2ERepoMenu>().OpenC(this);
+                Close(); MenuEUtil.GetMenu<SR2ERepoMenu>().OpenC(this);
             }
             else
             {
@@ -246,7 +246,7 @@ public class SR2EModMenu : SR2EMenu
         toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
         themeButton = transform.GetObjectRecursively<Button>("ThemeMenuButtonRec");
-        themeButton.onClick.AddListener((Action)(() =>{ Close(); GM<SR2EThemeMenu>().OpenC(this); }));
+        themeButton.onClick.AddListener((Action)(() =>{ Close(); MenuEUtil.GetMenu<SR2EThemeMenu>().OpenC(this); }));
         toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
         {
@@ -470,7 +470,7 @@ public class SR2EModMenu : SR2EMenu
     {
         if (listeninAction == null)
             if (Key.Escape.OnKeyPressed())
-                if(openPopUps.Count==0)
+                if(MenuEUtil.openPopUps.Count==0)
                     Close();
         foreach (Key key in allPossibleKeys)
         {

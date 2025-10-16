@@ -24,7 +24,7 @@ internal class FloatyCommand : SR2ECommand
         float duration = -1;
         if(args!=null) if(!this.TryParseFloat(args[0], out duration, 0, false)) return false;
         
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             if (hit.rigidbody == null) return SendNotLookingAtValidObject();
             if (duration > 0)

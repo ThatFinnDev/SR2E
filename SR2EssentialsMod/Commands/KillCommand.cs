@@ -15,7 +15,7 @@ internal class KillCommand : SR2ECommand
         
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
         GameObject gameObject = null;
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask)) gameObject = hit.collider.gameObject;
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask)) gameObject = hit.collider.gameObject;
         else return SendNotLookingAtAnything();
         if (gameObject != null)
             if (Kill(gameObject)) { SendMessage(translation("cmd.kill.success")); return true; }

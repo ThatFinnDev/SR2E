@@ -14,7 +14,6 @@ public class SR2EThemeMenu : SR2EMenu
 {
     //Check valid themes for all menus EVERYWHERE
     public new static MenuIdentifier GetMenuIdentifier() => new ("thememenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"ThemeMenu");
-    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EThemeMenu>();
     public override bool createCommands => false;
     public override bool inGameOnly => false;
     
@@ -145,7 +144,7 @@ public class SR2EThemeMenu : SR2EMenu
     protected override void OnUpdate()
     {
         if (Key.Escape.OnKeyPressed())
-            if(openPopUps.Count==0) 
+            if(MenuEUtil.openPopUps.Count==0) 
                 Close();
     }
 }

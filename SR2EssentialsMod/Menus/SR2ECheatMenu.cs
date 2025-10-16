@@ -18,7 +18,6 @@ namespace SR2E.Menus;
 public class SR2ECheatMenu : SR2EMenu
 {
     public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier("cheatmenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"CheatMenu");
-    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2ECheatMenu>();
     public override bool createCommands => true;
     public override bool inGameOnly => true;
     protected override void OnAwake()
@@ -144,7 +143,7 @@ public class SR2ECheatMenu : SR2EMenu
     protected override void OnUpdate()
     {
        if (Key.Escape.OnKeyPressed())
-           if(openPopUps.Count==0) 
+           if(MenuEUtil.openPopUps.Count==0) 
                Close();
         
     }

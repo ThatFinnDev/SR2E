@@ -30,7 +30,7 @@ internal class EmotionsCommand : SR2ECommand
             default: return SendUnknown();
         }
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             var slime = hit.collider.gameObject.GetComponent<SlimeEmotions>();
             if (slime != null)

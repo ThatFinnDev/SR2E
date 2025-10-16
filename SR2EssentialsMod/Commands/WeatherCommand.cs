@@ -17,7 +17,7 @@ internal class WeatherCommand : SR2ECommand
             if (args[0] == "modify")
             {
                 var list = new List<string>();
-                foreach (var state in weatherStateDefinitions) list.Add(state.name.Replace(" ", ""));
+                foreach (var state in LookupEUtil.weatherStateDefinitions) list.Add(state.name.Replace(" ", ""));
                 return list;
             }
         }
@@ -36,7 +36,7 @@ internal class WeatherCommand : SR2ECommand
                         return new List<string> { "all", "running" };
                     case "modify":
                         var list = new List<string>();
-                        foreach (var state in weatherStateDefinitions) list.Add(state.name.Replace(" ", ""));
+                        foreach (var state in LookupEUtil.weatherStateDefinitions) list.Add(state.name.Replace(" ", ""));
                         return list;
                 }
                 break;
@@ -64,7 +64,7 @@ internal class WeatherCommand : SR2ECommand
                 if (args[0] == "list")
                 {
                     var stateNames = "";
-                    foreach (var state in weatherStateDefinitions) stateNames += $"\n{state.GetName()}";
+                    foreach (var state in LookupEUtil.weatherStateDefinitions) stateNames += $"\n{state.GetName()}";
                     SendMessage(translation("cmd.weather.successlist",stateNames));
                     return true;
                 }
@@ -87,7 +87,7 @@ internal class WeatherCommand : SR2ECommand
                     if (args[1] == "all")
                     {
                         var stateNames = "";
-                        foreach (var state in weatherStateDefinitions) stateNames += $"\n{state.GetName()}";
+                        foreach (var state in LookupEUtil.weatherStateDefinitions) stateNames += $"\n{state.GetName()}";
                         SendMessage(translation("cmd.weather.successlist",stateNames));
                         return true;
                     }

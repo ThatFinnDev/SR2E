@@ -26,9 +26,9 @@ public static class NamingEUtil
     public static string GetCompactUpperName(this StatusEffectDefinition definition) => _GCUNNonLocalized(definition);
 
     //UpgradeComponent
-    public static string GetName(this UpgradeComponent definition, bool addQuotesIfSpaces = true) => _GN(definition, definition.DisplayName,addQuotesIfSpaces);
-    public static string GetCompactName(this UpgradeComponent definition) => _GCN(definition, definition.DisplayName);
-    public static string GetCompactUpperName(this UpgradeComponent definition) => _GCUN(definition, definition.DisplayName);
+    public static string GetName(this UpgradeComponent definition, bool addQuotesIfSpaces = true) => _GNNonLocalized(definition,addQuotesIfSpaces);
+    public static string GetCompactName(this UpgradeComponent definition) => _GCNNonLocalized(definition);
+    public static string GetCompactUpperName(this UpgradeComponent definition) => _GCUNNonLocalized(definition);
     
     //ZoneDefinition
     public static string GetName(this ZoneDefinition definition, bool addQuotesIfSpaces = true) => _GN(definition, definition._localizedName,addQuotesIfSpaces);

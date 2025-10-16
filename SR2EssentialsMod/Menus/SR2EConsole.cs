@@ -16,8 +16,6 @@ public class SR2EConsole : SR2EMenu
 {
     public new static MenuIdentifier GetMenuIdentifier() =>
         new MenuIdentifier("console",SR2EMenuFont.Regular, SR2EMenuTheme.Black, "Console");
-
-    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2EConsole>();
     public override bool createCommands => true;
     public override bool inGameOnly => false;
 
@@ -202,8 +200,6 @@ public class SR2EConsole : SR2EMenu
     {
         commandHistory = new List<string>();
 
-        menuBlock = transform.parent.GetObjectRecursively<GameObject>("blockRec");
-        popUpBlock = transform.parent.GetObjectRecursively<Transform>("blockPopUpRec");
         consoleContent = transform.GetObjectRecursively<Transform>("ConsoleMenuConsoleContentRec");
         messagePrefab = transform.GetObjectRecursively<GameObject>("ConsoleMenuTemplateMessageRec");
         commandInput = transform.GetObjectRecursively<TMP_InputField>("ConsoleMenuCommandInputRec");

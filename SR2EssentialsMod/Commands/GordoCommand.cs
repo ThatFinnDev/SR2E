@@ -25,7 +25,7 @@ internal class GordoCommand : SR2ECommand
         if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
          
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
-        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,defaultMask))
+        if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             GordoIdentifiable gordo = hit.collider.gameObject.GetComponent<GordoIdentifiable>();
             GordoEat eat = hit.collider.gameObject.GetComponent<GordoEat>();

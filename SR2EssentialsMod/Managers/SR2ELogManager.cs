@@ -41,7 +41,7 @@ public static class SR2ELogManager
         if (message.StartsWith("[Il2CppICallInjector]")) return;
         if (message.StartsWith("[]:")) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Msg(message);
-        SR2EConsole console = GM<SR2EConsole>();
+        SR2EConsole console = MenuEUtil.GetMenu<SR2EConsole>();
         if(console!=null) console.SendMessage(message);
     }
     
@@ -67,7 +67,7 @@ public static class SR2ELogManager
         if (message.StartsWith("[Il2CppICallInjector]")) return;
         if (message.StartsWith("[]:")) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Error(message);
-        SR2EConsole console = GM<SR2EConsole>();
+        var console = MenuEUtil.GetMenu<SR2EConsole>();
         if(console!=null) console.SendError(message);
     }
 
@@ -92,7 +92,7 @@ public static class SR2ELogManager
         if (message.StartsWith("[Il2CppICallInjector]")) return;
         if (message.StartsWith("[]:")) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Warning(message);
-        SR2EConsole console = GM<SR2EConsole>();
+        var console = MenuEUtil.GetMenu<SR2EConsole>();
         if(console!=null) console.SendWarning(message);
     }
     /// <summary>

@@ -22,7 +22,7 @@ internal class ActorType : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
         if (args[0] == "*")
         {
-            foreach (IdentifiableType loopedType in identifiableTypes)
+            foreach (IdentifiableType loopedType in LookupEUtil.identifiableTypes)
             {
                 bool enabledLoop = !disabledActors.Contains(loopedType.ReferenceId);
                 if (enabledLoop)

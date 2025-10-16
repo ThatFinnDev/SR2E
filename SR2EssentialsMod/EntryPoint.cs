@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -73,7 +74,7 @@ public class SR2EEntryPoint : MelonMod
     internal static TMP_FontAsset normalFont;
     internal static TMP_FontAsset regularFont;
     internal static TMP_FontAsset boldFont;
-    internal static string updateBranch = BRANCHES[Branch.Release];
+    internal static string updateBranch = MiscEUtil.BRANCHES[Branch.Release];
     internal static bool menusFinished = false;
     internal static bool mainMenuLoaded = false;
     internal static GameObject SR2EStuff;
@@ -184,13 +185,13 @@ public class SR2EEntryPoint : MelonMod
 
     public override void OnLateInitializeMelon()
     {
-        if (Get<GameObject>("SR2EPrefabHolder")) rootOBJ = Get<GameObject>("SR2EPrefabHolder");
+        if (Get<GameObject>("SR2EPrefabHolder")) prefabHolder = Get<GameObject>("SR2EPrefabHolder");
         else
         {
-            rootOBJ = new GameObject();
-            rootOBJ.SetActive(false);
-            rootOBJ.name = "SR2EPrefabHolder";
-            Object.DontDestroyOnLoad(rootOBJ);
+            prefabHolder = new GameObject();
+            prefabHolder.SetActive(false);
+            prefabHolder.name = "SR2EPrefabHolder";
+            Object.DontDestroyOnLoad(prefabHolder);
         }
 
         MelonCoroutines.Start(GetBranchJson());
@@ -286,7 +287,7 @@ public class SR2EEntryPoint : MelonMod
         RefreshPrefs();
 
         Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
-        try { AddLanguages(EmbeddedResourceEUtil.LoadString("SR2E.translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }
+        try { AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }
         foreach (MelonBase melonBase in new List<MelonBase>(MelonBase.RegisteredMelons))
         {
             if (melonBase is SR2EExpansionV1)
@@ -310,7 +311,7 @@ public class SR2EEntryPoint : MelonMod
                 foreach (var configuration in GetAll<AutoSaveDirectorConfiguration>())
                     configuration._saveSlotCount = SAVESLOT_COUNT.Get();
                 
-                CustomTimeScale = 1f;
+                NativeEUtil.CustomTimeScale = 1f;
                 Time.timeScale = 1;
                 try {SceneContext.Instance.TimeDirector._timeFactor = 1;} catch {}
                 /*if (ExperimentalSettingsInjection.HasFlag())
@@ -430,7 +431,6 @@ public class SR2EEntryPoint : MelonMod
                 NoClipComponent.player = SceneContext.Instance.player.transform;
                 NoClipComponent.playerController = NoClipComponent.player.GetComponent<SRCharacterController>();
                 NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
-                player = Get<GameObject>("PlayerControllerKCC");
                 break;
             case "UICore":
                 CheckForTime();
@@ -454,14 +454,14 @@ public class SR2EEntryPoint : MelonMod
         if (!inGame) return;
         try
         {
-            if(Time.timeScale!=0&&Time.timeScale != CustomTimeScale) 
-                Time.timeScale = CustomTimeScale; 
+            if(Time.timeScale!=0&&Time.timeScale != NativeEUtil.CustomTimeScale) 
+                Time.timeScale = NativeEUtil.CustomTimeScale; 
         } catch {}
         try 
         {
             var factor = SceneContext.Instance.TimeDirector._timeFactor;
-            if (factor!=0&&factor!= CustomTimeScale) 
-                SceneContext.Instance.TimeDirector._timeFactor = CustomTimeScale;
+            if (factor!=0&&factor!= NativeEUtil.CustomTimeScale) 
+                SceneContext.Instance.TimeDirector._timeFactor = NativeEUtil.CustomTimeScale;
         } catch {}
         ExecuteInSeconds((Action)(() => { CheckForTime();}), 1);
     }
@@ -567,8 +567,7 @@ public class SR2EEntryPoint : MelonMod
                         {
                             try
                             {
-                                var methodInfo = pair.Value.GetMethod(nameof(SR2EMenu.PreAwake), BindingFlags.Static | BindingFlags.Public);
-                                var result = methodInfo.Invoke(null, new[] { child.gameObject });
+                                child.AddComponent(pair.Value);
                                 child.gameObject.SetActive(true);
                                 menusToInit.Remove(pair.Key);
                             }catch (Exception e) { MelonLogger.Error(e); }
@@ -591,9 +590,9 @@ public class SR2EEntryPoint : MelonMod
                 {
                     try
                     {
-                        var methodInfo = type.GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
-                        var result = methodInfo.Invoke(null, null);
-                        if (result is MenuIdentifier identifier)
+
+                        var identifier = type.GetMenuIdentifierByType();
+                        if (!string.IsNullOrWhiteSpace(identifier.saveKey))
                         {
                             var asset = SystemContextPatch.bundle.LoadAsset(SystemContextPatch.getMenuPath(identifier));
                             var Object = GameObject.Instantiate(asset, obj.transform);
@@ -610,7 +609,7 @@ public class SR2EEntryPoint : MelonMod
         else
         {
             
-            try { if (SR2EConsole.openKey.OnKeyPressed()||SR2EConsole.openKey2.OnKeyPressed()) GM<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
+            try { if (SR2EConsole.openKey.OnKeyPressed()||SR2EConsole.openKey2.OnKeyPressed()) MenuEUtil.GetMenu<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             if (DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();

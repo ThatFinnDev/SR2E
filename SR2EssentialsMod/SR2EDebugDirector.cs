@@ -8,7 +8,8 @@ namespace SR2E;
 
 [RegisterTypeInIl2Cpp(false)]
 internal class SR2EDebugDirector : MonoBehaviour
-{
+{ 
+	static GameObject player;
 	internal static bool isEnabled;
 	internal Font _helpFont;
 	internal class DebugStatsManager
@@ -39,6 +40,7 @@ internal class SR2EDebugDirector : MonoBehaviour
             if(playerDebugHudUI==null) return;
             if(!playerDebugHudUI.gameObject.activeSelf)
                 playerDebugHudUI.transform.gameObject.SetActive(true);
+	        player = Get<GameObject>("PlayerControllerKCC");
             if(player==null) return;
             cc = player.GetComponent<SRCharacterController>();
             for (int i = 0; i < playerDebugHudUI.transform.childCount; i++)

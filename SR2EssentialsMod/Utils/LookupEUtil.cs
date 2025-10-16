@@ -1,4 +1,8 @@
+using System.Linq;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Weather;
+using Il2CppSystem.Linq;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Utils;
@@ -6,6 +10,38 @@ namespace SR2E.Utils;
 public static class LookupEUtil
 {
 
+    internal static Dictionary<string, InputActionMap> actionMaps = new Dictionary<string, InputActionMap>();
+    internal static Dictionary<string, InputAction> MainGameActions = new Dictionary<string, InputAction>();
+    internal static Dictionary<string, InputAction> PausedActions = new Dictionary<string, InputAction>();
+    internal static Dictionary<string, InputAction> DebugActions = new Dictionary<string, InputAction>();
+
+    public static IdentifiableType[] identifiableTypes => autoSaveDirector._configuration.IdentifiableTypes.GetAllMembers().ToArray().Where(identifiableType => !string.IsNullOrEmpty(identifiableType.ReferenceId)).ToArray();
+    public static IdentifiableType[] vaccableTypes => vaccableGroup.GetAllMembers().ToArray(); 
+
+    
+    
+    
+    //public static WeatherStateDefinition WeatherState(string name) => weatherStates.FirstOrDefault((WeatherStateDefinition x) => x.name == name);
+    
+    public static TripleDictionary<GameObject, ParticleSystemRenderer, string> FXLibrary = new TripleDictionary<GameObject, ParticleSystemRenderer, string>();
+    public static TripleDictionary<string, ParticleSystemRenderer, GameObject> FXLibraryReversable = new TripleDictionary<string, ParticleSystemRenderer, GameObject>();
+
+
+    public static IdentifiableTypeGroup vaccableGroup;
+
+    public static WeatherStateDefinition[] weatherStateDefinitions => autoSaveDirector._configuration.WeatherStates.items.ToArray();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public static bool isGadget(this IdentifiableType type) => type.TryCast<GadgetDefinition>() != null;
     /// <summary>
     /// Get an IdentifiableType either by its code name or localized name
@@ -36,11 +72,8 @@ public static class LookupEUtil
     public static WeatherStateDefinition GetWeatherStateDefinitionByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name)) return null;
-        name = name.ToUpper();
-
-        foreach (WeatherStateDefinition state in weatherStateDefinitions)
-            if (state.GetCompactUpperName() == name.Replace("_", ""))
-                return state;
+        name = name.ToUpper().Replace("_", "").Replace(" ","");
+        foreach (var state in weatherStateDefinitions) if (state.GetCompactUpperName() == name) return state;
         return null;
     }
 

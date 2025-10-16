@@ -36,8 +36,8 @@ public class Warp
                 if (sg == null) return SR2EError.SceneGroupNotSupported;
                 if(!sg.IsGameplay) return SR2EError.SceneGroupNotSupported;
                 SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();;
-                TryHideMenus();
-                TryUnPauseGame();
+                NativeEUtil.TryHideMenus();
+                NativeEUtil.TryUnPauseGame();
                 SR2EWarpManager.warpTo = this;
                 ExecuteInTicks((Action)(() =>
                 {

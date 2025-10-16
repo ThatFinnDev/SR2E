@@ -26,7 +26,7 @@ internal class CheatMenuGadgetEntry : MonoBehaviour
         icon = gameObject.GetObjectRecursively<Image>("Icon");
         icon.sprite = item.icon;
         
-        itemName.text = item.GetName().Replace("'", "");
+        itemName.text = item.GetName(false);
         amountSlider.onValueChanged.AddListener((Action<float>)((valueFloat) =>
         {
             if (dontChange)

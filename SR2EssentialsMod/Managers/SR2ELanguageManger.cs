@@ -9,10 +9,12 @@ namespace SR2E.Managers;
 
 public static class SR2ELanguageManger
 {
+    public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
+
     internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new Dictionary<string, LocalizedString>();
     internal static Dictionary<string, (string, string, LocalizedString)> sr2eReplaceOnLanguageChange = new Dictionary<string, (string, string, LocalizedString)>();
-    
     internal static Dictionary<string, List<Dictionary<string, string>>> languages = new Dictionary<string, List<Dictionary<string, string>>>();
+    
     static Dictionary<string, string> loadedLanguage = new Dictionary<string, string>();
     static Dictionary<string, string> defaultLang = null;
     public static string translation(string key)

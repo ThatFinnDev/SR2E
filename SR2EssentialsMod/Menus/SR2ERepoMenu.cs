@@ -18,7 +18,6 @@ public class SR2ERepoMenu : SR2EMenu
 {
     //Check valid themes for all menus EVERYWHERE
     public new static MenuIdentifier GetMenuIdentifier() => new ("repomenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"RepoMenu");
-    public new static void PreAwake(GameObject obj) => obj.AddComponent<SR2ERepoMenu>();
     public override bool createCommands => true;
     public override bool inGameOnly => false;
     
@@ -220,7 +219,7 @@ public class SR2ERepoMenu : SR2EMenu
     protected override void OnUpdate()
     {
         if (Key.Escape.OnKeyPressed())
-            if(openPopUps.Count==0)
+            if(MenuEUtil.openPopUps.Count==0)
             {
                 if(repoPanel.gameObject.activeSelf)
                     repoPanel.gameObject.SetActive(false);

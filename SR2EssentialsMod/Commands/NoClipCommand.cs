@@ -35,7 +35,7 @@ internal class NoClipCommand : SR2ECommand
 
     public override void OnMainMenuUILoad()
     {
-        horizontal = MainGameActions["Horizontal"];
-        vertical = MainGameActions["Vertical"];
+        horizontal = LookupEUtil.MainGameActions["Horizontal"];
+        vertical = LookupEUtil.MainGameActions["Vertical"];
     }
 }

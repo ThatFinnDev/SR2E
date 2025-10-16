@@ -11,6 +11,18 @@ namespace SR2E.Utils;
 public static class MenuEUtil
 {
     internal static Dictionary<string, List<SR2EMenuTheme>> validThemes = new Dictionary<string, List<SR2EMenuTheme>>();
+    internal static List<SR2EPopUp> openPopUps = new List<SR2EPopUp>();
+    internal static GameObject menuBlock;
+    internal static Transform popUpBlock;
+
+    internal static void OpenPopUpBlock(SR2EPopUp popUp)
+    {
+        if (popUpBlock.transform.GetParent() != popUp.transform.GetParent()) return;
+        var instance = GameObject.Instantiate(popUpBlock, popUpBlock);
+        instance.gameObject.SetActive(true);
+        instance.SetSiblingIndex(popUp.transform.GetSiblingIndex()-1);
+        popUp.block = instance;
+    }
     internal static void ReloadFont(this SR2EPopUp popUp)
     {
         var ident = GetOpenMenu().GetMenuIdentifier();
@@ -46,19 +58,26 @@ public static class MenuEUtil
         if (fontAsset != null) menu.ApplyFont(fontAsset);
     }
 
-    internal static MenuIdentifier GetIdentifierViaReflection(this Type type)
+    internal static MenuIdentifier GetMenuIdentifierByType(this Type type)
     {
         try
         {
             var methodInfo = type.GetMethod(nameof(SR2EMenu.GetMenuIdentifier), BindingFlags.Static | BindingFlags.Public);
             var result = methodInfo.Invoke(null, null);
+            if (result == null) return new MenuIdentifier();
             if (result is MenuIdentifier identifier) return identifier;
         }
         catch (Exception e) { MelonLogger.Error(e); }
         return new MenuIdentifier();
     }
 
-    public static MenuIdentifier GetMenuIdentifier(this SR2EMenu menu) => menu.GetType().GetIdentifierViaReflection();
+    public static MenuIdentifier GetMenuIdentifier(this SR2EMenu menu) => menu.GetType().GetMenuIdentifierByType();
+    public static T GetMenu<T>() where T : SR2EMenu
+    {
+        foreach (var pair in SR2EEntryPoint.menus)
+            if (pair.Key is T) return (T)pair.Key;
+        return null;
+    }
     public static SR2EMenu GetMenu(this MenuIdentifier identifier)
     {
         try
@@ -97,17 +116,17 @@ public static class MenuEUtil
     internal static void DoMenuActions(this MenuActions[] actions) => DoMenuActions(actions.ToList());
     internal static void DoMenuActions(this List<MenuActions> actions)
     {
-        if(actions.Contains(MenuActions.UnPauseGame)) TryUnPauseGame();
-        if(actions.Contains(MenuActions.UnPauseGameFalse)) TryUnPauseGame(false);
-        if(actions.Contains(MenuActions.PauseGameFalse)) TryPauseGame(false);
-        if(actions.Contains(MenuActions.UnHideMenus)) TryUnHideMenus();
-        if(actions.Contains(MenuActions.EnableInput)) TryEnableSR2Input();
-        if(actions.Contains(MenuActions.DisableInput)) TryDisableSR2Input();
-        if(actions.Contains(MenuActions.PauseGame)&&actions.Contains(MenuActions.HideMenus)) TryPauseAndHide();
+        if(actions.Contains(MenuActions.UnPauseGame)) NativeEUtil.TryUnPauseGame();
+        if(actions.Contains(MenuActions.UnPauseGameFalse)) NativeEUtil.TryUnPauseGame(false);
+        if(actions.Contains(MenuActions.PauseGameFalse)) NativeEUtil.TryPauseGame(false);
+        if(actions.Contains(MenuActions.UnHideMenus)) NativeEUtil.TryUnHideMenus();
+        if(actions.Contains(MenuActions.EnableInput)) NativeEUtil.TryEnableSR2Input();
+        if(actions.Contains(MenuActions.DisableInput)) NativeEUtil.TryDisableSR2Input();
+        if(actions.Contains(MenuActions.PauseGame)&&actions.Contains(MenuActions.HideMenus)) NativeEUtil.TryPauseAndHide();
         else
         {
-            if(actions.Contains(MenuActions.HideMenus)) TryHideMenus();
-            if(actions.Contains(MenuActions.PauseGame)) TryPauseGame();
+            if(actions.Contains(MenuActions.HideMenus)) NativeEUtil.TryHideMenus();
+            if(actions.Contains(MenuActions.PauseGame)) NativeEUtil.TryPauseGame();
         }
 
     }
@@ -158,5 +177,38 @@ public static class MenuEUtil
     
     
     
+    
+    private static Sprite _whitePillBg;
+    private static Texture2D _whitePillBgTex;
+
+    public static Sprite whitePillBg
+    {
+        get
+        {
+            if(_whitePillBg==null)
+            {
+                _whitePillBgTex = Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle")
+                    .LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
+                _whitePillBg = Sprite.Create(_whitePillBgTex,
+                    new Rect(0f, 0f, _whitePillBgTex.width, _whitePillBgTex.height),
+                    new Vector2(0.5f, 0.5f), 1f);
+            }
+
+            return _whitePillBg;
+        }
+    }
+    public static Texture2D whitePillBgTex
+    {
+        get
+        {
+            if(_whitePillBgTex==null)
+            {
+                _whitePillBgTex = Get<AssetBundle>("cc50fee78e6b7bdd6142627acdaf89fa.bundle")
+                    .LoadAsset("Assets/UI/Textures/MenuDemo/whitePillBg.png").Cast<Texture2D>();
+            }
+
+            return _whitePillBgTex;
+        }
+    }
     
 }

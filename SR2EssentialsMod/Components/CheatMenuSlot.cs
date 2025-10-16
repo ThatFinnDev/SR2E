@@ -48,7 +48,7 @@ internal class CheatMenuSlot : MonoBehaviour
     public void Select()
     {
         var dict = new TripleDictionary<string, string, Sprite>();
-        foreach (IdentifiableType identType in vaccableTypes)
+        foreach (IdentifiableType identType in LookupEUtil.vaccableTypes)
         {
             if (identType.isGadget()) continue;
             if (identType.ReferenceId.ToLower() == "none" || identType.ReferenceId.ToLower() == "player") continue;
