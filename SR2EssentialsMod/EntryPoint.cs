@@ -42,7 +42,7 @@ public static class BuildInfo
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
     public const string Contributors = "Atmudia, Aureumapes";
-    public const string CodeVersion = "3.2.1";
+    public const string CodeVersion = "3.2.2";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
@@ -54,7 +54,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.2.1";
+    public const string DisplayVersion = "3.2.2-dev";
 
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
