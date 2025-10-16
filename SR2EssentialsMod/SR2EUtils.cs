@@ -18,7 +18,7 @@ namespace SR2E
     public static class SR2EUtils
     {
         [Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.AddTranslation),true)] public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.AddTranslation(key, localized, table);
-        [Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.AddTranslationFromSR2E),true)]public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.AddTranslationFromSR2E(sr2eTranslationID, key, table);
+        [Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.AddTranslationFromSR2E),true)] public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.AddTranslationFromSR2E(sr2eTranslationID, key, table);
         [Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.SetTranslation),true)] public static void SetTranslation(string localized, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.SetTranslation(localized,key, table);
         [Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.SetTranslationFromSR2E),true)] public static void SetTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.SetTranslationFromSR2E(sr2eTranslationID, key, table);
         [Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.addedTranslations),true)] public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
@@ -39,13 +39,13 @@ namespace SR2E
         [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryDisableSR2Input),true)] public static void TryDisableSR2Input() => NativeEUtil.TryDisableSR2Input();
         [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryEnableSR2Input),true)] public static void TryEnableSR2Input() => NativeEUtil.TryEnableSR2Input();
         
-        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.AddNullAction),true)]  public static void AddNullAction(this MelonPreferences_Entry entry) => MiscEUtil.AddNullAction(entry);
-        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.AddAction),true)] public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => MiscEUtil.AddAction(entry,action);
-        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.il2cppTypeof),true)] public static Il2CppSystem.Type il2cppTypeof(this Type type) => MiscEUtil.il2cppTypeof(type);
-        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.changeValue),true)] public static float4 changeValue(this float4 float4, int index, float value) => MiscEUtil.changeValue(float4, index, value);
+        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.AddNullAction),true)]  public static void AddNullAction(MelonPreferences_Entry entry) => MiscEUtil.AddNullAction(entry);
+        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.AddAction),true)] public static void AddAction(MelonPreferences_Entry entry, System.Action action) => MiscEUtil.AddAction(entry,action);
+        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.il2cppTypeof),true)] public static Il2CppSystem.Type il2cppTypeof(Type type) => MiscEUtil.il2cppTypeof(type);
+        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.changeValue),true)] public static float4 changeValue(float4 float4, int index, float value) => MiscEUtil.changeValue(float4, index, value);
         [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.defaultMask), true)] public static LayerMask defaultMask => MiscEUtil.defaultMask;
         [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.BRANCHES), true)] public static readonly Dictionary<Branch,string> BRANCHES = MiscEUtil.BRANCHES;
-        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.IsBetween), true)] public static bool IsBetween(this string[] list, uint min, int max)=>ContextShortcuts.IsBetween(list, min, max);
+        [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.IsBetween), true)] public static bool IsBetween(string[] list, uint min, int max)=>ContextShortcuts.IsBetween(list, min, max);
         
         [Obsolete("Please use SceneContext.Instance.player")] public static GameObject? player;
         
