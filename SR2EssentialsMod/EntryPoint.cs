@@ -610,77 +610,12 @@ public class SR2EEntryPoint : MelonMod
         if (sceneName == "MainMenuUI") mainMenuLoaded = true;
         switch (sceneName)
         {
-            case "StandaloneEngagementPrompt":
-                foreach (var expansion in expansionsAll)
-                    try
-                    {
-                        expansion.OnStandaloneEngagementPromptInitialize();
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
-
-                break;
-            case "PlayerCore":
-                foreach (var expansion in expansionsAll)
-                    try
-                    {
-                        expansion.OnPlayerCoreInitialize();
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
-
-                break;
-            case "UICore":
-                foreach (var expansion in expansionsAll)
-                    try
-                    {
-                        expansion.OnUICoreInitialize();
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
-
-                break;
-            case "MainMenuUI":
-                foreach (var expansion in expansionsAll)
-                    try
-                    {
-                        expansion.OnMainMenuUIInitialize();
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
-
-                break;
-            case "LoadScene":
-                foreach (var expansion in expansionsAll)
-                    try
-                    {
-                        expansion.OnLoadSceneInitialize();
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
-                break;
-            case "ZoneCore": 
-                foreach (var expansion in expansionsV2)
-                    try
-                    {
-                        expansion.OnZoneCoreInitialized();
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
-                break;
-            
+            case "StandaloneEngagementPrompt": foreach (var expansion in expansionsAll) try { expansion.OnStandaloneEngagementPromptInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "PlayerCore": foreach (var expansion in expansionsAll) try { expansion.OnPlayerCoreInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "UICore": foreach (var expansion in expansionsAll) try { expansion.OnUICoreInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "MainMenuUI": foreach (var expansion in expansionsAll) try { expansion.OnMainMenuUIInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "ZoneCore": foreach (var expansion in expansionsV2) try { expansion.OnZoneCoreInitialized(); }catch (Exception e) { MelonLogger.Error(e); } break;
         }
 
         SR2ECommandManager.OnSceneWasInitialized(buildIndex, sceneName);
