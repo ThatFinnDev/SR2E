@@ -43,8 +43,8 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
-    public const string Contributors = "Atmudia, Aureumapes";
-    public const string CodeVersion = "3.3.0";
+    public const string Contributors = "shizophrenicgopher, Atmudia";
+    public const string CodeVersion = "3.3.1";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
