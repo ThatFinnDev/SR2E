@@ -37,7 +37,7 @@ public static class SaveDirectorPatch
         crafts = Get<IdentifiableTypeGroup>("CraftGroup");
         chicks = Get<IdentifiableTypeGroup>("ChickGroup");
 
-        foreach (SR2EExpansionV2 lib in mods)
+        foreach (SR2EExpansionV2 lib in SR2EEntryPoint.expansions)
         {
             lib.SaveDirectorLoading(__instance);
         }
@@ -52,12 +52,12 @@ public static class SaveDirectorPatch
             INTERNAL_SetupLoadForIdent(steamToy.ReferenceId, steamToy);
         // add more platforms please
 
-        foreach (SR2EExpansionV2 lib in mods)
+        foreach (SR2EExpansionV2 lib in SR2EEntryPoint.expansions)
         {
             lib.SaveDirectorLoaded();
         }
         
-        foreach (SR2EExpansionV2 lib in mods)
+        foreach (SR2EExpansionV2 lib in SR2EEntryPoint.expansions)
         {
             lib.LateSaveDirectorLoaded();
         }
@@ -68,7 +68,7 @@ public static class SaveDirectorPatch
             largoAction();
         }
         
-        foreach (SR2EExpansionV2 lib in mods)
+        foreach (SR2EExpansionV2 lib in SR2EEntryPoint.expansions)
         {
             lib.AutoLargosLoaded();
         }

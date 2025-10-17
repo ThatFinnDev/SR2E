@@ -71,7 +71,7 @@ public static class BuildInfo
 public class SR2EEntryPoint : MelonMod
 {
     internal static ScriptedBool cheatsEnabledOnSave;
-    internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
+    internal static List<SR2EExpansionV1> expansions = new();
     internal static TMP_FontAsset SR2Font;
     internal static TMP_FontAsset normalFont;
     internal static TMP_FontAsset regularFont;
@@ -202,17 +202,6 @@ public class SR2EEntryPoint : MelonMod
         if (!useLibrary) return;
         
         SaveComponents.RegisterComponent(typeof(ModdedV01));
-        
-        foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
-        {
-            if (melonBase is SR2EExpansionV2)
-            {
-                SR2EExpansionV2 mod = melonBase as SR2EExpansionV2;
-                mods.Add(mod);
-            }
-        }
-        rootOBJ = Get("CottonLibraryROOT");
-        
     }
     IEnumerator GetBranchJson()
     {
@@ -557,7 +546,7 @@ public class SR2EEntryPoint : MelonMod
             case "GameCore":             
                 MelonLogger.Msg(translation("lib.registered_list"));
 
-                foreach (SR2EExpansionV2 mod in mods)
+                foreach (SR2EExpansionV2 mod in expansions)
                 {          
                     mod.OnGameCoreLoaded();
                     
@@ -565,15 +554,15 @@ public class SR2EEntryPoint : MelonMod
                 }
                 break;
             case "ZoneCore":
-                foreach (SR2EExpansionV2 mod in mods)
+                foreach (SR2EExpansionV2 mod in expansions)
                     mod.OnZoneCoreLoaded();
                 break;
             case "SystemCore":
-                foreach (SR2EExpansionV2 mod in mods)
+                foreach (SR2EExpansionV2 mod in expansions)
                     mod.OnSystemSceneLoaded();
                 break;
             case "PlayerCore":
-                foreach (SR2EExpansionV2 mod in mods)
+                foreach (SR2EExpansionV2 mod in expansions)
                     mod.OnPlayerSceneLoaded();
                 InitializeFX();
                 break;

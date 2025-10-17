@@ -19,10 +19,6 @@ public static partial class Library
     
     internal static Dictionary<string, IdentifiableType> savedIdents = new Dictionary<string, IdentifiableType>();
 
-
-    internal static List<SR2EExpansionV2> mods = new List<SR2EExpansionV2>();
-
-
     internal static Dictionary<IdentifiableType, ModdedMarketData> marketData =
         new Dictionary<IdentifiableType, ModdedMarketData>(0);
 
@@ -30,7 +26,6 @@ public static partial class Library
         new Dictionary<PlortEntry, bool>();
 
     internal static List<IdentifiableType> removeMarketPlortEntries = new List<IdentifiableType>();
-    internal static GameObject rootOBJ;
 
     public static IdentifiableTypeGroup? slimes;
     public static IdentifiableTypeGroup? plorts;

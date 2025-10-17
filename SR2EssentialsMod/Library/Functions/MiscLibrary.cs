@@ -16,9 +16,10 @@ public static partial class Library
     {
         var obj = baseObject.CopyObject();
         Object.DontDestroyOnLoad(obj);
+        Object.DontDestroyOnLoad(obj);
         
         obj.name = Name;
-        obj.transform.parent = rootOBJ.transform;
+        obj.transform.parent = prefabHolder.transform;
 
         var components = obj.GetComponents<Behaviour>();
         foreach (var component in components)
