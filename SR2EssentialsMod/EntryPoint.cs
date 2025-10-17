@@ -282,12 +282,17 @@ public class SR2EEntryPoint : MelonMod
     
     private static readonly MethodInfo GetHarmonyMethodInfoRef = typeof(HarmonyMethodExtensions)
         .GetMethod("GetHarmonyMethodInfo", BindingFlags.Static | BindingFlags.NonPublic);
-
+    
+    [HarmonyPrefix,HarmonyPatch(typeof(GameContext), nameof(GameContext.Start))]
+    static void TestFunc()
+    {
+        MelonLogger.Msg("HI");
+    }
     void PatchGame()
     {
         try { _useLibrary= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
         var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
-
+    
         foreach (var type in types)
         {
             if (type == null) continue;
@@ -297,66 +302,92 @@ public class SR2EEntryPoint : MelonMod
                 if (!_useLibrary && type.GetCustomAttribute<LibraryPatch>() != null)
                     continue;
 
-                // --- Method-level Harmony patches ---
-                var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
-                foreach (var method in methods)
-                {
-                    try
-                    {
-                        if (!_useLibrary && method.GetCustomAttribute<LibraryPatch>() != null)
-                            continue;
-
-                        var patchAttrs = method.GetCustomAttributes<HarmonyPatch>(false).ToArray();
-                        if (patchAttrs.Length == 0)
-                            continue;
-
-                        foreach (var patch in patchAttrs)
-                        {
-                            // Call private GetHarmonyMethodInfo via reflection
-                            var targetInfo = (HarmonyMethod)GetHarmonyMethodInfoRef
-                                .Invoke(null, new object[] { patch });
-
-                            if (targetInfo?.method == null)
-                            {
-                                MelonLogger.Warning($"[SR2E] Could not resolve target for {method.Name}");
-                                continue;
-                            }
-
-                            var harmonyMethod = new HarmonyMethod(method);
-
-                            HarmonyInstance.Patch(
-                                targetInfo.method,
-                                prefix: method.GetCustomAttribute<HarmonyPrefix>() != null ? harmonyMethod : null,
-                                postfix: method.GetCustomAttribute<HarmonyPostfix>() != null ? harmonyMethod : null,
-                                transpiler: method.GetCustomAttribute<HarmonyTranspiler>() != null ? harmonyMethod : null,
-                                finalizer: method.GetCustomAttribute<HarmonyFinalizer>() != null ? harmonyMethod : null,
-                                ilmanipulator: null
-                            );
-
-                            MelonLogger.Msg($"[SR2E] Patched method: {type.FullName}.{method.Name}");
-                        }
-                    }
-                    catch (Exception innerEx)
-                    {
-                        MelonLogger.Warning($"[SR2E] Failed to patch method {type.FullName}.{method.Name}: {innerEx.Message}");
-                    }
-                }
-                
-                
-                
                 // --- Class-level Harmony patches ---
                 var classPatches = HarmonyMethodExtensions.GetFromType(type);
                 if (classPatches.Count > 0)
                 {
                     var processor = HarmonyInstance.CreateClassProcessor(type);
                     processor.Patch();
-                    //MelonLogger.Msg($"[SR2E] Patched class: {type.FullName}");
+                    //MelonLogger.Msg($"Patched class: {type.FullName}");
                 }
+                
+                //TODO: Fix this
+                // --- Method-level Harmony patches ---
+                /*foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+                {
+                    try
+                    {
+                        // Only patch methods that have [HarmonyPatch]
+                        if (!method.GetCustomAttributes().Any(attr => attr.GetType().FullName == "HarmonyLib.HarmonyPatch"))
+                            continue;
 
+                        var processor = HarmonyInstance.CreateProcessor(method);
+                        bool patched = false;
+
+                        // Check this method itself for prefix/postfix/etc.
+                        foreach (var attr in method.GetCustomAttributes())
+                        {
+                            switch (attr.GetType().FullName)
+                            {
+                                case "HarmonyLib.HarmonyPrefix":
+                                    processor.AddPrefix(method);
+                                    patched = true;
+                                    break;
+                                case "HarmonyLib.HarmonyPostfix":
+                                    processor.AddPostfix(method);
+                                    patched = true;
+                                    break;
+                                case "HarmonyLib.HarmonyFinalizer":
+                                    processor.AddFinalizer(method);
+                                    patched = true;
+                                    break;
+                                case "HarmonyLib.HarmonyTranspiler":
+                                    processor.AddTranspiler(method);
+                                    patched = true;
+                                    break;
+                                case "HarmonyLib.HarmonyILManipulator":
+                                    processor.AddILManipulator(method);
+                                    patched = true;
+                                    break;
+                            }
+                        }
+
+                        if (patched)
+                        {
+                            processor.Patch();
+                            MelonLogger.Msg($"Patched method: {method.DeclaringType.FullName}.{method.Name}");
+                        }
+                    }
+                    catch (Exception exMethod)
+                    {
+                        MelonLogger.Error($"Failed to patch method {method.DeclaringType.FullName}.{method.Name}: {exMethod.Message}");
+                    }
+                }
+                */
+                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
+                {
+                    try
+                    {
+                        // Only patch methods that have Harmony attributes
+                        var harmonyAttrs = method.GetCustomAttributes().Where(attr =>
+                            attr.GetType().FullName=="HarmonyLib.HarmonyPatch" ||
+                            attr.GetType().FullName=="HarmonyLib.HarmonyPrefix" ||
+                            attr.GetType().FullName=="HarmonyLib.HarmonyPostfix"||
+                            attr.GetType().FullName=="HarmonyLib.HarmonyTranspiler" ||
+                            attr.GetType().FullName=="HarmonyLib.HarmonyFinalizer" ||
+                            attr.GetType().FullName=="HarmonyLib.HarmonyILManipulator"
+                        ).ToList();
+                        if (harmonyAttrs.Count > 0)
+                        {
+                            MelonLogger.Error($"Patching not working: {method.DeclaringType.FullName}.{method.Name}");
+                            MelonLogger.Error("SR2E's save patching currently doesn't support Attributes in front of methods!");
+                        }
+                    }catch { }
+                }
             }
             catch (Exception ex)
             {
-                MelonLogger.Error($"[SR2E] Failed to patch {type.FullName}: {ex.Message}");
+                MelonLogger.Error($"Failed to patch {type.FullName}: {ex.Message}");
             }
         }
     }

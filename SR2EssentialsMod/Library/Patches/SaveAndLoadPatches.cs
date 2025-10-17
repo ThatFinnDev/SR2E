@@ -22,7 +22,6 @@ namespace CottonLibrary.Patches;
 [HarmonyPatch]
 public static class LoadPatch
 {
-    [LibraryPatch()]
     [HarmonyPostfix, HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Load), typeof(string), typeof(string), typeof(bool))]
     static void ModdedLoad(AutoSaveDirector __instance, string gameName, string saveName, bool reloadAllCoreScenes)
     {
@@ -41,7 +40,6 @@ public static class LoadPatch
         }
     }
     
-    //[LibraryPatch()]
     //[HarmonyFinalizer, HarmonyPatch(typeof(SavedGame), "Push", typeof(GameModel))]
     static Exception CatchPush(Exception __exception)
     {
@@ -52,9 +50,9 @@ public static class LoadPatch
         return null;
     }
 }
+[LibraryPatch()]
 public static class SavePatch
 {
-    [LibraryPatch()]
     [HarmonyPrefix, HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.SaveGame))]
     static void ModdedSave(AutoSaveDirector __instance)
     {

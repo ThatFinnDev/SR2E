@@ -22,7 +22,6 @@ public class SpawnerPatch
         }
     }
     
-    [LibraryPatch()]
     [HarmonyPatch(nameof(DirectedActorSpawner.MaybeReplaceId))]
     [HarmonyPrefix]
     static bool Replacement(DirectedActorSpawner __instance, ref IdentifiableType __result, IdentifiableType id)
