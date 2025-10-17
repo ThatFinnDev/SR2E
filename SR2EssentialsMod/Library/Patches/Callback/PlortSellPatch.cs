@@ -5,9 +5,9 @@ using SR2E.Storage;
 
 namespace CottonLibrary.Patches.Callback;
 
+[LibraryPatch()]
 static class PlortSellPatch
 {
-    [LibraryPatch()]
     [HarmonyPostfix,HarmonyPatch(typeof(PlortEconomyDirector), nameof(PlortEconomyDirector.RegisterSold))]
     public static void Postfix(PlortEconomyDirector __instance, IdentifiableType id, int count)
     {

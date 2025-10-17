@@ -287,14 +287,12 @@ public class SR2EEntryPoint : MelonMod
     private static bool _useLibrary = false;
     public static bool useLibrary => _useLibrary;
     
-    private static readonly MethodInfo GetHarmonyMethodInfoRef = typeof(HarmonyMethodExtensions)
-        .GetMethod("GetHarmonyMethodInfo", BindingFlags.Static | BindingFlags.NonPublic);
-
     void PatchGame()
     {
+        
         try { _useLibrary= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
         var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
-
+    
         foreach (var type in types)
         {
             if (type == null) continue;
@@ -303,67 +301,18 @@ public class SR2EEntryPoint : MelonMod
                 // Skip entire class if marked as a library patch and library disabled
                 if (!_useLibrary && type.GetCustomAttribute<LibraryPatch>() != null)
                     continue;
-
-                // --- Method-level Harmony patches ---
-                var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
-                foreach (var method in methods)
-                {
-                    try
-                    {
-                        if (!_useLibrary && method.GetCustomAttribute<LibraryPatch>() != null)
-                            continue;
-
-                        var patchAttrs = method.GetCustomAttributes<HarmonyPatch>(false).ToArray();
-                        if (patchAttrs.Length == 0)
-                            continue;
-
-                        foreach (var patch in patchAttrs)
-                        {
-                            // Call private GetHarmonyMethodInfo via reflection
-                            var targetInfo = (HarmonyMethod)GetHarmonyMethodInfoRef
-                                .Invoke(null, new object[] { patch });
-
-                            if (targetInfo?.method == null)
-                            {
-                                MelonLogger.Warning($"[SR2E] Could not resolve target for {method.Name}");
-                                continue;
-                            }
-
-                            var harmonyMethod = new HarmonyMethod(method);
-
-                            HarmonyInstance.Patch(
-                                targetInfo.method,
-                                prefix: method.GetCustomAttribute<HarmonyPrefix>() != null ? harmonyMethod : null,
-                                postfix: method.GetCustomAttribute<HarmonyPostfix>() != null ? harmonyMethod : null,
-                                transpiler: method.GetCustomAttribute<HarmonyTranspiler>() != null ? harmonyMethod : null,
-                                finalizer: method.GetCustomAttribute<HarmonyFinalizer>() != null ? harmonyMethod : null,
-                                ilmanipulator: null
-                            );
-
-                            MelonLogger.Msg($"[SR2E] Patched method: {type.FullName}.{method.Name}");
-                        }
-                    }
-                    catch (Exception innerEx)
-                    {
-                        MelonLogger.Warning($"[SR2E] Failed to patch method {type.FullName}.{method.Name}: {innerEx.Message}");
-                    }
-                }
-                
-                
-                
-                // --- Class-level Harmony patches ---
                 var classPatches = HarmonyMethodExtensions.GetFromType(type);
                 if (classPatches.Count > 0)
                 {
                     var processor = HarmonyInstance.CreateClassProcessor(type);
                     processor.Patch();
-                    //MelonLogger.Msg($"[SR2E] Patched class: {type.FullName}");
+                    //MelonLogger.Msg($"Patched class: {type.FullName}");
                 }
-
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                MelonLogger.Error($"[SR2E] Failed to patch {type.FullName}: {ex.Message}");
+                MelonLogger.Error(e);
+                MelonLogger.Error($"Failed to patch {type.FullName}: {e.Message}");
             }
         }
     }
