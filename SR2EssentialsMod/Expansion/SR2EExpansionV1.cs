@@ -52,6 +52,12 @@ public abstract class SR2EExpansionV1 : MelonMod
     /// </summary>
     public virtual void OnStandaloneEngagementPromptUnload() { }
     /// <summary>
+    /// Gets executed every time the scene "ZoneCore" gets unloaded.
+    /// </summary>
+    public virtual void OnZoneCoreUnloaded() { }
+    
+    
+    /// <summary>
     /// Gets executed every time the scene "StandaloneEngagementPrompt" gets initialized.
     /// </summary>
     public virtual void OnStandaloneEngagementPromptInitialize() { }
@@ -113,5 +119,8 @@ public abstract class SR2EExpansionV1 : MelonMod
     /// </summary>
     public virtual void OnLoadSceneInitialize() { }
     
-
+    /// <summary>
+    ///   Gets executed every time the scene "ZoneCore" gets initialized.
+    /// </summary>
+    public virtual void OnZoneCoreInitialized() { }
 }

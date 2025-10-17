@@ -979,7 +979,7 @@ public static partial class Library
         largoDef.hideFlags = HideFlags.HideAndDontSave;
         largoDef.name = slimeOne.name + slimeTwo.name;
 
-        largoDef.prefab = Object.Instantiate(baseLargo.prefab, rootOBJ.transform);
+        largoDef.prefab = Object.Instantiate(baseLargo.prefab, prefabHolder.transform);
         largoDef.prefab.name = $"slime{slimeOne.name + slimeTwo.name}";
         largoDef.prefab.GetComponent<Identifiable>().identType = largoDef;
         largoDef.prefab.GetComponent<SlimeEat>().SlimeDefinition = largoDef;

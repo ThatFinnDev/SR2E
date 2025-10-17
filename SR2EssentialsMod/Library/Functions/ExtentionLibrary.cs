@@ -51,7 +51,7 @@ public static class ExtentionLibrary
             new Vector2(0.5f, 0.5f), 1f);
     }
 
-    public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
+    public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, prefabHolder.transform);
 
 
     /// <summary>
