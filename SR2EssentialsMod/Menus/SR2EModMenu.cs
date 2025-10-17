@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Il2CppTMPro;
+using SR2E.Components;
 using SR2E.Enums;
 using SR2E.Enums.Features;
 using SR2E.Expansion;
@@ -170,18 +171,18 @@ public class SR2EModMenu : SR2EMenu
                     {
                         case "source_code":
                             try {
-                                modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode",meta.Value);
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode",FormatLink(meta.Value));
                             } catch{ }
                             break;
                         case "nexus":
                             try {
-                                modInfoText.text += "\n" + translation("modmenu.modinfo.nexus",meta.Value);
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.nexus",FormatLink(meta.Value));
                             } catch{ }
                             break;
                     }
                 }
                 if (!string.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
-                    modInfoText.text += "\n" + translation("modmenu.modinfo.link",melonBase.Info.DownloadLink);
+                    modInfoText.text += "\n" + translation("modmenu.modinfo.link",FormatLink(melonBase.Info.DownloadLink));
 
                 string universalModName = translation("modmenu.modinfo.unknown");
                 MelonGameAttribute universalMod =
@@ -200,6 +201,11 @@ public class SR2EModMenu : SR2EMenu
         }
         modContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
     }
+
+    string FormatLink(string url)
+    {
+        return $"<link=\"{url}\"><color=#2C6EC8><u>{url}</u></color></link>";
+    }
     protected override void OnLateAwake()
     {
         entryTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateEntryRec");
@@ -208,6 +214,7 @@ public class SR2EModMenu : SR2EMenu
         toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"modmenu.warning.restart");
         Transform content = transform.GetObjectRecursively<Transform>("ModMenuModConfigurationContentRec");
         modInfoText = transform.GetObjectRecursively<TextMeshProUGUI>("ModMenuModInfoTextRec");
+        modInfoText.AddComponent<ClickableTextLink>();
         foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
             if (!String.IsNullOrEmpty(stringKey))
                 if (stringKey != "None")
