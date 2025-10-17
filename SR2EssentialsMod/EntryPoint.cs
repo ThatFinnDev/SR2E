@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using CottonLibrary;
+using CottonLibrary.Save;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
@@ -196,6 +198,21 @@ public class SR2EEntryPoint : MelonMod
         }
 
         MelonCoroutines.Start(GetBranchJson());
+
+        if (!useLibrary) return;
+        
+        SaveComponents.RegisterComponent(typeof(ModdedV01));
+        
+        foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
+        {
+            if (melonBase is SR2EExpansionV2)
+            {
+                SR2EExpansionV2 mod = melonBase as SR2EExpansionV2;
+                mods.Add(mod);
+            }
+        }
+        rootOBJ = Get("CottonLibraryROOT");
+        
     }
     IEnumerator GetBranchJson()
     {
@@ -532,6 +549,42 @@ public class SR2EEntryPoint : MelonMod
         }
 
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
+
+        if (!useLibrary) return;
+        
+        switch (sceneName)
+        {
+            case "GameCore":             
+                MelonLogger.Msg(translation("lib.registered_list"));
+
+                foreach (SR2EExpansionV2 mod in mods)
+                {          
+                    mod.OnGameCoreLoaded();
+                    
+                    MelonLogger.Msg(translation("lib.registered", mod.MelonAssembly.Assembly.FullName));
+                }
+                break;
+            case "ZoneCore":
+                foreach (SR2EExpansionV2 mod in mods)
+                    mod.OnZoneCoreLoaded();
+                break;
+            case "SystemCore":
+                foreach (SR2EExpansionV2 mod in mods)
+                    mod.OnSystemSceneLoaded();
+                break;
+            case "PlayerCore":
+                foreach (SR2EExpansionV2 mod in mods)
+                    mod.OnPlayerSceneLoaded();
+                InitializeFX();
+                break;
+        }
+
+        var pair = onSceneLoaded.FirstOrDefault(x => sceneName.Contains(x.Key));
+
+        if (pair.Value != null)
+            foreach (var action in pair.Value)
+                action();
+        
     }
 
     internal static void CheckForTime()
