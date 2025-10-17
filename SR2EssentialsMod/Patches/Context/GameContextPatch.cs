@@ -76,7 +76,7 @@ internal class GameContextPatch
         }
 
         //
-        foreach (var expansion in SR2EEntryPoint.expansions)
+        foreach (var expansion in SR2EEntryPoint.expansionsAll)
             try
             {
                 expansion.OnGameContext(__instance);
