@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using CottonLibrary;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
@@ -280,16 +281,9 @@ public class SR2EEntryPoint : MelonMod
     private static bool _useLibrary = false;
     public static bool useLibrary => _useLibrary;
     
-    private static readonly MethodInfo GetHarmonyMethodInfoRef = typeof(HarmonyMethodExtensions)
-        .GetMethod("GetHarmonyMethodInfo", BindingFlags.Static | BindingFlags.NonPublic);
-    
-    [HarmonyPrefix,HarmonyPatch(typeof(GameContext), nameof(GameContext.Start))]
-    static void TestFunc()
-    {
-        MelonLogger.Msg("HI");
-    }
     void PatchGame()
     {
+        
         try { _useLibrary= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
         var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
     
@@ -301,8 +295,6 @@ public class SR2EEntryPoint : MelonMod
                 // Skip entire class if marked as a library patch and library disabled
                 if (!_useLibrary && type.GetCustomAttribute<LibraryPatch>() != null)
                     continue;
-
-                // --- Class-level Harmony patches ---
                 var classPatches = HarmonyMethodExtensions.GetFromType(type);
                 if (classPatches.Count > 0)
                 {
@@ -310,84 +302,11 @@ public class SR2EEntryPoint : MelonMod
                     processor.Patch();
                     //MelonLogger.Msg($"Patched class: {type.FullName}");
                 }
-                
-                //TODO: Fix this
-                // --- Method-level Harmony patches ---
-                /*foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-                {
-                    try
-                    {
-                        // Only patch methods that have [HarmonyPatch]
-                        if (!method.GetCustomAttributes().Any(attr => attr.GetType().FullName == "HarmonyLib.HarmonyPatch"))
-                            continue;
-
-                        var processor = HarmonyInstance.CreateProcessor(method);
-                        bool patched = false;
-
-                        // Check this method itself for prefix/postfix/etc.
-                        foreach (var attr in method.GetCustomAttributes())
-                        {
-                            switch (attr.GetType().FullName)
-                            {
-                                case "HarmonyLib.HarmonyPrefix":
-                                    processor.AddPrefix(method);
-                                    patched = true;
-                                    break;
-                                case "HarmonyLib.HarmonyPostfix":
-                                    processor.AddPostfix(method);
-                                    patched = true;
-                                    break;
-                                case "HarmonyLib.HarmonyFinalizer":
-                                    processor.AddFinalizer(method);
-                                    patched = true;
-                                    break;
-                                case "HarmonyLib.HarmonyTranspiler":
-                                    processor.AddTranspiler(method);
-                                    patched = true;
-                                    break;
-                                case "HarmonyLib.HarmonyILManipulator":
-                                    processor.AddILManipulator(method);
-                                    patched = true;
-                                    break;
-                            }
-                        }
-
-                        if (patched)
-                        {
-                            processor.Patch();
-                            MelonLogger.Msg($"Patched method: {method.DeclaringType.FullName}.{method.Name}");
-                        }
-                    }
-                    catch (Exception exMethod)
-                    {
-                        MelonLogger.Error($"Failed to patch method {method.DeclaringType.FullName}.{method.Name}: {exMethod.Message}");
-                    }
-                }
-                */
-                foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static))
-                {
-                    try
-                    {
-                        // Only patch methods that have Harmony attributes
-                        var harmonyAttrs = method.GetCustomAttributes().Where(attr =>
-                            attr.GetType().FullName=="HarmonyLib.HarmonyPatch" ||
-                            attr.GetType().FullName=="HarmonyLib.HarmonyPrefix" ||
-                            attr.GetType().FullName=="HarmonyLib.HarmonyPostfix"||
-                            attr.GetType().FullName=="HarmonyLib.HarmonyTranspiler" ||
-                            attr.GetType().FullName=="HarmonyLib.HarmonyFinalizer" ||
-                            attr.GetType().FullName=="HarmonyLib.HarmonyILManipulator"
-                        ).ToList();
-                        if (harmonyAttrs.Count > 0)
-                        {
-                            MelonLogger.Error($"Patching not working: {method.DeclaringType.FullName}.{method.Name}");
-                            MelonLogger.Error("SR2E's save patching currently doesn't support Attributes in front of methods!");
-                        }
-                    }catch { }
-                }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                MelonLogger.Error($"Failed to patch {type.FullName}: {ex.Message}");
+                MelonLogger.Error(e);
+                MelonLogger.Error($"Failed to patch {type.FullName}: {e.Message}");
             }
         }
     }
