@@ -9,12 +9,14 @@ using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppMonomiPark.UnitPropertySystem;
 using Il2CppSystem.Text;
 using MelonLoader;
+using SR2E.Storage;
 using static CottonLibrary.Library;
 using Selections = Il2CppSystem.Collections.Generic.Dictionary<int, Il2Cpp.SlimeAppearance.AppearanceSaveSet>;
 using Unlocks = Il2CppSystem.Collections.Generic.Dictionary<int, Il2CppSystem.Collections.Generic.List<Il2Cpp.SlimeAppearance.AppearanceSaveSet>>;
 
 namespace CottonLibrary.Patches;
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(AppearancesModel),nameof(AppearancesModel.Pull))]
 public class AppearancesSaveFix
 {

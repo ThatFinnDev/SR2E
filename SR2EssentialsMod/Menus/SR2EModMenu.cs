@@ -180,7 +180,7 @@ public class SR2EModMenu : SR2EMenu
                             break;
                     }
                 }
-                if (!String.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
+                if (!string.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
                     modInfoText.text += "\n" + translation("modmenu.modinfo.link",melonBase.Info.DownloadLink);
 
                 string universalModName = translation("modmenu.modinfo.unknown");
@@ -193,7 +193,7 @@ public class SR2EModMenu : SR2EMenu
                 AssemblyDescriptionAttribute desc =
                     melonBase.MelonAssembly.Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
                 if (desc != null)
-                    if (!String.IsNullOrWhiteSpace(desc.Description))
+                    if (!string.IsNullOrWhiteSpace(desc.Description))
                         modInfoText.text += "\n" + translation("modmenu.modinfo.description",desc.Description + "\n");
 
             }));

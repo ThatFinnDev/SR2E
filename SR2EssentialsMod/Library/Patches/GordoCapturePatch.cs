@@ -2,9 +2,11 @@ using System.Linq;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using SR2E.Storage;
 
 namespace CottonLibrary.Patches;
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(SnareModel),nameof(SnareModel.GetGordoIdForBait))]
 public class GordoCapturePatch
 {

@@ -108,7 +108,7 @@ public class SR2EConsole : SR2EMenu
             selectedAutoComplete = 0;
         for (int i = 0; i < autoCompleteContent.childCount; i++)
             Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
-        if (String.IsNullOrWhiteSpace(text))
+        if (string.IsNullOrWhiteSpace(text))
         {
             return;
         }

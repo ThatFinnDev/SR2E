@@ -42,7 +42,7 @@ public static class BuildInfo
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
     public const string Contributors = "Atmudia, Aureumapes";
-    public const string CodeVersion = "3.2.2";
+    public const string CodeVersion = "3.3.0";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
@@ -54,7 +54,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.2.2-dev";
+    public const string DisplayVersion = "3.3.0-dev";
 
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
@@ -142,6 +142,7 @@ public class SR2EEntryPoint : MelonMod
             prefs.DeleteEntry(entry);
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
+        if(AllowExperimentalLibrary.HasFlag()) if (!prefs.HasEntry("useExperimentalLibrary")) prefs.CreateEntry("useExperimentalLibrary", (bool)false, "Enable experimental library", false);
         if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => 
             { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
@@ -275,7 +276,90 @@ public class SR2EEntryPoint : MelonMod
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
         InitFlagManager();
     }
+
+    private static bool _useLibrary = false;
+    public static bool useLibrary => _useLibrary;
     
+    private static readonly MethodInfo GetHarmonyMethodInfoRef = typeof(HarmonyMethodExtensions)
+        .GetMethod("GetHarmonyMethodInfo", BindingFlags.Static | BindingFlags.NonPublic);
+
+    void PatchGame()
+    {
+        try { _useLibrary= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
+        var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
+
+        foreach (var type in types)
+        {
+            if (type == null) continue;
+            try
+            {
+                // Skip entire class if marked as a library patch and library disabled
+                if (!_useLibrary && type.GetCustomAttribute<LibraryPatch>() != null)
+                    continue;
+
+                // --- Method-level Harmony patches ---
+                var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+                foreach (var method in methods)
+                {
+                    try
+                    {
+                        if (!_useLibrary && method.GetCustomAttribute<LibraryPatch>() != null)
+                            continue;
+
+                        var patchAttrs = method.GetCustomAttributes<HarmonyPatch>(false).ToArray();
+                        if (patchAttrs.Length == 0)
+                            continue;
+
+                        foreach (var patch in patchAttrs)
+                        {
+                            // Call private GetHarmonyMethodInfo via reflection
+                            var targetInfo = (HarmonyMethod)GetHarmonyMethodInfoRef
+                                .Invoke(null, new object[] { patch });
+
+                            if (targetInfo?.method == null)
+                            {
+                                MelonLogger.Warning($"[SR2E] Could not resolve target for {method.Name}");
+                                continue;
+                            }
+
+                            var harmonyMethod = new HarmonyMethod(method);
+
+                            HarmonyInstance.Patch(
+                                targetInfo.method,
+                                prefix: method.GetCustomAttribute<HarmonyPrefix>() != null ? harmonyMethod : null,
+                                postfix: method.GetCustomAttribute<HarmonyPostfix>() != null ? harmonyMethod : null,
+                                transpiler: method.GetCustomAttribute<HarmonyTranspiler>() != null ? harmonyMethod : null,
+                                finalizer: method.GetCustomAttribute<HarmonyFinalizer>() != null ? harmonyMethod : null,
+                                ilmanipulator: null
+                            );
+
+                            MelonLogger.Msg($"[SR2E] Patched method: {type.FullName}.{method.Name}");
+                        }
+                    }
+                    catch (Exception innerEx)
+                    {
+                        MelonLogger.Warning($"[SR2E] Failed to patch method {type.FullName}.{method.Name}: {innerEx.Message}");
+                    }
+                }
+                
+                
+                
+                // --- Class-level Harmony patches ---
+                var classPatches = HarmonyMethodExtensions.GetFromType(type);
+                if (classPatches.Count > 0)
+                {
+                    var processor = HarmonyInstance.CreateClassProcessor(type);
+                    processor.Patch();
+                    //MelonLogger.Msg($"[SR2E] Patched class: {type.FullName}");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MelonLogger.Error($"[SR2E] Failed to patch {type.FullName}: {ex.Message}");
+            }
+        }
+    }
 
     
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
@@ -285,6 +369,7 @@ public class SR2EEntryPoint : MelonMod
         string path = MelonAssembly.Assembly.Location + ".old";
         if (File.Exists(path)) File.Delete(path);
         RefreshPrefs();
+        PatchGame();
 
         Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
         try { AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }

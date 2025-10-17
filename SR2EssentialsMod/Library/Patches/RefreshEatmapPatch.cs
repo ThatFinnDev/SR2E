@@ -1,8 +1,10 @@
 using HarmonyLib;
 using Il2Cpp;
+using SR2E.Storage;
 
 namespace CottonLibrary.Patches;
 
+[LibraryPatch()]
 public class RefreshEatmapPatch
 {
     [HarmonyPatch(typeof(SlimeDiet), nameof(SlimeDiet.RefreshEatMap))]

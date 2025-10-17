@@ -12,11 +12,13 @@ using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
 using Il2CppMonomiPark.SlimeRancher.UI.Localization;
 using Il2CppTMPro;
+using SR2E.Storage;
 using UnityEngine;
 
 namespace CottonLibrary.Patches;
 
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(AutoSaveDirector), "Awake")]
 public static class SaveDirectorPatch
 {

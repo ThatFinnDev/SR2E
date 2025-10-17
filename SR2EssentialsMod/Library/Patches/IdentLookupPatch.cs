@@ -7,6 +7,7 @@ using Il2CppMonomiPark.SlimeRancher.Persist;
 
 namespace CottonLibrary.Patches;
 /*
+[LibraryPatch()]
 [HarmonyPatch(typeof(IdentifiableTypePersistenceIdReverseLookupTable), nameof(IdentifiableTypePersistenceIdReverseLookupTable.GetIdentifiableType))]
 public class IdentLookupPatch
 {

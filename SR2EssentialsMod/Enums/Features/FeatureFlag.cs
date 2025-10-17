@@ -24,10 +24,10 @@ public enum FeatureFlag
     /// Enable experimental features
     /// </summary>
     Experiments,
-    /*/// <summary>
-    /// Enable the settings injection feature
+    /// <summary>
+    /// Allow experimental Library
     /// </summary>
-    ExperimentalSettingsInjection,*/
+    AllowExperimentalLibrary,
     /// <summary>
     /// Enable the save export feature
     /// </summary>

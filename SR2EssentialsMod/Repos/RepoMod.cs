@@ -7,23 +7,25 @@ public class RepoMod
 {
     public string name;
     public string author;
-    public string coauthor;
+    public string coauthors;
     public string contributors;
     public string description;
     public string company;
     public string trademark;
     public string team;
     public string copyright;
-    public string github_repository;
+    public string sourcecode;
+    public string github_repo;
+    public string nexus;
+    public string website;
     public string header_url;
     public string icon_url;
     public byte colorR;
     public byte colorG;
     public byte colorB;
     public byte colorA;
+    public RepoModType type = RepoModType.Mod;
     public bool universal;
-    public bool expansion;
-    public bool plugin;
     public List<RepoModVersion> versions = new List<RepoModVersion>();
 
     public RepoModVersion getLatestVersion(string branch)

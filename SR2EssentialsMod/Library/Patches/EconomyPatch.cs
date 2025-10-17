@@ -6,11 +6,13 @@ using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.World;
+using SR2E.Storage;
 using UnityEngine;
 
 namespace CottonLibrary.Patches;
 
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(PlortEconomyDirector), "InitModel")]
 public static class EconomyPatch
 {

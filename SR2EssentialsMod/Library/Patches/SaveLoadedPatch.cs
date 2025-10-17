@@ -12,6 +12,7 @@ using Il2Cpp;
 namespace CottonLibrary.Patches;
 
 /*
+[LibraryPatch()]
 [HarmonyPatch(typeof(SavedGame), nameof(SavedGame.Load))]
 public static class SaveLoadedPatch
 {
@@ -29,6 +30,7 @@ public static class SaveLoadedPatch
         }
     }
 }
+[LibraryPatch()]
 [HarmonyPatch(typeof(SavedGame), nameof(SavedGame.Save))]
 public static class GameSavedPatch
 {

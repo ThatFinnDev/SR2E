@@ -3,10 +3,12 @@ using Il2Cpp;
 using Il2CppInterop.Runtime;
 using Il2CppMono.Security.X509;
 using MelonLoader;
+using SR2E.Storage;
 using UnityEngine;
 
 namespace CottonLibrary.Patches;
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(DirectedActorSpawner))]
 public class SpawnerPatch
 {
@@ -20,8 +22,9 @@ public class SpawnerPatch
         }
     }
     
-    //[HarmonyPatch(nameof(DirectedActorSpawner.MaybeReplaceId))]
-    //[HarmonyPrefix]
+    [LibraryPatch()]
+    [HarmonyPatch(nameof(DirectedActorSpawner.MaybeReplaceId))]
+    [HarmonyPrefix]
     static bool Replacement(DirectedActorSpawner __instance, ref IdentifiableType __result, IdentifiableType id)
     {
         if (!__instance) return false;

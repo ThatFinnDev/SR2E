@@ -9,6 +9,7 @@ using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
 using MelonLoader;
+using SR2E.Storage;
 using UnityEngine;
 using BinaryReader = System.IO.BinaryReader;
 using FileMode = System.IO.FileMode;
@@ -17,9 +18,11 @@ using FileStream = System.IO.FileStream;
 namespace CottonLibrary.Patches;
 
 
+[LibraryPatch()]
 [HarmonyPatch]
 public static class LoadPatch
 {
+    [LibraryPatch()]
     [HarmonyPostfix, HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Load), typeof(string), typeof(string), typeof(bool))]
     static void ModdedLoad(AutoSaveDirector __instance, string gameName, string saveName, bool reloadAllCoreScenes)
     {
@@ -38,6 +41,7 @@ public static class LoadPatch
         }
     }
     
+    //[LibraryPatch()]
     //[HarmonyFinalizer, HarmonyPatch(typeof(SavedGame), "Push", typeof(GameModel))]
     static Exception CatchPush(Exception __exception)
     {
@@ -50,6 +54,7 @@ public static class LoadPatch
 }
 public static class SavePatch
 {
+    [LibraryPatch()]
     [HarmonyPrefix, HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.SaveGame))]
     static void ModdedSave(AutoSaveDirector __instance)
     {

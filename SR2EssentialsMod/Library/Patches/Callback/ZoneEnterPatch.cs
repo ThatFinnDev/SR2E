@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 using HarmonyLib;
 using Il2Cpp;
+using SR2E.Storage;
+
 namespace CottonLibrary.Patches.Callback;
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(PlayerZoneTracker), nameof(PlayerZoneTracker.OnEntered))]
 static class ZoneEnterPatch
 {

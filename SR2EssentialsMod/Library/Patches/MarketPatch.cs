@@ -4,8 +4,11 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using static CottonLibrary.Library;
 using HarmonyLib;
 using Il2Cpp;
+using SR2E.Storage;
+
 namespace CottonLibrary.Patches;
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(MarketUI))]
 public static class MarketPatch
 {

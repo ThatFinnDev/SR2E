@@ -1,10 +1,12 @@
 using HarmonyLib;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.Localization;
+using SR2E.Storage;
 using static CottonLibrary.Library;
 
 namespace CottonLibrary.Patches;
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(TargetingUI), nameof(TargetingUI.Update))]
 public class TargetingPatch
 {

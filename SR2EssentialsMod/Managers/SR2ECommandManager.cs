@@ -185,7 +185,7 @@ public static class SR2ECommandManager
         foreach (string cc in cmds)
         {
             string c = cc.TrimStart(' ');
-            if (!String.IsNullOrWhiteSpace(c))
+            if (!string.IsNullOrWhiteSpace(c))
             {
                 bool spaces = c.Contains(" ");
                 string cmd = spaces ? c.Substring(0, c.IndexOf(' ')) : c;

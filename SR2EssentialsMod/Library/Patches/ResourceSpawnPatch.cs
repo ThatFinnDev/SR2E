@@ -1,8 +1,10 @@
 using CottonLibrary;
 using HarmonyLib;
 using Il2Cpp;
+using SR2E.Storage;
 
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(SpawnResource), nameof(SpawnResource.Awake))]
 public class ResourceSpawnPatch
 {

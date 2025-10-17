@@ -1,8 +1,10 @@
 using HarmonyLib;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
+using SR2E.Storage;
 
 namespace CottonLibrary.Patches;
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(PediaCategory), nameof(PediaCategory.GetRuntimeCategory))]
 public class RuntimePediaCategoryPatch
 {
