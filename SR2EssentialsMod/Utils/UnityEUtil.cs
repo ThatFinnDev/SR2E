@@ -139,7 +139,7 @@ public static class UnityEUtil
 
     public static void MakePrefab(this GameObject obj)
     {
-        UnityEngine.Object.DontDestroyOnLoad(obj);
+        Object.DontDestroyOnLoad(obj);
         obj.transform.parent = prefabHolder.transform;
     }
 

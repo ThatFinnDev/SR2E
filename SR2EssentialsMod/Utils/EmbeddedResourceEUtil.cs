@@ -6,19 +6,27 @@ namespace SR2E.Utils;
 public static class EmbeddedResourceEUtil
 {
     public static Sprite LoadSprite(string fileName) => ConvertEUtil.Texture2DToSprite(LoadTexture2D(fileName));
-    public static Texture2D LoadTexture2D(string filename)
+    public static Texture2D LoadTexture2D(string filename) => LoadTexture2D(filename, 1);
+    internal static Texture2D LoadTexture2D(string filename, int methodToGetAssembly)
     {
         var realFilename = filename.Replace("/",".");
-        if (!realFilename.EndsWith(".png") && !realFilename.EndsWith(".jpg") && !realFilename.EndsWith(".exr")) return null;
-        var method = new StackTrace().GetFrame(1).GetMethod();
+        if (!(realFilename.EndsWith(".png") || realFilename.EndsWith(".jpg") || realFilename.EndsWith(".exr"))) return null;
+        
+        var method = new StackTrace().GetFrame(methodToGetAssembly).GetMethod();
         var assembly = method.ReflectedType.Assembly;
+        
         System.IO.Stream manifestResourceStream =
             assembly.GetManifestResourceStream(assembly.GetName().Name + "." + realFilename);
+        
         byte[] array = new byte[manifestResourceStream.Length];
+        
         manifestResourceStream.Read(array, 0, array.Length);
+        
         Texture2D texture2D = new Texture2D(1, 1);
         ImageConversion.LoadImage(texture2D, array);
+        
         texture2D.filterMode = FilterMode.Bilinear;
+        
         return texture2D;
     }
 

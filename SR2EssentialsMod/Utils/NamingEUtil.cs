@@ -72,7 +72,7 @@ public static class NamingEUtil
     
     
     //General Localized
-    public static string _GN(UnityEngine.Object obj, LocalizedString localizedString, bool addQuotesIfSpaces = true)
+    public static string _GN(Object obj, LocalizedString localizedString, bool addQuotesIfSpaces = true)
     {
         if (obj == null) return null;
         try
@@ -86,7 +86,7 @@ public static class NamingEUtil
         catch
         { return obj.name; }
     }
-    public static string _GCN(UnityEngine.Object obj, LocalizedString localizedString)
+    public static string _GCN(Object obj, LocalizedString localizedString)
     {
         if (obj == null) return null;
         try
@@ -97,7 +97,7 @@ public static class NamingEUtil
         catch
         { return obj.name.Replace(" ","").Replace("_",""); }
     }
-    public static string _GCUN(UnityEngine.Object obj, LocalizedString localizedString)
+    public static string _GCUN(Object obj, LocalizedString localizedString)
     {
         if (obj == null) return null;
         try
@@ -111,7 +111,7 @@ public static class NamingEUtil
     
     
     //General Non Localized
-    static string _GNNonLocalized(UnityEngine.Object obj, bool addQuotesIfSpaces = true)
+    static string _GNNonLocalized(Object obj, bool addQuotesIfSpaces = true)
     {
         try
         {
@@ -120,12 +120,12 @@ public static class NamingEUtil
         } catch {  }
         return null;
     } 
-    static string _GCNNonLocalized(UnityEngine.Object obj)
+    static string _GCNNonLocalized(Object obj)
     {
         try { return obj.name.Replace(" ","").Replace("_",""); } catch {  }
         return null;
     }
-    static string _GCUNNonLocalized(UnityEngine.Object obj)
+    static string _GCUNNonLocalized(Object obj)
     {
         try { return obj.name.Replace(" ","").Replace("_","").ToUpper(); } catch {  }
         return null;
