@@ -81,7 +81,7 @@ public static class SR2ECommandManager
                 }
                 catch (Exception e) { MelonLogger.Error(e); }
         }
-        foreach (var expansion in SR2EEntryPoint.expansions)
+        foreach (var expansion in SR2EEntryPoint.expansionsAll)
             try { expansion.LoadCommands(); }
             catch (Exception e) { MelonLogger.Error(e); }
                 

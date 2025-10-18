@@ -22,11 +22,11 @@ namespace CottonLibrary.Patches;
 [HarmonyPatch]
 public static class LoadPatch
 {
-    [HarmonyPostfix, HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Load), typeof(string), typeof(string), typeof(bool))]
-    static void ModdedLoad(AutoSaveDirector __instance, string gameName, string saveName, bool reloadAllCoreScenes)
+    [HarmonyPostfix, HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Load))]
+    static void ModdedLoad(AutoSaveDirector __instance, GameSaveIdentifier identifier)
     {
         using (FileStream fs =
-               new FileStream(__instance._storageProvider.Cast<FileStorageProvider>().savePath + "/" +  saveName + ".mod", FileMode.OpenOrCreate))
+               new FileStream(__instance._storageProvider.Cast<FileStorageProvider>().savePath + "/" +  identifier.GameName + ".mod", FileMode.OpenOrCreate))
         {
             var save = new ModdedV01();
             save.Writer = new BinaryWriter(fs);

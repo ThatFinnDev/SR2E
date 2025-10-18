@@ -76,7 +76,7 @@ internal class SystemContextPatch
                     
         LoadLanguage(lang);
         
-        foreach (var expansion in SR2EEntryPoint.expansions)
+        foreach (var expansion in SR2EEntryPoint.expansionsAll)
             try { expansion.OnSystemContext(__instance); } 
             catch (Exception e) { MelonLogger.Error(e); }
     }

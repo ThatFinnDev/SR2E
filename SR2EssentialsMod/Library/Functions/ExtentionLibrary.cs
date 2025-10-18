@@ -51,9 +51,6 @@ public static class ExtentionLibrary
             new Vector2(0.5f, 0.5f), 1f);
     }
 
-    public static GameObject CopyObject(this GameObject obj) => Object.Instantiate(obj, rootOBJ.transform);
-
-
     /// <summary>
     /// Use this for copying components, please make sure you are copying the same types!
     /// </summary>

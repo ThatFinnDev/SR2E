@@ -20,7 +20,7 @@ namespace CottonLibrary.Patches;
 [HarmonyPatch(typeof(AppearancesModel),nameof(AppearancesModel.Pull))]
 public class AppearancesSaveFix
 {
-    public static bool Prefix(AppearancesModel __instance, ref AppearancesV01 __result, SaveReferenceTranslation saveRef)
+    public static bool Prefix(AppearancesModel __instance, ref AppearancesV01 __result)
     {
         
         __result = new AppearancesV01();

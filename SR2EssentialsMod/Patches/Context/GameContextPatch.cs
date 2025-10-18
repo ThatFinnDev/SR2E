@@ -98,7 +98,7 @@ internal class GameContextPatch
             MelonLogger.Error("There was a problem loading sounds!");
         }
         //
-        foreach (var expansion in SR2EEntryPoint.expansions)
+        foreach (var expansion in SR2EEntryPoint.expansionsAll)
             try
             {
                 expansion.OnGameContext(__instance);
