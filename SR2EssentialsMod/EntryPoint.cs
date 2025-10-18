@@ -145,7 +145,7 @@ public class SR2EEntryPoint : MelonMod
             prefs.DeleteEntry(entry);
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
-        if(AllowExperimentalLibrary.HasFlag()) if (!prefs.HasEntry("useExperimentalLibrary")) prefs.CreateEntry("useExperimentalLibrary", (bool)false, "Enable experimental library", false);
+        if(AllowExperimentalLibrary.HasFlag()) if (!prefs.HasEntry("useExperimentalLibrary")) prefs.CreateEntry("useExperimentalLibrary", (bool)false, "Force enable experimental library", "It's automatically enabled if expansions need it. This will just force it.",false);
         if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => 
             { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
@@ -325,26 +325,37 @@ public class SR2EEntryPoint : MelonMod
         string path = MelonAssembly.Assembly.Location + ".old";
         if (File.Exists(path)) File.Delete(path);
         RefreshPrefs();
-        PatchGame();
-
-        Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
-        try { AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }
         foreach (MelonBase melonBase in new List<MelonBase>(MelonBase.RegisteredMelons))
         {
             if (melonBase is SR2EExpansionV2)
-                if (AllowExpansions.HasFlag()) expansionsV2.Add(melonBase as SR2EExpansionV2);
+                if (AllowExpansions.HasFlag())
+                {
+                    var attribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
+                    if (attribute == null) melonBase.Unregister();
+                    else
+                    {
+                        if (attribute.RequiresLibrary) _useLibrary = true;
+                        expansionsV2.Add(melonBase as SR2EExpansionV2);
+                    }
+                }
                 else melonBase.Unregister();
             
             if (melonBase is SR2EExpansionV1)
                 if (AllowExpansions.HasFlag()) expansionsAll.Add(melonBase as SR2EExpansionV1);
                 else melonBase.Unregister();
         }
+        PatchGame();
+
+        Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
+        try { AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }
+
         foreach (var expansion in expansionsAll) try { expansion.OnNormalInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); }
     }
     public override void OnApplicationQuit()
     {
         try { if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay()) autoSaveDirector.SaveGame(); }catch { }
     }
+    
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: " + sceneName);
@@ -507,12 +518,6 @@ public class SR2EEntryPoint : MelonMod
         {
             if(Time.timeScale!=0&&Time.timeScale != NativeEUtil.CustomTimeScale) 
                 Time.timeScale = NativeEUtil.CustomTimeScale; 
-        } catch {}
-        try 
-        {
-            var factor = SceneContext.Instance.TimeDirector._timeFactor;
-            if (factor!=0&&factor!= NativeEUtil.CustomTimeScale) 
-                SceneContext.Instance.TimeDirector._timeFactor = NativeEUtil.CustomTimeScale;
         } catch {}
         ExecuteInSeconds((Action)(() => { CheckForTime();}), 1);
     }

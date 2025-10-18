@@ -135,6 +135,8 @@ public class SR2EModMenu : SR2EMenu
                     if (meta == null) continue;
                     if(string.IsNullOrWhiteSpace(meta.Key)) continue;
                     if(string.IsNullOrWhiteSpace(meta.Value)) continue;
+                    if (meta.Key == null) continue;
+                    if (meta.Value == null) continue;
                     switch (meta.Key)
                     {
                         case "display_version":
