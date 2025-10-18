@@ -11,7 +11,6 @@ global using static SR2E.Utils.ActionsEUtil;
 global using static SR2E.Managers.SR2ELanguageManger;
 global using Console = System.Console;
 global using Exception = System.Exception;
-global using Object = UnityEngine.Object;
 global using File = System.IO.File;
 global using CommandType = SR2E.Enums.CommandType;
 global using static SR2E.SR2EFeatureFlags;

@@ -45,10 +45,14 @@ internal static class SaveFixerPushPlayer
                 foreach(var favouriteGadgetID in player.FavoriteGadgets._items.ToList())
                     if (needsRemoving(favouriteGadgetID,loadReferenceTranslation))
                         player.FavoriteGadgets.Remove(favouriteGadgetID);
-                    
-                foreach(var viewedBluePrintID in player.ViewedItems.ViewedBlueprints._buckets.ToList())
-                    if (needsRemoving(viewedBluePrintID,loadReferenceTranslation))
-                        player.ViewedItems.ViewedBlueprints.Remove(viewedBluePrintID);
+
+                try //This can fail on old saves which don't have this feature yet. We can safely ignore this
+                {
+                    foreach(var viewedBluePrintID in player.ViewedItems.ViewedBlueprints._buckets.ToList())
+                        if (needsRemoving(viewedBluePrintID,loadReferenceTranslation))
+                            player.ViewedItems.ViewedBlueprints.Remove(viewedBluePrintID);
+                }
+                catch { }
                 
             }
         }

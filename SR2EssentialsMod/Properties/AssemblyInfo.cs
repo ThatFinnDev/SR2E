@@ -21,3 +21,4 @@ using SR2E.Expansion;
 [assembly: AssemblyMetadata("contributors",SR2E.BuildInfo.Contributors)]
 [assembly: AssemblyMetadata("source_code",SR2E.BuildInfo.SourceCode)]
 [assembly: AssemblyMetadata("nexus",SR2E.BuildInfo.Nexus)]
+[assembly: HarmonyDontPatchAll()]

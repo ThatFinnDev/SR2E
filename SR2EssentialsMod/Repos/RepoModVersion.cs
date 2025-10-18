@@ -9,5 +9,5 @@ public class RepoModVersion
     public string release_date;
     public string github_tag;
     public string download_url;
-    public string branch;
+    public string branch = "release";
 }

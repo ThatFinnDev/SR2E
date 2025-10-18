@@ -16,7 +16,11 @@ using SR2E.Expansion;
 [assembly: MelonInfo(typeof(SR2EExampleExpansion.ExpansionEntryPoint), SR2EExampleExpansion.BuildInfo.Name, SR2EExampleExpansion.BuildInfo.Version, SR2EExampleExpansion.BuildInfo.Author, SR2EExampleExpansion.BuildInfo.DownloadLink)]
 [assembly: MelonGame("MonomiPark", "SlimeRancher2")]
 [assembly: MelonColor(255, 35, 255, 35)]
-[assembly: SR2EExpansion()]
+[assembly: AssemblyMetadata("co_authors",SR2EExampleExpansion.BuildInfo.CoAuthors)]
+[assembly: AssemblyMetadata("contributors",SR2EExampleExpansion.BuildInfo.Contributors)]
+[assembly: AssemblyMetadata("source_code",SR2EExampleExpansion.BuildInfo.SourceCode)]
+[assembly: AssemblyMetadata("nexus",SR2EExampleExpansion.BuildInfo.Nexus)]
+[assembly: SR2EExpansion(SR2EExampleExpansion.BuildInfo.RequireLibrary)]
 // Create and Setup a MelonGame Attribute to mark a Melon as Universal or Compatible with specific Games.
 // If no MelonGame Attribute is found or any of the Values for any MelonGame Attribute on the Melon is null or empty it will be assumed the Melon is Universal.
 // Values for MelonGame Attribute can be found in the Game's app.info file or printed at the top of every log directly beneath the Unity version.

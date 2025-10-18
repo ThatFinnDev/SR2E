@@ -60,8 +60,25 @@ internal static class SR2ESaveManager
         else data = new SR2ESaveData();
     }
     internal static void Save() { File.WriteAllText(path,JsonConvert.SerializeObject(data, Formatting.Indented)); }
-    static string path { get { FileStorageProvider provider = SystemContext.Instance.GetStorageProvider().TryCast<FileStorageProvider>(); if (provider==null) return Application.persistentDataPath + "/SR2E.data"; return provider.savePath + "/SR2E.data"; } }
-   
+
+    //This variable likes to be the main character :/
+    static string path
+    {
+        get
+        {
+            try
+            {
+                var provider = SystemContext.Instance.GetStorageProvider();
+                return provider.TryCast<FileStorageProvider>().savePath + "/SR2E.data";
+            }
+            catch 
+            {
+                return Application.persistentDataPath + "/SR2E.data";
+            }
+            
+        }
+    }
+
     public class SR2ESaveData
     {
         public Dictionary<string, Warp> warps = new Dictionary<string, Warp>();

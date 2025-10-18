@@ -8,6 +8,7 @@ using SR2E.Commands;
 using SR2E.Components;
 using SR2E.Enums;
 using SR2E.Enums.Features;
+using SR2E.Enums.Sounds;
 using SR2E.Managers;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
@@ -120,6 +121,7 @@ public class SR2ECheatMenu : SR2EMenu
             button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = pair.Key;
             button.GetComponent<Button>().onClick.AddListener((Action)(() =>
                 {
+                    AudioEUtil.PlaySound(MenuSound.Click);
                     Close();        
                     SR2EError error = pair.Value.WarpPlayerThere();
                     switch (error)
@@ -169,12 +171,16 @@ public class SR2ECheatMenu : SR2EMenu
         
         var button1 = transform.GetObjectRecursively<Image>("CheatMenuMainSelectionButtonRec");
         button1.sprite = whitePillBg;
+        button1.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         var button2 = transform.GetObjectRecursively<Image>("CheatMenuRefinerySelectionButtonRec");
         button2.sprite = whitePillBg;
+        button2.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         var button3 = transform.GetObjectRecursively<Image>("CheatMenuGadgetsSelectionButtonRec");
         button3.sprite = whitePillBg;
+        button3.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         var button4 = transform.GetObjectRecursively<Image>("CheatMenuSpawnSelectionButtonRec");
         button4.sprite = whitePillBg;
+        button4.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.main");
         toTranslate.Add(button2.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.refinery");
         toTranslate.Add(button3.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"cheatmenu.category.gadgets");
@@ -186,34 +192,43 @@ public class SR2ECheatMenu : SR2EMenu
         if (EnableInfEnergy.HasFlag()) infEnergyButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infenergyoff"),
             () =>
         {
+            AudioEUtil.PlaySound(MenuSound.Click);
             SR2ECommandManager.ExecuteByString("infenergy", true,true);
             infEnergyButton.textInstance.text = translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off"));
         });
         if (EnableInfHealth.HasFlag()) infHealthButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.infhealthoff"),
             () =>
         {
+            AudioEUtil.PlaySound(MenuSound.Click);
             SR2ECommandManager.ExecuteByString("infhealth", true,true);
             infHealthButton.textInstance.text = translation("cheatmenu.cheatbuttons.infhealth" + (InfiniteHealthCommand.infHealth? "on" : "off"));
             });
         removeFogButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.removeFogoff"),
             () =>
             {
+                AudioEUtil.PlaySound(MenuSound.Click);
                 removeFog = !removeFog;
                 removeFogButton.textInstance.text = translation("cheatmenu.cheatbuttons.removeFog" + (removeFog? "on" : "off"));
             });
         betterScreenshotButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.betterScreenshotoff"),
             () =>
             {
+                AudioEUtil.PlaySound(MenuSound.Click);
                 betterScreenshot = !betterScreenshot;
                 betterScreenshotButton.textInstance.text = translation("cheatmenu.cheatbuttons.betterScreenshot" + (betterScreenshot? "on" : "off"));
             });
         noclipButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.noclipoff"),
             () =>
             {
+                AudioEUtil.PlaySound(MenuSound.Click);
                 SR2ECommandManager.ExecuteByString("noclip", true,true);
                 noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SceneContext.Instance.Camera.GetComponent<NoClipComponent>()!=null ? "on" : "off"));
             });
-        refillButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.refillinv"), () => { SR2ECommandManager.ExecuteByString("refillinv", true,true); });
+        refillButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.refillinv"), () =>
+        {
+            AudioEUtil.PlaySound(MenuSound.Click);
+            SR2ECommandManager.ExecuteByString("refillinv", true,true);
+        });
         
     }
 }

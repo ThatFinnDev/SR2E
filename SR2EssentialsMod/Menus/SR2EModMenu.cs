@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Reflection;
 using Il2CppTMPro;
+using SR2E.Components;
 using SR2E.Enums;
 using SR2E.Enums.Features;
+using SR2E.Enums.Sounds;
 using SR2E.Expansion;
 using SR2E.Managers;
 using SR2E.Popups;
@@ -77,6 +79,7 @@ public class SR2EModMenu : SR2EMenu
 
                 b.onClick.AddListener((Action)(() =>
                 {
+                    AudioEUtil.PlaySound(MenuSound.Click);
                     string name = "";
                     try {name = rotten.assembly.Assembly.FullName; } catch {}
                     if (String.IsNullOrEmpty(name))
@@ -116,6 +119,7 @@ public class SR2EModMenu : SR2EMenu
             }
             b.onClick.AddListener((Action)(() =>
             {
+                AudioEUtil.PlaySound(MenuSound.Click);
                 themeButton.gameObject.SetActive(melonBase is SR2EEntryPoint);
                 modInfoText.text = translation("modmenu.modinfo.mod",melonBase.Info.Name);
                 if(isSR2EExpansion) 
@@ -131,6 +135,8 @@ public class SR2EModMenu : SR2EMenu
                     if (meta == null) continue;
                     if(string.IsNullOrWhiteSpace(meta.Key)) continue;
                     if(string.IsNullOrWhiteSpace(meta.Value)) continue;
+                    if (meta.Key == null) continue;
+                    if (meta.Value == null) continue;
                     switch (meta.Key)
                     {
                         case "display_version":
@@ -170,18 +176,18 @@ public class SR2EModMenu : SR2EMenu
                     {
                         case "source_code":
                             try {
-                                modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode",meta.Value);
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode",FormatLink(meta.Value));
                             } catch{ }
                             break;
                         case "nexus":
                             try {
-                                modInfoText.text += "\n" + translation("modmenu.modinfo.nexus",meta.Value);
+                                modInfoText.text += "\n" + translation("modmenu.modinfo.nexus",FormatLink(meta.Value));
                             } catch{ }
                             break;
                     }
                 }
-                if (!String.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
-                    modInfoText.text += "\n" + translation("modmenu.modinfo.link",melonBase.Info.DownloadLink);
+                if (!string.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
+                    modInfoText.text += "\n" + translation("modmenu.modinfo.link",FormatLink(melonBase.Info.DownloadLink));
 
                 string universalModName = translation("modmenu.modinfo.unknown");
                 MelonGameAttribute universalMod =
@@ -193,12 +199,17 @@ public class SR2EModMenu : SR2EMenu
                 AssemblyDescriptionAttribute desc =
                     melonBase.MelonAssembly.Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
                 if (desc != null)
-                    if (!String.IsNullOrWhiteSpace(desc.Description))
+                    if (!string.IsNullOrWhiteSpace(desc.Description))
                         modInfoText.text += "\n" + translation("modmenu.modinfo.description",desc.Description + "\n");
 
             }));
         }
         modContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
+    }
+
+    string FormatLink(string url)
+    {
+        return $"<link=\"{url}\"><color=#2C6EC8><u>{url}</u></color></link>";
     }
     protected override void OnLateAwake()
     {
@@ -208,6 +219,7 @@ public class SR2EModMenu : SR2EMenu
         toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"modmenu.warning.restart");
         Transform content = transform.GetObjectRecursively<Transform>("ModMenuModConfigurationContentRec");
         modInfoText = transform.GetObjectRecursively<TextMeshProUGUI>("ModMenuModInfoTextRec");
+        modInfoText.AddComponent<ClickableTextLink>();
         foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
             if (!String.IsNullOrEmpty(stringKey))
                 if (stringKey != "None")
@@ -224,11 +236,14 @@ public class SR2EModMenu : SR2EMenu
         allPossibleKeys.Remove(Key.RightWindows);
 
         var button1 = transform.GetObjectRecursively<Image>("ModMenuModMenuSelectionButtonRec");
+        button1.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         button1.sprite = whitePillBg;
         var button2 = transform.GetObjectRecursively<Image>("ModMenuConfigurationSelectionButtonRec");
         button2.sprite = whitePillBg;
+        button2.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         var button3 = transform.GetObjectRecursively<Image>("ModMenuRepoSelectionButtonRec");
-        button2.sprite = whitePillBg;
+        button3.sprite = whitePillBg;
+        button3.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         button3.GetComponent<Button>().onClick.AddListener((Action)(() =>
         {
             if (EnableRepoMenu.HasFlag())
@@ -237,6 +252,7 @@ public class SR2EModMenu : SR2EMenu
             }
             else
             {
+                AudioEUtil.PlaySound(MenuSound.Error);
                 SR2ETextViewer.Open(translation("feature.indevelopment"));
             }
         }));
@@ -246,7 +262,7 @@ public class SR2EModMenu : SR2EMenu
         toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"modmenu.title");
         
         themeButton = transform.GetObjectRecursively<Button>("ThemeMenuButtonRec");
-        themeButton.onClick.AddListener((Action)(() =>{ Close(); MenuEUtil.GetMenu<SR2EThemeMenu>().OpenC(this); }));
+        themeButton.onClick.AddListener((Action)(() =>{ AudioEUtil.PlaySound(MenuSound.Click); Close(); MenuEUtil.GetMenu<SR2EThemeMenu>().OpenC(this); }));
         toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
         {
@@ -274,6 +290,7 @@ public class SR2EModMenu : SR2EMenu
                         obj.transform.GetChild(2).GetComponent<Toggle>().onValueChanged.AddListener((Action<bool>)(
                             (isOn) =>
                             {
+                                if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
                                 entry.BoxedEditedValue = isOn;
                                 category.SaveToFile(false);
                                 if (!entriesWithActions.ContainsKey(entry))
@@ -302,7 +319,8 @@ public class SR2EModMenu : SR2EMenu
                         inputField.onValueChanged.AddListener((Action<string>)(
                             (text) =>
                             {
-                                if (String.IsNullOrEmpty(text))
+                                if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
+                                if (string.IsNullOrEmpty(text))
                                     text = "0";
                                 int value;
                                 if (int.TryParse(text, out value))
@@ -335,7 +353,8 @@ public class SR2EModMenu : SR2EMenu
                         inputField.onValueChanged.AddListener((Action<string>)(
                             (text) =>
                             {
-                                if (String.IsNullOrEmpty(text))
+                                if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
+                                if (string.IsNullOrEmpty(text))
                                     text = "0.0";
                                 float value;
                                 if (float.TryParse(text, out value))
@@ -369,7 +388,8 @@ public class SR2EModMenu : SR2EMenu
                         inputField.onValueChanged.AddListener((Action<string>)(
                             (text) =>
                             {
-                                if (String.IsNullOrEmpty(text))
+                                if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
+                                if (string.IsNullOrEmpty(text))
                                     text = "0.0";
                                 double value;
                                 if (double.TryParse(text, out value))
@@ -402,6 +422,7 @@ public class SR2EModMenu : SR2EMenu
                             translation("modmenu.modconfig.entertext");
                         inputField.onValueChanged.AddListener((Action<string>)((text) =>
                         {
+                            if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
                             entry.BoxedEditedValue = text;
                             category.SaveToFile(false);
                             if (!entriesWithActions.ContainsKey(entry))
@@ -424,6 +445,7 @@ public class SR2EModMenu : SR2EMenu
                         textMesh.text = entry.GetEditedValueAsString();
                         button.onClick.AddListener((Action)(() =>
                         {
+                            if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
                             textMesh.text = translation("modmenu.modconfig.keylistening");
                             listeninAction = ((Action<Nullable<Key>>)((inputKey) =>
                             {

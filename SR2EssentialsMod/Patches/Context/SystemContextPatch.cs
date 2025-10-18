@@ -38,14 +38,8 @@ internal class SystemContextPatch
     }
     internal static void Postfix(SystemContext __instance)
     {
-        System.IO.Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SR2E.srtwoessentials.assetbundle");
-        byte[] buffer = new byte[16 * 1024];
-        System.IO.MemoryStream ms = new System.IO.MemoryStream();
-        int read;
-        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-            ms.Write(buffer, 0, read);
-
-        bundle = AssetBundle.LoadFromMemory(ms.ToArray());
+        SystemContext.IsModded = true;
+        bundle = EmbeddedResourceEUtil.LoadBundle("srtwoessentials.assetbundle");
         foreach (string path in bundle.GetAllAssetNames())
         {
             var asset = bundle.LoadAsset(path);
@@ -76,7 +70,7 @@ internal class SystemContextPatch
                     
         LoadLanguage(lang);
         
-        foreach (var expansion in SR2EEntryPoint.expansions)
+        foreach (var expansion in SR2EEntryPoint.expansionsAll)
             try { expansion.OnSystemContext(__instance); } 
             catch (Exception e) { MelonLogger.Error(e); }
     }

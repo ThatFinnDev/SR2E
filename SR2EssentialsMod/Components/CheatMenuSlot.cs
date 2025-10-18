@@ -1,6 +1,7 @@
 using System;
 using Il2CppMonomiPark.SlimeRancher.Player;
 using Il2CppTMPro;
+using SR2E.Enums.Sounds;
 using SR2E.Popups;
 using SR2E.Storage;
 using UnityEngine.UI;
@@ -34,11 +35,12 @@ internal class CheatMenuSlot : MonoBehaviour
 
     public void Apply()
     {
-        if (amountSlider.value == 0) { entryInput.text = ""; slot.Clear(); return; }
+        if (amountSlider.value == 0) { entryInput.text = ""; slot.Clear(); AudioEUtil.PlaySound(MenuSound.Error); return; }
         
         IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(entryInput.text);
-        if (type == null) { entryInput.text = ""; slot.Clear(); amountSlider.value = 0; return; }
+        if (type == null) { entryInput.text = ""; slot.Clear(); amountSlider.value = 0; AudioEUtil.PlaySound(MenuSound.Error); return; }
         
+        AudioEUtil.PlaySound(MenuSound.Apply);
         string itemName = type.GetName().Replace("'","").Replace(" ","");
         entryInput.text = itemName;
         slot.Clear();
@@ -47,6 +49,7 @@ internal class CheatMenuSlot : MonoBehaviour
     }
     public void Select()
     {
+        AudioEUtil.PlaySound(MenuSound.Click);
         var dict = new TripleDictionary<string, string, Sprite>();
         foreach (IdentifiableType identType in LookupEUtil.vaccableTypes)
         {
@@ -61,7 +64,12 @@ internal class CheatMenuSlot : MonoBehaviour
                 }
             }catch { }
         }
-        SR2EGridMenuList.Open(dict, (Action<string>)((value) => { entryInput.SetText(value); }));
+        SR2EGridMenuList.Open(dict, (Action<string>)((value) =>
+        {
+            if (amountSlider.value == 0)
+                amountSlider.value = 1;
+            entryInput.SetText(value);
+        }));
     }
     private AmmoSlot slot {
         get

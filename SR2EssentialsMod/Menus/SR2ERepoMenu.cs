@@ -44,44 +44,6 @@ public class SR2ERepoMenu : SR2EMenu
     Transform repoPanel;
     Transform modPanel;
     
-    IEnumerator DownloadImageAsync(string url,Image targetImage)
-    {
-        Texture2D texture = null;
-        bool isDone = false;
-        string error = null;
-
-        // Run image download in a separate thread
-        Thread thread = new Thread(() =>
-        {
-            UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(url);
-            var asyncOp = uwr.SendWebRequest();
-
-            while (!asyncOp.isDone) { } // block in thread (not main)
-
-            if (uwr.result != UnityWebRequest.Result.Success)
-            {
-                error = uwr.error;
-            }
-            else
-            {
-                texture = DownloadHandlerTexture.GetContent(uwr);
-            }
-
-            isDone = true;
-        });
-
-        thread.Start();
-
-        while (!isDone)
-            yield return null;
-
-        if (!string.IsNullOrEmpty(error))
-        {
-            yield break;
-        }
-
-        targetImage.sprite = texture.Texture2DToSprite();
-    }
     protected override void OnOpen()
     {
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("RepoMenuTemplateButton");
@@ -95,6 +57,7 @@ public class SR2ERepoMenu : SR2EMenu
             {
                 GameObject obj = Instantiate(buttonPrefab, repoContent);
                 Button b = obj.GetComponent<Button>();
+                obj.GetComponent<Image>().sprite = whitePillBg;
                 b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "BROKEN: "+repo.Key;
                 obj.SetActive(true);
                 ColorBlock colorBlock = b.colors;colorBlock.normalColor = new Color(0.5f, 0.5f, 0.5f, 1);
@@ -114,6 +77,7 @@ public class SR2ERepoMenu : SR2EMenu
             {
                 GameObject obj = Instantiate(buttonPrefab, repoContent);
                 Button b = obj.GetComponent<Button>();
+                obj.GetComponent<Image>().sprite = whitePillBg;
                 b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repo.Value.name;
                 obj.SetActive(true);
                     
@@ -123,16 +87,16 @@ public class SR2ERepoMenu : SR2EMenu
                         var name = transform.GetObjectRecursively<TextMeshProUGUI>("RepoViewNameTextRec");
                         var desc = transform.GetObjectRecursively<TextMeshProUGUI>("RepoViewDescriptionTextRec");
                         
-                        if (!String.IsNullOrWhiteSpace(repo.Value.header_url))
-                        {
-                            MelonCoroutines.Start(DownloadImageAsync(repo.Value.header_url,
-                                transform.GetObjectRecursively<Image>("RepoViewHeaderImageRec")));
+                        if (!string.IsNullOrWhiteSpace(repo.Value.header_url))
+                        { 
+                            HttpEUtil.DownloadTexture2DIntoImageAsync(repo.Value.header_url,
+                                transform.GetObjectRecursively<Image>("RepoViewHeaderImageRec"));
                         }
-                        if(String.IsNullOrWhiteSpace(repo.Value.name)) name.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(repo.Value.name)) name.gameObject.SetActive(false);
                         else {name.gameObject.SetActive(true); name.SetText(repo.Value.name);}
                         
                         
-                        if(String.IsNullOrWhiteSpace(repo.Value.description)) desc.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(repo.Value.description)) desc.gameObject.SetActive(false);
                         else {desc.gameObject.SetActive(true); desc.SetText("Description: "+repo.Value.description);}
                 }));
             }
@@ -143,6 +107,7 @@ public class SR2ERepoMenu : SR2EMenu
                 try
                 {
                     GameObject obj = Instantiate(buttonPrefab, modContent);
+                    obj.GetComponent<Image>().sprite = whitePillBg;
                     Button b = obj.GetComponent<Button>();
                     b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = mod.name;
                     obj.SetActive(true);
@@ -152,7 +117,7 @@ public class SR2ERepoMenu : SR2EMenu
                         modPanel.gameObject.SetActive(true);
                         var name = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewNameTextRec");
                         var author = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewAuthorTextRec");
-                        var coauthor = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewCoAuthorTextRec");
+                        var coauthors = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewCoAuthorTextRec");
                         var desc = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewDescriptionTextRec");
                         var company = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewCompanyTextRec");
                         var trademark = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewTrademarkTextRec");
@@ -160,40 +125,38 @@ public class SR2ERepoMenu : SR2EMenu
                         var copyright = transform.GetObjectRecursively<TextMeshProUGUI>("ModViewCopyrightTextRec");
 
 
-                        if (!String.IsNullOrWhiteSpace(mod.header_url))
+                        if (!string.IsNullOrWhiteSpace(mod.header_url))
                         {
-                            MelonCoroutines.Start(DownloadImageAsync(mod.header_url,
-                                transform.GetObjectRecursively<Image>("ModViewHeaderImageRec")));
+                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.header_url, transform.GetObjectRecursively<Image>("ModViewHeaderImageRec"));
                         }
 
-                        if (!String.IsNullOrWhiteSpace(mod.icon_url))
+                        if (!string.IsNullOrWhiteSpace(mod.icon_url))
                         {
-                            MelonCoroutines.Start(DownloadImageAsync(mod.icon_url,
-                                transform.GetObjectRecursively<Image>("ModViewIconImageRec")));
+                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.icon_url, transform.GetObjectRecursively<Image>("ModViewIconImageRec"));
                         }
                         
-                        if(String.IsNullOrWhiteSpace(mod.name)) name.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(mod.name)) name.gameObject.SetActive(false);
                         else {name.gameObject.SetActive(true); name.SetText(mod.name);}
                         
-                        if(String.IsNullOrWhiteSpace(mod.author)) author.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(mod.author)) author.gameObject.SetActive(false);
                         else {author.gameObject.SetActive(true); author.SetText("Author: "+mod.author);}
                         
-                        if(String.IsNullOrWhiteSpace(mod.coauthor)) coauthor.gameObject.SetActive(false);
-                        else {coauthor.gameObject.SetActive(true); coauthor.SetText("Co-Author: "+mod.coauthor);}
+                        if(string.IsNullOrWhiteSpace(mod.coauthors)) coauthors.gameObject.SetActive(false);
+                        else {coauthors.gameObject.SetActive(true); coauthors.SetText("Co-Authors: "+mod.coauthors);}
                         
-                        if(String.IsNullOrWhiteSpace(mod.description)) desc.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(mod.description)) desc.gameObject.SetActive(false);
                         else {desc.gameObject.SetActive(true); desc.SetText("Description: "+mod.description);}
                         
-                        if(String.IsNullOrWhiteSpace(mod.company)) company.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(mod.company)) company.gameObject.SetActive(false);
                         else {company.gameObject.SetActive(true); company.SetText("Company: "+mod.company);}
                         
-                        if(String.IsNullOrWhiteSpace(mod.trademark)) trademark.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(mod.trademark)) trademark.gameObject.SetActive(false);
                         else {trademark.gameObject.SetActive(true); trademark.SetText("Trademark: "+mod.trademark);}
                         
-                        if(String.IsNullOrWhiteSpace(mod.team)) team.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(mod.team)) team.gameObject.SetActive(false);
                         else {team.gameObject.SetActive(true); team.SetText("Team: "+mod.team);}
                         
-                        if(String.IsNullOrWhiteSpace(mod.copyright)) copyright.gameObject.SetActive(false);
+                        if(string.IsNullOrWhiteSpace(mod.copyright)) copyright.gameObject.SetActive(false);
                         else {copyright.gameObject.SetActive(true); copyright.SetText("Copyright: "+mod.copyright);}
                             
                             
@@ -209,9 +172,15 @@ public class SR2ERepoMenu : SR2EMenu
     protected override void OnLateAwake()
     {
         
-        //var button1 = transform.getObjRec<Image>("ThemeMenuThemeSelectorSelectionButtonRec");
-        //button1.sprite = whitePillBg;
-        
+        var button1 = transform.GetObjectRecursively<Image>("RepoMenuMainSelectionButtonRec");
+        button1.sprite = whitePillBg;
+        button1.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
+        var button2 = transform.GetObjectRecursively<Image>("RepotMenuRepositoriesSelectionButtonRec");
+        button2.sprite = whitePillBg;
+        button2.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
+        var button3 = transform.GetObjectRecursively<Image>("RepoMenuConfigSelectionButtonRec");
+        button3.sprite = whitePillBg;
+        button3.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         //toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
         toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"repomenu.title");
     }

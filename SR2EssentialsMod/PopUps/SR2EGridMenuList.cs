@@ -1,6 +1,7 @@
 ﻿
 using System;
 using Il2CppTMPro;
+using SR2E.Enums.Sounds;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -37,6 +38,7 @@ public class SR2EGridMenuList : SR2EPopUp
             instance.transform.GetChild(1).GetComponent<Image>().sprite = value.Item2;
             instance.onClick.AddListener((Action)(() =>
             {
+                AudioEUtil.PlaySound(MenuSound.Click);
                 OnPress(entry.Key);
             }));
         }

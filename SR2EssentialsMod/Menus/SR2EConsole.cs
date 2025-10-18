@@ -108,7 +108,7 @@ public class SR2EConsole : SR2EMenu
             selectedAutoComplete = 0;
         for (int i = 0; i < autoCompleteContent.childCount; i++)
             Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
-        if (String.IsNullOrWhiteSpace(text))
+        if (string.IsNullOrWhiteSpace(text))
         {
             return;
         }
@@ -210,7 +210,11 @@ public class SR2EConsole : SR2EMenu
         autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
         autoCompleteScrollView.SetActive(false);
 
-        commandInput.onValueChanged.AddListener((Action<string>)((text) => { RefreshAutoComplete(text); }));
+        commandInput.onValueChanged.AddListener((Action<string>)((text) =>
+        {
+            if (text.Contains("\n")) commandInput.text = text.Replace("\n", "");
+            RefreshAutoComplete(text);
+        }));
         
         foreach (Transform child in transform.parent.GetChildren())
             child.gameObject.SetActive(false);

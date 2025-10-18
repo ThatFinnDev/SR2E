@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using SR2E.Buttons;
 using SR2E.Components;
+using SR2E.Cotton;
 using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Patches.Context;
@@ -41,8 +42,8 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
-    public const string Contributors = "Atmudia, Aureumapes";
-    public const string CodeVersion = "3.2.1";
+    public const string Contributors = "shizophrenicgopher, Atmudia";
+    public const string CodeVersion = "3.3.0";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
@@ -54,7 +55,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.2.1";
+    public const string DisplayVersion = "3.3.0";
 
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
@@ -69,7 +70,8 @@ public static class BuildInfo
 public class SR2EEntryPoint : MelonMod
 {
     internal static ScriptedBool cheatsEnabledOnSave;
-    internal static List<SR2EExpansionV1> expansions = new List<SR2EExpansionV1>();
+    internal static List<SR2EExpansionV1> expansionsAll = new();
+    internal static List<SR2EExpansionV2> expansionsV2 = new();
     internal static TMP_FontAsset SR2Font;
     internal static TMP_FontAsset normalFont;
     internal static TMP_FontAsset regularFont;
@@ -102,8 +104,9 @@ public class SR2EEntryPoint : MelonMod
     internal static bool enableDebugDirector => prefs.GetEntry<bool>("enableDebugDirector").Value;
     internal static bool enableCheatMenuButton => true;//prefs.GetEntry<bool>("enableCheatMenuButton").Value; 
     
-    static bool IsDisplayVersionValid() 
+    static bool IsDisplayVersionValid()
     {
+        if (!BuildInfo.DisplayVersion.Contains(BuildInfo.CodeVersion)) return false;
         /*Semver2 Regex*/ var semVerRegex = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+(?<build>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$");
         var match = semVerRegex.Match(BuildInfo.DisplayVersion);
         /*Not Semver2*/ if (!match.Success) return false;
@@ -142,6 +145,7 @@ public class SR2EEntryPoint : MelonMod
             prefs.DeleteEntry(entry);
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
+        if(AllowExperimentalLibrary.HasFlag()) if (!prefs.HasEntry("useExperimentalLibrary")) prefs.CreateEntry("useExperimentalLibrary", (bool)false, "Force enable experimental library", "It's automatically enabled if expansions need it. This will just force it.",false);
         if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => 
             { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
@@ -195,6 +199,10 @@ public class SR2EEntryPoint : MelonMod
         }
 
         MelonCoroutines.Start(GetBranchJson());
+
+        if (!useLibrary) return;
+        
+        //SaveComponents.RegisterComponent(typeof(ModdedV01));
     }
     IEnumerator GetBranchJson()
     {
@@ -275,7 +283,39 @@ public class SR2EEntryPoint : MelonMod
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
         InitFlagManager();
     }
+
+    private static bool _useLibrary = false;
+    internal static bool useLibrary => _useLibrary;
     
+    void PatchGame()
+    {
+        
+        try { _useLibrary= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
+        var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
+    
+        foreach (var type in types)
+        {
+            if (type == null) continue;
+            try
+            {
+                // Skip entire class if marked as a library patch and library disabled
+                if (!_useLibrary && type.GetCustomAttribute<LibraryPatch>() != null)
+                    continue;
+                var classPatches = HarmonyMethodExtensions.GetFromType(type);
+                if (classPatches.Count > 0)
+                {
+                    var processor = HarmonyInstance.CreateClassProcessor(type);
+                    processor.Patch();
+                    //MelonLogger.Msg($"Patched class: {type.FullName}");
+                }
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Error(e);
+                MelonLogger.Error($"Failed to patch {type.FullName}: {e.Message}");
+            }
+        }
+    }
 
     
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
@@ -285,21 +325,37 @@ public class SR2EEntryPoint : MelonMod
         string path = MelonAssembly.Assembly.Location + ".old";
         if (File.Exists(path)) File.Delete(path);
         RefreshPrefs();
+        foreach (MelonBase melonBase in new List<MelonBase>(MelonBase.RegisteredMelons))
+        {
+            if (melonBase is SR2EExpansionV2)
+                if (AllowExpansions.HasFlag())
+                {
+                    var attribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
+                    if (attribute == null) melonBase.Unregister();
+                    else
+                    {
+                        if (attribute.RequiresLibrary) _useLibrary = true;
+                        expansionsV2.Add(melonBase as SR2EExpansionV2);
+                    }
+                }
+                else melonBase.Unregister();
+            
+            if (melonBase is SR2EExpansionV1)
+                if (AllowExpansions.HasFlag()) expansionsAll.Add(melonBase as SR2EExpansionV1);
+                else melonBase.Unregister();
+        }
+        PatchGame();
 
         Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
         try { AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }
-        foreach (MelonBase melonBase in new List<MelonBase>(MelonBase.RegisteredMelons))
-        {
-            if (melonBase is SR2EExpansionV1)
-                if (AllowExpansions.HasFlag()) expansions.Add(melonBase as SR2EExpansionV1);
-                else melonBase.Unregister();
-        }
-        foreach (var expansion in expansions) try { expansion.OnNormalInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); }
+
+        foreach (var expansion in expansionsAll) try { expansion.OnNormalInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); }
     }
     public override void OnApplicationQuit()
     {
         try { if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay()) autoSaveDirector.SaveGame(); }catch { }
     }
+    
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: " + sceneName);
@@ -435,18 +491,24 @@ public class SR2EEntryPoint : MelonMod
             case "UICore":
                 CheckForTime();
                 break;
+            case "ZoneCore": foreach (var expansion in expansionsV2) try { expansion.OnZoneCoreLoaded(); } catch (Exception e) { MelonLogger.Error(e); } break;
         }
 
         switch (sceneName)
         {
-            case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptLoad(); }catch (Exception e) { MelonLogger.Error(e); } break;
-            case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "StandaloneEngagementPrompt": foreach (var expansion in expansionsAll) try { expansion.OnStandaloneEngagementPromptLoad(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "PlayerCore": foreach (var expansion in expansionsAll) try { expansion.OnPlayerCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "UICore": foreach (var expansion in expansionsAll) try { expansion.OnUICoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "MainMenuUI": foreach (var expansion in expansionsAll) try { expansion.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
         }
 
+        if (useLibrary) CottonLibrary.OnSceneWasLoaded(buildIndex,sceneName);
+
+
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
+
+        
     }
 
     internal static void CheckForTime()
@@ -456,12 +518,6 @@ public class SR2EEntryPoint : MelonMod
         {
             if(Time.timeScale!=0&&Time.timeScale != NativeEUtil.CustomTimeScale) 
                 Time.timeScale = NativeEUtil.CustomTimeScale; 
-        } catch {}
-        try 
-        {
-            var factor = SceneContext.Instance.TimeDirector._timeFactor;
-            if (factor!=0&&factor!= NativeEUtil.CustomTimeScale) 
-                SceneContext.Instance.TimeDirector._timeFactor = NativeEUtil.CustomTimeScale;
         } catch {}
         ExecuteInSeconds((Action)(() => { CheckForTime();}), 1);
     }
@@ -479,13 +535,13 @@ public class SR2EEntryPoint : MelonMod
         if (regularFont == null) regularFont = FontEUtil.FontFromGame("Lexend-Regular (Latin)"); 
         if (boldFont == null) boldFont = FontEUtil.FontFromGame("Lexend-Bold (Latin)"); 
         if (normalFont == null) normalFont = FontEUtil.FontFromOS("Tahoma"); 
-        foreach (var expansion in expansions) try { expansion.OnSR2FontLoad(); }catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var expansion in expansionsAll) try { expansion.OnSR2FontLoad(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in menus) pair.Key.ReloadFont();
     }
 
     internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
     {
-        foreach (var expansion in expansions) try { expansion.OnSaveDirectorLoading(autoSaveDirector); }catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var expansion in expansionsAll) try { expansion.OnSaveDirectorLoading(autoSaveDirector); }catch (Exception e) { MelonLogger.Error(e); }
     }
 
     internal static CustomPauseMenuButton cheatMenuButton;
@@ -495,7 +551,7 @@ public class SR2EEntryPoint : MelonMod
     {
         if (isSaveDirectorLoaded) return;
         isSaveDirectorLoaded = true;
-        foreach (var expansion in expansions) try { expansion.SaveDirectorLoaded(autoSaveDirector); } catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var expansion in expansionsAll) try { expansion.SaveDirectorLoaded(autoSaveDirector); } catch (Exception e) { MelonLogger.Error(e); }
     }
 
     public override void OnSceneWasInitialized(int buildIndex, string sceneName)
@@ -503,13 +559,15 @@ public class SR2EEntryPoint : MelonMod
         if (DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: " + sceneName);
         if (sceneName == "MainMenuUI") mainMenuLoaded = true;
         switch (sceneName)
-        {                
-            case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneInitialize(); } catch (Exception e) { MelonLogger.Error(e); } break;
+        {
+            case "StandaloneEngagementPrompt": foreach (var expansion in expansionsAll) try { expansion.OnStandaloneEngagementPromptInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "PlayerCore": foreach (var expansion in expansionsAll) try { expansion.OnPlayerCoreInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "UICore": foreach (var expansion in expansionsAll) try { expansion.OnUICoreInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "MainMenuUI": foreach (var expansion in expansionsAll) try { expansion.OnMainMenuUIInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "ZoneCore": foreach (var expansion in expansionsV2) try { expansion.OnZoneCoreInitialized(); }catch (Exception e) { MelonLogger.Error(e); } break;
         }
+
         SR2ECommandManager.OnSceneWasInitialized(buildIndex, sceneName);
     }
 
@@ -521,11 +579,12 @@ public class SR2EEntryPoint : MelonMod
         catch (Exception e) { MelonLogger.Error(e); }
         switch (sceneName)
         {               
-            case "StandaloneEngagementPrompt": foreach (var expansion in expansions) try { expansion.OnStandaloneEngagementPromptUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "PlayerCore": foreach (var expansion in expansions) try { expansion.OnPlayerCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "UICore": foreach (var expansion in expansions) try { expansion.OnUICoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "MainMenuUI": foreach (var expansion in expansions) try { expansion.OnMainMenuUIUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "LoadScene": foreach (var expansion in expansions) try { expansion.OnLoadSceneUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "StandaloneEngagementPrompt": foreach (var expansion in expansionsAll) try { expansion.OnStandaloneEngagementPromptUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "PlayerCore": foreach (var expansion in expansionsAll) try { expansion.OnPlayerCoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "UICore": foreach (var expansion in expansionsAll) try { expansion.OnUICoreUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "MainMenuUI": foreach (var expansion in expansionsAll) try { expansion.OnMainMenuUIUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "ZoneCore": foreach (var expansion in expansionsAll) try { expansion.OnZoneCoreUnloaded(); } catch (Exception e) { MelonLogger.Error(e); } break;
         }
         SR2ECommandManager.OnSceneWasUnloaded(buildIndex, sceneName);
     }

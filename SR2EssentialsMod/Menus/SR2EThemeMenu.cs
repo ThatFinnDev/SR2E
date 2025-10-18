@@ -2,6 +2,7 @@ using System;
 using Il2CppTMPro;
 using SR2E.Enums;
 using SR2E.Enums.Features;
+using SR2E.Enums.Sounds;
 using SR2E.Managers;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
@@ -73,6 +74,7 @@ public class SR2EThemeMenu : SR2EMenu
             dropdown.RefreshShownValue();
             dropdown.onValueChanged.AddListener((Action<int>)((value) =>
             {
+                AudioEUtil.PlaySound(MenuSound.Click);
                 SR2ESaveManager.data.fonts[identifier.saveKey]=fonts[value];
                 SR2ESaveManager.Save();
                 var menu = identifier.GetMenu();
@@ -85,6 +87,7 @@ public class SR2EThemeMenu : SR2EMenu
                 button.SetActive(true);
                 button.transform.GetChild(0).GetComponent<Button>().onClick.AddListener((Action)(() =>
                 {
+                    AudioEUtil.PlaySound(MenuSound.Click);
                     warningText.SetActive(true);
                     for (int i = 0; i < contentRec.childCount; i++)
                         if(!contentRec.GetChild(i).HasComponent<CanvasGroup>())

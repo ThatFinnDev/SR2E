@@ -4,6 +4,7 @@ using Il2CppInterop.Runtime.Injection;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Enums;
+using SR2E.Enums.Sounds;
 using SR2E.Managers;
 using SR2E.Patches.Context;
 using SR2E.Storage;
@@ -26,6 +27,7 @@ public abstract class SR2EPopUp : MonoBehaviour
     
     public new void Close()
     {
+        AudioEUtil.PlaySound(MenuSound.ClosePopup);
         disableBlock();
         MenuEUtil.openPopUps.Remove(this);
         Destroy(gameObject);
@@ -54,6 +56,7 @@ public abstract class SR2EPopUp : MonoBehaviour
                     }catch (Exception e) { MelonLogger.Error(e); }
                 }
             }
+            AudioEUtil.PlaySound(MenuSound.OpenPopup);
         }), 1);
     }
     protected virtual void OnOpen() {}

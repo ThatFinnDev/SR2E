@@ -1,6 +1,8 @@
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.UI.Framework.Audio;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using SR2E.Buttons;
+using SR2E.Enums.Sounds;
 using SR2E.Managers;
 using SR2E.Menus;
 using UnityEngine.InputSystem;
@@ -75,8 +77,28 @@ internal class GameContextPatch
             MelonLogger.Error("There was a problem loading SR2 action maps!");
         }
 
+        try
+        {
+            AudioEUtil._menuSounds.Add(MenuSound.Click,Get<SECTR_AudioCue>("Click1"));
+            AudioEUtil._menuSounds.Add(MenuSound.SelectCategory,Get<SECTR_AudioCue>("Click2"));
+            AudioEUtil._menuSounds.Add(MenuSound.Apply,Get<SECTR_AudioCue>("Click3"));
+            AudioEUtil._menuSounds.Add(MenuSound.Pop,Get<SECTR_AudioCue>("Click4"));
+            AudioEUtil._menuSounds.Add(MenuSound.ButtonFocused,Get<SECTR_AudioCue>("Click5"));
+            AudioEUtil._menuSounds.Add(MenuSound.Hover,Get<SECTR_AudioCue>("ClickRollover"));
+            AudioEUtil._menuSounds.Add(MenuSound.Error,Get<SECTR_AudioCue>("ClickError"));
+            AudioEUtil._menuSounds.Add(MenuSound.OpenMenu,Get<SECTR_AudioCue>("UIOpen"));
+            AudioEUtil._menuSounds.Add(MenuSound.CloseMenu,Get<SECTR_AudioCue>("CloseMenu"));
+            AudioEUtil._menuSounds.Add(MenuSound.OpenPopup,Get<SECTR_AudioCue>("UIOpen2"));
+            AudioEUtil._menuSounds.Add(MenuSound.ClosePopup,Get<SECTR_AudioCue>("CloseMenu2"));
+            //AudioEUtil._defaultMenuSounds = Get<UIAudioTable>("DefaultMenuSounds");
+        }
+        catch (Exception e)
+        {
+            MelonLogger.Error(e);
+            MelonLogger.Error("There was a problem loading sounds!");
+        }
         //
-        foreach (var expansion in SR2EEntryPoint.expansions)
+        foreach (var expansion in SR2EEntryPoint.expansionsAll)
             try
             {
                 expansion.OnGameContext(__instance);
