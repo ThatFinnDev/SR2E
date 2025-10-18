@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using CottonLibrary;
-using CottonLibrary.Save;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
@@ -20,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using SR2E.Buttons;
 using SR2E.Components;
+using SR2E.Cotton;
 using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Patches.Context;
@@ -44,7 +43,7 @@ public static class BuildInfo
     public const string Author = "ThatFinn";
     public const string CoAuthors = "PinkTarr";
     public const string Contributors = "shizophrenicgopher, Atmudia";
-    public const string CodeVersion = "3.3.1";
+    public const string CodeVersion = "3.3.0";
     public const string DownloadLink = "https://sr2e.thatfinn.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
@@ -105,8 +104,9 @@ public class SR2EEntryPoint : MelonMod
     internal static bool enableDebugDirector => prefs.GetEntry<bool>("enableDebugDirector").Value;
     internal static bool enableCheatMenuButton => true;//prefs.GetEntry<bool>("enableCheatMenuButton").Value; 
     
-    static bool IsDisplayVersionValid() 
+    static bool IsDisplayVersionValid()
     {
+        if (!BuildInfo.DisplayVersion.Contains(BuildInfo.CodeVersion)) return false;
         /*Semver2 Regex*/ var semVerRegex = new Regex(@"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+(?<build>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$");
         var match = semVerRegex.Match(BuildInfo.DisplayVersion);
         /*Not Semver2*/ if (!match.Success) return false;
@@ -202,7 +202,7 @@ public class SR2EEntryPoint : MelonMod
 
         if (!useLibrary) return;
         
-        SaveComponents.RegisterComponent(typeof(ModdedV01));
+        //SaveComponents.RegisterComponent(typeof(ModdedV01));
     }
     IEnumerator GetBranchJson()
     {
@@ -285,7 +285,7 @@ public class SR2EEntryPoint : MelonMod
     }
 
     private static bool _useLibrary = false;
-    public static bool useLibrary => _useLibrary;
+    internal static bool useLibrary => _useLibrary;
     
     void PatchGame()
     {
@@ -492,15 +492,11 @@ public class SR2EEntryPoint : MelonMod
             case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
         }
 
+        if (useLibrary) CottonLibrary.OnSceneWasLoaded(buildIndex,sceneName);
+
+
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
 
-        if (!useLibrary) return;
-
-        var pair = onSceneLoaded.FirstOrDefault(x => sceneName.Contains(x.Key));
-
-        if (pair.Value != null)
-            foreach (var action in pair.Value)
-                action();
         
     }
 

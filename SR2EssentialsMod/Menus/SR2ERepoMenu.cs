@@ -57,6 +57,7 @@ public class SR2ERepoMenu : SR2EMenu
             {
                 GameObject obj = Instantiate(buttonPrefab, repoContent);
                 Button b = obj.GetComponent<Button>();
+                obj.GetComponent<Image>().sprite = whitePillBg;
                 b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "BROKEN: "+repo.Key;
                 obj.SetActive(true);
                 ColorBlock colorBlock = b.colors;colorBlock.normalColor = new Color(0.5f, 0.5f, 0.5f, 1);
@@ -76,6 +77,7 @@ public class SR2ERepoMenu : SR2EMenu
             {
                 GameObject obj = Instantiate(buttonPrefab, repoContent);
                 Button b = obj.GetComponent<Button>();
+                obj.GetComponent<Image>().sprite = whitePillBg;
                 b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repo.Value.name;
                 obj.SetActive(true);
                     
@@ -105,6 +107,7 @@ public class SR2ERepoMenu : SR2EMenu
                 try
                 {
                     GameObject obj = Instantiate(buttonPrefab, modContent);
+                    obj.GetComponent<Image>().sprite = whitePillBg;
                     Button b = obj.GetComponent<Button>();
                     b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = mod.name;
                     obj.SetActive(true);

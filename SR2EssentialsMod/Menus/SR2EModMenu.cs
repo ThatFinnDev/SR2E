@@ -240,7 +240,7 @@ public class SR2EModMenu : SR2EMenu
         button2.sprite = whitePillBg;
         button2.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         var button3 = transform.GetObjectRecursively<Image>("ModMenuRepoSelectionButtonRec");
-        button2.sprite = whitePillBg;
+        button3.sprite = whitePillBg;
         button3.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         button3.GetComponent<Button>().onClick.AddListener((Action)(() =>
         {
