@@ -1,4 +1,5 @@
 using Il2CppTMPro;
+using SR2E.Enums.Sounds;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
@@ -32,7 +33,7 @@ public class ClickableTextLink : MonoBehaviour
         if (linkIndex == -1) return;
         string id = text.textInfo.linkInfo[linkIndex].GetLinkID();
 
-        MelonLogger.Msg(id);
+        AudioEUtil.PlaySound(MenuSound.Click);
         if (id.StartsWith("http://")||id.StartsWith("https://")) Application.OpenURL(id);
     }
     void Update()

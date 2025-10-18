@@ -169,9 +169,15 @@ public class SR2ERepoMenu : SR2EMenu
     protected override void OnLateAwake()
     {
         
-        //var button1 = transform.getObjRec<Image>("ThemeMenuThemeSelectorSelectionButtonRec");
-        //button1.sprite = whitePillBg;
-        
+        var button1 = transform.GetObjectRecursively<Image>("RepoMenuMainSelectionButtonRec");
+        button1.sprite = whitePillBg;
+        button1.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
+        var button2 = transform.GetObjectRecursively<Image>("RepotMenuRepositoriesSelectionButtonRec");
+        button2.sprite = whitePillBg;
+        button2.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
+        var button3 = transform.GetObjectRecursively<Image>("RepoMenuConfigSelectionButtonRec");
+        button3.sprite = whitePillBg;
+        button3.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         //toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
         toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"repomenu.title");
     }
