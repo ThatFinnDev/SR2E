@@ -45,12 +45,7 @@ internal class GameContextPatch
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
             }
 
-            if (!SR2EEntryPoint.cheatsEnabledOnSave)
-                if (AddCheatMenuButton.HasFlag())
-                {
-                    SR2EEntryPoint.cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
-                    if (!SR2EEntryPoint.enableCheatMenuButton) SR2EEntryPoint.cheatMenuButton.Remove();
-                }
+            if (AddCheatMenuButton.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
             if (DevMode.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI(); }));
 
         }
@@ -87,9 +82,9 @@ internal class GameContextPatch
             AudioEUtil._menuSounds.Add(MenuSound.Hover,Get<SECTR_AudioCue>("ClickRollover"));
             AudioEUtil._menuSounds.Add(MenuSound.Error,Get<SECTR_AudioCue>("ClickError"));
             AudioEUtil._menuSounds.Add(MenuSound.OpenMenu,Get<SECTR_AudioCue>("UIOpen"));
-            AudioEUtil._menuSounds.Add(MenuSound.CloseMenu,Get<SECTR_AudioCue>("CloseMenu"));
+            AudioEUtil._menuSounds.Add(MenuSound.CloseMenu,Get<SECTR_AudioCue>("UIClose"));
             AudioEUtil._menuSounds.Add(MenuSound.OpenPopup,Get<SECTR_AudioCue>("UIOpen2"));
-            AudioEUtil._menuSounds.Add(MenuSound.ClosePopup,Get<SECTR_AudioCue>("CloseMenu2"));
+            AudioEUtil._menuSounds.Add(MenuSound.ClosePopup,Get<SECTR_AudioCue>("UIClose2"));
             //AudioEUtil._defaultMenuSounds = Get<UIAudioTable>("DefaultMenuSounds");
         }
         catch (Exception e)

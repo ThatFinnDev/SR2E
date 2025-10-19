@@ -2,5 +2,5 @@ namespace SR2E.Enums.Features;
 
 public enum FeatureStringValue
 {
-    DEFAULT_LANGUAGECODE
+    DEFAULT_LANGUAGECODE=0
 }

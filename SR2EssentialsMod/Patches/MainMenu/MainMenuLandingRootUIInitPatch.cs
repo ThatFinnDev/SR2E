@@ -69,11 +69,12 @@ internal static class MainMenuLandingRootUIInitPatch
                     versionLabel.text = translation("patches.localizedversionpatch.default", SR2EEntryPoint.mlVersion, versionLabel.text);
                 }
             }
-            catch (Exception e) { MelonLogger.Error(e); }
+            catch {  }
     }
     private static void Postfix()
     {
         ChangeVersionLabel();
+        ExecuteInTicks((Action)(() => { ChangeVersionLabel();}), 1);
         ExecuteInTicks((Action)(() => { ChangeVersionLabel();}), 3);
         ExecuteInTicks((Action)(() => { ChangeVersionLabel();}), 10);
     }

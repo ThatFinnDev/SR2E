@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using MelonLoader.TinyJSON;
 
@@ -7,15 +8,28 @@ namespace SR2E.Utils;
 
 public static class EmbeddedResourceEUtil
 {
-    public static Sprite LoadSprite(string fileName) => ConvertEUtil.Texture2DToSprite(LoadTexture2D(fileName,2));
-    public static Texture2D LoadTexture2D(string fileName) => LoadTexture2D(fileName, 2);
-    static Texture2D LoadTexture2D(string filename, int methodToGetAssembly)
+    public static Sprite LoadSprite(string fileName)
     {
+        var method = new StackTrace().GetFrame(1).GetMethod();
+        var assembly = method.ReflectedType.Assembly;
+        return LoadSprite(fileName,assembly);
+    }
+    public static Sprite LoadSprite(string fileName, Assembly assembly) => ConvertEUtil.Texture2DToSprite(LoadTexture2D(fileName,assembly));
+    
+    
+    
+    public static Texture2D LoadTexture2D(string fileName)
+    {
+        var method = new StackTrace().GetFrame(1).GetMethod();
+        var assembly = method.ReflectedType.Assembly;
+        return LoadTexture2D(fileName, assembly);
+    }
+    public static Texture2D LoadTexture2D(string filename, Assembly assembly)
+    {
+        if (assembly == null) return null;
         var realFilename = filename.Replace("/",".");
         if (!(realFilename.EndsWith(".png") || realFilename.EndsWith(".jpg") || realFilename.EndsWith(".exr"))) return null;
         
-        var method = new StackTrace().GetFrame(methodToGetAssembly).GetMethod();
-        var assembly = method.ReflectedType.Assembly;
         System.IO.Stream stream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
         byte[] array = new byte[stream.Length];
         stream.Read(array, 0, array.Length);
@@ -28,6 +42,8 @@ public static class EmbeddedResourceEUtil
         return texture2D;
     }
 
+    
+    
     public static Dictionary<string, byte[]> LoadResources(string folderNamespace, bool recursive = false)
     {
         folderNamespace=folderNamespace.Replace("/",".");
@@ -58,21 +74,36 @@ public static class EmbeddedResourceEUtil
         return result;
     }
 
+    
+    
     public static byte[] LoadResource(string filename)
     {
-        filename=filename.Replace("/",".");
         var method = new StackTrace().GetFrame(1).GetMethod();
         var assembly = method.ReflectedType.Assembly;
+        return LoadResource(filename, assembly);
+    }
+    public static byte[] LoadResource(string filename, Assembly assembly)
+    {
+        if(assembly == null) return null;
+        filename=filename.Replace("/",".");
         System.IO.Stream stream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
         byte[] array = new byte[stream.Length];
         stream.Read(array, 0, array.Length);
         return array;
     }
+    
+    
+    
     public static string LoadString(string filename)
     {
-        filename=filename.Replace("/",".");
         var method = new StackTrace().GetFrame(1).GetMethod();
         var assembly = method.ReflectedType.Assembly;
+        return LoadString(filename, assembly);
+    }
+    public static string LoadString(string filename, Assembly assembly)
+    {
+        if(assembly == null) return null;
+        filename=filename.Replace("/",".");
         System.IO.Stream stream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
         byte[] array = new byte[stream.Length];
         stream.Read(array, 0, array.Length);
@@ -80,11 +111,18 @@ public static class EmbeddedResourceEUtil
 
     }
     
+    
+    
     public static AssetBundle LoadBundle(string filename)
     {
-        filename=filename.Replace("/",".");
         var method = new StackTrace().GetFrame(1).GetMethod();
         var assembly = method.ReflectedType.Assembly;
+        return LoadBundle(filename, assembly);
+    }
+    public static AssetBundle LoadBundle(string filename, Assembly assembly)
+    {
+        if(assembly == null) return null;
+        filename=filename.Replace("/",".");
         System.IO.Stream stream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
         byte[] array = new byte[stream.Length];
         stream.Read(array, 0, array.Length);

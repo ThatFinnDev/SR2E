@@ -1,5 +1,6 @@
 using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.UI;
+using Il2CppMonomiPark.SlimeRancher.UI.Framework.Components;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.InputSystem.UI;
 
@@ -13,11 +14,12 @@ public static class NativeEUtil
         {
             try
             {
-                var ui = Object.FindObjectOfType<MainMenuLandingRootUI>();
+                var ui = GetAnyInScene<MainMenuLandingRootUI>();
                 ui.gameObject.SetActive(false);
                 ui.enabled = false;
                 ui.Close(true, null);
-            } catch { }
+            }  
+            catch (Exception e) { MelonLogger.Error(e); }
         }
 
         if (inGame)
@@ -31,7 +33,7 @@ public static class NativeEUtil
 
     public static void TryPauseAndHide()
     {
-        if (Object.FindObjectOfType<PauseMenuRoot>())
+        if (inGame&&Object.FindObjectOfType<PauseMenuRoot>())
         {
             TryHideMenus();
             TryPauseGame(false);
@@ -80,18 +82,27 @@ public static class NativeEUtil
 
     public static void TryUnHideMenus()
     {
-        if (SR2EEntryPoint.mainMenuLoaded)
+        try
         {
-            foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
-                if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
-                    loader.parentTransform.name == "MainMenuRoot")
+            if (SR2EEntryPoint.mainMenuLoaded)
+            {
+                try
                 {
-                    loader.Start();
-                    break;
-                }
-        }
+                    foreach (UIDisplayContainer container in GetAllInScene<UIDisplayContainer>())
+                        if (container.TargetContainer.name == "MainMenuRoot" && container.name == "MainMenuRoot")
+                        {
+                            try
+                            {
 
-        if (inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
+                                container.OnEnable();
+                                break;
+                            } catch {}
+                        }
+                } catch {}
+            }
+            if (inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
+        }
+        catch { }
     }
 
     internal static float _CustomTimeScale = 1f;
