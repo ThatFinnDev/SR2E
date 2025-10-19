@@ -14,7 +14,7 @@ internal class ScaleCommand: SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         Vector3 scale;
-        if (!this.TryParseVector3(args[0], args[1], args[2], out scale)) return false;
+        if (!TryParseVector3(args[0], args[1], args[2], out scale)) return false;
         
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
              

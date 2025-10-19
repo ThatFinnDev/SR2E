@@ -22,7 +22,7 @@ internal class InfiniteEnergyCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         bool shouldDisableThrusterHeight = false;
-        if (args != null) if (!this.TryParseBool(args[0], out shouldDisableThrusterHeight)) return false;
+        if (args != null) if (!TryParseBool(args[0], out shouldDisableThrusterHeight)) return false;
 
         if (infEnergy)
         {

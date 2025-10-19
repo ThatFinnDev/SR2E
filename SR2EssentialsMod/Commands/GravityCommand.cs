@@ -12,7 +12,7 @@ internal class GravityCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         Vector3 gravBase;
-        if (!this.TryParseVector3(args[0], args[1], args[2], out gravBase)) return false;
+        if (!TryParseVector3(args[0], args[1], args[2], out gravBase)) return false;
         try
         {
             Physics.gravity = -gravBase * 9.81f;

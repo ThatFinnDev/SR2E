@@ -26,7 +26,7 @@ public static class NativeEUtil
         {
             try
             {
-                Object.FindObjectOfType<PauseMenuRoot>().Close();
+                GetAnyInScene<PauseMenuRoot>().HideUI();
             } catch { }
         }
     }
@@ -50,13 +50,13 @@ public static class NativeEUtil
     {
         try
         {
-            SystemContext.Instance.SceneLoader.TryPauseGame();
+            systemContext.SceneLoader.TryPauseGame();
         } catch { }
 
         if (usePauseMenu)
             try
             {
-                Object.FindObjectOfType<PauseMenuDirector>().PauseGame();
+                sceneContext.PauseMenuDirector.PauseGame();
             } catch { }
     }
 
@@ -64,19 +64,19 @@ public static class NativeEUtil
     {
         try
         {
-            SystemContext.Instance.SceneLoader.UnpauseGame();
+            systemContext.SceneLoader.UnpauseGame();
         } catch { }
 
         if (usePauseMenu)
             try
             {
-                Object.FindObjectOfType<PauseMenuDirector>().UnPauseGame();
+                sceneContext.PauseMenuDirector.UnPauseGame();
             } catch { }
         else if (usePauseMenuElse)
             try
             {
-                if (Object.FindObjectOfType<PauseMenuRoot>() != null)
-                    Object.FindObjectOfType<PauseMenuDirector>().PauseGame();
+                if (GetAnyInScene<PauseMenuRoot>() != null)
+                    sceneContext.PauseMenuDirector.PauseGame();
             } catch { }
     }
 
@@ -113,6 +113,8 @@ public static class NativeEUtil
         set
         {
             _CustomTimeScale = value;
+            if (value < 0.01f) _CustomTimeScale = 0.01f;
+            if (value > 2000f) _CustomTimeScale = 2000f;
             SR2EEntryPoint.CheckForTime();
         }
     }

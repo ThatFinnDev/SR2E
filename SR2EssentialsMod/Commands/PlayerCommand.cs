@@ -40,7 +40,7 @@ internal class PlayerCommand : SR2ECommand
             case "size":
                 if (args.Length == 1) { SendMessage(translation("cmd.player.size.show",SceneContext.Instance.player.transform.localScale.x)); return true; }
                 float size;
-                if (!this.TryParseFloat(args[1], out size, 0, false)) return false;
+                if (!TryParseFloat(args[1], out size, 0, false)) return false;
                 KinematicCharacterMotor KCC = null;
                 try { KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>(); }
                 catch { return SendNullKinematicCharacterMotor();}
@@ -55,7 +55,7 @@ internal class PlayerCommand : SR2ECommand
                 catch { return SendNullSRCharacterController();}
                 if (args.Length == 1) { SendMessage(translation("cmd.player.gravity.show",SRCC._gravityMagnitude.Value)); return true; }
                 float level;
-                if (!this.TryParseFloat(args[1], out level)) return false;
+                if (!TryParseFloat(args[1], out level)) return false;
                 SRCC._gravityMagnitude = new Il2CppSystem.Nullable<float>(level);
                 SendMessage(translation("cmd.gravity.edit",level));
                 return true;

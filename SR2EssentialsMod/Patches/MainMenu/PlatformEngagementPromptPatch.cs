@@ -25,7 +25,7 @@ internal static class PlatformEngagementPromptPatch
                 {
                     if (SR2EEntryPoint.mainMenuLoaded)
                     {
-                        NativeEUtil.TryUnHideMenus();
+                        GetAnyInScene<MainMenuLandingRootUI>().Awake();
                     }
                 }), 1);
                 

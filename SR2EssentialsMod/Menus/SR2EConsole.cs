@@ -101,8 +101,7 @@ public class SR2EConsole : SR2EMenu
 
     void RefreshAutoComplete(string text)
     {
-        autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled =
-            true; // Make sure that the component is enabled            
+        autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = true; // Make sure that the component is enabled            
 
         if (selectedAutoComplete > autoCompleteContent.childCount - 1)
             selectedAutoComplete = 0;
@@ -110,6 +109,10 @@ public class SR2EConsole : SR2EMenu
             Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
         if (string.IsNullOrWhiteSpace(text))
         {
+            ExecuteInTicks((Action)(() =>
+            {
+                autoCompleteScrollView.SetActive(autoCompleteContent.childCount != 0);
+            }), 1);
             return;
         }
 
@@ -125,37 +128,40 @@ public class SR2EConsole : SR2EMenu
                 string[] args = null;
                 if (split.Count != 0)
                     args = split.ToArray();
+                string containing = "";
+                if (args != null) containing = args[argIndex];
                 List<string> possibleAutoCompletes = null;
                 try { possibleAutoCompletes = SR2ECommandManager.commands[cmd].GetAutoComplete(argIndex, args); } catch (Exception e) { MelonLogger.Error($"Error in command auto complete!\n{e}"); }
                 if (possibleAutoCompletes != null)
+                {
+                    possibleAutoCompletes = possibleAutoCompletes.Where(s => s.Contains(containing))
+                        .OrderBy(s => !s.StartsWith(containing))
+                        .ToList();
                     if (possibleAutoCompletes.Count == 0)
                         possibleAutoCompletes = null;
+                }
                 if (possibleAutoCompletes != null)
                 {
                     int maxPredictions = MAX_AUTOCOMPLETE.Get();
                     int predicted = 0;
                     foreach (string argument in possibleAutoCompletes)
                     {
-                        if (predicted > maxPredictions)
-                            break;
-                        string containing = "";
-                        if (args != null) containing = split[split.Count - 1];
-                        if (args != null)
-                            if (!argument.ToLower().Contains(containing.ToLower()))
-                                continue;
+                        if (predicted >= maxPredictions) break;
                         predicted++;
                         GameObject instance = Instantiate(autoCompleteEntryPrefab, autoCompleteContent);
                         TextMeshProUGUI textMesh = instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-                        if (args == null)
+                        if (string.IsNullOrEmpty(containing))
                             textMesh.text =
                                 "<alpha=#FF>" + argument +
-                                "<alpha=#65>"; // "alpha=#FF" is the normal argument, and the "alhpa=#65" is the uncompleted part. DO NOT CHANGE THE SYSTEM, ONLY THE ALPHA VALUES!!!
+                                "<alpha=#67>"; // "alpha=#FF" is the normal argument, and the "alpha=#75" is the uncompleted part. DO NOT CHANGE THE SYSTEM, ONLY THE ALPHA VALUES!!!
                         else
-                            textMesh.text = new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(
+                        {
+                            textMesh.text = "<alpha=#67>"+new Regex(Regex.Escape(containing), RegexOptions.IgnoreCase).Replace(
                                 argument,
-                                "<alpha=#6F>" + argument.Substring(argument.ToLower().IndexOf(containing.ToLower()),
-                                    containing.Length) + "<alpha=#45>", 1);
-
+                                "<alpha=#FF>" + 
+                                argument.Substring(argument.ToUpper().IndexOf(containing.ToUpper()),containing.Length) 
+                                + "<alpha=#67>", 1);
+                        }
                         instance.SetActive(true);
                         instance.GetComponent<Button>().onClick.AddListener((Action)(() =>
                         {
@@ -192,6 +198,7 @@ public class SR2EConsole : SR2EMenu
                 }
 
         autoCompleteScrollView.SetActive(autoCompleteContent.childCount != 0);
+        autoCompleteContent.parent.parent.GetComponent<ScrollRect>().enabled = false;
 
     }
 
@@ -207,8 +214,8 @@ public class SR2EConsole : SR2EMenu
         autoCompleteContent = transform.GetObjectRecursively<Transform>("ConsoleMenuAutoCompleteContentRec");
         autoCompleteEntryPrefab = transform.GetObjectRecursively<GameObject>("ConsoleMenuTemplateAutoCompleteEntryRec");
         autoCompleteScrollView = transform.GetObjectRecursively<GameObject>("ConsoleMenuAutoCompleteScrollRectRec");
-        autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
-        autoCompleteScrollView.SetActive(false);
+        //autoCompleteScrollView.GetComponent<ScrollRect>().enabled = false;
+        //autoCompleteScrollView.SetActive(false);
 
         commandInput.onValueChanged.AddListener((Action<string>)((text) =>
         {

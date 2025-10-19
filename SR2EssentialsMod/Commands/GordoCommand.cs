@@ -36,16 +36,17 @@ internal class GordoCommand : SR2ECommand
                     case "size":
                         if (args.Length == 1) { SendMessage(translation("cmd.gordo.size.show",gordo.identType.GetName(),eat._initScale/4)); return true; }
                         float size;
-                        if (!this.TryParseFloat(args[1], out size, 0, false)) return false;
+                        if (!TryParseFloat(args[1], out size, 0, false)) return false;
                         eat._initScale = size*4;
                         SendMessage(translation("cmd.gordo.size.edit",gordo.identType.GetName(),size));
                         return true;
                     case "eatcount":
-                        if (args.Length == 1) { SendMessage(translation("cmd.gordo.size.show",gordo.identType.GetName(),eat.GetEatenCount())); return true; }
+                        if (args.Length == 1) { SendMessage(translation("cmd.gordo.eat.show",gordo.identType.GetName(),eat.GetEatenCount())); return true; }
                         int amount;
-                        if (!this.TryParseInt(args[1], out amount, 0, false)) return false;
+                        if (!TryParseInt(args[1], out amount, 1, true,eat.GetTargetCount(),true)) return false;
                         eat.SetEatenCount(amount); 
-                        SendMessage(translation("cmd.gordo.size.edit",gordo.identType.GetName(),amount));
+                        if(amount>=eat.GetTargetCount()) eat.ImmediateReachedTarget();
+                        SendMessage(translation("cmd.gordo.eat.edit",gordo.identType.GetName(),amount));
                         return true;
                 }
                 

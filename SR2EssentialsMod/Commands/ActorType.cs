@@ -35,7 +35,7 @@ internal class ActorType : SR2ECommand
                 foreach (var actor in Resources.FindObjectsOfTypeAll<IdentifiableActor>())
                     if (actor.identType == loopedType) actor.gameObject.RemoveComponent<ObjectBlocker>();
             }
-            if (!this.TryParseTrool(args[1], out Trool troolAll)) return false;
+            if (!TryParseTrool(args[1], out Trool troolAll)) return false;
             switch (troolAll)
             {
                 case Trool.False: SendMessage(translation("cmd.actortype.disableall")); break;
@@ -48,7 +48,7 @@ internal class ActorType : SR2ECommand
         if (type == null) return SendNotValidIdentType(args[0]);
         if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
         bool enabled = !disabledActors.Contains(type.ReferenceId);
-        if (!this.TryParseTrool(args[1], out Trool trool)) return false;
+        if (!TryParseTrool(args[1], out Trool trool)) return false;
         switch (trool)
         {
             case Trool.False:

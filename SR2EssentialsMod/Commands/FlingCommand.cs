@@ -19,7 +19,7 @@ internal class FlingCommand : SR2ECommand
             Transform transform = hit.transform;
             
             float strength = 0;
-            if (!this.TryParseFloat(args[0], out strength)) return false;
+            if (!TryParseFloat(args[0], out strength)) return false;
 
             Vector3 cameraPosition = cam.transform.position;
             Vector3 moveDirection = transform.position - cameraPosition;

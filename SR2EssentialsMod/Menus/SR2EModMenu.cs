@@ -139,6 +139,19 @@ public class SR2EModMenu : SR2EMenu
                     useIcon=true;
                 }
                 catch { }
+
+                if (!useIcon)
+                {
+                    try
+                    {
+                        var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", melonBase.MelonAssembly.Assembly);
+                        if(sprite==null) throw new Exception();
+                        b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                        b.transform.GetChild(1).gameObject.SetActive(true);
+                        useIcon=true;
+                    }
+                    catch { }
+                }
                 foreach (var meta in melonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
                 {
                     if (meta == null) continue;

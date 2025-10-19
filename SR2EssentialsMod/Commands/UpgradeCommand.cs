@@ -31,7 +31,7 @@ internal class UpgradeCommand : SR2ECommand
         if (args.Length == 3)
         {
             if (args[0] == "get") return SendErrorToManyArgs(args[0]); 
-            if(!this.TryParseInt(args[2], out level,0,true)) return false;
+            if(!TryParseInt(args[2], out level,1,true)) return false;
         }
         else switch (args[0])
         {

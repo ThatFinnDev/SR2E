@@ -124,7 +124,7 @@ public static class LookupEUtil
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
-            if(partial.StartsWithOrContain(name.ToUpper(),useContain))
+            if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
         list.Sort();
@@ -146,15 +146,15 @@ public static class LookupEUtil
     public static List<string> GetFilteredIdentifiableTypeStringListByPartialName(string partial, bool useContain, int maxEntries, bool addStarToList = false)
     {
         var types = identifiableTypes;
-        int i = 0;
         maxEntries -= 1;
         //If partial string is empty, no need to match the name
         var list = new List<string>();
+        if(addStarToList) list.Add("*");
         if (string.IsNullOrWhiteSpace(partial))
         {
             foreach (IdentifiableType type in types)
             {
-                if (i > maxEntries) break;
+                if (list.Count > maxEntries) break;
                 if (type == null) continue;
                 if (type.ReferenceId.ToUpper().Contains("Gordo")) continue;
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
@@ -170,13 +170,13 @@ public static class LookupEUtil
         partial = partial.ToUpper();
         foreach (IdentifiableType type in types)
         {
-            if (i > maxEntries) break;
+            if (list.Count > maxEntries) break;
             if (type == null) continue;
             if (type.ReferenceId.ToUpper().Contains("Gordo")) continue;
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
-            if(partial.StartsWithOrContain(name.ToUpper(),useContain))
+            if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
         list.Sort();
@@ -197,15 +197,15 @@ public static class LookupEUtil
     public static List<string> GetStrongFilteredIdentifiableTypeStringListByPartialName(string partial, bool useContain, int maxEntries, bool addStarToList = false)
     {
         var types = identifiableTypes;
-        int i = 0;
         maxEntries -= 1;
         //If partial string is empty, no need to match the name
         var list = new List<string>();
+        if(addStarToList) list.Add("*");
         if (string.IsNullOrWhiteSpace(partial))
         {
             foreach (IdentifiableType type in types)
             {
-                if (i > maxEntries) break;
+                if (list.Count > maxEntries) break;
                 if (type == null) continue;
                 if (type.ReferenceId.ToUpper().Contains("Gordo")) continue;
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
@@ -222,14 +222,14 @@ public static class LookupEUtil
         partial = partial.ToUpper();
         foreach (IdentifiableType type in types)
         {
-            if (i > maxEntries) break;
+            if (list.Count > maxEntries) break;
             if (type == null) continue;
             if (type.ReferenceId.ToUpper().Contains("Gordo")) continue;
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             if (type.isGadget()) continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
-            if(partial.StartsWithOrContain(name.ToUpper(),useContain))
+            if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
         list.Sort();
@@ -247,7 +247,6 @@ public static class LookupEUtil
     public static List<string> GetGadgetDefinitionStringListByPartialName(string partial, bool useContain, int maxEntries)
     {
         var types = identifiableTypes;
-        int i = 0;
         maxEntries -= 1;
         //If partial string is empty, no need to match the name
         var list = new List<string>();
@@ -255,7 +254,7 @@ public static class LookupEUtil
         {
             foreach (IdentifiableType type in types)
             {
-                if (i > maxEntries) break;
+                if (list.Count > maxEntries) break;
                 if (type == null) continue;
                 if (!type.isGadget()) continue;
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
@@ -271,13 +270,13 @@ public static class LookupEUtil
         partial = partial.ToUpper();
         foreach (IdentifiableType type in types)
         {
-            if (i > maxEntries) break;
+            if (list.Count > maxEntries) break;
             if (type == null) continue;
             if (!type.isGadget()) continue;
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
-            if(partial.StartsWithOrContain(name.ToUpper(),useContain))
+            if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
         list.Sort();
@@ -294,7 +293,6 @@ public static class LookupEUtil
     public static List<string> GetVaccableStringListByPartialName(string partial, bool useContain, int maxEntries)
     {
         var types = vaccableTypes;
-        int i = 0;
         maxEntries -= 1;
         //If partial string is empty, no need to match the name
         var list = new List<string>();
@@ -302,7 +300,7 @@ public static class LookupEUtil
         {
             foreach (IdentifiableType type in types)
             {
-                if (i > maxEntries) break;
+                if (list.Count > maxEntries) break;
                 if (type == null) continue;
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
                 var name = type.GetCompactName();
@@ -317,12 +315,12 @@ public static class LookupEUtil
         partial = partial.ToUpper();
         foreach (IdentifiableType type in types)
         {
-            if (i > maxEntries) break;
+            if (list.Count > maxEntries) break;
             if (type == null) continue;
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
-            if(partial.StartsWithOrContain(name.ToUpper(),useContain))
+            if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
         list.Sort();
@@ -333,13 +331,12 @@ public static class LookupEUtil
     public static List<string> GetKeyStringListByPartialName(string partial, bool useContain, int maxEntries) 
     {
         var list = new List<string>();
-        int i = 0;
         maxEntries -= 1;
         if (string.IsNullOrWhiteSpace(partial))
         {
             foreach (Key key in System.Enum.GetValues<Key>())
             {
-                if (i > maxEntries) break;
+                if (list.Count > maxEntries) break;
                 if (key != Key.None)
                     if (key.ToString().ToUpper().StartsWith(partial.ToUpper()))
                         list.Add(key.ToString());
@@ -350,7 +347,7 @@ public static class LookupEUtil
 
         foreach (Key key in System.Enum.GetValues<Key>())
         {
-            if (i > maxEntries) break;
+            if (list.Count > maxEntries) break;
             if (key != Key.None)
                 if (key.ToString().ToUpper().StartsWithOrContain(partial.ToUpper(), useContain))
                     list.Add(key.ToString());

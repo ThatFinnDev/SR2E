@@ -36,7 +36,7 @@ internal class BindCommand : SR2ECommand
         if (!args.IsBetween(2,-1)) return SendUsage();
 
         Key key;
-        if (!this.TryParseKeyCode(args[0], out key)) return false;
+        if (!TryParseKeyCode(args[0], out key)) return false;
         
         StringBuilder builder = new StringBuilder();
         for (int i = 1; i < args.Length; i++) builder.Append(args[i] + " ");

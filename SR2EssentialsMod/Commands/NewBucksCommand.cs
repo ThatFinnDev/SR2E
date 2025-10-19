@@ -18,7 +18,7 @@ internal class NewBucksCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         int amount = 0;
-        if (!this.TryParseInt(args[0], out amount)) return false;
+        if (!TryParseInt(args[0], out amount)) return false;
 
         if (!CurrencyEUtil.AddCurrency("newbuck", amount))
             return SendError(translation("cmd.newbucks.error"));

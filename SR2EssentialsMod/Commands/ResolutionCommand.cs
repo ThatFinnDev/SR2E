@@ -19,13 +19,13 @@ internal class ResolutionCommand : SR2ECommand
         if (!args.IsBetween(2,3)) return SendUsage();
         
         int x = 1;
-        if(!this.TryParseInt(args[0], out x, 0,false,16000)) return false;
+        if(!TryParseInt(args[0], out x, 0,false,16000)) return false;
         
         int y = 1;
-        if(!this.TryParseInt(args[1], out y, 0,false,16000)) return false;
+        if(!TryParseInt(args[1], out y, 0,false,16000)) return false;
 
         bool fullscreen = true;
-        if (args.Length == 3) if (!this.TryParseBool(args[2], out fullscreen)) return false;
+        if (args.Length == 3) if (!TryParseBool(args[2], out fullscreen)) return false;
         Screen.SetResolution(x,y,fullscreen);
         SendMessage(translation("cmd.resolution.success",x,y));
         return true;
