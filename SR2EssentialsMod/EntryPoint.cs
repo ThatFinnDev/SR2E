@@ -488,12 +488,15 @@ public class SR2EEntryPoint : MelonMod
                 if (scrollView != null)
                 {
                     ScrollRect rect = scrollView.GetComponent<ScrollRect>();
-                    rect.vertical = true;
-                    Scrollbar scrollBar = GameObject.Instantiate(SR2EStuff.GetObjectRecursively<Scrollbar>("saveFilesSliderRec"),
-                        rect.transform);
-                    rect.verticalScrollbar = scrollBar;
-                    rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
-                    scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width / 250f, 0, 0);
+                    if (rect.verticalScrollbar == null)
+                    {
+                        rect.vertical = true;
+                        Scrollbar scrollBar = GameObject.Instantiate(SR2EStuff.GetObjectRecursively<Scrollbar>("saveFilesSliderRec"),
+                            rect.transform);
+                        rect.verticalScrollbar = scrollBar;
+                        rect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+                        scrollBar.GetComponent<RectTransform>().localPosition += new Vector3(Screen.width / 250f, 0, 0);
+                    }
                 }
             }
             baseUIAddSliders.Remove(ui);

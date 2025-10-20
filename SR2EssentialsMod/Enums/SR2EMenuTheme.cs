@@ -8,5 +8,7 @@ namespace SR2E.Enums;
 [JsonConverter(typeof(StringEnumConverter))]
 public enum SR2EMenuTheme
 {
-    Default, SR2E, Black
+    Default=0, 
+    SR2E=1, 
+    Black=2
 }

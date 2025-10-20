@@ -1,3 +1,5 @@
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
@@ -10,6 +12,8 @@ public class SR2ESaveFileV01
     {
         if(string.IsNullOrWhiteSpace(stamp)) return false;
         if (!stamp.All(char.IsDigit)) return false;
+        if(savesData==null) return false;
+        if (!savesData.ContainsKey(latest)) return false;
         foreach (var pair in savesData)
         {
             if (pair.Key < 0) return false;
@@ -22,25 +26,62 @@ public class SR2ESaveFileV01
     public int metaSaveSlotIndex = -1; //0;
     public string metaDisplayName = null; // = "1";
     public string metaGameName = null; //"20210101093021_1";
+    public ulong metaLatestSaveNumber = 0; //120;
+    public bool metaFeralEnabled = true;
+    public bool metaTarrEnabled = true;
     public string stamp = "2021010109302";
-
+    public string SR2ECodeVersion = BuildInfo.CodeVersion;
+    public string SR2EDisplayVersion = BuildInfo.DisplayVersion;
+    public int latest = -1;
     public SR2ESaveFileV01() {}
-    public SR2ESaveFileV01(Dictionary<int, byte[]> savesData, string stamp)
+    public SR2ESaveFileV01(Dictionary<int, byte[]> savesData, string stamp, int latest)
     {
         this.savesData = new Dictionary<int, byte[]>(savesData);
         this.stamp = stamp;
+        this.latest = latest;
     }
-    public static SR2ESaveFileV01 Load(string jsonOrPath, bool isPath)
+    public static SR2ESaveFileV01 LoadJson(string jsonOrJsonPath, bool isPath)
     {
         try
         {
-            if (isPath) jsonOrPath = File.ReadAllText(jsonOrPath);
-            return JsonConvert.DeserializeObject<SR2ESaveFileV01>(jsonOrPath, jsonSerializerSettings);
+            if (isPath) jsonOrJsonPath = File.ReadAllText(jsonOrJsonPath);
+            return JsonConvert.DeserializeObject<SR2ESaveFileV01>(jsonOrJsonPath, jsonSerializerSettings);
         }
         catch { }
         return null;
     }
-    public static SR2ESaveFileV01 Load(byte[] json)
+
+    private static readonly byte[] GzipHeader = { 0x1F, 0x8B };
+    public static SR2ESaveFileV01 Load(byte[] jsonOrCompressed)
+    {
+        if (jsonOrCompressed == null || jsonOrCompressed.Length == 0) return null;
+
+        bool isCompressed = jsonOrCompressed.Length > 2 &&jsonOrCompressed[0] == GzipHeader[0] && jsonOrCompressed[1] == GzipHeader[1];
+        if (!isCompressed) return LoadJson(Encoding.UTF8.GetString(jsonOrCompressed), false);
+        MemoryStream ms = new MemoryStream(jsonOrCompressed);
+        GZipStream gzip = null;
+        try
+        {
+            gzip = new GZipStream(ms, CompressionMode.Decompress);
+            MemoryStream decompressed = new MemoryStream();
+            byte[] buffer = new byte[4096];
+            int read;
+
+            while ((read = gzip.Read(buffer, 0, buffer.Length)) > 0) 
+                decompressed.Write(buffer, 0, read);
+
+            byte[] result = decompressed.ToArray();
+            decompressed.Dispose();
+            return Load(result);
+        }
+        catch { return null; }
+        finally
+        {
+            if (gzip != null) gzip.Dispose();
+            ms.Dispose();
+        }
+    }
+    public static SR2ESaveFileV01 LoadCompressed(byte[] json)
     {
         try
         {
@@ -59,11 +100,27 @@ public class SR2ESaveFileV01
         catch { }
         return null;
     }
-    public byte[] ExportBytes()
+    public byte[] ExportCompressed()
     {
         try
         {
-            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(this, Formatting.Indented));
+            var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(this, Formatting.Indented));
+            MemoryStream output = new MemoryStream();
+            GZipStream gzip = null;
+            try
+            {
+                gzip = new GZipStream(output, CompressionMode.Compress, true);
+                gzip.Write(bytes, 0, bytes.Length);
+            }
+            finally
+            {
+                if (gzip != null)
+                    gzip.Dispose();
+            }
+
+            byte[] compressed = output.ToArray();
+            output.Dispose();
+            return compressed;
         }
         catch { }
         return null;
