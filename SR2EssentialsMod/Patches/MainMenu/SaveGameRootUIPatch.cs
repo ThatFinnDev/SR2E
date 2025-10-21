@@ -66,13 +66,10 @@ internal static class SaveGameRootUIPatch
                     {
                         string filePath = sfn.lpstrFile;
                         if (string.IsNullOrEmpty(filePath)) return;
-                        var savefile = SaveFileEUtil.ExportSaveV01(loadGameBehaviorModel.GameDataSummary);
-                        if (savefile == null)
-                        {
-                            MelonLogger.Msg("Error when exporting save!");
-                            return;
-                        }
-                        File.WriteAllText(filePath,savefile.Export());  
+                        var savefile = SaveFileEUtil.ExportSaveV01(loadGameBehaviorModel.GameDataSummary, true);
+                        if (savefile == null) return;
+                        if(filePath.EndsWith(".json")) File.WriteAllText(filePath,savefile.Export());  
+                        else File.WriteAllBytes(filePath,savefile.ExportCompressed());  
                     }
                 }
             }));
@@ -86,7 +83,7 @@ internal static class SaveGameRootUIPatch
         public int lStructSize = Marshal.SizeOf(typeof(SAVEFILENAME));
         public IntPtr hwndOwner = IntPtr.Zero;
         public IntPtr hInstance = IntPtr.Zero;
-        public string lpstrFilter = "SR2 Save Files (*.sr2save)\0*.sr2save\0All Files\0*.*\0";
+        public string lpstrFilter = "SR2 Save Files (*.sr2save)\0*"+SR2ESaveFileV01.Extension+"\0All Files\0*.*\0";
         public string lpstrCustomFilter = null;
         public int nMaxCustFilter = 0;
         public int nFilterIndex = 1;
@@ -112,7 +109,7 @@ internal static class SaveGameRootUIPatch
         public int lStructSize = Marshal.SizeOf(typeof(OPENFILENAME));
         public IntPtr hwndOwner = IntPtr.Zero;
         public IntPtr hInstance = IntPtr.Zero;
-        public string lpstrFilter = "SR2 Save Files (*.sr2save)\0*.sr2save\0All Files\0*.*\0";
+        public string lpstrFilter = "SR2 Save Files (*.sr2save)\0*"+SR2ESaveFileV01.Extension+"\0All Files\0*.*\0";
         public string lpstrCustomFilter = null;
         public int nMaxCustFilter = 0;
         public int nFilterIndex = 1;

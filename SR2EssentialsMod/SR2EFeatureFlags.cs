@@ -70,9 +70,16 @@ public static class SR2EFeatureFlags
             if (flag == None) continue;
             XmlElement xmlElement = xmlDoc.CreateElement(flag.ToString());
             flags.AppendChild(xmlElement);
-            if(!flagsToForceOff.HasFlag(flag)) xmlElement.SetAttribute("value",flag.HasFlag().ToString().ToLower());
-            else xmlElement.SetAttribute("value","false");
-            xmlElement.SetAttribute("default", flag.GetDefault().ToString().ToLower());
+            if(!flagsToForceOff.HasFlag(flag))
+            {
+                xmlElement.SetAttribute("value", flag.HasFlag().ToString().ToLower());
+                xmlElement.SetAttribute("default", flag.HasFlag().ToString().ToLower());
+            }
+            else
+            {
+                xmlElement.SetAttribute("value", "false");
+                xmlElement.SetAttribute("default", flag.GetDefault().ToString().ToLower());
+            }
             
             if (_requirementsMap.ContainsKey(flag)) if(_requirementsMap[flag].Length!=0)
                 foreach (FFR req in _requirementsMap[flag])

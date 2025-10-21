@@ -1,4 +1,5 @@
 using System.Linq;
+using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppSystem.Linq;
 using SR2E.Enums;
@@ -8,17 +9,19 @@ namespace SR2E.Utils;
 
 public static class SaveFileEUtil
 {
-    
-    public static SR2ESaveFileV01 ExportSaveV01(Summary summary)
+    private static Exception noBoolException = new Exception("The value has to be a bool!");
+    private static Exception noIntException = new Exception("The value has to be an inte!");
+    private static Exception noFloatException = new Exception("The value has to be a float!");
+    private static Exception noStringException = new Exception("The value has to be a string!");
+    private static Exception noDoubleException = new Exception("The value has to be a double!");
+    public static SR2ESaveFileV01 ExportSaveV01(Summary summary, bool sendErrorLogs = false) => ExportSaveV01(summary.Name, summary.SaveName,sendErrorLogs);
+
+    public static SR2ESaveFileV01 ExportSaveV01(string gameName, string latestSaveName, bool sendErrorLogs = false)
     {
-        if (ExportSaveV01(summary.Name, summary.SaveName, out SR2ESaveFileV01 data) == NoError)
+        var error = ExportSaveV01(gameName, latestSaveName, out SR2ESaveFileV01 data);
+        if (error == NoError)
             return data;
-        return null;
-    }
-    public static SR2ESaveFileV01 ExportSaveV01(string gameName, string latestSaveName)
-    {
-        if (ExportSaveV01(gameName, latestSaveName, out SR2ESaveFileV01 data) == NoError)
-            return data;
+        if(sendErrorLogs) MelonLogger.Msg("Error when exporting save: "+error);
         return null;
     }
     public static SR2EError ExportSaveV01(string gameName, string latestSaveName, out SR2ESaveFileV01 data)
@@ -35,6 +38,8 @@ public static class SaveFileEUtil
         var storageProvider = autoSaveDirector._storageProvider;
         
         var sr2ESaveFile = new SR2ESaveFileV01(savesData,gameName.Split("_")[0], 0);
+        sr2ESaveFile.SR2ECodeVersion = BuildInfo.CodeVersion;
+        sr2ESaveFile.SR2EDisplayVersion = BuildInfo.DisplayVersion;
         var hasLatest = false;
         foreach (var summary in summaries)
         {
@@ -61,11 +66,19 @@ public static class SaveFileEUtil
             try
             {
                 var stream = new Il2CppSystem.IO.MemoryStream();
-                storageProvider.GetGameData(gameWithSaveIDName,stream);
+                storageProvider.GetGameData(gameWithSaveIDName, stream);
                 gameBytes = stream.ToArray();
                 if (stream != null && stream.CanRead) stream.Close();
-                                        
-            }catch { }
+
+            }
+            catch (Exception e)
+            {
+                if(DebugLogging.HasFlag())
+                {
+                    MelonLogger.Error(e);
+                    MelonLogger.Error("Error exporting save saveId: " + saveID);
+                }
+            }
             if (gameBytes == null || gameBytes.Length == 0) continue;
             if(removeBefore)
                 savesData.Remove(saveID);
@@ -84,6 +97,9 @@ public static class SaveFileEUtil
         }
         if (savesData.Count == 0) return NoValidSaves;
         if (!hasLatest) return LatestSaveInvalid;
+
+        sr2ESaveFile.savesData = savesData;
+        data = sr2ESaveFile;
         return NoError;
     }
     public static SR2EError ImportSaveV01(SR2ESaveFileV01 sr2ESaveFile, int slotThatStartWithOne, bool loadMenuMenuOnSuccess)
@@ -105,6 +121,7 @@ public static class SaveFileEUtil
         bool failedSome = false;
         foreach (var pair in sr2ESaveFile.savesData)
         {
+            bool isMain = pair.Key == sr2ESaveFile.latest;
             try
             {
                 var stream = new Il2CppSystem.IO.MemoryStream(pair.Value);
@@ -116,10 +133,35 @@ public static class SaveFileEUtil
                 stream = new Il2CppSystem.IO.MemoryStream();
 
                 var newDisplayName = slotThatStartWithOne.ToString();
+                if (isMain&&sr2ESaveFile.modifiers!=null)
+                    foreach (var modifier in sr2ESaveFile.modifiers)
+                    {
+                        if (string.IsNullOrWhiteSpace(modifier.Key)) continue;
+                        try
+                        {
+                            switch (modifier.Key)
+                            {
+                                case "feralEnabled":
+                                    if (!(modifier.Value is bool)) throw noBoolException;
+                                    //Enable or disable feral
+                                    break;
+                                case "tarrEnabled":
+                                    if (!(modifier.Value is bool)) throw noBoolException;
+                                    //Enable or disable tarr
+                                    break;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            MelonLogger.Error(e);
+                            MelonLogger.Error("Error applying modifier: "+modifier.Key);
+                        }
+                    }
                 var newGameName = sr2ESaveFile.stamp + "_" + newDisplayName;
                 gameState.DisplayName = newDisplayName;
                 gameState.GameName = newGameName;
                 gameState.SaveSlotIndex = slotThatStartWithOne-1;
+                
                 gameState.Write(stream);
                 var gameBytes = stream.ToArray();
                 if (stream != null && stream.CanRead) stream.Close();
@@ -132,7 +174,6 @@ public static class SaveFileEUtil
             catch (Exception e)
             {
                 failedSome = true;
-                bool isMain = pair.Key == sr2ESaveFile.latest;
                 if(isMain||DebugLogging.HasFlag())
                 {
                     MelonLogger.Error(e);

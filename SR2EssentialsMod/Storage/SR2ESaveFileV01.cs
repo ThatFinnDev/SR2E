@@ -8,9 +8,29 @@ namespace SR2E.Storage;
 
 public class SR2ESaveFileV01
 {
+    public int saveFileVersion = 1;
+    public const string Extension = ".sr2save";
+    public string stamp = "2021010109302";
+    public string SR2ECodeVersion = null; //BuildInfo.CodeVersion;
+    public string SR2EDisplayVersion = null; //BuildInfo.DisplayVersion;
+    public int latest = -1;
+    public Dictionary<string, object> modifiers = new Dictionary<string, object>();
+    public int metaSaveSlotIndex = -1; //0;
+    public int metaGameV0XVersion = -1; //8;
+    public string metaDisplayName = null; // = "1";
+    public string metaGameName = null; //"20210101093021_1";
+    public string metaGameIcon = null; //"gameIcon_battySlime";
+    public ulong metaLatestSaveNumber = 0; //120;
+    public bool metaFeralEnabled = true;
+    public bool metaTarrEnabled = true;
+    public string metaSR2Version = null; //"1.0.2 [20250930224232-103839]"; "0.1.2 [202210311641-82086]";
+    public Dictionary<int,byte[]> savesData = new Dictionary<int,byte[]>();
+    
     public bool IsValid()
     {
         if(string.IsNullOrWhiteSpace(stamp)) return false;
+        if(string.IsNullOrWhiteSpace(SR2ECodeVersion)) return false;
+        if(string.IsNullOrWhiteSpace(SR2EDisplayVersion)) return false;
         if (!stamp.All(char.IsDigit)) return false;
         if(savesData==null) return false;
         if (!savesData.ContainsKey(latest)) return false;
@@ -21,18 +41,6 @@ public class SR2ESaveFileV01
         }
         return true;
     }
-    public const string Extension = ".sr2save";
-    public Dictionary<int,byte[]> savesData = new Dictionary<int,byte[]>();
-    public int metaSaveSlotIndex = -1; //0;
-    public string metaDisplayName = null; // = "1";
-    public string metaGameName = null; //"20210101093021_1";
-    public ulong metaLatestSaveNumber = 0; //120;
-    public bool metaFeralEnabled = true;
-    public bool metaTarrEnabled = true;
-    public string stamp = "2021010109302";
-    public string SR2ECodeVersion = BuildInfo.CodeVersion;
-    public string SR2EDisplayVersion = BuildInfo.DisplayVersion;
-    public int latest = -1;
     public SR2ESaveFileV01() {}
     public SR2ESaveFileV01(Dictionary<int, byte[]> savesData, string stamp, int latest)
     {

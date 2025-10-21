@@ -32,23 +32,25 @@ public class Warp
         {
             try
             {
-                var sg = SystemContext.Instance.SceneLoader.SceneGroupList.GetSceneGroupFromReferenceId(sceneGroup);
-                if (sg == null) return SR2EError.SceneGroupNotSupported;
-                if(!sg.IsGameplay) return SR2EError.SceneGroupNotSupported;
-                SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();;
+                if (!SR2EWarpManager.teleporters.ContainsKey(sceneGroup)) return SR2EError.SceneGroupNotSupported;
+
+                StaticTeleporterNode node = SR2EWarpManager.teleporters[sceneGroup];
+                SR2EWarpManager.warpTo = this;
+
+                SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();
                 NativeEUtil.TryHideMenus();
                 NativeEUtil.TryUnPauseGame();
-                SR2EWarpManager.warpTo = this;
                 ExecuteInTicks((Action)(() =>
                 {
                     try
                     {
                         
-                        var e = SceneLoaderLoadSceneGroupPatch._loadingParameters;
-                        //When you just set the position to your target position, the zones don't load properly
-                        //By setting the player's pos really far away and then to the correct one after the loading screen, it works fine
-                        e.TeleportPosition = new Il2CppSystem.Nullable<Vector3>(new Vector3(0,9999999,0));
-                        SystemContext.Instance.SceneLoader.LoadSceneGroup(sg, e);
+                        StaticTeleporterNode obj = GameObject.Instantiate(node, SceneContext.Instance.Player.transform.position,
+                            Quaternion.identity);
+                        node.enabled = true;
+                        node.Network = sceneContext.TeleportNetwork;
+                        obj.gameObject.SetActive(true);
+                        node.ExternalActivate();
                     }
                     catch (Exception e)
                     {

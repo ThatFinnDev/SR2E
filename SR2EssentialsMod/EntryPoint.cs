@@ -411,8 +411,6 @@ public class SR2EEntryPoint : MelonMod
         } catch {}
         ExecuteInSeconds((Action)(() => { CheckForTime();}), 1);
     }
-    static bool useSR2Font = true;
-
     internal static void SendFontError(string name)
     {
         MelonLogger.Error($"The font '{name}' couldn't be loaded!");
@@ -452,7 +450,7 @@ public class SR2EEntryPoint : MelonMod
             case "UICore": foreach (var expansion in expansionsAll) try { expansion.OnUICoreInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
             case "MainMenuUI": foreach (var expansion in expansionsAll) try { expansion.OnMainMenuUIInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
             case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
-            case "ZoneCore": foreach (var expansion in expansionsV2) try { expansion.OnZoneCoreInitialized(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "ZoneCore": foreach (var expansion in expansionsAll) try { expansion.OnZoneCoreInitialized(); }catch (Exception e) { MelonLogger.Error(e); } break;
         }
 
         SR2ECommandManager.OnSceneWasInitialized(buildIndex, sceneName);
