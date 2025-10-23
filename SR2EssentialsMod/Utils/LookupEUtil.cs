@@ -246,7 +246,7 @@ public static class LookupEUtil
     /// <returns>List<string></returns>
     public static List<string> GetGadgetDefinitionStringListByPartialName(string partial, bool useContain, int maxEntries)
     {
-        var types = identifiableTypes;
+        var types = SceneContext.Instance.GadgetDirector._gadgetsGroup.GetAllMembers().ToList();
         maxEntries -= 1;
         //If partial string is empty, no need to match the name
         var list = new List<string>();
@@ -256,7 +256,6 @@ public static class LookupEUtil
             {
                 if (list.Count > maxEntries) break;
                 if (type == null) continue;
-                if (!type.isGadget()) continue;
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
                 var name = type.GetCompactName();
                 if (name.StartsWith("!")) continue;
@@ -272,7 +271,6 @@ public static class LookupEUtil
         {
             if (list.Count > maxEntries) break;
             if (type == null) continue;
-            if (!type.isGadget()) continue;
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;

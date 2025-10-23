@@ -30,7 +30,8 @@ public static class SaveFileEUtil
         if (!ExperimentalSaveExport.HasFlag()) return NeedExperiment;
         
         if (gameName.Split("_").Length !=2) return InvalidGameName;
-        if (!gameName.Split("_")[0].All(char.IsDigit)) return InvalidGameName;
+        var stamp = gameName.Split("_")[0];
+        if (!stamp.All(char.IsDigit)) return InvalidGameName;
         
         var summaries = autoSaveDirector.GetSavesByGameName(gameName);
         Dictionary<int,byte[]> savesData = new Dictionary<int,byte[]>();
@@ -38,6 +39,7 @@ public static class SaveFileEUtil
         var storageProvider = autoSaveDirector._storageProvider;
         
         var sr2ESaveFile = new SR2ESaveFileV01(savesData,gameName.Split("_")[0], 0);
+        sr2ESaveFile.stamp = stamp;
         sr2ESaveFile.SR2ECodeVersion = BuildInfo.CodeVersion;
         sr2ESaveFile.SR2EDisplayVersion = BuildInfo.DisplayVersion;
         var hasLatest = false;
@@ -87,12 +89,14 @@ public static class SaveFileEUtil
             {
                 hasLatest = true;
                 sr2ESaveFile.latest = saveID;
+                sr2ESaveFile.metaGameIcon = summary.IconId.ReferenceId;
                 sr2ESaveFile.metaFeralEnabled = summary.FeralEnabled;
                 sr2ESaveFile.metaTarrEnabled = summary.TarrEnabled;
                 sr2ESaveFile.metaDisplayName = summary.DisplayName; 
                 sr2ESaveFile.metaGameName = gameName;
                 sr2ESaveFile.metaSaveSlotIndex = summary.SaveSlotIndex;
                 sr2ESaveFile.metaLatestSaveNumber = summary.SaveNumber;
+                sr2ESaveFile.metaSR2Version = summary.Version;
             }     
         }
         if (savesData.Count == 0) return NoValidSaves;
@@ -102,6 +106,7 @@ public static class SaveFileEUtil
         data = sr2ESaveFile;
         return NoError;
     }
+    
     public static SR2EError ImportSaveV01(SR2ESaveFileV01 sr2ESaveFile, int slotThatStartWithOne, bool loadMenuMenuOnSuccess)
     {
         if (!ExperimentalSaveExport.HasFlag()) return NeedExperiment;
@@ -143,11 +148,48 @@ public static class SaveFileEUtil
                             {
                                 case "feralEnabled":
                                     if (!(modifier.Value is bool)) throw noBoolException;
-                                    //Enable or disable feral
+                                    var newFeralEnabled = modifier.Value.ToString()=="true";
+                                    gameState.Summary.FeralEnabled = false;
+                                    foreach (var option in gameState.GameSettings.OptionItems)
+                                        if (option.PersistenceKey == "setting.FeralEnabled")
+                                        {
+                                            option.OptionValueKey = newFeralEnabled ? "on" : "off";
+                                            break;
+                                        }
                                     break;
                                 case "tarrEnabled":
                                     if (!(modifier.Value is bool)) throw noBoolException;
-                                    //Enable or disable tarr
+                                    var newTarrEnabled = modifier.Value.ToString()=="true";
+                                    gameState.Summary.TarrEnabled = false;
+                                    foreach (var option in gameState.GameSettings.OptionItems)
+                                        if (option.PersistenceKey == "setting.TarrEnabled")
+                                        {
+                                            option.OptionValueKey = newTarrEnabled ? "on" : "off";
+                                            break;
+                                        }
+                                    break;
+                                case "gameIcon":
+                                    var newGameIcon = modifier.Value.ToString();
+                                    var i = 0;
+                                    bool foundIcon = false;
+                                    foreach (var icon in gameState.GameIconIndex.IndexTable)
+                                    {
+                                        if (icon == newGameIcon)
+                                        {
+                                            foundIcon = true;
+                                            break;
+                                        }
+                                        i++;
+                                    }
+                                    if (!foundIcon) throw new Exception("Icon doesn't exist!");
+                                    gameState.Summary.IconId = i;
+                                    gameState.GameSettings.GameIconId = i;
+                                    foreach (var option in gameState.GameSettings.OptionItems)
+                                        if (option.PersistenceKey == "setting.Gameicon")
+                                        {
+                                            option.OptionValueKey = i.ToString();
+                                            break;
+                                        }
                                     break;
                             }
                         }

@@ -294,15 +294,16 @@ public class SR2EEntryPoint : MelonMod
     {
         if(!_useLibrary) try { _useLibrary= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
         var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
-    
+        var devPatches = DevMode.HasFlag();
         foreach (var type in types)
         {
             if (type == null) continue;
             try
             {
                 // Skip entire class if marked as a library patch and library disabled
-                if (!_useLibrary && type.GetCustomAttribute<LibraryPatch>() != null)
-                    continue;
+                if (!_useLibrary && type.GetCustomAttribute<LibraryPatch>() != null) continue;
+                // Skip entire class if marked as a dev patch and devmode disabled
+                if(!devPatches && type.GetCustomAttribute<DevPatch>() != null) continue;
                 var classPatches = HarmonyMethodExtensions.GetFromType(type);
                 if (classPatches.Count > 0)
                 {

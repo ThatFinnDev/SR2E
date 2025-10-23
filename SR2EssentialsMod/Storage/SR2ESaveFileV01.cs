@@ -16,7 +16,6 @@ public class SR2ESaveFileV01
     public int latest = -1;
     public Dictionary<string, object> modifiers = new Dictionary<string, object>();
     public int metaSaveSlotIndex = -1; //0;
-    public int metaGameV0XVersion = -1; //8;
     public string metaDisplayName = null; // = "1";
     public string metaGameName = null; //"20210101093021_1";
     public string metaGameIcon = null; //"gameIcon_battySlime";
