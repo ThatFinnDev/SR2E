@@ -1,6 +1,7 @@
 ﻿
 using System;
 using Il2CppTMPro;
+using SR2E.Enums;
 using SR2E.Enums.Sounds;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
@@ -44,10 +45,13 @@ public class SR2EGridMenuList : SR2EPopUp
         }
 
     }
-    
     public static void Open(TripleDictionary<string,string,Sprite> entries,Action<string> onSelect)
     {
-        if (!MenuEUtil.isAnyMenuOpen) return;
+        if (!MenuEUtil.isAnyMenuOpen)
+        {
+            _Open("GridMenuList",typeof(SR2EGridMenuList),SR2EMenuTheme.Default,new List<object>(){entries,onSelect});
+            return;
+        }
         _Open("GridMenuList",typeof(SR2EGridMenuList),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){entries,onSelect});
     }
 

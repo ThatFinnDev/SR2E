@@ -25,10 +25,14 @@ public static class MenuEUtil
     }
     internal static void ReloadFont(this SR2EPopUp popUp)
     {
-        var ident = GetOpenMenu().GetMenuIdentifier();
-        if (string.IsNullOrEmpty(ident.saveKey)) return;
-        if (SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
-        var dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
+        var dataFont = SR2EMenuFont.SR2;
+        try
+        {
+            var ident = GetOpenMenu().GetMenuIdentifier();
+            if (string.IsNullOrEmpty(ident.saveKey)) return;
+            if (SR2ESaveManager.data.fonts.TryAdd(ident.saveKey, ident.defaultFont)) SR2ESaveManager.Save();
+             dataFont = SR2ESaveManager.data.fonts[ident.saveKey];
+        }catch { }
         TMP_FontAsset fontAsset = null;
         switch (dataFont)
         {

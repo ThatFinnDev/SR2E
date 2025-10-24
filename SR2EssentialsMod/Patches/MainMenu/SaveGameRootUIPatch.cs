@@ -31,6 +31,7 @@ internal static class SaveGameRootUIPatch
     static void OnExportButtonPressed()
     {
         if (ui == null) return;
+        if (!exportButton.gameObject.active) return;
         var dataBehaviours = ui.FetchButtonBehaviorData();
         var load = dataBehaviours[ui._selectedModelIndex];
         var loadGameBehaviorModel = load.TryCast<LoadGameBehaviorModel>();

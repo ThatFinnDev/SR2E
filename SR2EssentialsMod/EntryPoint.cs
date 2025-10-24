@@ -14,6 +14,7 @@ using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.ScriptedValue;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Options;
+using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using SR2E.Buttons;
@@ -371,6 +372,19 @@ public class SR2EEntryPoint : MelonMod
                 
                 NativeEUtil.CustomTimeScale = 1f;
                 Time.timeScale = 1;
+                try
+                {
+                    var b = Get <ButtonBehaviorViewHolder>("SaveGameSlotButton");
+                    ExecuteInTicks((System.Action)(() =>
+                    {
+                        var l = b.gameObject.GetObjectRecursively<LayoutElement>("Icon");
+                        l.minWidth = l.preferredWidth;
+                    }),3);
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Error(e);
+                }
                 break;
             case "StandaloneEngagementPrompt":
                 var cls = Object.FindObjectOfType<CompanyLogoScene>();

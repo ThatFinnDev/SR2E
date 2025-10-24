@@ -237,6 +237,7 @@ public class SR2EModMenu : SR2EMenu
     protected override void OnLateAwake()
     {
         entryTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateEntryRec");
+        entryTemplate.SetActive(false);
         headerTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
         warningText = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationRestartWarningRec");
         toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"modmenu.warning.restart");
