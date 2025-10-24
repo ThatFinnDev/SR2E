@@ -42,10 +42,10 @@ public static class BuildInfo
     public const string Name = "SR2E";
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
-    public const string CoAuthors = "PinkTarr";
-    public const string Contributors = "shizophrenicgopher, Atmudia";
+    public const string CoAuthors = null;
+    public const string Contributors = "PinkTarr, shizophrenicgopher, Atmudia";
     public const string CodeVersion = "3.3.1";
-    public const string DownloadLink = "https://sr2e.thatfinn.dev/";
+    public const string DownloadLink = "https://sr2e.sr2.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
 
@@ -56,7 +56,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.3.1-dev";
+    public const string DisplayVersion = "3.3.1";
 
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
