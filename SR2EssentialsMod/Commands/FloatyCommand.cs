@@ -22,7 +22,7 @@ internal class FloatyCommand : SR2ECommand
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
         
         float duration = -1;
-        if(args!=null) if(!this.TryParseFloat(args[0], out duration, 0, false)) return false;
+        if(args!=null) if(!TryParseFloat(args[0], out duration, 0, false)) return false;
         
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {

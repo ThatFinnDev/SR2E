@@ -42,8 +42,8 @@ internal class FXPlayCommand : SR2ECommand
         bool playAndPause = false;
         if (args.Length >= 2)
         {
-            if (!this.TryParseFloat(args[1], out playbackSpeed, 0, false)) return false;
-            if (args.Length == 3) if (!this.TryParseBool(args[2], out playAndPause)) return false;
+            if (!TryParseFloat(args[1], out playbackSpeed, 0, false)) return false;
+            if (args.Length == 3) if (!TryParseBool(args[2], out playAndPause)) return false;
         }
 
 

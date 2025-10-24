@@ -24,11 +24,12 @@ internal class RefillInvCommand : SR2ECommand
         int slotToFill = -1;
 
         if(args!=null)
+            if(!TryParseInt(args[0], out slotToFill,0, false,slotToFill)) return false;
             try
             {
                 slotToFill = int.Parse(args[0]);
                 if (slotToFill <= 0) return SendError(translation("cmd.error.notintabove", args[0]));
-                if (slotToFill > numberOfSlots) return SendError(translation("cmd.refillinv.error.slotdoesntexist", numberOfSlots));
+                if (slotToFill > slotToFill) return SendError(translation("cmd.refillinv.error.slotdoesntexist", numberOfSlots));
                 slotToFill -= 1;
             }
             catch { return SendNotValidInt(args[0]); }

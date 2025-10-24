@@ -1,5 +1,6 @@
 using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.UI;
+using Il2CppMonomiPark.SlimeRancher.UI.Framework.Components;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using UnityEngine.InputSystem.UI;
 
@@ -13,25 +14,26 @@ public static class NativeEUtil
         {
             try
             {
-                var ui = Object.FindObjectOfType<MainMenuLandingRootUI>();
+                var ui = GetAnyInScene<MainMenuLandingRootUI>();
                 ui.gameObject.SetActive(false);
                 ui.enabled = false;
                 ui.Close(true, null);
-            } catch { }
+            }  
+            catch (Exception e) { MelonLogger.Error(e); }
         }
 
         if (inGame)
         {
             try
             {
-                Object.FindObjectOfType<PauseMenuRoot>().Close();
+                GetAnyInScene<PauseMenuRoot>().HideUI();
             } catch { }
         }
     }
 
     public static void TryPauseAndHide()
     {
-        if (Object.FindObjectOfType<PauseMenuRoot>())
+        if (inGame&&Object.FindObjectOfType<PauseMenuRoot>())
         {
             TryHideMenus();
             TryPauseGame(false);
@@ -48,13 +50,13 @@ public static class NativeEUtil
     {
         try
         {
-            SystemContext.Instance.SceneLoader.TryPauseGame();
+            systemContext.SceneLoader.TryPauseGame();
         } catch { }
 
         if (usePauseMenu)
             try
             {
-                Object.FindObjectOfType<PauseMenuDirector>().PauseGame();
+                sceneContext.PauseMenuDirector.PauseGame();
             } catch { }
     }
 
@@ -62,36 +64,45 @@ public static class NativeEUtil
     {
         try
         {
-            SystemContext.Instance.SceneLoader.UnpauseGame();
+            systemContext.SceneLoader.UnpauseGame();
         } catch { }
 
         if (usePauseMenu)
             try
             {
-                Object.FindObjectOfType<PauseMenuDirector>().UnPauseGame();
+                sceneContext.PauseMenuDirector.UnPauseGame();
             } catch { }
         else if (usePauseMenuElse)
             try
             {
-                if (Object.FindObjectOfType<PauseMenuRoot>() != null)
-                    Object.FindObjectOfType<PauseMenuDirector>().PauseGame();
+                if (GetAnyInScene<PauseMenuRoot>() != null)
+                    sceneContext.PauseMenuDirector.PauseGame();
             } catch { }
     }
 
     public static void TryUnHideMenus()
     {
-        if (SR2EEntryPoint.mainMenuLoaded)
+        try
         {
-            foreach (UIPrefabLoader loader in Object.FindObjectsOfType<UIPrefabLoader>())
-                if (loader.gameObject.name == "UIActivator" && loader.uiPrefab.name == "MainMenu" &&
-                    loader.parentTransform.name == "MainMenuRoot")
+            if (SR2EEntryPoint.mainMenuLoaded)
+            {
+                try
                 {
-                    loader.Start();
-                    break;
-                }
-        }
+                    foreach (UIDisplayContainer container in GetAllInScene<UIDisplayContainer>())
+                        if (container.TargetContainer.name == "MainMenuRoot" && container.name == "MainMenuRoot")
+                        {
+                            try
+                            {
 
-        if (inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
+                                container.OnEnable();
+                                break;
+                            } catch {}
+                        }
+                } catch {}
+            }
+            if (inGame) HudUI.Instance.transform.GetChild(0).gameObject.SetActive(true);
+        }
+        catch { }
     }
 
     internal static float _CustomTimeScale = 1f;
@@ -102,6 +113,8 @@ public static class NativeEUtil
         set
         {
             _CustomTimeScale = value;
+            if (value < 0.01f) _CustomTimeScale = 0.01f;
+            if (value > 2000f) _CustomTimeScale = 2000f;
             SR2EEntryPoint.CheckForTime();
         }
     }

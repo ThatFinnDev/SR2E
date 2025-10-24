@@ -58,47 +58,27 @@ public abstract class SR2EMenu : MonoBehaviour
         });
         if (createCommands)
         {
-            //Requires Reflection to get overriden one
+            bool error = false;
             try
             {
                 MenuIdentifier identifier = this.GetMenuIdentifier();
                 if (!string.IsNullOrEmpty(identifier.saveKey))
                 {
-                    try
-                    {
-                        SR2ECommandManager.RegisterCommand(
-                            new MenuVisibilityCommands.OpenCommand(identifier, this, inGameOnly));
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
+                    try { SR2ECommandManager.RegisterCommand(new MenuVisibilityCommands.OpenCommand(identifier, this, inGameOnly)); }
+                    catch (Exception e) { error=true; MelonLogger.Error(e); }
 
-                    try
-                    {
-                        SR2ECommandManager.RegisterCommand(
-                            new MenuVisibilityCommands.ToggleCommand(identifier, this, inGameOnly));
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
+                    try { SR2ECommandManager.RegisterCommand(new MenuVisibilityCommands.ToggleCommand(identifier, this, inGameOnly)); }
+                    catch (Exception e) { error=true; MelonLogger.Error(e); }
 
-                    try
-                    {
-                        SR2ECommandManager.RegisterCommand(
-                            new MenuVisibilityCommands.CloseCommand(identifier, this, inGameOnly));
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e);
-                    }
+                    try { SR2ECommandManager.RegisterCommand(new MenuVisibilityCommands.CloseCommand(identifier, this, inGameOnly)); } 
+                    catch (Exception e) { error=true; MelonLogger.Error(e); }
                 }
             }
             catch
             {
-                MelonLogger.Error("There was an error creating menu commands");
+                error = true;
             }
+            if(error) MelonLogger.Error("There was an error creating menu commands");
         }
 
         if (MenuEUtil.menuBlock == null)
@@ -162,8 +142,7 @@ public abstract class SR2EMenu : MonoBehaviour
         MenuEUtil.menuBlock.SetActive(false);
         gameObject.SetActive(false);
         changedOpenState = true;
-        foreach (SR2EPopUp popUp in MenuEUtil.openPopUps)
-            popUp.Close();
+        foreach (SR2EPopUp popUp in MenuEUtil.openPopUps) popUp.Close();
         MenuEUtil.DoMenuActions(SR2EEntryPoint.menus[this]["closeActions"] as List<MenuActions>);
         try
         {

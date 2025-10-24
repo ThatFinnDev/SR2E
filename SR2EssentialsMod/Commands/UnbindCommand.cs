@@ -19,7 +19,7 @@ internal class UnbindCommand : SR2ECommand
         if (!args.IsBetween(1,1)) return SendUsage();
 
         Key key;
-        if (!this.TryParseKeyCode(args[0], out key)) return false;
+        if (!TryParseKeyCode(args[0], out key)) return false;
         
         if (!SR2EBindingManger.isKeyBound(key)) return SendError(translation("cmd.unbind.notbound", args[0]));
         SR2EBindingManger.UnbindKey(key);

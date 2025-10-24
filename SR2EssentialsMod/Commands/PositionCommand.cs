@@ -14,9 +14,9 @@ internal class PositionCommand: SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         Vector3 move;
-        if (!this.TryParseVector3(args[0], args[1], args[2], out move)) return false;
+        if (!TryParseVector3(args[0], args[1], args[2], out move)) return false;
         bool absolute = false;
-        if (args.Length==4) if (!this.TryParseBool(args[3], out absolute)) return false;
+        if (args.Length==4) if (!TryParseBool(args[3], out absolute)) return false;
         
         Camera cam = Camera.main; if (cam == null) return SendNoCamera();
              

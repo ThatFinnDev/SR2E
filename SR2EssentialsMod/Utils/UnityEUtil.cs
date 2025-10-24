@@ -112,8 +112,34 @@ public static class UnityEUtil
     }
     
     public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
+    public static T? GetAny<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
     public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
     
+    public static T? GetInScene<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault(x =>
+    {
+        if (x == null) return false;
+        GameObject obj = null;
+        if (x.TryCast<Component>() != null) obj = x.TryCast<Component>().gameObject;
+        else if (x.TryCast<GameObject>() != null) obj = x.TryCast<GameObject>();
+        if (obj == null || !obj.scene.IsValid() || !obj.scene.isLoaded) return false;
+        return obj.name == name;
+    });
+    public static T? GetAnyInScene<T>() where T : Object => GetAllInScene<T>().FirstOrDefault(x =>
+    {
+        if (x == null) return false;
+        GameObject obj = null;
+        if (x.TryCast<Component>() != null) obj = x.TryCast<Component>().gameObject;
+        else if (x.TryCast<GameObject>() != null) obj = x.TryCast<GameObject>();
+        return obj != null && obj.scene.IsValid() && obj.scene.isLoaded;
+    });
+    public static List<T>? GetAllInScene<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().Where(x =>
+    {
+        if (x == null) return false;
+        GameObject obj = null;
+        if (x.TryCast<Component>() != null) obj = x.TryCast<Component>().gameObject;
+        else if (x.TryCast<GameObject>() != null) obj = x.TryCast<GameObject>();
+        return obj != null && obj.scene.IsValid() && obj.scene.isLoaded;
+    }).ToList();
     public static T AddComponent<T>(this Component obj) where T : Component => obj.gameObject.AddComponent<T>();
     public static bool AddComponent<T>(this Transform obj) where T : Component => obj.gameObject.AddComponent<T>();
     public static bool AddComponent(this Transform obj, Il2CppSystem.Type componentType) => obj.gameObject.AddComponent(componentType);

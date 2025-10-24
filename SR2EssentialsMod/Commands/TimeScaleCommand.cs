@@ -17,7 +17,7 @@ internal class TimeScaleCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
 
         float speed;
-        if (!this.TryParseFloat(args[0], out speed, 0.25f, true, 15f)) return false;
+        if (!TryParseFloat(args[0], out speed, 0.25f, true, 15f)) return false;
 
         NativeEUtil.CustomTimeScale = speed;
         SendMessage(translation("cmd.timescale.success",speed));

@@ -2,169 +2,169 @@ namespace SR2E.Enums.Features;
 
 public enum FeatureFlag
 {
-    None,
+    None=0,
     //Dev
     /// <summary>
     /// Activates Devmode
     /// </summary>
-    DevMode,
+    DevMode=10,
     /// <summary>
     /// Shows extra info in into MLLog
     /// </summary>
-    DebugLogging,
+    DebugLogging=20,
     /// <summary>
     /// Show Unity related errors from Debug.Log, Debug.Warning and Debug.Error
     /// </summary>
-    ShowUnityErrors,
+    ShowUnityErrors=30,
     /// <summary>
     /// Show save game related errors and skips them
     /// </summary>
-    IgnoreSaveErrors,
+    IgnoreSaveErrors=40,
     /// <summary>
     /// Enable experimental features
     /// </summary>
-    Experiments,
+    Experiments=50,
     /// <summary>
     /// Allow experimental Library
     /// </summary>
-    AllowExperimentalLibrary,
-    /// <summary>
-    /// Enable the save export feature
-    /// </summary>
-    ExperimentalSaveExport,
+    AllowExperimentalLibrary=60,
     /// <summary>
     /// Enable the enable dev key codes
     /// </summary>
-    ExperimentalKeyCodes,
+    ExperimentalKeyCodes=80,
     
     //Commands+Dev
     /// <summary>
     /// Load dev-only commands
     /// </summary>
-    CommandsLoadDevOnly, 
+    CommandsLoadDevOnly=90, 
     /// <summary>
     /// Enable experimental commands
     /// </summary>
-    CommandsLoadExperimental, 
+    CommandsLoadExperimental=100, 
     
     //Commands
     /// <summary>
     /// Load commands
     /// </summary>
-    CommandsLoadCommands, //
+    CommandsLoadCommands=110, //
     /// <summary>
     /// Load cheating commands
     /// </summary>
-    CommandsLoadCheat, //
+    CommandsLoadCheat=120, //
     /// <summary>
     /// Load binding commands
     /// </summary>
-    CommandsLoadBinding, //
+    CommandsLoadBinding=130, //
     /// <summary>
     /// Load warping commands
     /// </summary>
-    CommandsLoadWarp, //
+    CommandsLoadWarp=140, //
     /// <summary>
     /// Load common commands
     /// </summary>
-    CommandsLoadCommon, //
+    CommandsLoadCommon=150, //
     /// <summary>
     /// Load menu commands
     /// </summary>
-    CommandsLoadMenu, //
+    CommandsLoadMenu=160, //
     /// <summary>
     /// Load miscellaneous commands
     /// </summary>
-    CommandsLoadMiscellaneous, //
+    CommandsLoadMiscellaneous=170, //
     /// <summary>
     /// Load fun commands
     /// </summary>
-    CommandsLoadFun, //
+    CommandsLoadFun=180, //
 
     //Cheats and Mods
     /// <summary>
     /// Disable everything related to cheats
     /// </summary>
-    DisableCheats,
+    DisableCheats=190,
     /// <summary>
     /// Allow adding the cheat menu button to the pause menu
     /// </summary>
-    AddCheatMenuButton, //
+    AddCheatMenuButton=200, //
     /// <summary>
     /// Enable infhealth command and its cheat menu equivalent
     /// </summary>
-    EnableInfHealth, //
+    EnableInfHealth=210, //
     /// <summary>
     /// Enable infenergy command and its cheat menu equivalent
     /// </summary>
-    EnableInfEnergy, //
+    EnableInfEnergy=220, //
     
     //Misc
     /// <summary>
     /// Allow adding the mod menu button to the pause menu and main menu
     /// </summary>
-    AddModMenuButton, //
+    AddModMenuButton=230, //
     /// <summary>
     /// Allow loading and integrating SR2E expansions
     /// </summary>
-    AllowExpansions, //
+    AllowExpansions=240, //
     /// <summary>
     /// Modify the version text in the main menu
     /// </summary>
-    EnableLocalizedVersionPatch, //
+    EnableLocalizedVersionPatch=250, //
     /// <summary>
     /// Inject Translations into unity's localization system
     /// </summary>
-    InjectTranslations, //
+    InjectTranslations=260, //
     /// <summary>
     /// Use the patch for il2cpp exceptions
     /// </summary>
-    EnableIl2CppDetourExceptionReporting, //
+    EnableIl2CppDetourExceptionReporting=270, //
+    /// <summary>
+    /// Enable the save export feature
+    /// </summary>
+    AllowSaveExport=70, //
     
     //Menus
     /// <summary>
     /// Enable the mod menu
     /// </summary>
-    EnableModMenu, //
+    EnableModMenu=280, //
     /// <summary>
     /// Enable the cheat menu
     /// </summary>
-    EnableCheatMenu, //
+    EnableCheatMenu=290, //
     /// <summary>
     /// Enable the console menu
     /// </summary>
-    EnableConsole, //
+    EnableConsole=300, //
     /// <summary>
     /// Enable the theme menu
     /// </summary>
-    EnableThemeMenu, //
+    EnableThemeMenu=310, //
     /// <summary>
     /// Enable the repo menu
     /// </summary>
-    EnableRepoMenu, //
+    EnableRepoMenu=320, //
     
     //UI
     /// <summary>
     /// Inject buttons in the main menu
     /// </summary>
-    InjectMainMenuButtons, //
+    InjectMainMenuButtons=330, //
     /// <summary>
     /// Inject buttons in the ranch house ui
     /// </summary>
-    InjectRanchUIButtons, //
+    InjectRanchUIButtons=340, //
     /// <summary>
     /// Inject buttons in the pause menu
     /// </summary>
-    InjectPauseButtons, //
+    InjectPauseButtons=350, //
 
     //Updates and Patches
     /// <summary>
     /// Allow checking for new SR2E updates
     /// </summary>
-    CheckForUpdates, //
+    CheckForUpdates=360, //
     /// <summary>
     /// Allow auto updating if an update has been found
     /// </summary>
-    AllowAutoUpdate, //
+    AllowAutoUpdate=370, //
 
 }

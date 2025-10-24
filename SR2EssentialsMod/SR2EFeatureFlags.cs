@@ -18,17 +18,18 @@ public static class SR2EFeatureFlags
         AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
         InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectTranslations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
-        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu
+        EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu,AllowSaveExport
         
     };
 
     private static FeatureFlag[] extraDevFlags => new[] {
-        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, ExperimentalSaveExport, ExperimentalKeyCodes, EnableRepoMenu, AllowExperimentalLibrary
+        DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
+        ExperimentalKeyCodes, EnableRepoMenu, AllowExperimentalLibrary
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};
     
-    private static bool[] flagsToForceOff = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
+    private static List<FeatureFlag> flagsToForceOff = new List<FeatureFlag>();
     private static Dictionary<FeatureIntegerValue, int> defaultFeatureInts = new Dictionary<FeatureIntegerValue, int>()
     {
         {MAX_AUTOCOMPLETE,55},
@@ -45,7 +46,7 @@ public static class SR2EFeatureFlags
     private static CommandType enabledCMDs;
     private static Dictionary<FeatureIntegerValue, int> featureInts = new Dictionary<FeatureIntegerValue, int>();
     private static Dictionary<FeatureStringValue, string> featureStrings = new Dictionary<FeatureStringValue, string>();
-    private static bool[] enabledFlags = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
+    private static List<FeatureFlag> enabledFlags = new List<FeatureFlag>();
     
     static bool initialized = false;
     //internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
@@ -69,9 +70,16 @@ public static class SR2EFeatureFlags
             if (flag == None) continue;
             XmlElement xmlElement = xmlDoc.CreateElement(flag.ToString());
             flags.AppendChild(xmlElement);
-            if(!flagsToForceOff.HasFlag(flag)) xmlElement.SetAttribute("value",flag.HasFlag().ToString().ToLower());
-            else xmlElement.SetAttribute("value","false");
-            xmlElement.SetAttribute("default", defaultFlags.HasFlag(flag).ToString().ToLower());
+            if(!flagsToForceOff.HasFlag(flag))
+            {
+                xmlElement.SetAttribute("value", flag.HasFlag().ToString().ToLower());
+                xmlElement.SetAttribute("default", flag.HasFlag().ToString().ToLower());
+            }
+            else
+            {
+                xmlElement.SetAttribute("value", "false");
+                xmlElement.SetAttribute("default", flag.GetDefault().ToString().ToLower());
+            }
             
             if (_requirementsMap.ContainsKey(flag)) if(_requirementsMap[flag].Length!=0)
                 foreach (FFR req in _requirementsMap[flag])
@@ -126,60 +134,63 @@ public static class SR2EFeatureFlags
 
     static void LoadFromFlagFile()
     {
-        flagsToForceOff = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];;
-        if (!File.Exists(flagfile_path)) { SaveToFlagFile(); return; }
+        flagsToForceOff = new List<FeatureFlag>();
+        if (!File.Exists(flagfile_path)) return; 
         
         XmlDocument xmlDoc = new XmlDocument();
         try { xmlDoc.Load(flagfile_path); }
         catch {}
 
         XmlElement root = xmlDoc["SR2EFeatureFlags"];
-        if (root == null) { SaveToFlagFile(); return; }
+        if (root == null) return; 
         
         XmlElement strings = root["FeatureStringValue"];
         if (strings != null)
         {
             if(strings["LAST_SR2EVERSION"]!=null)
             {
-                if (strings["LAST_SR2EVERSION"].GetAttribute("value") != BuildInfo.DisplayVersion)
-                { SaveToFlagFile(); return; }
+                if (strings["LAST_SR2EVERSION"].GetAttribute("value") != BuildInfo.DisplayVersion) return; 
             }
             foreach (XmlElement stringElement in strings.ChildNodes)
                 if(stringElement.Name!="FeatureStringValue")
-                    if (Enum.TryParse(stringElement.Name, out FeatureStringValue intValue))
-                        featureStrings[intValue] = stringElement.GetAttribute("value");
+                    if (Enum.TryParse(stringElement.Name, out FeatureStringValue stringValue))
+                        if (stringValue.GetDefault() == stringElement.GetAttribute("default")) 
+                            featureStrings[stringValue] = stringElement.GetAttribute("value");
         }
 
         XmlElement flags = root["FeatureFlags"];
         if (flags != null)
             foreach (XmlElement flagElement in flags.ChildNodes)
                 if (Enum.TryParse(flagElement.Name, out FeatureFlag flag))
-                    if (bool.TryParse(flagElement.GetAttribute("value"), out bool isEnabled))
-                        flag.SetFlag(isEnabled);
+                    if (flag.GetDefault().ToString().ToLower() == flagElement.GetAttribute("default"))
+                        if (bool.TryParse(flagElement.GetAttribute("value"), out bool isEnabled))
+                            flag.SetFlag(isEnabled);
+                    
+                
         XmlElement ints = root["FeatureIntegerValues"];
         if (ints != null)
             foreach (XmlElement intElement in ints.ChildNodes)
                 if (Enum.TryParse(intElement.Name, out FeatureIntegerValue intValue))
-                    if (int.TryParse(intElement.GetAttribute("value"), out int intResult))
-                        featureInts[intValue] = intResult;
+                    if (intValue.GetDefault().ToString() == intElement.GetAttribute("default"))
+                        if (int.TryParse(intElement.GetAttribute("value"), out int intResult))
+                            featureInts[intValue] = intResult;
 
         
         foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
         {
             if(flag.requirementsMet()) continue;
             flag.DisableFlag();
-            flagsToForceOff[Convert.ToInt32(flag)]=true;
+            if(!flagsToForceOff.Contains(flag));
+            flagsToForceOff.Add(flag);
         }
-        
-        SaveToFlagFile();
     }
 
     internal static void InitFlagManager()
     {
         if (initialized) return;
         initialized = true;
-        enabledFlags = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
-        flagsToForceOff = new bool[Enum.GetValues(typeof(FeatureFlag)).Length];
+        enabledFlags = new List<FeatureFlag>();
+        flagsToForceOff = new List<FeatureFlag>();
         FeatureFlag[] addedFlags = null;
         switch (SR2EEntryPoint.updateBranch)
         {
@@ -197,7 +208,7 @@ public static class SR2EFeatureFlags
         try
         {
             if (File.Exists(flagfile_path)) LoadFromFlagFile();
-            else SaveToFlagFile();
+            SaveToFlagFile();
         }
         catch { }
         
@@ -216,14 +227,28 @@ public static class SR2EFeatureFlags
     }
     
     public static CommandType enabledCommands => enabledCMDs;
-    public static bool[] flags => enabledFlags;
-    public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)];
+    public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags.Contains(featureFlag);
     public static bool HasFlag(this bool[] array,FeatureFlag featureFlag) => array[Convert.ToInt32(featureFlag)];
     public static bool HasFlag(this FeatureFlag[] array,FeatureFlag featureFlag) => array.Contains(featureFlag);
     public static bool HasFlag(this List<FeatureFlag> list,FeatureFlag featureFlag) => list.Contains(featureFlag);
-    static void SetFlag(this FeatureFlag featureFlag, bool state) => enabledFlags[Convert.ToInt32(featureFlag)]=state;
-    static bool EnableFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)]=true;
-    static bool DisableFlag(this FeatureFlag featureFlag) => enabledFlags[Convert.ToInt32(featureFlag)]=false;
+
+    static void SetFlag(this FeatureFlag featureFlag, bool state)
+    {
+        if (state) EnableFlag(featureFlag);
+        else DisableFlag(featureFlag);
+    }
+
+    static bool EnableFlag(this FeatureFlag featureFlag)
+    {
+        if(!enabledFlags.Contains(featureFlag))
+        {
+            enabledFlags.Add(featureFlag);
+            return true;
+        }
+
+        return false;
+    }
+    static bool DisableFlag(this FeatureFlag featureFlag) => enabledFlags.Remove(featureFlag);
 
     public static int Get(this FeatureIntegerValue featureIntegerValue)
     {
@@ -245,6 +270,9 @@ public static class SR2EFeatureFlags
         if (!defaultFeatureStrings.ContainsKey(featureStringValue)) return "";
         return defaultFeatureStrings[featureStringValue];
     }
+
+    public static bool GetDefault(this FeatureFlag featureFlag) => defaultFlags.HasFlag(featureFlag);
+    
     static Dictionary<FeatureFlag,FFR[]> _requirementsMap = new Dictionary<FeatureFlag, FFR[]>()
     {
         {CheckForUpdates,new FFR[]{new FFRDeactivated(DevMode)}},
@@ -264,7 +292,6 @@ public static class SR2EFeatureFlags
         {EnableCheatMenu, new FFR[]{new FFRDeactivated(DisableCheats)}},
         {AddCheatMenuButton,new FFR[]{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
         {AddModMenuButton,new FFR[]{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
-        {ExperimentalSaveExport,new FFR[]{new FFRActivated(Experiments)}},
         //{ExperimentalSettingsInjection,new FFR[]{new FFRActivated(Experiments)}},
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
@@ -300,6 +327,9 @@ public static class SR2EFeatureFlags
         }
         return true;
     }
+    
+    public static List<FeatureFlag> featureFlags => enabledFlags;
+    [Obsolete("Use SR2EFeatureFlags.featureFlags!")] public static bool[] flags => new bool[999999];
 }
 
 internal class FFR //FeatureFlagRequirement
@@ -332,3 +362,6 @@ internal class FFRMelonUnInstalled : FFRString //FeatureFlagRequirementMelonInst
     public FFRMelonUnInstalled(string MelonName)
     { this.String = MelonName; }
 }
+
+
+

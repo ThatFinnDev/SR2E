@@ -8,5 +8,8 @@ namespace SR2E.Enums;
 [JsonConverter(typeof(StringEnumConverter))]
 public enum SR2EMenuFont
 {
-    Default, SR2, Bold, Regular
+    Default=0,
+    SR2=1, 
+    Bold=2, 
+    Regular=3
 }

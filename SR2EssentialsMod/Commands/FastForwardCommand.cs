@@ -21,7 +21,7 @@ internal class FastForwardCommand : SR2ECommand
         double timeToFastForwardTo = SceneContext.Instance.TimeDirector.GetNextDawn();
         float duration;
         if (args.Length == 1)
-            if (!this.TryParseFloat(args[0], out duration, 0, false)) return false;
+            if (!TryParseFloat(args[0], out duration, 0, false)) return false;
             else timeToFastForwardTo = SceneContext.Instance.TimeDirector.HoursFromNow(duration);
         
         SceneContext.Instance.TimeDirector.FastForwardTo(timeToFastForwardTo);

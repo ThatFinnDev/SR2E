@@ -28,7 +28,7 @@ internal class PediaCommand : SR2ECommand
         if (!inGame) return SendLoadASaveFirst();
         if (!arg0List.Contains(args[0])) return SendNotValidOption(args[0]);
         bool showPopup = args[1] != "*";
-        if (args.Length == 3) if (!this.TryParseBool(args[2], out showPopup)) return false;
+        if (args.Length == 3) if (!TryParseBool(args[2], out showPopup)) return false;
         if (args[1] == "*")
         {
             bool isSilent = silent;
