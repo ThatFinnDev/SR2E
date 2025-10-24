@@ -21,4 +21,5 @@ public enum SR2EError
     InvalidGameName=16,
     NoValidSaves=17,
     NoValidSummaries=18,
+    NeedFlag=19,
 }

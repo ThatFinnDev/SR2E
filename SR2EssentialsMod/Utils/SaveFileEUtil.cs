@@ -12,7 +12,6 @@ public static class SaveFileEUtil
     private static Exception noBoolException = new Exception("The value has to be a bool!");
     private static Exception noIntException = new Exception("The value has to be an inte!");
     private static Exception noFloatException = new Exception("The value has to be a float!");
-    private static Exception noStringException = new Exception("The value has to be a string!");
     private static Exception noDoubleException = new Exception("The value has to be a double!");
     public static SR2ESaveFileV01 ExportSaveV01(Summary summary, bool sendErrorLogs = false) => ExportSaveV01(summary.Name, summary.SaveName,sendErrorLogs);
 
@@ -27,7 +26,7 @@ public static class SaveFileEUtil
     public static SR2EError ExportSaveV01(string gameName, string latestSaveName, out SR2ESaveFileV01 data)
     {
         data = null;
-        if (!ExperimentalSaveExport.HasFlag()) return NeedExperiment;
+        if (!AllowSaveExport.HasFlag()) return NeedFlag;
         
         if (gameName.Split("_").Length !=2) return InvalidGameName;
         var stamp = gameName.Split("_")[0];
@@ -109,7 +108,7 @@ public static class SaveFileEUtil
     
     public static SR2EError ImportSaveV01(SR2ESaveFileV01 sr2ESaveFile, int slotThatStartWithOne, bool loadMenuMenuOnSuccess)
     {
-        if (!ExperimentalSaveExport.HasFlag()) return NeedExperiment;
+        if (!AllowSaveExport.HasFlag()) return NeedFlag;
         if(sr2ESaveFile==null) return SaveInvalidGeneral;
         if (!sr2ESaveFile.IsValid()) return SaveInvalidGeneral;
         if(gameContext==null||autoSaveDirector==null||autoSaveDirector._storageProvider==null) return GameNotLoadedYet;

@@ -29,10 +29,6 @@ public enum FeatureFlag
     /// </summary>
     AllowExperimentalLibrary=60,
     /// <summary>
-    /// Enable the save export feature
-    /// </summary>
-    ExperimentalSaveExport=70,
-    /// <summary>
     /// Enable the enable dev key codes
     /// </summary>
     ExperimentalKeyCodes=80,
@@ -120,6 +116,10 @@ public enum FeatureFlag
     /// Use the patch for il2cpp exceptions
     /// </summary>
     EnableIl2CppDetourExceptionReporting=270, //
+    /// <summary>
+    /// Enable the save export feature
+    /// </summary>
+    AllowSaveExport=70, //
     
     //Menus
     /// <summary>

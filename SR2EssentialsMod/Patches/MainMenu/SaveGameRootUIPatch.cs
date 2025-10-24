@@ -80,7 +80,7 @@ internal static class SaveGameRootUIPatch
     internal static void Postfix(SaveGamesRootUI __instance)
     {
         SR2EEntryPoint.baseUIAddSliders.Add(__instance);
-        if (!ExperimentalSaveExport.HasFlag()) return;
+        if (!AllowSaveExport.HasFlag()) return;
         ui = __instance;
         ExecuteInTicks((Action)(() =>
         {
