@@ -16,7 +16,6 @@ using SR2E.Expansion;
 [assembly: MelonGame("MonomiPark", "SlimeRancher2")]
 [assembly: MelonColor(255, 35, 255, 35)]
 [assembly: AssemblyMetadata("display_version",SR2E.BuildInfo.DisplayVersion)]
-[assembly: AssemblyMetadata("co_authors",SR2E.BuildInfo.CoAuthors)]
 [assembly: AssemblyMetadata("contributors",SR2E.BuildInfo.Contributors)]
 [assembly: AssemblyMetadata("source_code",SR2E.BuildInfo.SourceCode)]
 [assembly: AssemblyMetadata("nexus",SR2E.BuildInfo.Nexus)]
