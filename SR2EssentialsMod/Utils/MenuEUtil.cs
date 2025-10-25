@@ -145,7 +145,7 @@ public static class MenuEUtil
 
 
 
-    
+    public static bool isAnyPopUpOpen => openPopUps.Count != 0;
     public static bool isAnyMenuOpen
     {
         get
@@ -160,7 +160,21 @@ public static class MenuEUtil
             return false;
         }
     }
-
+    public static void CloseOpenPopUps()
+    {
+        try
+        {
+            for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
+            {
+                Transform child = SR2EEntryPoint.SR2EStuff.transform.GetChild(i);
+                if (child.HasComponent<SR2EPopUp>())
+                {
+                    GameObject.Destroy(child.gameObject);
+                }
+            }
+        }
+        catch { }
+    }
     public static void CloseOpenMenu()
     {
         SR2EMenu menu = GetOpenMenu();

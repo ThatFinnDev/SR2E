@@ -144,8 +144,8 @@ public class SR2ECheatMenu : SR2EMenu
 
     protected override void OnUpdate()
     {
-       if (Key.Escape.OnKeyPressed())
-           if(MenuEUtil.openPopUps.Count==0) 
+       if (LKey.Escape.OnKeyDown())
+           if(!MenuEUtil.isAnyPopUpOpen) 
                Close();
         
     }

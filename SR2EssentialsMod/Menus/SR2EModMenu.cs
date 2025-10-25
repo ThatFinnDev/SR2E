@@ -41,7 +41,9 @@ public class SR2EModMenu : SR2EMenu
     GameObject headerTemplate;
     GameObject warningText;
     Texture2D modMenuTabImage;
-    List<Key> allPossibleKeys = new List<Key>();
+    List<Key> allPossibleUnityKeys = new List<Key>();
+    private List<KeyCode> allPossibleUnityKeyCodes = new List<KeyCode>();
+    private List<LKey> allPossibleLKey = new List<LKey>();
     TextMeshProUGUI themeMenuText;
     Button themeButton;
 
@@ -56,6 +58,7 @@ public class SR2EModMenu : SR2EMenu
     protected override void OnOpen()
     {
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("ModMenuModMenuTemplateButtonRec");
+        buttonPrefab.SetActive(false);
         Transform modContent = transform.GetObjectRecursively<Transform>("ModMenuModMenuContentRec");
         foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (RottenMelon rotten in loadedAssembly.RottenMelons)
         {
@@ -237,7 +240,6 @@ public class SR2EModMenu : SR2EMenu
     protected override void OnLateAwake()
     {
         entryTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateEntryRec");
-        entryTemplate.SetActive(false);
         headerTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
         warningText = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationRestartWarningRec");
         toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"modmenu.warning.restart");
@@ -251,14 +253,32 @@ public class SR2EModMenu : SR2EMenu
                     Key key;
                     if (Key.TryParse(stringKey, out key))
                         if (key != null)
-                            allPossibleKeys.Add(key);
+                            allPossibleUnityKeys.Add(key);
                 }
-
-        allPossibleKeys.Remove(Key.LeftCommand);
-        allPossibleKeys.Remove(Key.RightCommand);
-        allPossibleKeys.Remove(Key.LeftWindows);
-        allPossibleKeys.Remove(Key.RightWindows);
-
+        allPossibleUnityKeys.Remove(Key.LeftCommand);
+        allPossibleUnityKeys.Remove(Key.RightCommand);
+        
+        foreach (string stringKey in System.Enum.GetNames(typeof(KeyCode)))
+            if (!String.IsNullOrEmpty(stringKey))
+                if (stringKey != "None")
+                {
+                    KeyCode key;
+                    if (KeyCode.TryParse(stringKey, out key))
+                        if (key != null)
+                            allPossibleUnityKeyCodes.Add(key);
+                }
+        allPossibleUnityKeyCodes.Remove(KeyCode.LeftWindows);
+        allPossibleUnityKeyCodes.Remove(KeyCode.RightWindows);
+        
+        foreach (string stringKey in System.Enum.GetNames(typeof(LKey)))
+            if (!String.IsNullOrEmpty(stringKey))
+                if (stringKey != "None")
+                {
+                    LKey key;
+                    if (LKey.TryParse(stringKey, out key))
+                        if (key != null)
+                            allPossibleLKey.Add(key);
+                }
         var button1 = transform.GetObjectRecursively<Image>("ModMenuModMenuSelectionButtonRec");
         button1.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         button1.sprite = whitePillBg;
@@ -471,9 +491,11 @@ public class SR2EModMenu : SR2EMenu
                         {
                             if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
                             textMesh.text = translation("modmenu.modconfig.keylistening");
-                            listeninAction = ((Action<Nullable<Key>>)((inputKey) =>
+                            listeningType = 3;
+                            listeningAction = ((Action<int>)((integer) =>
                             {
-                                Nullable<Key> key = inputKey == Key.Escape ? Key.None : inputKey;
+                                Key inputKey = (Key) integer;
+                                Key key = inputKey == Key.Escape ? Key.None : inputKey;
                                 if (key == null)
                                 {
                                     textMesh.text = entry.GetEditedValueAsString();
@@ -483,7 +505,7 @@ public class SR2EModMenu : SR2EMenu
                                     if (entry.BoxedEditedValue is Key)
                                     {
                                         textMesh.text = key.ToString();
-                                        entry.BoxedEditedValue = key.Value;
+                                        entry.BoxedEditedValue = key;
                                         if (!entriesWithActions.ContainsKey(entry))
                                             warningText.SetActive(true);
                                         else
@@ -495,7 +517,91 @@ public class SR2EModMenu : SR2EMenu
                                     }
                                 }
 
-                                listeninAction = null;
+                                listeningAction = null;
+                            }));
+                        }));
+                    }
+                    else if (entry.BoxedEditedValue is KeyCode)
+                    {
+                        obj.transform.GetChild(1).gameObject.SetActive(false);
+                        obj.transform.GetChild(4).gameObject.SetActive(true);
+                        Button button = obj.transform.GetChild(4).GetComponent<Button>();
+                        TextMeshProUGUI textMesh =
+                            obj.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
+                        textMesh.text = entry.GetEditedValueAsString();
+                        button.onClick.AddListener((Action)(() =>
+                        {
+                            if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
+                            textMesh.text = translation("modmenu.modconfig.keylistening");
+                            listeningType = 2;
+                            listeningAction = ((Action<int>)((integer) =>
+                            {
+                                KeyCode inputKey = (KeyCode) integer;
+                                KeyCode key = inputKey == KeyCode.Escape ? KeyCode.None : inputKey;
+                                if (key == null)
+                                {
+                                    textMesh.text = entry.GetEditedValueAsString();
+                                }
+                                else
+                                {
+                                    if (entry.BoxedEditedValue is KeyCode)
+                                    {
+                                        textMesh.text = key.ToString();
+                                        entry.BoxedEditedValue = key;
+                                        if (!entriesWithActions.ContainsKey(entry))
+                                            warningText.SetActive(true);
+                                        else
+                                        {
+                                            System.Action action = entriesWithActions[entry];
+                                            if (action != null)
+                                                action.Invoke();
+                                        }
+                                    }
+                                }
+
+                                listeningAction = null;
+                            }));
+                        }));
+                    }
+                    else if (entry.BoxedEditedValue is LKey)
+                    {
+                        obj.transform.GetChild(1).gameObject.SetActive(false);
+                        obj.transform.GetChild(4).gameObject.SetActive(true);
+                        Button button = obj.transform.GetChild(4).GetComponent<Button>();
+                        TextMeshProUGUI textMesh =
+                            obj.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
+                        textMesh.text = entry.GetEditedValueAsString();
+                        button.onClick.AddListener((Action)(() =>
+                        {
+                            if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
+                            textMesh.text = translation("modmenu.modconfig.keylistening");
+                            listeningType = 1;
+                            listeningAction = ((Action<int>)((integer) =>
+                            {
+                                LKey inputKey = (LKey) integer;
+                                LKey key = inputKey == LKey.Escape ? LKey.None : inputKey;
+                                if (key == null)
+                                {
+                                    textMesh.text = entry.GetEditedValueAsString();
+                                }
+                                else
+                                {
+                                    if (entry.BoxedEditedValue is LKey)
+                                    {
+                                        textMesh.text = key.ToString();
+                                        entry.BoxedEditedValue = key;
+                                        if (!entriesWithActions.ContainsKey(entry))
+                                            warningText.SetActive(true);
+                                        else
+                                        {
+                                            System.Action action = entriesWithActions[entry];
+                                            if (action != null)
+                                                action.Invoke();
+                                        }
+                                    }
+                                }
+
+                                listeningAction = null;
                             }));
                         }));
                     }
@@ -504,29 +610,31 @@ public class SR2EModMenu : SR2EMenu
         }
     }
 
-    static Action<Nullable<Key>> listeninAction = null;
+    private static int listeningType = 0;
+    static Action<int> listeningAction = null;
 
-    void keyWasPressed(Key key)
+    protected override void OnUpdate()
     {
-        if (listeninAction != null)
-            listeninAction.Invoke(key);
-    }
-
-    protected void Update()
-    {
-        if (listeninAction == null)
-            if (Key.Escape.OnKeyPressed())
-                if(MenuEUtil.openPopUps.Count==0)
-                    Close();
-        foreach (Key key in allPossibleKeys)
+        if (listeningAction == null)
         {
-            try
-            {
-                if (key.OnKeyPressed()) keyWasPressed(key);
-            }
-            catch
-            {
-            }
+            if (LKey.Escape.OnKeyDown())
+                if (!MenuEUtil.isAnyPopUpOpen)
+                    Close();
+        }
+        else switch (listeningType)
+        {
+            case 1:
+                foreach (LKey key in allPossibleLKey)
+                    try { if(key.OnKeyDown()) { listeningAction.Invoke(Convert.ToInt32(key)); } } catch { }
+                break;
+            case 2:
+                foreach (KeyCode key in allPossibleUnityKeyCodes)
+                    try { if(key.OnKeyDown()) listeningAction.Invoke(Convert.ToInt32(key)); } catch { }
+                break;
+            case 3:
+                foreach (Key key in allPossibleUnityKeys)
+                    try { if(Keyboard.current[key].wasPressedThisFrame) listeningAction.Invoke(Convert.ToInt32(key)); }catch { }
+                break;
         }
 
         if (Mouse.current.leftButton.wasPressedThisFrame ||
@@ -537,8 +645,8 @@ public class SR2EModMenu : SR2EMenu
             Mouse.current.leftButton.wasPressedThisFrame ||
             Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (listeninAction != null)
-                listeninAction.Invoke(null);
+            if (listeningAction != null)
+                listeningAction.Invoke(0);
         }
     }
 }

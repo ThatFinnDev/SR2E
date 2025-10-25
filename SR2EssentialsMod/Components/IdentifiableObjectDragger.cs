@@ -1,3 +1,4 @@
+using SR2E.Enums;
 using SR2E.Managers;
 using UnityEngine.InputSystem;
 
@@ -26,11 +27,11 @@ internal class IdentifiableObjectDragger : MonoBehaviour
     }
     public void Update()
     {
-        if (Key.Q.OnKey())
+        if (LKey.Q.OnKey())
         {
             distanceFromCamera -= Time.deltaTime * distanceChangeSpeed;
         }
-        if (Key.E.OnKey())
+        if (LKey.E.OnKey())
         {
             distanceFromCamera += Time.deltaTime * distanceChangeSpeed;
         }

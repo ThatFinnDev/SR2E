@@ -81,7 +81,7 @@ internal class FXPlayPauseFunction : MonoBehaviour
 
     public void Update()
     {
-        if (Key.P.OnKeyPressed())
+        if (LKey.P.OnKeyDown())
         {
             if (sys.isPlaying) sys.Pause();
             else sys.Play();

@@ -358,7 +358,18 @@ public abstract class SR2ECommand
         if (input.ToLower() == "toggle") value = Trool.Toggle;
         return true;
     }
-    public bool TryParseKeyCode( string input, out Key value)
+    public bool TryParseKeyCode( string input, out KeyCode value)
+    {
+        string keyToParse = input;
+        if (input.ToCharArray().Length == 1)
+            if (int.TryParse(input, out int digit))
+                keyToParse = "Alpha" + digit;
+        KeyCode key;
+        if (KeyCode.TryParse(keyToParse, true, out key)) { value = key; return true; }
+        value = KeyCode.None;
+        return SendNotValidKeyCode(input);
+    }
+    public bool TryParseKey( string input, out Key value)
     {
         string keyToParse = input;
         if (input.ToCharArray().Length == 1)
@@ -367,6 +378,17 @@ public abstract class SR2ECommand
         Key key;
         if (Key.TryParse(keyToParse, true, out key)) { value = key; return true; }
         value = Key.None;
+        return SendNotValidKeyCode(input);
+    }
+    public bool TryParseLKey( string input, out LKey value)
+    {
+        string keyToParse = input;
+        if (input.ToCharArray().Length == 1)
+            if (int.TryParse(input, out int digit))
+                keyToParse = "Alpha" + digit;
+        LKey key;
+        if (LKey.TryParse(keyToParse, true, out key)) { value = key; return true; }
+        value = LKey.None;
         return SendNotValidKeyCode(input);
     }
     

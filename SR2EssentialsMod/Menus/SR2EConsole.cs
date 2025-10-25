@@ -19,8 +19,8 @@ public class SR2EConsole : SR2EMenu
     public override bool createCommands => true;
     public override bool inGameOnly => false;
 
-    internal static readonly Key openKey = Key.F11;
-    internal static readonly MultiKey openKey2 = new MultiKey(Key.Tab, Key.LeftCtrl);
+    internal static readonly LKey openKey = LKey.F11;
+    internal static readonly LMultiKey openKey2 = new LMultiKey(LKey.Tab, LKey.LeftControl);
     internal Transform consoleContent;
     TMP_InputField commandInput;
     GameObject autoCompleteEntryPrefab;

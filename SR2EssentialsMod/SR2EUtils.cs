@@ -1,5 +1,4 @@
-﻿global using static SR2E.Managers.SR2EInputManager;
-using System;
+﻿using System;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Damage;
@@ -33,7 +32,7 @@ namespace SR2E
         [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryHideMenus),true)] public static void TryHideMenus() => NativeEUtil.TryHideMenus();
         [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryPauseAndHide),true)] public static void TryPauseAndHide() => NativeEUtil.TryPauseAndHide();
         [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryPauseGame),true)] public static void TryPauseGame(bool usePauseMenu = true) => NativeEUtil.TryPauseGame(usePauseMenu);
-        [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryUnPauseGame),true)] public static void TryUnPauseGame(bool usePauseMenu = true, bool usePauseMenuElse = true) => NativeEUtil.TryUnPauseGame(usePauseMenu,usePauseMenuElse);
+        [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryUnPauseGame),true)] public static void TryUnPauseGame(bool usePauseMenu = true, bool usePauseMenuElse = true) => NativeEUtil.TryUnPauseGame(usePauseMenu);
         [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryUnHideMenus),true)] public static void TryUnHideMenus() => NativeEUtil.TryUnHideMenus();
         [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.CustomTimeScale),true)] public static float CustomTimeScale { get { return NativeEUtil.CustomTimeScale; } set { NativeEUtil.CustomTimeScale = value; } }
         [Obsolete("Please use "+nameof(NativeEUtil)+"."+nameof(NativeEUtil.TryDisableSR2Input),true)] public static void TryDisableSR2Input() => NativeEUtil.TryDisableSR2Input();
@@ -101,7 +100,7 @@ namespace SR2E
         [Obsolete("Please use " + nameof(SR2ECommand.TryParseInt)+ "in this class", true)] public static bool TryParseInt(SR2ECommand cmd, string input, out int value) => cmd.TryParseInt(input,out value);
         [Obsolete("Please use " + nameof(SR2ECommand.TryParseBool)+ "in this class", true)] public static bool TryParseBool(SR2ECommand cmd, string input, out bool value) => cmd.TryParseBool(input, out value);
         [Obsolete("Please use " + nameof(SR2ECommand.TryParseTrool)+ "in this class", true)] public static bool TryParseTrool(SR2ECommand cmd, string input, out Trool value) => cmd.TryParseTrool(input, out value);
-        [Obsolete("Please use " + nameof(SR2ECommand.TryParseKeyCode)+ "in this class", true)] public static bool TryParseKeyCode(SR2ECommand cmd, string input, out Key value) => cmd.TryParseKeyCode(input, out value);
+        [Obsolete("Please use " + nameof(SR2ECommand.TryParseKeyCode)+ "in this class", true)] public static bool TryParseKeyCode(SR2ECommand cmd, string input, out Key value) => cmd.TryParseKey(input, out value);
         
         [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.Get),true)] public static T? Get<T>(string name) where T : Object => UnityEUtil.Get<T>(name);
         [Obsolete("Please use "+nameof(UnityEUtil)+"."+nameof(UnityEUtil.GetAll),true)] public static List<T> GetAll<T>() where T : Object => UnityEUtil.GetAll<T>();

@@ -187,8 +187,8 @@ public class SR2ERepoMenu : SR2EMenu
 
     protected override void OnUpdate()
     {
-        if (Key.Escape.OnKeyPressed())
-            if(MenuEUtil.openPopUps.Count==0)
+        if (LKey.Escape.OnKeyDown())
+            if(!MenuEUtil.isAnyPopUpOpen) 
             {
                 if(repoPanel.gameObject.activeSelf)
                     repoPanel.gameObject.SetActive(false);

@@ -1,7 +1,10 @@
+using System;
 using System.Linq;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppSystem.Linq;
+using Il2CppTMPro;
+using SR2E.Enums;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 
@@ -348,12 +351,82 @@ public static class LookupEUtil
             if (list.Count > maxEntries) break;
             if (key != Key.None)
                 if (key.ToString().ToUpper().StartsWithOrContain(partial.ToUpper(), useContain))
-                    list.Add(key.ToString());
+                {
+                    var str = key.ToString();
+                    list.Add(str);
+                    if(!list.Contains(str.ToLower())) list.Add(str.ToLower());
+                }
         }
         
         list.Sort();
         return list;
     }
+    public static List<string> GetLKeyStringListByPartialName(string partial, bool useContain, int maxEntries, bool includeExtendedLatin = false, bool includeCyrillic = false) 
+    {
+        var list = new List<string>();
+        maxEntries -= 1;
+        if (string.IsNullOrWhiteSpace(partial))
+        {
+            foreach (LKey key in System.Enum.GetValues<LKey>())
+            {
+                if (list.Count > maxEntries) break;
+                var kint = Convert.ToInt32(key);
+                if (!includeExtendedLatin && kint > 100 && kint < 200) break;
+                if (!includeCyrillic && kint > 900 && kint < 1000) break;
+                if (key != LKey.None)
+                    if (key.ToString().ToUpper().StartsWith(partial.ToUpper()))
+                        list.Add(key.ToString());
+            }
+            list.Sort();
+            return list;
+        }
 
+        foreach (LKey key in System.Enum.GetValues<LKey>())
+        {
+            if (list.Count > maxEntries) break;
+            var kint = Convert.ToInt32(key);
+            if (key != LKey.None)
+                if (key.ToString().ToUpper().StartsWithOrContain(partial.ToUpper(), useContain))
+                {
+                    var str = key.ToString();
+                    list.Add(str);
+                    if(!list.Contains(str.ToLower())) list.Add(str.ToLower());
+                }
+        }
+        
+        list.Sort();
+        return list;
+    }
+    public static List<string> GetKeyCodeStringListByPartialName(string partial, bool useContain, int maxEntries) 
+    {
+        var list = new List<string>();
+        maxEntries -= 1;
+        if (string.IsNullOrWhiteSpace(partial))
+        {
+            foreach (KeyCode key in System.Enum.GetValues<KeyCode>())
+            {
+                if (list.Count > maxEntries) break;
+                if (key != KeyCode.None)
+                    if (key.ToString().ToUpper().StartsWith(partial.ToUpper()))
+                        list.Add(key.ToString());
+            }
+            list.Sort();
+            return list;
+        }
 
+        foreach (KeyCode key in System.Enum.GetValues<KeyCode>())
+        {
+            if (list.Count > maxEntries) break;
+            if (key != KeyCode.None)
+                if (key.ToString().ToUpper().StartsWithOrContain(partial.ToUpper(), useContain))
+                {
+                    var str = key.ToString();
+                    list.Add(str);
+                    if(!list.Contains(str.ToLower())) list.Add(str.ToLower());
+                }
+        }
+        
+        list.Sort();
+        return list;
+    }
 }

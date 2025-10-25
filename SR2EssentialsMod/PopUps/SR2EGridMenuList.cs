@@ -57,7 +57,7 @@ public class SR2EGridMenuList : SR2EPopUp
 
     protected override void OnUpdate()
     {
-        if (Key.Escape.OnKeyPressed())
+        if (LKey.Escape.OnKeyDown())
             Close();
     }
 }

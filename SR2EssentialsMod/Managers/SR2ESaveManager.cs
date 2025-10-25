@@ -38,7 +38,7 @@ internal static class SR2ESaveManager
                 MelonLogger.Msg(e);
                 data = new SR2ESaveData();
             }
-            if (data.keyBinds == null) data.keyBinds = new Dictionary<Key, string>();
+            if (data.keyBinds == null) data.keyBinds = new Dictionary<LKey, string>();
             if (data.warps == null) data.warps = new Dictionary<string, Warp>();
             if(data.themes == null) data.themes = new Dictionary<string, SR2EMenuTheme>();
             if(data.fonts == null) data.fonts = new Dictionary<string, SR2EMenuFont>();
@@ -49,11 +49,11 @@ internal static class SR2ESaveManager
             foreach (var pair in data.themes)
                 if (!Enum.IsDefined(typeof(SR2EMenuTheme), pair.Value))
                     data.themes[pair.Key] = SR2EMenuTheme.Default;
-            if (data.keyBinds.ContainsKey(Key.F11))
+            if (data.keyBinds.ContainsKey(LKey.F11))
             {
-                string cmd = data.keyBinds[Key.F11];
+                string cmd = data.keyBinds[LKey.F11];
                 if (cmd.Contains("toggleconsole") || cmd.Contains("closeconsole") || cmd.Contains("openconsole"))
-                    data.keyBinds[Key.F11] = cmd.Replace("toggleconsole", "").Replace("closeconsole", "").Replace("openconsole", "");
+                    data.keyBinds[LKey.F11] = cmd.Replace("toggleconsole", "").Replace("closeconsole", "").Replace("openconsole", "");
             }
             Save();
         }
@@ -82,7 +82,7 @@ internal static class SR2ESaveManager
     public class SR2ESaveData
     {
         public Dictionary<string, Warp> warps = new Dictionary<string, Warp>();
-        public Dictionary<Key, string> keyBinds = new Dictionary<Key, string>();
+        public Dictionary<LKey, string> keyBinds = new Dictionary<LKey, string>();
         public Dictionary<string, SR2EMenuTheme> themes = new Dictionary<string, SR2EMenuTheme>();
         public Dictionary<string, SR2EMenuFont> fonts = new Dictionary<string, SR2EMenuFont>();
         public List<RepoSave> repos = new List<RepoSave>();

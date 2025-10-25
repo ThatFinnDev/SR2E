@@ -1,13 +1,14 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI.Debug;
 using Il2CppTMPro;
+using SR2E.Enums;
 using SR2E.Managers;
 using UnityEngine.InputSystem;
 
 namespace SR2E;
 
 [RegisterTypeInIl2Cpp(false)]
-internal class SR2EDebugDirector : MonoBehaviour
+internal class SR2EDebugUI : MonoBehaviour
 { 
 	static GameObject player;
 	internal static bool isEnabled;
@@ -79,22 +80,23 @@ internal class SR2EDebugDirector : MonoBehaviour
 		if (!isEnabled) return;
 
 		if (MenuEUtil.isAnyMenuOpen) return;
+		if (!MenuEUtil.isAnyPopUpOpen) return;
 		if (Time.timeScale == 0)  return;
 		if (!inGame) return;
 		if (SR2EWarpManager.warpTo != null) return;
 		switch (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name) { case "StandaloneStart": case "CompanyLogo": case "LoadScene": return; }
-		if (Key.Digit0.OnKeyPressed()) SR2ECommandManager.ExecuteByString("upgrade set * 10", true);
-		if (Key.Digit7.OnKeyPressed()) SR2ECommandManager.ExecuteByString("infenergy true", true);
-		if (Key.Digit8.OnKeyPressed()) SR2ECommandManager.ExecuteByString("infhealth", true);
-		if (Key.Digit9.OnKeyPressed()) GameContext.Instance.AutoSaveDirector.SaveAllNow();
-		if (Key.P.OnKeyPressed()) SR2ECommandManager.ExecuteByString("pedia unlock * false", true);
-		if (Key.K.OnKeyPressed()) SR2ECommandManager.ExecuteByString("clearinv", true);
-		if (Key.L.OnKeyPressed()) SR2ECommandManager.ExecuteByString("refillinv", true);
-		if (Key.N.OnKeyPressed()) SR2ECommandManager.ExecuteByString("noclip", true);
-		if (Key.NumpadPlus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks 1000", true);
-		if (Key.NumpadMinus.OnKeyPressed()) SR2ECommandManager.ExecuteByString("newbucks -1000", true);
-		if (Key.LeftBracket.OnKeyPressed()) SR2ECommandManager.ExecuteByString("fastforward -1", true);
-		if (Key.RightBracket.OnKeyPressed()) SR2ECommandManager.ExecuteByString("fastforward 1", true);
+		if (LKey.Alpha0.OnKeyDown()) SR2ECommandManager.ExecuteByString("upgrade set * 10", true);
+		if (LKey.Alpha7.OnKeyDown()) SR2ECommandManager.ExecuteByString("infenergy true", true);
+		if (LKey.Alpha8.OnKeyDown()) SR2ECommandManager.ExecuteByString("infhealth", true);
+		if (LKey.Alpha9.OnKeyDown()) GameContext.Instance.AutoSaveDirector.SaveAllNow();
+		if (LKey.P.OnKeyDown()) SR2ECommandManager.ExecuteByString("pedia unlock * false", true);
+		if (LKey.K.OnKeyDown()) SR2ECommandManager.ExecuteByString("clearinv", true);
+		if (LKey.L.OnKeyDown()) SR2ECommandManager.ExecuteByString("refillinv", true);
+		if (LKey.N.OnKeyDown()) SR2ECommandManager.ExecuteByString("noclip", true);
+		if (LKey.KeypadPlus.OnKeyDown()) SR2ECommandManager.ExecuteByString("newbucks 1000", true);
+		if (LKey.KeypadMinus.OnKeyDown()) SR2ECommandManager.ExecuteByString("newbucks -1000", true);
+		if (LKey.LeftBracket.OnKeyDown()) SR2ECommandManager.ExecuteByString("fastforward -1", true);
+		if (LKey.RightBracket.OnKeyDown()) SR2ECommandManager.ExecuteByString("fastforward 1", true);
 		if (ExperimentalKeyCodes.HasFlag())
 		{
 		}
@@ -114,8 +116,8 @@ internal class SR2EDebugDirector : MonoBehaviour
 							"\n\nCLEAR INVENTORY     K " +
 							"\nREFILL INVENTORY     L " +
 							"\nTOGGLE NOCLIP     N " +
-							"\n\nADD 1000 CREDITS     + " +
-							"\nREMOVE 1000 CREDITS     - " +
+							"\n\nADD 1000 CREDITS     KeyPad+ " +
+							"\nREMOVE 1000 CREDITS     KeyPad- " +
 							"\nDECREMENT TIME OF DAY     [ " +
 							"\nINCREMENT TIME OF DAY     ] </b>";
 			for (int i = -2; i <= 2; i += 2)

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using SR2E.Storage;
 using UnityEngine;
@@ -8,12 +9,13 @@ namespace SR2E.Managers;
 /// <summary>
 /// Taken from https://github.com/Atmudia/SRLE/blob/sr2/Utils/InputManager.cs
 /// </summary>
+[Obsolete("Please use InputEUtil instead!",true)] 
 public static class SR2EInputManager
 {
-    public static Vector2 MousePosition => Mouse.current.position.ReadValue();
-    public static Vector2 MouseScrollDelta => Mouse.current.scroll.ReadValue();
+    [Obsolete("Please use Mouse.current",true)] public static Vector2 MousePosition => Mouse.current.position.ReadValue();
+    [Obsolete("Please use Mouse.current",true)] public static Vector2 MouseScrollDelta => Mouse.current.scroll.ReadValue();
 
-    public static bool GetMouseButtonDown(int btn)
+    [Obsolete("Please use Mouse.current",true)] public static bool GetMouseButtonDown(int btn)
     {
         return btn switch
         {
@@ -23,7 +25,7 @@ public static class SR2EInputManager
             _ => false
         };
     }
-    public static bool GetMouseButtonUp(int btn)
+    [Obsolete("Please use Mouse.current",true)] public static bool GetMouseButtonUp(int btn)
     {
         return btn switch
         {
@@ -34,7 +36,7 @@ public static class SR2EInputManager
         };
     }
 
-    public static bool GetMouseButton(int btn)
+    [Obsolete("Please use Mouse.current",true)] public static bool GetMouseButton(int btn)
     {
         return btn switch
         {
@@ -45,23 +47,19 @@ public static class SR2EInputManager
         };
     }
 
-    public static bool GetKey(Key code)
-    { 
-        return Keyboard.current[code].isPressed;
-    }
-    public static bool GetKeyDown(Key code)
-    {
-        return Keyboard.current[code].wasPressedThisFrame;
-    }
+    [Obsolete("Please use LKey.OnKey instead!",true)] public static bool GetKey(Key key) => Keyboard.current[key].isPressed;
+    
+    [Obsolete("Please use LKey.OnKeyDown instead!",true)] public static bool GetKeyDown(Key key) => Keyboard.current[key].wasPressedThisFrame;
+    
 
-    public static bool OnKeyPressed(this Key code) => GetKeyDown(code);
-    public static bool OnKey(this Key code) => GetKey(code);
+    [Obsolete("Please use LKey.OnKeyDown instead!",true)] public static bool OnKeyPressed(this Key key) => GetKeyDown(key);
+    [Obsolete("Please use LKey.OnKey instead!",true)] public static bool OnKey(this Key key) => GetKey(key);
 
-    public static bool OnKeyPressed(this MultiKey code)
+    [Obsolete("Please use LMultiKey.OnKeyDown instead!",true)] public static bool OnKeyPressed(this MultiKey multiKey)
     {
         int i = 0;
         bool wasThisFrame = false;
-        foreach (var key in code.requiredKeys)
+        foreach (var key in multiKey.requiredKeys)
         {
             if (key.OnKey())
                 i++;
@@ -72,7 +70,7 @@ public static class SR2EInputManager
                 wasThisFrame = true;
         }
 
-        return i == code.requiredKeys.Count && wasThisFrame;
+        return i == multiKey.requiredKeys.Count && wasThisFrame;
     }
     
 }

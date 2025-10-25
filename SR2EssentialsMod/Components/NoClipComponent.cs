@@ -1,6 +1,7 @@
 using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Commands;
+using SR2E.Enums;
 using SR2E.Managers;
 using UnityEngine.InputSystem;
 
@@ -20,7 +21,7 @@ internal class NoClipComponent : MonoBehaviour
             return baseSpeed;
         }
     }
-    bool isSprint => Key.LeftShift.OnKey();
+    bool isSprint => LKey.LeftShift.OnKey();
     public static Transform player;
     public static SRCharacterController playerController;
     public static KinematicCharacterMotor playerMotor;
@@ -64,13 +65,13 @@ internal class NoClipComponent : MonoBehaviour
         }
         else
         {
-            if (Key.A.OnKey() || Key.LeftArrow.OnKey())
+            if (LKey.A.OnKey() || LKey.LeftArrow.OnKey())
                 player.position += -transform.right * (speed * Time.deltaTime);
-            if (Key.D.OnKey() || Key.RightArrow.OnKey())
+            if (LKey.D.OnKey() || LKey.RightArrow.OnKey())
                 player.position += transform.right * (speed * Time.deltaTime);
-            if (Key.W.OnKey() || Key.UpArrow.OnKey())
+            if (LKey.W.OnKey() || LKey.UpArrow.OnKey())
                 player.position += transform.forward * (speed * Time.deltaTime);
-            if (Key.S.OnKey() || Key.DownArrow.OnKey())
+            if (LKey.S.OnKey() || LKey.DownArrow.OnKey())
                 player.position += -transform.forward * (speed * Time.deltaTime);
         }
             

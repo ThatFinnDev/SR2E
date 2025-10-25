@@ -15,11 +15,13 @@ using Il2CppMonomiPark.ScriptedValue;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
+using MelonLoader.Utils;
 using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using SR2E.Buttons;
 using SR2E.Components;
 using SR2E.Cotton;
+using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Patches.Context;
@@ -89,6 +91,8 @@ public class SR2EEntryPoint : MelonMod
     static Dictionary<string, Type> menusToInit = new Dictionary<string, Type>();
     static MelonPreferences_Category prefs;
     static string branchJson = "";
+    internal static string DataPath => Path.Combine(MelonEnvironment.UserDataDirectory, "SR2E");
+    internal static string TmpDataPath => Path.Combine(DataPath, ".tmp");
     static bool IsLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
     private static bool _useLibrary = false;
@@ -153,7 +157,7 @@ public class SR2EEntryPoint : MelonMod
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
         if(AllowExperimentalLibrary.HasFlag()) if (!prefs.HasEntry("useExperimentalLibrary")) prefs.CreateEntry("useExperimentalLibrary", (bool)false, "Force enable experimental library", "It's automatically enabled if expansions need it. This will just force it.",false);
         if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
-        if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => { SR2EDebugDirector.isEnabled = enableDebugDirector; }));
+        if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => { SR2EDebugUI.isEnabled = enableDebugDirector; }));
         if (!prefs.HasEntry("mLLogToSR2ELog")) prefs.CreateEntry("mLLogToSR2ELog", (bool)false, "Send MLLogs to console", false).AddNullAction();
         if (!prefs.HasEntry("SR2ELogToMLLog")) prefs.CreateEntry("SR2ELogToMLLog", (bool)false, "Send console messages to MLLogs", false).AddNullAction();
         if (!prefs.HasEntry("onSaveLoadCommand")) prefs.CreateEntry("onSaveLoadCommand", (string)"", "Execute command when save is loaded", false).AddNullAction();
@@ -161,6 +165,7 @@ public class SR2EEntryPoint : MelonMod
         if (!prefs.HasEntry("noclipSpeedMultiplier")) prefs.CreateEntry("noclipSpeedMultiplier", 2f, "NoClip sprint speed multiplier", false).AddNullAction();
         if (!prefs.HasEntry("noclipAdjustSpeed")) prefs.CreateEntry("noclipAdjustSpeed", (float)235f, "NoClip scroll speed", false).AddNullAction();
         if (!prefs.HasEntry("consoleMaxSpeed")) prefs.CreateEntry("consoleMaxSpeed", (float)0.75f, "Controls how fast you scroll in the Console", false).AddNullAction();
+        //if(DevMode.HasFlag()) if (!prefs.HasEntry("testLKey")) prefs.CreateEntry("testLKey", LKey.None, "Test LKey", false).AddNullAction();
     }
 
     public static string mlVersion
@@ -191,6 +196,7 @@ public class SR2EEntryPoint : MelonMod
         }
     }
 
+    
     public override void OnLateInitializeMelon()
     {
         if (Get<GameObject>("SR2EPrefabHolder")) prefabHolder = Get<GameObject>("SR2EPrefabHolder");
@@ -200,6 +206,16 @@ public class SR2EEntryPoint : MelonMod
             prefabHolder.SetActive(false);
             prefabHolder.name = "SR2EPrefabHolder";
             Object.DontDestroyOnLoad(prefabHolder);
+        }
+
+        if (LKeyInputAcquirer.Instance == null)
+        {
+            
+            var ia = new GameObject();
+            ia.AddComponent<LKeyInputAcquirer>();
+            ia.AddComponent<KeyCodeInputAcquirer>();
+            ia.name = "SR2EInputAcquirer";
+            Object.DontDestroyOnLoad(ia);
         }
 
         if (CheckForUpdates.HasFlag()) MelonCoroutines.Start(GetBranchJson());
@@ -287,6 +303,7 @@ public class SR2EEntryPoint : MelonMod
     {
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
         InitFlagManager();
+        
     }
 
     
@@ -323,6 +340,8 @@ public class SR2EEntryPoint : MelonMod
     
     public override void OnInitializeMelon()
     {
+        if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
+        if(!Directory.Exists(TmpDataPath)) Directory.CreateDirectory(TmpDataPath);
         prefs = MelonPreferences.CreateCategory("SR2E", "SR2E");
         string path = MelonAssembly.Assembly.Location + ".old";
         if (File.Exists(path)) File.Delete(path);
@@ -357,10 +376,45 @@ public class SR2EEntryPoint : MelonMod
     {
         try { if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay()) autoSaveDirector.SaveGame(); }catch { }
     }
-    
+
+    private static TMP_FontAsset fallBackFont;
+    internal static void CheckFallBackFont()
+    {
+        try
+        {
+            if (fallBackFont == null)
+            {
+                string tempPath = Path.Combine(TmpDataPath, "tmpFallbackFont.ttf");
+                File.WriteAllBytes(tempPath, EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.ttf"));
+                Font tempFont = new Font(tempPath);
+                fallBackFont = TMP_FontAsset.CreateFontAsset(tempFont);
+            }
+            foreach (var fontAsset in GetAll<TMP_FontAsset>())
+            {
+                if (fontAsset == fallBackFont) continue;
+                if(!fontAsset.fallbackFontAssetTable.Contains(fallBackFont))
+                    fontAsset.fallbackFontAssetTable.Add(fallBackFont);
+            }
+        }
+        catch { }
+    }
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
+        CheckFallBackFont();
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: " + sceneName);
+        switch (sceneName)
+        {
+            case "StandaloneStart":
+            case "CompanyLogo":
+            case "LoadScene":
+                try
+                {
+                    if(MenuEUtil.isAnyMenuOpen) MenuEUtil.CloseOpenMenu(); 
+                    if (MenuEUtil.isAnyPopUpOpen); MenuEUtil.CloseOpenPopUps();
+                }
+                catch { }
+                break;
+        }
         switch (sceneName)
         {
             case "MainMenuUI":
@@ -570,10 +624,10 @@ public class SR2EEntryPoint : MelonMod
         else
         {
             
-            try { if (SR2EConsole.openKey.OnKeyPressed()||SR2EConsole.openKey2.OnKeyPressed()) MenuEUtil.GetMenu<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
+            try { if (SR2EConsole.openKey.OnKeyDown()||SR2EConsole.openKey2.OnKeyDown()) MenuEUtil.GetMenu<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
             try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }
-            if (DevMode.HasFlag()) SR2EDebugDirector.DebugStatsManager.Update();
+            if (DevMode.HasFlag()) SR2EDebugUI.DebugStatsManager.Update();
             foreach (var pair in menus) try { pair.Key.AlwaysUpdate(); } catch (Exception e) { MelonLogger.Error(e); }
         }
 

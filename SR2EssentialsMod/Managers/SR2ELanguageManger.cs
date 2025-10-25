@@ -91,6 +91,7 @@ public static class SR2ELanguageManger
             if (!languages.ContainsKey(langCode)) languages.Add(langCode, new List<Dictionary<string, string>>());
             languages[langCode].Add(newLanguage.Value);
         }
+        SR2EEntryPoint.CheckFallBackFont();
     }
     public static void LoadLanguage(string code)
     {
@@ -107,6 +108,7 @@ public static class SR2ELanguageManger
             foreach (var languageDicts in languages[code]) 
                 foreach (var translation in languageDicts)
                     loadedLanguage[translation.Key] = translation.Value;
+        SR2EEntryPoint.CheckFallBackFont();
     }
     
     

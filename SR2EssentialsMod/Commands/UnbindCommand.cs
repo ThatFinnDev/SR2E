@@ -1,4 +1,5 @@
-﻿using SR2E.Managers;
+﻿using SR2E.Enums;
+using SR2E.Managers;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;
@@ -10,7 +11,7 @@ internal class UnbindCommand : SR2ECommand
     
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
-        if (argIndex == 0) return LookupEUtil.GetKeyStringListByPartialName(args[0],true,MAX_AUTOCOMPLETE.Get());
+        if (argIndex == 0) return LookupEUtil.GetLKeyStringListByPartialName(args[0],true,MAX_AUTOCOMPLETE.Get());
         return null;
     }
 
@@ -18,8 +19,8 @@ internal class UnbindCommand : SR2ECommand
     {
         if (!args.IsBetween(1,1)) return SendUsage();
 
-        Key key;
-        if (!TryParseKeyCode(args[0], out key)) return false;
+        LKey key;
+        if (!TryParseLKey(args[0], out key)) return false;
         
         if (!SR2EBindingManger.isKeyBound(key)) return SendError(translation("cmd.unbind.notbound", args[0]));
         SR2EBindingManger.UnbindKey(key);

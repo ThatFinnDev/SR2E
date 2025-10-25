@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,7 @@ namespace SR2E.Storage;
 /// <summary>
 /// Struct acting as an array of keys check for input at the same time
 /// </summary>
+[Obsolete("Use LMultiKey")]
 public struct MultiKey
 {
     /// <summary>
