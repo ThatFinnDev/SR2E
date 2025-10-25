@@ -112,7 +112,6 @@ internal static class SaveGameRootUIPatch
         }), 2);
     }
 
-    public static void OnPressAction(InputAction.CallbackContext context) => OnExportButtonPressed();
     [DllImport("comdlg32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern bool GetSaveFileName([In, Out] SAVEFILENAME ofn);
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]

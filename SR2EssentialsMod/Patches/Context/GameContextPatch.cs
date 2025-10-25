@@ -1,4 +1,5 @@
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.UI.Framework.Audio;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using SR2E.Buttons;
@@ -53,6 +54,13 @@ internal class GameContextPatch
         Time.timeScale = 1f;
         try
         {
+            LookupEUtil.closeInput = Get<InputEvent>("Close");
+            if(LookupEUtil.closeInput != null)
+                LookupEUtil.closeInput.add_Performed((System.Action<InputEventData>)((data) =>
+                {
+                    var menu = MenuEUtil.GetOpenMenu();
+                    if(menu!=null) menu.OnCloseUIPressed();
+                }));
             LookupEUtil.actionMaps = new Dictionary<string, InputActionMap>();
             LookupEUtil.MainGameActions = new Dictionary<string, InputAction>();
             LookupEUtil.PausedActions = new Dictionary<string, InputAction>();

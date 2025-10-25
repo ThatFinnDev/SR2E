@@ -613,15 +613,17 @@ public class SR2EModMenu : SR2EMenu
     private static int listeningType = 0;
     static Action<int> listeningAction = null;
 
+    public override void OnCloseUIPressed()
+    {
+        if (listeningAction != null) return;
+        if (MenuEUtil.isAnyPopUpOpen) return;
+        
+        Close();
+    }
+
     protected override void OnUpdate()
     {
-        if (listeningAction == null)
-        {
-            if (LKey.Escape.OnKeyDown())
-                if (!MenuEUtil.isAnyPopUpOpen)
-                    Close();
-        }
-        else switch (listeningType)
+        if(listeningAction !=null) switch (listeningType)
         {
             case 1:
                 foreach (LKey key in allPossibleLKey)

@@ -18,6 +18,7 @@ public abstract class SR2EMenu : MonoBehaviour
 {
     private bool changedOpenState = false;
 
+
     public static MenuIdentifier GetMenuIdentifier() => new();
 
     //SR2EMenu doesnt work for whatever reason
@@ -36,7 +37,9 @@ public abstract class SR2EMenu : MonoBehaviour
     protected virtual void OnOpen()
     {
     }
-
+    public virtual void OnCloseUIPressed()
+    {
+    }
     public virtual void ApplyFont(TMP_FontAsset font)
     {
         foreach (var text in gameObject.GetAllChildrenOfType<TMP_Text>())

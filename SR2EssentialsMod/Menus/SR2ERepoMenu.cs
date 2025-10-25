@@ -184,17 +184,15 @@ public class SR2ERepoMenu : SR2EMenu
         //toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
         toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"repomenu.title");
     }
-
-    protected override void OnUpdate()
+    public override void OnCloseUIPressed()
     {
-        if (LKey.Escape.OnKeyDown())
-            if(!MenuEUtil.isAnyPopUpOpen) 
-            {
-                if(repoPanel.gameObject.activeSelf)
-                    repoPanel.gameObject.SetActive(false);
-                else if(modPanel.gameObject.activeSelf)
-                    modPanel.gameObject.SetActive(false);
-                else Close();
-            }
+        if (MenuEUtil.isAnyPopUpOpen) return;
+        
+        if(repoPanel.gameObject.activeSelf)
+            repoPanel.gameObject.SetActive(false);
+        else if(modPanel.gameObject.activeSelf)
+            modPanel.gameObject.SetActive(false);
+        else Close();
     }
+    
 }

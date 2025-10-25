@@ -143,11 +143,11 @@ public class SR2EThemeMenu : SR2EMenu
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
         toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"thememenu.title");
     }
-
-    protected override void OnUpdate()
+    public override void OnCloseUIPressed()
     {
-        if (LKey.Escape.OnKeyDown())
-            if(!MenuEUtil.isAnyPopUpOpen) 
-                Close();
+        if (MenuEUtil.isAnyPopUpOpen) return;
+        
+        Close();
     }
+
 }

@@ -141,13 +141,11 @@ public class SR2ECheatMenu : SR2EMenu
             slot.OnOpen();
         }
     }
-
-    protected override void OnUpdate()
+    public override void OnCloseUIPressed()
     {
-       if (LKey.Escape.OnKeyDown())
-           if(!MenuEUtil.isAnyPopUpOpen) 
-               Close();
+        if (MenuEUtil.isAnyPopUpOpen) return;
         
+        Close();
     }
     protected override void OnLateAwake()
     {

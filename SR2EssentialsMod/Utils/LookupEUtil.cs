@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.Weather;
 using Il2CppSystem.Linq;
 using Il2CppTMPro;
@@ -13,6 +14,7 @@ namespace SR2E.Utils;
 public static class LookupEUtil
 {
 
+    internal static InputEvent closeInput = null;
     internal static Dictionary<string, InputActionMap> actionMaps = new Dictionary<string, InputActionMap>();
     internal static Dictionary<string, InputAction> MainGameActions = new Dictionary<string, InputAction>();
     internal static Dictionary<string, InputAction> PausedActions = new Dictionary<string, InputAction>();
