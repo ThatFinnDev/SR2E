@@ -93,13 +93,14 @@ public class SR2EEntryPoint : MelonMod
     static string branchJson = "";
     internal static string DataPath => Path.Combine(MelonEnvironment.UserDataDirectory, "SR2E");
     internal static string TmpDataPath => Path.Combine(DataPath, ".tmp");
+    internal static string FlagDataPath => Path.Combine(DataPath, "flags");
     static bool IsLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
     private static bool _useLibrary = false;
     internal static bool useLibrary => _useLibrary;
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
     internal static bool isSaveDirectorLoaded = false;
-    private static string _mlVersion = "undefined";
+    internal static string _mlVersion = "undefined";
     
     
     
@@ -168,33 +169,7 @@ public class SR2EEntryPoint : MelonMod
         //if(DevMode.HasFlag()) if (!prefs.HasEntry("testLKey")) prefs.CreateEntry("testLKey", LKey.None, "Test LKey", false).AddNullAction();
     }
 
-    public static string mlVersion
-    { get {
-            if(_mlVersion=="undefined")
-                try { _mlVersion = MelonLoader.BuildInfo.Version;  }
-                catch (Exception e)
-                {
-                    //Do this if ML changes MelonLoader.BuildInfo.Version again...
-                    MelonLogger.Error("MelonLoader.BuildInfo.Version changed, if you are using not using the latest ML version, please update," +
-                                      "otherwise this will be fixed in the next SR2E release!");
-                    try
-                    {
-                        string logFilePath = Application.dataPath + "/../MelonLoader/Latest.log";
-                        using (System.IO.FileStream logFileStream = new System.IO.FileStream(logFilePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
-                            using (System.IO.StreamReader logFileReader = new System.IO.StreamReader(logFileStream))
-                            {
-                                string text = logFileReader.ReadToEnd();
-                                var split = text.Split("\n");
-                                if (string.IsNullOrWhiteSpace(split[0])) _mlVersion = split[2].Split("v")[1].Split(" ")[0];
-                                else _mlVersion = split[1].Split("v")[1].Split(" ")[0];
-                            }
-                        
-                    }
-                    catch { _mlVersion = "unknown"; }
-                }
-            return _mlVersion;
-        }
-    }
+
 
     
     public override void OnLateInitializeMelon()
@@ -261,8 +236,8 @@ public class SR2EEntryPoint : MelonMod
         {
             var jobject = JObject.Parse(branchJson);
             string latest = jobject["latest"].ToObject<string>();
-            var versions = jobject["versions"].ToObject<Dictionary<string, string>>();
-            updateLink = versions[latest];
+            var latestVersion = jobject["versions_info"][latest];
+            updateLink = latestVersion["download_url"].ToObject<string>();
         }
         catch { MelonLogger.Msg("SR2E API either changed or is broken."); yield break; }
         if (string.IsNullOrEmpty(updateLink)) yield break;
@@ -271,12 +246,16 @@ public class SR2EEntryPoint : MelonMod
         if (!uwr.isNetworkError && !uwr.isHttpError)
             if (uwr.result == UnityWebRequest.Result.Success)
             {
-                if (DebugLogging.HasFlag()) MelonLogger.Msg("Downloading SR2E complete");
+                MelonLogger.Msg("Downloading SR2E complete");
                 string path = MelonAssembly.Assembly.Location;
-                if (File.Exists(path)) File.Move(path, path + ".old");
-                File.WriteAllBytes(Path.Combine(new FileInfo("path").Directory.FullName, "SR2E.dll"), uwr.downloadHandler.data);
+                if (File.Exists(path))
+                {
+                    if(File.Exists(path + ".old")) File.Delete(path + ".old");
+                    File.Move(path, path + ".old");
+                }
+                File.WriteAllBytes(Path.Combine(new FileInfo(path).Directory.FullName, "SR2E.dll"), uwr.downloadHandler.data);
                 updatedSR2E = true;
-                if (DebugLogging.HasFlag()) MelonLogger.Msg("Restart needed for applying SR2E update");
+                MelonLogger.Msg("Restart needed for applying SR2E update");
             }
     }
 
@@ -302,6 +281,9 @@ public class SR2EEntryPoint : MelonMod
     public override void OnEarlyInitializeMelon()
     {
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
+        if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
+        if(!Directory.Exists(TmpDataPath)) Directory.CreateDirectory(TmpDataPath);
+        if(!Directory.Exists(FlagDataPath)) Directory.CreateDirectory(FlagDataPath);
         InitFlagManager();
         
     }
@@ -340,8 +322,6 @@ public class SR2EEntryPoint : MelonMod
     
     public override void OnInitializeMelon()
     {
-        if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
-        if(!Directory.Exists(TmpDataPath)) Directory.CreateDirectory(TmpDataPath);
         prefs = MelonPreferences.CreateCategory("SR2E", "SR2E");
         string path = MelonAssembly.Assembly.Location + ".old";
         if (File.Exists(path)) File.Delete(path);
@@ -612,7 +592,8 @@ public class SR2EEntryPoint : MelonMod
                             var asset = SystemContextPatch.bundle.LoadAsset(SystemContextPatch.getMenuPath(identifier));
                             var Object = GameObject.Instantiate(asset, obj.transform);
                             menusToInit.Add(Object.name, type);
-                            ClassInjector.RegisterTypeInIl2Cpp(type, new RegisterTypeOptions() { LogSuccess = false });
+                            if(!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
+                                ClassInjector.RegisterTypeInIl2Cpp(type, new RegisterTypeOptions() { LogSuccess = false });
                             
                         }
                         else MelonLogger.Error($"The menu under the name {type.Name} couldn't be loaded! It's MenuIdentifier is broken!");

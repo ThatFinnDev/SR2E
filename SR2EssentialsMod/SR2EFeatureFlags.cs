@@ -51,7 +51,8 @@ public static class SR2EFeatureFlags
     static bool initialized = false;
     //internal static string flagfile_path = SR2EEntryPoint.instance.MelonAssembly.Assembly.Location+"/../../UserData/.sr2eflags.xml";
 
-    internal static string flagfile_path => Application.persistentDataPath + "/"+SR2EEntryPoint.updateBranch+".sr2eflags.xml";
+    
+    internal static string flagPath => Path.Combine(SR2EEntryPoint.FlagDataPath,SR2EEntryPoint.updateBranch+".flags");
     static void SaveToFlagFile()
     {
         XmlDocument xmlDoc = new XmlDocument();
@@ -127,18 +128,19 @@ public static class SR2EFeatureFlags
         }
         // Save the XML document to a file
         
-        if (File.Exists(flagfile_path)) File.SetAttributes(flagfile_path, FileAttributes.Normal);
-        xmlDoc.Save(flagfile_path);
-        File.SetAttributes(flagfile_path, FileAttributes.Hidden);
+        if (File.Exists(flagPath)) File.SetAttributes(flagPath, FileAttributes.Normal);
+        xmlDoc.Save(flagPath);
+        File.SetAttributes(flagPath, FileAttributes.Hidden);
     }
 
     static void LoadFromFlagFile()
     {
         flagsToForceOff = new List<FeatureFlag>();
-        if (!File.Exists(flagfile_path)) return; 
+        var xmlDoc = new XmlDocument();
         
-        XmlDocument xmlDoc = new XmlDocument();
-        try { xmlDoc.Load(flagfile_path); }
+        if (!File.Exists(flagPath)) return; 
+        
+        try { xmlDoc.Load(flagPath); }
         catch {}
 
         XmlElement root = xmlDoc["SR2EFeatureFlags"];
@@ -205,9 +207,14 @@ public static class SR2EFeatureFlags
             flag.EnableFlag();
         featureInts = new Dictionary<FeatureIntegerValue, int>(defaultFeatureInts);
         featureStrings = new Dictionary<FeatureStringValue, string>(defaultFeatureStrings);
+        try //Delete old flag files
+        {
+            foreach (var pair in MiscEUtil.BRANCHES)
+                File.Delete(Application.persistentDataPath + "/"+pair.Value+".sr2eflags.xml");
+        } catch { }
         try
         {
-            if (File.Exists(flagfile_path)) LoadFromFlagFile();
+            if (File.Exists(flagPath)) LoadFromFlagFile();
             SaveToFlagFile();
         }
         catch { }

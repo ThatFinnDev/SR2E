@@ -1,5 +1,10 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace SR2E.Enums;
 
+[System.Serializable]
+[JsonConverter(typeof(StringEnumConverter))]
 public enum LKey
 {
     None = 0,
