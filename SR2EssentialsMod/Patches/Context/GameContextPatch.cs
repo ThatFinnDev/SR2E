@@ -1,6 +1,7 @@
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.UI.Framework.Audio;
+using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using SR2E.Buttons;
 using SR2E.Enums.Sounds;
@@ -8,6 +9,7 @@ using SR2E.Managers;
 using SR2E.Menus;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
+using UnityEngine.UI;
 
 namespace SR2E.Patches.Context;
 
@@ -100,25 +102,16 @@ internal class GameContextPatch
             MelonLogger.Error(e);
             MelonLogger.Error("There was a problem loading sounds!");
         }
-        //
+        
         foreach (var expansion in SR2EEntryPoint.expansionsAll)
-            try
-            {
-                expansion.OnGameContext(__instance);
-            }
-            catch (Exception e)
-            {
-                MelonLogger.Error(e);
-            }
+            try { expansion.OnGameContext(__instance); }
+            catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var pair in SR2EEntryPoint.menus)
+            try { pair.Key.OnGameContext(__instance); }
+            catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in SR2ECommandManager.commands)
-            try
-            {
-                pair.Value.OnGameContext(__instance);
-            }
-            catch (Exception e)
-            {
-                MelonLogger.Error(e);
-            }
+            try { pair.Value.OnGameContext(__instance); }
+            catch (Exception e) { MelonLogger.Error(e); }
     }
 
     internal static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()

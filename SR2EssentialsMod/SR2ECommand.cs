@@ -24,7 +24,7 @@ public abstract class SR2ECommand
     /// <summary>
     /// The description of this command
     /// </summary>
-    public virtual string Description => translation($"{ID.ToLower()}.description");
+    public virtual string Description => translation($"cmd.{ID.ToLower()}.description");
 
     /// <summary>
     /// The full description of this command
@@ -33,7 +33,7 @@ public abstract class SR2ECommand
     {
         get
         {
-            string key = $"{ID.ToLower()}.extendeddescription";
+            string key = $"cmd.{ID.ToLower()}.extendeddescription";
             string translation = SR2ELanguageManger.translation(key);
             return key == translation ? Description : translation;
         }

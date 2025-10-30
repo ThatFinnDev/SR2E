@@ -15,6 +15,7 @@ using Il2CppMonomiPark.ScriptedValue;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
+using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using MelonLoader.Utils;
 using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
@@ -407,7 +408,7 @@ public class SR2EEntryPoint : MelonMod
                 Time.timeScale = 1;
                 try
                 {
-                    var b = Get <ButtonBehaviorViewHolder>("SaveGameSlotButton");
+                    var b = Get<ButtonBehaviorViewHolder>("SaveGameSlotButton");
                     ExecuteInTicks((System.Action)(() =>
                     {
                         var l = b.gameObject.GetObjectRecursively<LayoutElement>("Icon");
@@ -418,6 +419,22 @@ public class SR2EEntryPoint : MelonMod
                 {
                     MelonLogger.Error(e);
                 }
+                /*try
+                {
+                    var scroll = SR2EStuff.GetObjectRecursively<Scrollbar>("saveFilesSliderRec");
+                    var styler = scroll.AddComponent<ScrollbarStyler>();
+                    foreach (var sstyler in GetAll<ScrollbarStyler>())
+                    {
+                        if (sstyler._style == null) continue;
+                        styler._style = sstyler._style;
+                        scroll.colors = sstyler.GetComponent<Scrollbar>().colors;
+                    }
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Error(e);
+                    MelonLogger.Error("There was a problem applying styles to the save slider!");
+                }*/
                 break;
             case "StandaloneEngagementPrompt":
                 var cls = Object.FindObjectOfType<CompanyLogoScene>();
@@ -444,7 +461,7 @@ public class SR2EEntryPoint : MelonMod
             case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
         }
 
-        if (useLibrary) CottonLibrary.OnSceneWasLoaded(buildIndex,sceneName);
+        if (useLibrary)  try { CottonLibrary.OnSceneWasLoaded(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
         
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
     }
@@ -530,7 +547,7 @@ public class SR2EEntryPoint : MelonMod
         {
             if (ui)
             {
-                GameObject scrollView = GameObject.Find("ButtonsScrollView");
+                GameObject scrollView = ui.gameObject.GetObjectRecursively<GameObject>("ButtonsScrollView");
                 if (scrollView != null)
                 {
                     ScrollRect rect = scrollView.GetComponent<ScrollRect>();

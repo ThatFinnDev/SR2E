@@ -166,5 +166,9 @@ public enum FeatureFlag
     /// Allow auto updating if an update has been found
     /// </summary>
     AllowAutoUpdate=370, //
+    /// <summary>
+    /// Make SystemContext.isModded true
+    /// </summary>
+    ChangeSystemContextIsModded=380, //
 
 }

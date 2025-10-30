@@ -113,15 +113,21 @@ public static class SaveFileEUtil
         if (!sr2ESaveFile.IsValid()) return SaveInvalidGeneral;
         if(gameContext==null||autoSaveDirector==null||autoSaveDirector._storageProvider==null) return GameNotLoadedYet;
         var storageProvider = autoSaveDirector._storageProvider;
-        List<Summary> summariesToDelete = new List<Summary>();
-        foreach (var summary in autoSaveDirector.EnumerateAllSaveGamesIncludingBackups().ToList())
-            if(summary.SaveSlotIndex==slotThatStartWithOne-1)
-                summariesToDelete.Add(summary);
-        foreach (var summary in summariesToDelete)
+        try
         {
-            autoSaveDirector.DeleteGame(summary.Name);
-            autoSaveDirector._storageProvider.DeleteGameData(summary.SaveName);
-        }
+            var summariesToDelete = new List<Summary>();
+            foreach (var summary in autoSaveDirector.EnumerateAllSaveGamesIncludingBackups().ToList())
+                if(summary.SaveSlotIndex==slotThatStartWithOne-1)
+                    summariesToDelete.Add(summary);
+            foreach (var summary in summariesToDelete)
+            {
+                try
+                {
+                    autoSaveDirector.DeleteGame(summary.Name);
+                    autoSaveDirector._storageProvider.DeleteGameData(summary.SaveName);
+                } catch { }
+            }
+        } catch { }
         bool failedSome = false;
         foreach (var pair in sr2ESaveFile.savesData)
         {

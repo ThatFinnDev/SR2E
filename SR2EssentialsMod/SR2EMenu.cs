@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Il2CppInterop.Runtime.Attributes;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Enums;
@@ -166,6 +167,7 @@ public abstract class SR2EMenu : MonoBehaviour
         AudioEUtil.PlaySound(MenuSound.CloseMenu);
     }
 
+    [HideFromIl2Cpp]
     protected Action SelectCategorySound
     {
         get
@@ -226,5 +228,11 @@ public abstract class SR2EMenu : MonoBehaviour
 
     protected Sprite whitePillBg => MenuEUtil.whitePillBg; 
     protected Texture2D whitePillBgTex => MenuEUtil.whitePillBgTex;
+    
+    
+    /// <summary>
+    /// Gets executed once GameContext loads. In Postfix of the Start method
+    /// </summary>
+    public virtual void OnGameContext(GameContext gameContext) { }
 }
 

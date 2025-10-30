@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using Il2CppMonomiPark.SlimeRancher.Input;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.Map;
 using Il2CppSystem.Linq;
 using Il2CppTMPro;
@@ -147,6 +149,31 @@ public class SR2ECheatMenu : SR2EMenu
         
         Close();
     }
+
+    private InputEvent inputDown;
+    private InputEvent inputUp;
+    public override void OnGameContext(GameContext gameContext)
+    {
+        inputDown = Get<InputEvent>("ItemDown");
+        inputUp = Get<InputEvent>("ItemUp");
+        var refScroll = refineryContent.parent.parent;
+        if (!refScroll.HasComponent<ScrollByMenuKeys>())
+        {
+            var comp = refScroll.gameObject.AddComponent<ScrollByMenuKeys>();
+            comp._scrollDownInput = inputDown;
+            comp._scrollUpInput = inputUp;
+            comp._scrollPerFrame = 9f;
+        }
+        var gadgetScroll = gadgetsContent.parent.parent;
+        if (!gadgetScroll.HasComponent<ScrollByMenuKeys>())
+        {
+            var comp = gadgetScroll.gameObject.AddComponent<ScrollByMenuKeys>();
+            comp._scrollDownInput = inputDown;
+            comp._scrollUpInput = inputUp;
+            comp._scrollPerFrame = 9f;
+        }
+    }
+
     protected override void OnLateAwake()
     {
         cheatButtonContent = transform.GetObjectRecursively<Transform>("CheatMenuCheatButtonsContentRec");
