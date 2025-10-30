@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using Il2CppMonomiPark.SlimeRancher.Input;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppTMPro;
 using SR2E.Components;
 using SR2E.Enums;
@@ -46,20 +48,43 @@ public class SR2EModMenu : SR2EMenu
     private List<LKey> allPossibleLKey = new List<LKey>();
     TextMeshProUGUI themeMenuText;
     Button themeButton;
+    private Transform modContent;
+    private Transform modConfigContent;
 
     protected override void OnClose()
     {
         gameObject.GetObjectRecursively<Button>("ModMenuModMenuSelectionButtonRec").onClick.Invoke();
-        Transform modContent = transform.GetObjectRecursively<Transform>("ModMenuModMenuContentRec");
         for (int i = 0; i < modContent.childCount; i++)
             Object.Destroy(modContent.GetChild(i).gameObject);
     }
     
+    private InputEvent inputDown;
+    private InputEvent inputUp;
+    public override void OnGameContext(GameContext gameContext)
+    {
+        inputDown = Get<InputEvent>("ItemDown");
+        inputUp = Get<InputEvent>("ItemUp");
+        var refScroll = modContent.parent.parent;
+        if (!refScroll.HasComponent<ScrollByMenuKeys>())
+        {
+            var comp = refScroll.gameObject.AddComponent<ScrollByMenuKeys>();
+            comp._scrollDownInput = inputDown;
+            comp._scrollUpInput = inputUp;
+            comp._scrollPerFrame = 9f;
+        }
+        var gadgetScroll = modConfigContent.parent.parent;
+        if (!gadgetScroll.HasComponent<ScrollByMenuKeys>())
+        {
+            var comp = gadgetScroll.gameObject.AddComponent<ScrollByMenuKeys>();
+            comp._scrollDownInput = inputDown;
+            comp._scrollUpInput = inputUp;
+            comp._scrollPerFrame = 9f;
+        }
+    }
     protected override void OnOpen()
     {
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("ModMenuModMenuTemplateButtonRec");
         buttonPrefab.SetActive(false);
-        Transform modContent = transform.GetObjectRecursively<Transform>("ModMenuModMenuContentRec");
         foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (RottenMelon rotten in loadedAssembly.RottenMelons)
         {
             try
@@ -239,11 +264,12 @@ public class SR2EModMenu : SR2EMenu
     }
     protected override void OnLateAwake()
     {
+        modContent = transform.GetObjectRecursively<Transform>("ModMenuModMenuContentRec");
+        modConfigContent = transform.GetObjectRecursively<Transform>("ModMenuModConfigurationContentRec");
         entryTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateEntryRec");
         headerTemplate = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationTemplateHeaderRec");
         warningText = transform.GetObjectRecursively<GameObject>("ModMenuModConfigurationRestartWarningRec");
         toTranslate.Add(warningText.GetComponent<TextMeshProUGUI>(),"modmenu.warning.restart");
-        Transform content = transform.GetObjectRecursively<Transform>("ModMenuModConfigurationContentRec");
         modInfoText = transform.GetObjectRecursively<TextMeshProUGUI>("ModMenuModInfoTextRec");
         modInfoText.AddComponent<ClickableTextLink>();
         foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
@@ -310,14 +336,14 @@ public class SR2EModMenu : SR2EMenu
         toTranslate.Add(themeButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"buttons.thememenu.label");
         foreach (MelonPreferences_Category category in MelonPreferences.Categories)
         {
-            GameObject header = Instantiate(headerTemplate, content);
+            GameObject header = Instantiate(headerTemplate, modConfigContent);
             header.SetActive(true);
             header.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = category.DisplayName;
             foreach (MelonPreferences_Entry entry in category.Entries)
             {
                 if (!entry.IsHidden)
                 {
-                    GameObject obj = Instantiate(entryTemplate, content);
+                    GameObject obj = Instantiate(entryTemplate, modConfigContent);
                     obj.SetActive(true);
                     obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
                     if (!String.IsNullOrEmpty(entry.Description))

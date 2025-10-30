@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Il2CppInterop.Common;
+using Il2CppInterop.Generator;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
@@ -64,9 +66,9 @@ public static class BuildInfo
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
         new TripleDictionary<string, bool, string>()
         {
-            { "release", (false, "https://api.sr2e.thatfinn.dev/downloads/sr2e/release.json") },
-            { "alpha", (false, "https://api.sr2e.thatfinn.dev/downloads/sr2e/alpha.json") },
-            { "beta", (false, "https://api.sr2e.thatfinn.dev/downloads/sr2e/beta.json") },
+            { "release", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/release.json") },
+            { "alpha", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/alpha.json") },
+            { "beta", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/beta.json") },
             { "dev", (true, "") },
         };
 }
@@ -95,6 +97,7 @@ public class SR2EEntryPoint : MelonMod
     internal static string DataPath => Path.Combine(MelonEnvironment.UserDataDirectory, "SR2E");
     internal static string TmpDataPath => Path.Combine(DataPath, ".tmp");
     internal static string FlagDataPath => Path.Combine(DataPath, "flags");
+    internal static string CustomVolumeProfilesPath => Path.Combine(DataPath, "customVolumeProfiles");
     static bool IsLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
     private static bool _useLibrary = false;
@@ -285,6 +288,7 @@ public class SR2EEntryPoint : MelonMod
         if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
         if(!Directory.Exists(TmpDataPath)) Directory.CreateDirectory(TmpDataPath);
         if(!Directory.Exists(FlagDataPath)) Directory.CreateDirectory(FlagDataPath);
+        if(!Directory.Exists(CustomVolumeProfilesPath)) Directory.CreateDirectory(CustomVolumeProfilesPath);
         InitFlagManager();
         
     }

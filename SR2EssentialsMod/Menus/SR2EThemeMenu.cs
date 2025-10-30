@@ -56,6 +56,7 @@ public class SR2EThemeMenu : SR2EMenu
             GameObject dropDownObj = Instantiate(dropdownTemplate, contentRec);
             dropDownObj.SetActive(true);
             TMP_Dropdown dropdown = dropDownObj.GetObjectRecursively<TMP_Dropdown>("Dropdown");
+            dropDownObj.GetObjectRecursively<Canvas>("Canvas").overrideSorting=false;
             dropdown.ClearOptions();
             //idk how to convert to il2cpp list
             var options = new Il2CppSystem.Collections.Generic.List<string>();

@@ -134,8 +134,8 @@ public class SR2EConsole : SR2EMenu
                 try { possibleAutoCompletes = SR2ECommandManager.commands[cmd].GetAutoComplete(argIndex, args); } catch (Exception e) { MelonLogger.Error($"Error in command auto complete!\n{e}"); }
                 if (possibleAutoCompletes != null)
                 {
-                    possibleAutoCompletes = possibleAutoCompletes.Where(s => s.Contains(containing))
-                        .OrderBy(s => !s.StartsWith(containing))
+                    possibleAutoCompletes = possibleAutoCompletes.Where(s => s.ToUpper().Contains(containing.ToUpper()))
+                        .OrderBy(s => !s.ToUpper().StartsWith(containing.ToUpper()))
                         .ToList();
                     if (possibleAutoCompletes.Count == 0)
                         possibleAutoCompletes = null;
