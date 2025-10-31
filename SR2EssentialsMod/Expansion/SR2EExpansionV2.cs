@@ -6,24 +6,28 @@ public abstract class SR2EExpansionV2 : SR2EExpansionV1
 {
     public virtual void OnZoneCoreLoaded() { }
     /// <summary>
-    /// Requires Library
+    /// In this function you should add all of your base slimes, veggies, toys etc.
+    /// Requires Prism
     /// </summary>
-    public virtual void SaveDirectorLoaded() { }
+    public virtual void OnPrismCreateAdditions() { }
     
     /// <summary>
-    /// This is the same thing as <c>SaveDirectorLoaded</c> except it's called after <c>SaveDirectorLoaded</c> has already called on each mod.
-    /// Requires Library
+    /// Use this if you want to do stuff with every e.g slime, veggie etc.
+    /// DO NOT add objects here, do that in <c>OnPrismCreateAdditions</c>
+    /// This gets called after every mod ran OnPrismCreateAdditions()
+    /// Requires Prism
     /// </summary>
-    public virtual void LateSaveDirectorLoaded() { }  
+    public virtual void AfterPrismCreateAdditions() { }
     /// <summary>
-    /// An even later stage of loading than <c>LateSaveDirectorLoaded</c>
-    /// Requires Library
+    /// Get's called before the AutoSaveDirector has been loaded
+    /// Requires Prism
     /// </summary>
-    public virtual void SaveDirectorLoading(AutoSaveDirector saveDirector) { }
+    public virtual void BeforeSaveDirectorLoaded(AutoSaveDirector saveDirector) { }
     /// <summary>
-    /// Requires Library
+    /// This gets called after all largos have been created
+    /// Requires Prism
     /// </summary>
-    public virtual void AutoLargosLoaded() { }
+    public virtual void AfterPrismLargosCreated() { }
 
     /// <summary>
     /// Gets executed once SceeneContext loads. In Postfix of the Start method

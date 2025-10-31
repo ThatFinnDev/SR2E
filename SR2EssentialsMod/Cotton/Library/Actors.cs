@@ -2,6 +2,8 @@ using System;
 using Cotton;
 using Il2Cpp;
 using Il2CppMonomiPark.SlimeRancher;
+using SR2E.Prism;
+using SR2E.Prism.Enums;
 using UnityEngine;
 using UnityEngine.Localization;
 namespace SR2E.Cotton;
@@ -257,7 +259,7 @@ public static partial class CottonLibrary
             plort.icon = Icon;
             plort.IsPlort = true;
             if (marketValue > 0)
-                Market.MakeSellable(plort, marketValue, marketSaturation);
+                Market.MakeSellable(plort, new PrismMarketData(marketValue, marketSaturation));
             plort.AddToGroup("PlortGroup");
             //plort.AddToGroup("VaccableNonLiquids");
             Saving.INTERNAL_SetupLoadForIdent(RefID, plort);
@@ -285,22 +287,7 @@ public static partial class CottonLibrary
 
             ident.AddToGroup("VaccableNonLiquids");
         }
-
-        public static void SetPlortColor(Color32 Top, Color32 Middle, Color32 Bottom, GameObject Prefab)
-        {
-            var material = Prefab.GetComponent<MeshRenderer>().material;
-            material.SetColor("_TopColor", Top);
-            material.SetColor("_MiddleColor", Middle);
-            material.SetColor("_BottomColor", Bottom);
-        }
-
-        public static void SetPlortTwinColor(Color32 Top, Color32 Middle, Color32 Bottom, GameObject Prefab)
-        {
-            var material = Prefab.GetComponent<MeshRenderer>().material;
-            material.SetColor("_TwinTopColor", Top);
-            material.SetColor("_TwinMiddleColor", Middle);
-            material.SetColor("_TwinBottomColor", Bottom);
-        }
+        
 
         public static IdentifiableType GetPlort(string name)
         {

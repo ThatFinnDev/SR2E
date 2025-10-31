@@ -1,9 +1,10 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.World;
+using SR2E.Cotton;
 using SR2E.Storage;
 
-namespace SR2E.Cotton.Patches.Callback;
+namespace SR2E.Prism.Patches.Callback;
 
-[LibraryPatch()]
+[PrismPatch()]
 [HarmonyPatch(typeof(PlayerZoneTracker), nameof(PlayerZoneTracker.OnEntered))]
 static class ZoneEnterPatch
 {

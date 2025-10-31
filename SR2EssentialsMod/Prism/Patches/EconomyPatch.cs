@@ -1,11 +1,11 @@
-﻿using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppMonomiPark.SlimeRancher.Economy;
+﻿using Il2CppMonomiPark.SlimeRancher.Economy;
+using SR2E.Cotton;
 using SR2E.Storage;
 
-namespace SR2E.Cotton.Patches;
+namespace SR2E.Prism.Patches;
 
-[LibraryPatch()]
-[HarmonyPatch(typeof(PlortEconomyDirector),"InitModel")]
+[PrismPatch()]
+[HarmonyPatch(typeof(PlortEconomyDirector),nameof(PlortEconomyDirector.InitModel))]
 public static class EconomyPatch
 {
     public static void Prefix(PlortEconomyDirector __instance)

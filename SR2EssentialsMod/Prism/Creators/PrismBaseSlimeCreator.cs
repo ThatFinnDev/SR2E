@@ -8,15 +8,15 @@ using UnityEngine.Localization;
 
 namespace SR2E.Prism.Creators;
 
-public class PrismSlimeCreator
+public class PrismBaseSlimeCreator
 {
-    private PrismSlime _createdSlime;
+    private PrismBaseSlime _createdSlime;
     
     
     public string name;
     public Sprite icon;
     public LocalizedString localized;
-    public string referenceID => "SlimeDefinition.modded" + name;
+    public string referenceID => "SlimeDefinition.Modded" + name;
 
     public PrismPlort plort = null;
     public GameObject customBasePrefab = null;
@@ -28,7 +28,7 @@ public class PrismSlimeCreator
 
     
     
-    public PrismSlimeCreator(string name, Sprite icon, LocalizedString localized)
+    public PrismBaseSlimeCreator(string name, Sprite icon, LocalizedString localized)
     {
         this.name = name;
         this.icon = icon;
@@ -58,14 +58,15 @@ public class PrismSlimeCreator
     
     
     
-    public PrismSlime CreateSlime()
+    public PrismBaseSlime CreateSlime()
     {
-        if (IsValid()) return null;
+        if (!IsValid()) return null;
         if (_createdSlime != null) return _createdSlime;
 
         var slimeDef = Object.Instantiate(CottonSlimes.GetSlime("Pink"));
         Object.DontDestroyOnLoad(slimeDef);
         slimeDef.hideFlags = HideFlags.HideAndDontSave;
+        slimeDef.Name = name;
         slimeDef.name = name;
         slimeDef.AppearancesDefault = new Il2CppReferenceArray<SlimeAppearance>(1);
 
@@ -125,28 +126,26 @@ public class PrismSlimeCreator
             });*/
         }
 
-        CottonLibrary.baseSlimes._memberTypes.Add(slimeDef);
-
-        CottonLibrary.baseSlimes.GetRuntimeObject()._memberTypes.Add(slimeDef);
+        if(vaccable) slimeDef.AddToGroup("VaccableBaseSlimeGroup");
+        else slimeDef.AddToGroup("BaseSlimeGroup");
+        
         
         slimeDef.AppearancesDefault[0]._colorPalette = new SlimeAppearance.Palette
             { Ammo = vacColor, Bottom = vacColor, Middle = vacColor, Top = vacColor };
         slimeDef.AppearancesDefault[0]._splatColor = vacColor;
         
         slimeDef.CanLargofy = canLargofy;
-        if(vaccable)
-            slimeDef.AddToGroup("VaccableBaseSlimeGroup");
         
         slimeDef.localizedName = localized;
-        slimeDef._pediaPersistenceSuffix = name.ToLower()+"_slime";
+        slimeDef._pediaPersistenceSuffix = "modded"+name.ToLower()+"_slime";
         
-        var prismSlime = new PrismSlime(slimeDef, false);
+        var prismSlime = new PrismBaseSlime(slimeDef, false);
         
         if(plort!=null)
             PrismLibDiet.AddEatProduction(prismSlime, plort);
         
         _createdSlime = prismSlime;
-        PrismShortcuts._prismSlimes.Add(slimeDef,_createdSlime);
+        PrismShortcuts._prismBaseSlimes.Add(slimeDef,_createdSlime);
         return _createdSlime;
     }
 

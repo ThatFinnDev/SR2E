@@ -3,6 +3,7 @@ using Il2CppMono.Security.X509;
 using Il2CppSony.NP;
 using SR2E.Cotton;
 using SR2E.Prism.Data;
+using SR2E.Prism.Enums;
 using UnityEngine.Localization;
 
 namespace SR2E.Prism.Creators;
@@ -14,15 +15,13 @@ public class PrismPlortCreator
     public string name;
     public Sprite icon;
     public LocalizedString localized;
-    public string referenceID => "IdentifiableType.modded" + name + "Plort";
+    public string referenceID => "IdentifiableType.Modded" + name + "Plort";
 
-    public GameObject customBasePrefab = null;
-    public SlimeAppearance customBaseAppearance = null;
-    public bool vaccable = true;
-    public bool canLargofy = false;
-    public bool createAllLargos = false;
     public Color32 vacColor = new Color32(0,0,0,255);
-
+    public GameObject customBasePrefab = null;
+    
+    
+    public PrismMarketData? moddedMarketData = null;
     
     
     public PrismPlortCreator(string name, Sprite icon, LocalizedString localized)
@@ -42,7 +41,6 @@ public class PrismPlortCreator
         if (localized==null) return false;
         if (customBasePrefab != null)
         {
-            if (!customBasePrefab.HasComponent<SlimeAppearanceApplicator>()) return false;
             if (!customBasePrefab.HasComponent<IdentifiableActor>()) return false;
         }
         return true;
@@ -50,21 +48,31 @@ public class PrismPlortCreator
 
     public PrismPlort CreatePlort()
     {
-        
-        if (IsValid()) return null;
-        if (_createdSlime != null) return _createdSlime;
+        if (!IsValid()) return null;
+        if (_createdPlort != null) return _createdPlort;
         var plort = ScriptableObject.CreateInstance<IdentifiableType>();
         Object.DontDestroyOnLoad(plort);
         plort.hideFlags = HideFlags.HideAndDontSave;
-        plort.name = X520.Name + "Plort";
-        plort.color = VacColor;
-        plort.icon = Icon;
+        plort.name = name + "Plort";
+        plort.color = vacColor;
+        plort.icon = icon;
         plort.IsPlort = true;
-        if (marketValue > 0)
-            CottonLibrary.Market.MakeSellable(plort, marketValue, marketSaturation);
+        
+        
+        plort.localizedName = localized;
+        plort._pediaPersistenceSuffix = "modded"+name.ToLower()+"_plort";
+        
+        if(moddedMarketData.HasValue)
+            CottonLibrary.Market.MakeSellable(plort, moddedMarketData.Value);
         plort.AddToGroup("PlortGroup");
         //plort.AddToGroup("VaccableNonLiquids");
-        CottonLibrary.Saving.INTERNAL_SetupLoadForIdent(RefID, plort);
+        
+        var basePrefab = customBasePrefab;
+        if (basePrefab == null) basePrefab = CottonLibrary.Actors.GetPlort("PinkPlort").prefab;
+        plort.prefab = CreatePrefab("plort"+name, basePrefab);
+        plort.prefab.GetComponent<IdentifiableActor>().identType = plort;
+        
+        CottonLibrary.Saving.INTERNAL_SetupLoadForIdent(referenceID, plort);
         
         var prismPlort = new PrismPlort(plort, false);
         

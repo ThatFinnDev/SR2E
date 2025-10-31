@@ -3,9 +3,9 @@ using Cotton;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using SR2E.Storage;
 
-namespace SR2E.Cotton.Patches;
+namespace SR2E.Prism.Patches;
 
-[LibraryPatch()]
+[PrismPatch()]
 [HarmonyPatch(typeof(SnareModel),nameof(SnareModel.GetGordoIdForBait))]
 public class GordoCapturePatch
 {

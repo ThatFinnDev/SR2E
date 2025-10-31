@@ -1,11 +1,12 @@
 using Il2CppMonomiPark.SlimeRancher.Pedia;
+using SR2E.Cotton;
 using SR2E.Storage;
 
-namespace SR2E.Cotton.Patches;
+namespace SR2E.Prism.Patches;
 
-[LibraryPatch()]
+[PrismPatch()]
 [HarmonyPatch(typeof(PediaCategory), nameof(PediaCategory.GetRuntimeCategory))]
-public class RuntimePediaCategoryPatch
+internal class RuntimePediaCategoryPatch
 {
     static Dictionary<string, CottonLibrary.Pedia.PediaCategoryType> categories = new()
     {

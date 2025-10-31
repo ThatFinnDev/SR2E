@@ -1,12 +1,13 @@
-﻿using Il2CppMonomiPark.SlimeRancher.UI;
-using System.Linq;
+﻿using System.Linq;
+using Il2CppMonomiPark.SlimeRancher.UI;
+using SR2E.Cotton;
 using SR2E.Storage;
 
-namespace SR2E.Cotton.Patches;
+namespace SR2E.Prism.Patches;
 
-[LibraryPatch()]
+[PrismPatch()]
 [HarmonyPatch(typeof(MarketUI))]
-public static class MarketPatch
+public static class MarketUIPatch
 {
     [HarmonyPatch(nameof(MarketUI.Start))]
     [HarmonyPrefix]

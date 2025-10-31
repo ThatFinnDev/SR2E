@@ -7,7 +7,9 @@ using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppSystem.Linq;
 using MelonLoader;
+using SR2E.Cotton;
 using SR2E.Managers;
+using SR2E.Prism;
 using SR2E.Prism.Lib;
 using UnityEngine;
 using UnityEngine.Localization; 
@@ -1017,8 +1019,8 @@ public static class CottonSlimes
                     "Failed to merge diet, and largo settings are incorrectly set! Defaulting to slime 1's diet.");
             }
         }
-
-        PrismLibDiet.RefreshEatmap(largoDef);
+        largoDef.Diet.RefreshEatMap(CottonLibrary.slimeDefinitions, largoDef);
+        PrismLibDiet.RefreshEatMap(largoDef.GetPrismSlime());
 
         slimeDefinitions.Slimes = slimeDefinitions.Slimes.AddToNew(largoDef);
         slimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(largoDef, largoDef);
@@ -1029,8 +1031,8 @@ public static class CottonSlimes
         largoDef.AddToGroup("SlimesGroup");
         Saving.INTERNAL_SetupLoadForIdent(largoDef.referenceId, largoDef);
 
-        PrismLibDiet.RefreshEatmap(slimeOne);
-        PrismLibDiet.RefreshEatmap(slimeTwo);
+        slimeOne.GetPrismSlime().RefreshEatMap();
+        slimeTwo.GetPrismSlime().RefreshEatMap();
 
         largoCombos.Add($"{slimeOne.name} {slimeTwo.name}");
 

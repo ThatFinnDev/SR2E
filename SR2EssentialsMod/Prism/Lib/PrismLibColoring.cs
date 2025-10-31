@@ -4,6 +4,21 @@ namespace SR2E.Prism.Lib;
 
 public static class PrismLibColoring
 {
+    public static void SetPlortBaseColors(this PrismPlort prismPlort, Color32 Top, Color32 Middle, Color32 Bottom)
+    {
+        var material = prismPlort.GetPrefab().GetComponent<MeshRenderer>().material;
+        material.SetColor("_TopColor", Top);
+        material.SetColor("_MiddleColor", Middle);
+        material.SetColor("_BottomColor", Bottom);
+    }
+
+    public static void SetPlortTwinColors(this PrismPlort prismPlort, Color32 Top, Color32 Middle, Color32 Bottom)
+    {
+        var material = prismPlort.GetPrefab().GetComponent<MeshRenderer>().material;
+        material.SetColor("_TwinTopColor", Top);
+        material.SetColor("_TwinMiddleColor", Middle);
+        material.SetColor("_TwinBottomColor", Bottom);
+    }
     public static void SetSlimeBaseColorsSpecific(this PrismSlime prismSlime, Color32 top, Color32 middle, Color32 bottom, Color32 special, int index, int index2, bool isSS, int structure)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();

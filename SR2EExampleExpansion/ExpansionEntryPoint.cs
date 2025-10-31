@@ -16,7 +16,7 @@ namespace SR2EExampleExpansion
         public const string DownloadLink = null; // Download Link for the Expansion.  (optional, set as null if none)
         public const string SourceCode = null; // Source Link for the Expansion.  (optional, set as null if none)
         public const string Nexus = null; // Nexus Link for the Expansion.  (optional, set as null if none)
-        public const bool RequireLibrary = false; // Enable if you use Cotton
+        public const bool UsePrism = false; // Enable if you use Prism
     }
 
     public class ExpansionEntryPoint : SR2EExpansionV2

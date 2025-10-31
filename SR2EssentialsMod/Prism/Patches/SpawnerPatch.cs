@@ -1,10 +1,11 @@
+using SR2E.Cotton;
 using SR2E.Storage;
 
-namespace SR2E.Cotton.Patches;
+namespace SR2E.Prism.Patches;
 
-[LibraryPatch()]
+[PrismPatch()]
 //[HarmonyPatch(typeof(DirectedActorSpawner))]
-public class SpawnerPatch
+internal class SpawnerPatch
 {
     [HarmonyPatch(nameof(DirectedActorSpawner.Awake))]
     [HarmonyPostfix]

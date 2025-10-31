@@ -2,7 +2,8 @@ using System;
 using System.Linq;
 using Cotton;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using SR2E.Cotton.Enums;
+using SR2E.Prism;
+using SR2E.Prism.Enums;
 using UnityEngine.Localization;
 namespace SR2E.Cotton;
 
@@ -31,8 +32,8 @@ public static partial class CottonLibrary
     
     internal static Dictionary<string, IdentifiableType> savedIdents = new Dictionary<string, IdentifiableType>();
 
-    internal static Dictionary<IdentifiableType, ModdedMarketData> marketData =
-        new Dictionary<IdentifiableType, ModdedMarketData>(0);
+    internal static Dictionary<IdentifiableType, PrismMarketData> marketData =
+        new Dictionary<IdentifiableType, PrismMarketData>(0);
 
     internal static Dictionary<PlortEntry, bool> marketPlortEntries =
         new Dictionary<PlortEntry, bool>();
@@ -52,7 +53,6 @@ public static partial class CottonLibrary
     public static IdentifiableTypeGroup? chicks;
     public static GameObject? player;
 
-    // public enum VanillaPediaEntryCategories { TUTORIAL, SLIMES, RESOURCES, WORLD, RANCH, SCIENCE, WEATHER }
 
     public static SlimeDefinitions? slimeDefinitions => gameContext.SlimeDefinitions; 
     
@@ -70,12 +70,6 @@ public static partial class CottonLibrary
         set { _mainAppearanceDirector = value; }
     }
 
-
-    /// <summary>
-    /// The key for this is $"{table}__{key}"
-    /// </summary>
-    internal static Dictionary<string, LocalizedString> existingTranslations =
-        new Dictionary<string, LocalizedString>();
 
 
     

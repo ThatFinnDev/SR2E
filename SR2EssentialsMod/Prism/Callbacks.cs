@@ -1,6 +1,6 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.World;
 
-namespace SR2E.Cotton;
+namespace SR2E.Prism;
 
 public static class Callbacks
 {

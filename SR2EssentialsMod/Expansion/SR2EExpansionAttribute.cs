@@ -5,14 +5,14 @@ namespace SR2E.Expansion;
 [AttributeUsage(AttributeTargets.Assembly)]
 public class SR2EExpansionAttribute : Attribute
 {
-    public bool RequiresLibrary = false;
+    public bool usePrism = false;
 
     public SR2EExpansionAttribute()
     {
         
     }
-    public SR2EExpansionAttribute(bool RequiresLibrary)
+    public SR2EExpansionAttribute(bool usePrism)
     {
-        this.RequiresLibrary = RequiresLibrary;
+        this.usePrism = usePrism;
     }
 }

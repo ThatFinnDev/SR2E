@@ -1,13 +1,11 @@
 using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.Localization;
-using SR2E.Cotton;
 using SR2E.Storage;
 
-namespace Cotton.Patches;
+namespace SR2E.Prism.Patches;
 
-[LibraryPatch()]
+[PrismPatch()]
 [HarmonyPatch(typeof(TargetingUI), nameof(TargetingUI.Start))]
-public class TargetingPatch
+internal class TargetingPatch
 {
 
     [HarmonyPatch(typeof(TargetingUI), nameof(TargetingUI.ClearAllDisplayInfo))]

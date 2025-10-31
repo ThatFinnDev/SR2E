@@ -9,8 +9,13 @@ public class PrismSlime
     {
         return prismSlime.GetSlimeDefinition();
     }
+    internal PrismSlime(SlimeDefinition slimeDefinition, bool isNative)
+    {
+        this._slimeDefinition = slimeDefinition;
+        this._isNative = isNative;
+    }
     internal SlimeDefinition _slimeDefinition;
-    private bool _isNative;
+    protected bool _isNative;
     
     public SlimeDefinition GetSlimeDefinition() => _slimeDefinition;
     public string GetReferenceID() => _slimeDefinition.ReferenceId;
@@ -45,14 +50,7 @@ public class PrismSlime
     }
     
     public bool _vaccable = true;
-    public bool _canLargofy = false;
-    public bool _createAllLargos = false;
     
     
     
-    internal PrismSlime(SlimeDefinition _slimeDefinition, bool isNative)
-    {
-        this._slimeDefinition = _slimeDefinition;
-        this._isNative = isNative;
-    }
 }

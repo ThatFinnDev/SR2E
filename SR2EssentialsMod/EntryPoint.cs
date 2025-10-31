@@ -101,8 +101,8 @@ public class SR2EEntryPoint : MelonMod
     internal static string CustomVolumeProfilesPath => Path.Combine(DataPath, "customVolumeProfiles");
     static bool IsLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
-    private static bool _useLibrary = false;
-    internal static bool useLibrary => _useLibrary;
+    private static bool _usePrism = false;
+    internal static bool usePrism => usePrism;
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
     internal static bool isSaveDirectorLoaded = false;
     internal static string _mlVersion = "undefined";
@@ -200,7 +200,7 @@ public class SR2EEntryPoint : MelonMod
 
         if (CheckForUpdates.HasFlag()) MelonCoroutines.Start(GetBranchJson());
 
-        if (useLibrary)
+        if (usePrism)
         {
             //SaveComponents.RegisterComponent(typeof(ModdedV01));
         }
@@ -297,7 +297,7 @@ public class SR2EEntryPoint : MelonMod
     
     void PatchGame()
     {
-        if(!_useLibrary) try { _useLibrary= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
+        if(!_usePrism) try { _usePrism= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
         var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
         var devPatches = DevMode.HasFlag();
         foreach (var type in types)
@@ -306,7 +306,7 @@ public class SR2EEntryPoint : MelonMod
             try
             {
                 // Skip entire class if marked as a library patch and library disabled
-                if (!_useLibrary && type.GetCustomAttribute<LibraryPatch>() != null) continue;
+                if (!_usePrism && type.GetCustomAttribute<PrismPatch>() != null) continue;
                 // Skip entire class if marked as a dev patch and devmode disabled
                 if(!devPatches && type.GetCustomAttribute<DevPatch>() != null) continue;
                 var classPatches = HarmonyMethodExtensions.GetFromType(type);
@@ -341,7 +341,7 @@ public class SR2EEntryPoint : MelonMod
                     if (attribute == null) melonBase.Unregister();
                     else
                     {
-                        if (attribute.RequiresLibrary) _useLibrary = true;
+                        if (attribute.usePrism) _usePrism = true;
                         expansionsV2.Add(melonBase as SR2EExpansionV2);
                     }
                 }
@@ -467,7 +467,7 @@ public class SR2EEntryPoint : MelonMod
             case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
         }
 
-        if (useLibrary)  try { CottonLibrary.OnSceneWasLoaded(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
+        if (usePrism)  try { CottonLibrary.OnSceneWasLoaded(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
         
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
     }
@@ -513,7 +513,7 @@ public class SR2EEntryPoint : MelonMod
     public override void OnSceneWasInitialized(int buildIndex, string sceneName)
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: " + sceneName);
-        if (useLibrary)  try { CottonLibrary.OnSceneWasInitialized(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
+        if (usePrism)  try { CottonLibrary.OnSceneWasInitialized(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
         if (sceneName == "MainMenuUI") mainMenuLoaded = true;
         switch (sceneName)
         {

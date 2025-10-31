@@ -1,6 +1,7 @@
 using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using SR2E.Cotton.Enums;
+using SR2E.Prism;
+using SR2E.Prism.Enums;
 
 namespace SR2E.Cotton;
 
@@ -8,7 +9,7 @@ public static partial class CottonLibrary
 {
     public static class Market
     {
-        public static void MakeSellable(IdentifiableType ident, float marketValue, float marketSaturation, bool hideInMarket = false)
+        public static void MakeSellable(IdentifiableType ident, PrismMarketData prismMarketData)
         {
             if (marketData.ContainsKey(ident))
             {
@@ -22,8 +23,8 @@ public static partial class CottonLibrary
                 {
                     IdentType = ident
                 },
-                hideInMarket);
-            marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
+                prismMarketData.hideInMarketUI);
+            marketData.Add(ident, prismMarketData);
             TryRefreshMarketData();
         }
 
