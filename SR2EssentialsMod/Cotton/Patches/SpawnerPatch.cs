@@ -3,7 +3,7 @@ using SR2E.Storage;
 namespace SR2E.Cotton.Patches;
 
 [LibraryPatch()]
-[HarmonyPatch(typeof(DirectedActorSpawner))]
+//[HarmonyPatch(typeof(DirectedActorSpawner))]
 public class SpawnerPatch
 {
     [HarmonyPatch(nameof(DirectedActorSpawner.Awake))]

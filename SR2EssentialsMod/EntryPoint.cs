@@ -15,6 +15,7 @@ using UnityEngine.UI;
 using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.ScriptedValue;
 using Il2CppMonomiPark.SlimeRancher;
+using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
@@ -387,6 +388,7 @@ public class SR2EEntryPoint : MelonMod
     {
         CheckFallBackFont();
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: " + sceneName);
+        
         switch (sceneName)
         {
             case "StandaloneStart":
@@ -511,6 +513,7 @@ public class SR2EEntryPoint : MelonMod
     public override void OnSceneWasInitialized(int buildIndex, string sceneName)
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: " + sceneName);
+        if (useLibrary)  try { CottonLibrary.OnSceneWasInitialized(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
         if (sceneName == "MainMenuUI") mainMenuLoaded = true;
         switch (sceneName)
         {

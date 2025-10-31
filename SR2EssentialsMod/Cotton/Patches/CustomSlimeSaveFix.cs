@@ -1,3 +1,4 @@
+using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using SR2E.Storage;
@@ -6,60 +7,63 @@ using Unlocks = Il2CppSystem.Collections.Generic.Dictionary<int, Il2CppSystem.Co
 
 namespace SR2E.Cotton.Patches;
 
+/*
 [LibraryPatch()]
 [HarmonyPatch(typeof(AppearancesModel),nameof(AppearancesModel.Pull))]
 public class AppearancesSaveFix
 {
-    public static bool Prefix(AppearancesModel __instance, ref AppearancesV01 __result)
+    public static bool Prefix(AppearancesModel __instance, ISaveReferenceTranslation lookups, ref AppearancesV01 __result)
     {
-        
-        __result = new AppearancesV01();
-
-        Selections selections = new Selections();
-        Unlocks unlocks = new Unlocks();
-
-        foreach (var selection in __instance.AppearanceSelections._selections)
+        try
         {
-            CottonLibrary.Saving.RefreshIfNotFound(gameContext.AutoSaveDirector._saveReferenceTranslation,selection.Key);
-            
-            selections.Add(gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._reverseIndex[selection.key.ReferenceId], selection.value.SaveSet);
-        }
+            __result = new AppearancesV01();
 
-        foreach (var unlock in __instance.AppearanceSelections._unlocks)
-        {
-            var list = new Il2CppSystem.Collections.Generic.List<SlimeAppearance.AppearanceSaveSet>();
+            Selections selections = new Selections();
+            Unlocks unlocks = new Unlocks();
 
-            foreach (var app in unlock.value)
+            foreach (var selection in __instance.AppearanceSelections._selections)
             {
-                list.Add(app.SaveSet);
+                CottonLibrary.Saving.RefreshIfNotFound(lookups,selection.Key);
+                selections.Add(gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._reverseIndex[selection.key.ReferenceId], selection.value.SaveSet);
             }
-            
-            unlocks.Add(gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._reverseIndex[unlock.key.ReferenceId], list);
-        }
 
-        __result.Unlocks = unlocks;
-        __result.Selections = selections;
-        
-        return false;
+            foreach (var unlock in __instance.AppearanceSelections._unlocks)
+            {
+                var list = new Il2CppSystem.Collections.Generic.List<SlimeAppearance.AppearanceSaveSet>();
+
+                foreach (var app in unlock.value)
+                {
+                    list.Add(app.SaveSet);
+                }
+
+                unlocks.Add(gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._reverseIndex[unlock.key.ReferenceId], list);
+            }
+
+            __result.Unlocks = unlocks;
+            __result.Selections = selections;
+            return false;
+        }
+        catch {}
+
+        return true;
     }
 }
-/*
 [HarmonyPatch(typeof(SavedGame), nameof(SavedGame.BuildActorData))]
 public class CustomActorSaveFix
 {
     public static bool Prefix(
-        SavedGame __instance, 
+        SavedGame __instance,
         ref ActorDataV02 __result,
-        ActorModel actorModel, 
+        ActorModel actorModel,
         IdentifiableTypePersistenceIdLookupTable identToPersistenceId,
         PersistenceIdLookupTable<SceneGroup> sceneToPersistenceId,
         PersistenceIdLookupTable<StatusEffectDefinition> statusEffectToPersistenceId)
     {
         var identTable = gameContext._AutoSaveDirector_k__BackingField._savedGame
             .IdentifiableTypePersistenceIdLookupTable;
-        
+
         identTable.RefreshIfNotFound(actorModel.ident);
-        
+
         ActorDataV02 actorDataV = new ActorDataV02();
 
         IdentifiableType ident = actorModel.ident;
@@ -85,8 +89,8 @@ public class CustomActorSaveFix
         emotions.EmotionData.Add(SlimeEmotions.Emotion.AGITATION, actorModel.TryCast<SlimeModel>() != null ? actorModel.Cast<SlimeModel>().Emotions.z : 0f);
         emotions.EmotionData.Add(SlimeEmotions.Emotion.SLEEPINESS, actorModel.TryCast<SlimeModel>() != null ? actorModel.Cast<SlimeModel>().Emotions.w : 0f);
         actorDataV.Emotions = emotions;
-       
-        
+
+
         Il2CppSystem.Collections.Generic.List<StatusEffectV01> statusEffects = new Il2CppSystem.Collections.Generic.List<StatusEffectV01>();
         foreach (var effect in actorModel.statusEffects)
         {
@@ -98,7 +102,7 @@ public class CustomActorSaveFix
             statusEffects.Add(effectV01);
         }
         actorDataV.StatusEffects = statusEffects;
-        
+
         actorDataV.CycleData = new ResourceCycleDataV01();
 
         if (actorModel is SlimeModel slimeModel)
@@ -119,22 +123,27 @@ public class CustomActorSaveFix
         {
             actorDataV.IsStatue = true;
         }
-        
+
         __result = actorDataV;
-        
+
         return false;
     }
 }
 */
 
+[LibraryPatch()]
 [HarmonyPatch(typeof(GameV08), nameof(GameV08.LoadSummaryData))]
 public static class EnsureSlimesSavableFix
 {
     static void Prefix()
     {
-        foreach (var actor in CottonLibrary.savedIdents)
+        try
         {
-            CottonLibrary.Saving.RefreshIfNotFound(gameContext.AutoSaveDirector._saveReferenceTranslation,actor.Value);
+            foreach (var actor in CottonLibrary.savedIdents)
+            {
+                CottonLibrary.Saving.RefreshIfNotFound(gameContext.AutoSaveDirector._saveReferenceTranslation,actor.Value);
+            }
         }
+        catch {}
     }
 }

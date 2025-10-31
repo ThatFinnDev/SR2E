@@ -247,8 +247,7 @@ public static partial class CottonLibrary
             obj.prefab = prefab;
         }
 
-        public static IdentifiableType CreatePlortType(string Name, Color32 VacColor, Sprite Icon, string RefID,
-            float marketValue, float marketSaturation)
+        public static IdentifiableType CreatePlortType(string Name, Color32 VacColor, Sprite Icon, string RefID, float marketValue, float marketSaturation)
         {
             var plort = ScriptableObject.CreateInstance<IdentifiableType>();
             Object.DontDestroyOnLoad(plort);
@@ -259,7 +258,8 @@ public static partial class CottonLibrary
             plort.IsPlort = true;
             if (marketValue > 0)
                 Market.MakeSellable(plort, marketValue, marketSaturation);
-            plort.AddToGroup("VaccableNonLiquids");
+            plort.AddToGroup("PlortGroup");
+            //plort.AddToGroup("VaccableNonLiquids");
             Saving.INTERNAL_SetupLoadForIdent(RefID, plort);
             return plort;
         }
@@ -373,43 +373,6 @@ public static partial class CottonLibrary
 
             return null;
         }
-
-        public static IdentifiableTypeGroup MakeNewGroup(IdentifiableType[] types, string groupName,
-            IdentifiableTypeGroup[] subGroups = null)
-        {
-            var group = new IdentifiableTypeGroup();
-            var typesList = new Il2CppSystem.Collections.Generic.List<IdentifiableType>();
-            foreach (var type in types)
-            {
-                try
-                {
-                    typesList.Add(type);
-                }
-                catch
-                {
-                }
-            }
-
-            var subGroupsList = new Il2CppSystem.Collections.Generic.List<IdentifiableTypeGroup>();
-            foreach (var subGroup in subGroups)
-            {
-                try
-                {
-                    subGroupsList.Add(subGroup);
-                }
-                catch
-                {
-                }
-            }
-
-            group._memberTypes = typesList;
-            group._memberGroups = subGroupsList;
-
-            GameContext.Instance.LookupDirector.RegisterIdentifiableTypeGroup(group);
-
-            return group;
-        }
-
         public static IdentifiableTypeGroup CreateIdentifiableGroup(LocalizedString localizedName, string codeName,
             List<IdentifiableType> types, List<IdentifiableTypeGroup> subGroups, bool isFood = false)
         {
@@ -434,6 +397,9 @@ public static partial class CottonLibrary
             group._runtimeObject = new IdentifiableTypeGroupRuntimeObject(group);
 
             customGroups.Add(group);
+            GameContext.Instance.LookupDirector.RegisterIdentifiableTypeGroup(group);
+            if(!gameContext.LookupDirector._allIdentifiableTypeGroups.items.Contains(group))
+                gameContext.LookupDirector._allIdentifiableTypeGroups.items.Add(group);
             return group;
         }
     }

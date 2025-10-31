@@ -10,15 +10,10 @@ public static partial class CottonLibrary
         {
             gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeLookup.TryAdd(RefID, ident);
 
-            if (gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._primaryIndex
-                    .Count > 0)
-                if (!gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId
-                        ._primaryIndex.Contains(RefID))
-                    gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId
-                            ._primaryIndex =
-                        gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId
-                            ._primaryIndex
-                            .AddToNew(RefID);
+            if (gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._primaryIndex.Count > 0)
+                if (!gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._primaryIndex.Contains(RefID))
+                    gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._primaryIndex =
+                        gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._primaryIndex.AddToNew(RefID);
 
             gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._reverseIndex
                 .TryAdd(RefID,
@@ -26,6 +21,8 @@ public static partial class CottonLibrary
                         ._reverseIndex.Count);
 
 
+            
+            
             if (ident is SlimeDefinition)
             {
                 if (!gameContext.SlimeDefinitions.Slimes.Contains(ident.Cast<SlimeDefinition>()))
@@ -44,7 +41,8 @@ public static partial class CottonLibrary
 
             gameContext.LookupDirector.AddIdentifiableTypeToGroup(ident,
                 gameContext.AutoSaveDirector._configuration._identifiableTypes);
-
+            if(gameContext.LookupDirector._identifiableTypeByRefId.ContainsKey(RefID))
+                gameContext.LookupDirector._identifiableTypeByRefId.Add(RefID,ident);
             INTERNAL_SetupSaveForIdent(RefID, ident);
         }
 
@@ -54,6 +52,18 @@ public static partial class CottonLibrary
         }
 
         internal static void RefreshIfNotFound(SaveReferenceTranslation table, IdentifiableType ident)
+        {
+            try
+            {
+                table.GetPersistenceId(ident);
+            }
+            catch
+            {
+                foreach (var refresh in savedIdents)
+                    INTERNAL_SetupSaveForIdent(refresh.Key, refresh.Value);
+            }
+        }
+        internal static void RefreshIfNotFound(ISaveReferenceTranslation table, IdentifiableType ident)
         {
             try
             {

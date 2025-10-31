@@ -8,6 +8,7 @@ using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppSystem.Linq;
 using MelonLoader;
 using SR2E.Managers;
+using SR2E.Prism.Lib;
 using UnityEngine;
 using UnityEngine.Localization; 
 using static SR2E.Cotton.CottonLibrary;
@@ -40,7 +41,7 @@ public static class CottonSlimes
     /// <param name="appearanceName">The name of the new appearance.</param>
     /// <param name="refID">The reference ID, used for saving. Recommended to do <c>SlimeDefinition.{name</c>,</param>
     /// <returns>The new SlimeDefinition that was created.</returns>
-    public static SlimeDefinition CreateSlimeDef(string name, Color32 vacColor, Sprite icon, SlimeAppearance baseAppearance, string appearanceName, string refID)
+    /*public static SlimeDefinition CreateSlimeDef(string name, Color32 vacColor, Sprite icon, SlimeAppearance baseAppearance, string appearanceName, string refID)
         => CreateSlimeDef(
             name,
             vacColor,
@@ -50,7 +51,7 @@ public static class CottonSlimes
             refID,
             false,
             0 // Empty LargoSettings flags
-        );
+        );*/
 
     /// <summary>
     /// Create a SlimeDefinition.
@@ -64,7 +65,8 @@ public static class CottonSlimes
     /// <param name="largoable">If the slime can made into a largo.</param>
     /// <param name="largoSettings">The settings used for the largo's appearance.</param>
     /// <returns>The new SlimeDefinition that was created.</returns>
-    public static SlimeDefinition CreateSlimeDef(string name, Color32 vacColor, Sprite icon, SlimeAppearance baseAppearance, string appearanceName, string refID, bool largoable, LargoSettings largoSettings)
+    /*public static SlimeDefinition CreateSlimeDef(string name, Color32 vacColor, Sprite icon, SlimeAppearance baseAppearance, 
+        string appearanceName, string refID, bool largoable, LargoSettings largoSettings)
     {
         SlimeDefinition slimeDef = Object.Instantiate(GetSlime("Pink"));
         Object.DontDestroyOnLoad(slimeDef);
@@ -92,7 +94,6 @@ public static class CottonSlimes
                 a2.DefaultMaterials[0] = Object.Instantiate(a.DefaultMaterials[0]);
             }
         }
-
         SlimeDiet slimeDiet = CreateNewDiet();
         slimeDef.Diet = slimeDiet;
         slimeDef.color = vacColor;
@@ -124,9 +125,10 @@ public static class CottonSlimes
             { Ammo = vacColor, Bottom = vacColor, Middle = vacColor, Top = vacColor };
         
         slimeDef.CanLargofy = largoable;
+        slimeDef.AddToGroup("VaccableBaseSlimeGroup");
 
         return slimeDef;
-    }
+    }*/
 
 
     /// <summary>
@@ -908,7 +910,7 @@ public static class CottonSlimes
                         newComp.CopyFields(component.Value.Item1);
                     }
                     MelonLogger.Msg(component.Key);
-            }
+                }
         
         MelonLogger.Msg("Merged components!");
     }
@@ -916,6 +918,7 @@ public static class CottonSlimes
     public static void AddToGroup(this IdentifiableType type, string groupName)
     {
         var group = Get<IdentifiableTypeGroup>(groupName);
+        if (group.GetAllMembers().ToArray().Contains(type)) return;
         group._memberTypes.Add(type);
         group.GetRuntimeObject()._memberTypes.Add(type);
     }
@@ -1015,7 +1018,7 @@ public static class CottonSlimes
             }
         }
 
-        largoDef.RefreshEatmap();
+        PrismLibDiet.RefreshEatmap(largoDef);
 
         slimeDefinitions.Slimes = slimeDefinitions.Slimes.AddToNew(largoDef);
         slimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(largoDef, largoDef);
@@ -1026,8 +1029,8 @@ public static class CottonSlimes
         largoDef.AddToGroup("SlimesGroup");
         Saving.INTERNAL_SetupLoadForIdent(largoDef.referenceId, largoDef);
 
-        slimeOne.RefreshEatmap();
-        slimeTwo.RefreshEatmap();
+        PrismLibDiet.RefreshEatmap(slimeOne);
+        PrismLibDiet.RefreshEatmap(slimeTwo);
 
         largoCombos.Add($"{slimeOne.name} {slimeTwo.name}");
 
@@ -1044,7 +1047,7 @@ public static class CottonSlimes
     public static SlimeDiet MergeDiet(this SlimeDiet firstDiet, SlimeDiet secondDiet)
     {
 
-        var mergedDiet = CreateNewDiet();
+        var mergedDiet = PrismLibDiet.CreateNewDiet();
 
         mergedDiet.EatMap=mergedDiet.EatMap.AddRangeNoMultipleToNew(firstDiet.EatMap);
         mergedDiet.EatMap=mergedDiet.EatMap.AddRangeNoMultipleToNew(secondDiet.EatMap);
@@ -1094,125 +1097,12 @@ public static class CottonSlimes
 
     }
 
-    public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive,
-        IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
-    {
-        var eatmap = new SlimeDiet.EatMapEntry
-        {
-            EatsIdent = eat,
-            ProducesIdent = produce,
-            BecomesIdent = becomes,
-            Driver = driver,
-            MinDrive = mindrive
-        };
-        return eatmap;
-    }
 
-    public static SlimeDiet.EatMapEntry CreateEatmap(SlimeEmotions.Emotion driver, float mindrive,
-        IdentifiableType produce, IdentifiableType eat)
-    {
-        var eatmap = new SlimeDiet.EatMapEntry
-        {
-            EatsIdent = eat,
-            ProducesIdent = produce,
-            Driver = driver,
-            MinDrive = mindrive
-        };
-        return eatmap;
-    }
-
-    public static void ModifyEatmap(this SlimeDiet.EatMapEntry eatmap, SlimeEmotions.Emotion driver, float mindrive,
-        IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
-    {
-        eatmap.EatsIdent = eat;
-        eatmap.BecomesIdent = becomes;
-        eatmap.ProducesIdent = produce;
-        eatmap.Driver = driver;
-        eatmap.MinDrive = mindrive;
-    }
-
-    public static void ModifyEatmap(this SlimeDiet.EatMapEntry eatmap, SlimeEmotions.Emotion driver, float mindrive,
-        IdentifiableType produce, IdentifiableType eat)
-    {
-        eatmap.EatsIdent = eat;
-        eatmap.ProducesIdent = produce;
-        eatmap.Driver = driver;
-        eatmap.MinDrive = mindrive;
-    }
-
-    public static void AddProduceIdent(this SlimeDefinition slimeDef, IdentifiableType ident)
-    {
-        slimeDef.Diet.ProduceIdents = slimeDef.Diet.ProduceIdents.AddToNew(ident);
-    }
-
-    public static void SetProduceIdent(this SlimeDefinition slimeDef, IdentifiableType ident, int index)
-    {
-        slimeDef.Diet.ProduceIdents[index] = ident;
-    }
-
-    public static void AddExtraEatIdent(this SlimeDefinition slimeDef, IdentifiableType ident)
-    {
-        slimeDef.Diet.AdditionalFoodIdents = slimeDef.Diet.AdditionalFoodIdents.AddToNew(ident);
-
-    }
-
-    public static void SetFavoriteProduceCount(this SlimeDefinition slimeDef, int count)
-    {
-        slimeDef.Diet.FavoriteProductionCount = count;
-    }
-
-    public static void AddFavorite(this SlimeDefinition slimeDef, IdentifiableType id)
-    {
-        slimeDef.Diet.FavoriteIdents = slimeDef.Diet.FavoriteIdents.AddToNew(id);
-    }
-
-    public static void AddEatmapToSlime(this SlimeDefinition slimeDef, SlimeDiet.EatMapEntry eatmap)
-    {
-        if (!customEatmaps.TryGetValue(slimeDef, out var eatmaps))
-        {
-            eatmaps = new List<SlimeDiet.EatMapEntry>();
-            customEatmaps.Add(slimeDef, eatmaps);
-        }
-        eatmaps.Add(eatmap);
-        slimeDef.Diet.EatMap.Add(eatmap);
-    }
 
     public static void SetStructColor(this SlimeAppearanceStructure structure, int id, Color color)
     {
         structure.DefaultMaterials[0].SetColor(id, color);
     }
-
-    public static void RefreshEatmap(this SlimeDefinition def)
-    {
-        def.Diet.RefreshEatMap(slimeDefinitions, def);
-    }
-
-    public static void ChangeSlimeFoodGroup(this SlimeDefinition def, IdentifiableTypeGroup FG, int index)
-    {
-        def.Diet.MajorFoodIdentifiableTypeGroups[index] = FG;
-    }
-
-    public static void AddSlimeFoodGroup(this SlimeDefinition def, IdentifiableTypeGroup FG)
-    {
-        def.Diet.MajorFoodIdentifiableTypeGroups = def.Diet.MajorFoodIdentifiableTypeGroups.AddToNew(FG);
-    }
-
-    internal static SlimeDiet CreateNewDiet() => new SlimeDiet
-    {
-        ProduceIdents = new Il2CppReferenceArray<IdentifiableType>(0),
-        FavoriteProductionCount = 2,
-        EatMap = new Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry>(0),
-        FavoriteIdents = new Il2CppReferenceArray<IdentifiableType>(0),
-        AdditionalFoodIdents = new Il2CppReferenceArray<IdentifiableType>(0),
-        MajorFoodIdentifiableTypeGroups = new Il2CppReferenceArray<IdentifiableTypeGroup>(0),
-        BecomesOnTarrifyIdentifiableType = Get<IdentifiableType>("Tarr"),
-        EdiblePlortIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("EdiblePlortFoodGroup"),
-        // 0.6 - Unstable identifiables
-        StableResourceIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("StableResourcesGroup"),
-        UnstableResourceIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("UnstableResourcesGroup"),
-        UnstablePlort = Actors.GetPlort("UnstablePlort")
-    };
-
     public static SlimeDefinition GetSlime(string name)
     {
         foreach (IdentifiableType type in slimes.GetAllMembersArray())
@@ -1222,176 +1112,9 @@ public static class CottonSlimes
         return null;
     }
 
-    public static void SetSlimeColorSpecific(this SlimeDefinition slimeDef, Color32 top, Color32 middle, Color32 bottom,
-        Color32 special, int index, int index2, bool isSS, int structure)
-    {
-        Material mat = null;
-        if (isSS)
-        {
-            mat = slimeDef.AppearancesDynamic.ToArray()[index].Structures[structure].DefaultMaterials[index2];
-        }
-        else
-        {
-            mat = slimeDef.AppearancesDefault[index].Structures[structure].DefaultMaterials[index2];
-        }
-
-        mat.SetColor("_TopColor", top);
-        mat.SetColor("_MiddleColor", middle);
-        mat.SetColor("_BottomColor", bottom);
-        mat.SetColor("_SpecColor", special);
-    }
-
-    public static void SetSlimeColor(this SlimeDefinition slimeDef, Color32 top, Color32 middle, Color32 bottom)
-    {
-        for (int i = 0; i < slimeDef.AppearancesDefault[0].Structures.Count - 1; i++)
-        {
-            SlimeAppearanceStructure a = slimeDef.AppearancesDefault[0].Structures[i];
-            var mat = a.DefaultMaterials[0];
-            mat.SetColor("_TopColor", top);
-            mat.SetColor("_MiddleColor", middle);
-            mat.SetColor("_BottomColor", bottom);
-            mat.SetColor("_SpecColor", middle);
-        }
-    }
-
-    public static void SetTwinColor(this SlimeDefinition slimeDef, Color32 top, Color32 middle, Color32 bottom)
-    {
-        for (int i = 0; i < slimeDef.AppearancesDefault[0].Structures.Count - 1; i++)
-        {
-            SlimeAppearanceStructure a = slimeDef.AppearancesDefault[0].Structures[i];
-            var mat = a.DefaultMaterials[0];
-            mat.SetColor("_TwinTopColor", top);
-            mat.SetColor("_TwinMiddleColor", middle);
-            mat.SetColor("_TwinBottomColor", bottom);
-            mat.SetColor("_TwinSpecColor", middle);
-        }
-    }
-    public static void SetSloomberColor(this SlimeDefinition slimeDef, Color32 top, Color32 middle, Color32 bottom)
-    {
-        for (int i = 0; i < slimeDef.AppearancesDefault[0].Structures.Count - 1; i++)
-        {
-            SlimeAppearanceStructure a = slimeDef.AppearancesDefault[0].Structures[i];
-            var mat = a.DefaultMaterials[0];
-
-            mat.SetColor("_SloomberTopColor", top);
-            mat.SetColor("_SloomberMiddleColor", middle);
-            mat.SetColor("_SloomberBottomColor", bottom);
-        }
-    }
     
-    public static void SetTwinColorSpecific(this SlimeDefinition slimeDef, Color32 top, Color32 middle, Color32 bottom,
-        int index, int index2, bool isSS, int structure)
-    {
-        Material mat = null;
-        if (isSS == true)
-        {
-            mat = slimeDef.AppearancesDynamic.ToArray()[index].Structures[structure].DefaultMaterials[index2];
-        }
-        else
-        {
-            mat = slimeDef.AppearancesDefault[index].Structures[structure].DefaultMaterials[index2];
-        }
-
-        mat.SetColor("_TwinTopColor", top);
-        mat.SetColor("_TwinMiddleColor", middle);
-        mat.SetColor("_TwinBottomColor", bottom);
-    }
-
-    public static void SetSloomberColorSpecific(this SlimeDefinition slimeDef, Color32 top, Color32 middle, Color32 bottom,
-        int index, int index2, bool isSS, int structure)
-    {
-        Material mat = null;
-        if (isSS)
-        {
-            mat = slimeDef.AppearancesDynamic.ToArray()[index].Structures[structure].DefaultMaterials[index2];
-        }
-        else
-        {
-            mat = slimeDef.AppearancesDefault[index].Structures[structure].DefaultMaterials[index2];
-        }
-
-        mat.SetColor("_SloomberTopColor", top);
-        mat.SetColor("_SloomberMiddleColor", middle);
-        mat.SetColor("_SloomberBottomColor", bottom);
-    }
-
-    // Twin effect uses the shader keyword "_ENABLETWINEFFECT_ON"
-    public static void EnableTwinEffectSpecific(this SlimeDefinition slimeDef, int index, int index2, bool isSS, int structure)
-    {
-        Material mat;
-        if (isSS == true)
-        {
-            mat = slimeDef.AppearancesDynamic.ToArray()[index].Structures[structure].DefaultMaterials[index2];
-        }
-        else
-        {
-            mat = slimeDef.AppearancesDefault[index].Structures[structure].DefaultMaterials[index2];
-        }
-
-        mat.EnableKeyword("_ENABLETWINEFFECT_ON");
-    }
-
-    // Twin effect uses the shader keyword "_ENABLETWINEFFECT_ON"
-    public static void EnableTwinEffect(this SlimeDefinition slimeDef)
-    {
-        for (int i = 0; i < slimeDef.AppearancesDefault[0].Structures.Count - 1; i++)
-        {
-            SlimeAppearanceStructure a = slimeDef.AppearancesDefault[0].Structures[i];
-            var mat = a.DefaultMaterials[0];
-            
-            mat.EnableKeyword("_ENABLETWINEFFECT_ON");
-        }
-    }
-
-    // Sloomber effect uses the shader keyword "_BODYCOLORING_SLOOMBER"
-    public static void EnableSloomberEffect(this SlimeDefinition slimeDef)
-    {
-        for (int i = 0; i < slimeDef.AppearancesDefault[0].Structures.Count - 1; i++)
-        {
-            SlimeAppearanceStructure a = slimeDef.AppearancesDefault[0].Structures[i];
-            var mat = a.DefaultMaterials[0];
-            
-            mat.EnableKeyword("_BODYCOLORING_SLOOMBER");
-        }
-    }
-
-    public static void DisableTwinEffect(this SlimeDefinition slimeDef, int index, int index2, bool isSS, int structure)
-    {
-
-        Material mat;
-        if (isSS == true)
-        {
-            mat = slimeDef.AppearancesDynamic.ToArray()[index].Structures[structure].DefaultMaterials[index2];
-        }
-        else
-        {
-            mat = slimeDef.AppearancesDefault[index].Structures[structure].DefaultMaterials[index2];
-        }
-
-        mat.DisableKeyword("_ENABLETWINEFFECT_ON");
-    }
-
-    public static void SetSlimeMatTopColor(this Material mat, Color color) => mat.SetColor("_TopColor", color);
-    public static void SetSlimeMatMiddleColor(this Material mat, Color color) => mat.SetColor("_MiddleColor", color);
-
-    public static void SetSlimeMatBottomColor(this Material mat, Color color) => mat.SetColor("_BottomColor", color);
-
-    public static void SetSlimeMatColors(this Material material, Color32 Top, Color32 Middle, Color32 Bottom,
-        Color32 Specular)
-    {
-        material.SetColor("_TopColor", Top);
-        material.SetColor("_MiddleColor", Middle);
-        material.SetColor("_BottomColor", Bottom);
-        material.SetColor("_SpecColor", Specular);
-    }
-
-    public static void SetSlimeMatColors(this Material material, Color32 Top, Color32 Middle, Color32 Bottom)
-    {
-        material.SetColor("_TopColor", Top);
-        material.SetColor("_MiddleColor", Middle);
-        material.SetColor("_BottomColor", Bottom);
-    }
-
+    
+    
     public static SlimeDefinition GetBaseSlime(string name)
     {
         foreach (IdentifiableType type in baseSlimes.GetAllMembersArray())

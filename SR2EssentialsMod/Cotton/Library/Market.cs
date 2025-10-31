@@ -1,3 +1,4 @@
+using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using SR2E.Cotton.Enums;
 
@@ -23,8 +24,42 @@ public static partial class CottonLibrary
                 },
                 hideInMarket);
             marketData.Add(ident, new ModdedMarketData(marketSaturation, marketValue));
+            TryRefreshMarketData();
         }
 
+        internal static void TryRefreshMarketData(PlortEconomySettings settings = null)
+        {
+            try
+            {
+                if(settings==null) settings = Get<PlortEconomySettings>("PlortEconomy");
+                if (settings == null) return;
+                List<PlortValueConfiguration> entries = new List<PlortValueConfiguration>();
+                entries.AddRange(settings.PlortsTable.Plorts);
+                foreach (var entry in CottonLibrary.marketData)
+                {
+                    foreach (var existingEntry in settings.PlortsTable.Plorts)
+                    {
+                        if(existingEntry.Type.ReferenceId==entry.Key.ReferenceId)
+                        {
+                            entries.Remove(existingEntry);
+                            break;
+                        }
+                    }
+                    var defualtValues = new PlortValueConfiguration()
+                    {
+                        FullSaturation = entry.Value.saturation,
+                        Type = entry.Key,
+                        InitialValue = entry.Value.value
+                    };
+            
+                    entries.Add(defualtValues);
+                }
+                PlortValueConfigurationTable newTable = new PlortValueConfigurationTable();
+                newTable.Plorts = entries.ToArray();
+                settings.PlortsTable = newTable;
+            }
+            catch {}
+        }
         public static bool IsSellable(IdentifiableType ident)
         {
             bool returnBool = false;

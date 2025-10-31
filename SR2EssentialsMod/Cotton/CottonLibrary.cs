@@ -16,7 +16,10 @@ public static partial class CottonLibrary
             foreach (var action in pair.Value)
                 action();
     }
-    
+    internal static void OnSceneWasInitialized(int buildIndex, string sceneName)
+    {
+    }
+
     
     public static Dictionary<string, List<Action>> onSceneLoaded = new Dictionary<string, List<Action>>();
     

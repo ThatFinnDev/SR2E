@@ -37,7 +37,7 @@ internal class EmotionsCommand : SR2ECommand
             {
                 if (args.Length == 1)
                 {
-                    SendMessage(translation($"cmd.emotion.{args[0]}.show", slime.gameObject.GetComponent<Identifiable>().identType.GetName(), slime.Get(emotion)));
+                    SendMessage(translation($"cmd.emotions.{args[0]}.show", slime.gameObject.GetComponent<Identifiable>().identType.GetName(), slime.Get(emotion)));
                     return true;
                 }
                 if (args.Length == 2)
@@ -45,7 +45,7 @@ internal class EmotionsCommand : SR2ECommand
                     if (!TryParseFloat(args[1], out float newValue, 0,true)) return false;
                     if (newValue > 1) newValue = 1;
                     slime.Set(emotion, newValue);
-                    SendMessage(translation($"cmd.util.emotion.{args[0]}.edit", slime.gameObject.GetComponent<Identifiable>().identType.GetName(), newValue));
+                    SendMessage(translation($"cmd.emotions.{args[0]}.edit", slime.gameObject.GetComponent<Identifiable>().identType.GetName(), newValue));
                     return true;
                 }
 

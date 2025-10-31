@@ -12,30 +12,23 @@ public static class MarketPatch
     [HarmonyPrefix]
     public static void Prefix(MarketUI __instance)
     {
-        List<PlortEntry> marketPlortEntriesList = new List<PlortEntry>();
+        List<PlortEntry> plortEntries = new List<PlortEntry>(__instance._config._plorts);
+        foreach (var entry in __instance._config._plorts)
+            foreach (var type in CottonLibrary.removeMarketPlortEntries)
+            {
+                if (entry.IdentType.ReferenceId == type.ReferenceId)
+                {
+                    plortEntries.Remove(entry);
+                    break;
+                }
+            }
         foreach (var pair in CottonLibrary.marketPlortEntries)
             if (!pair.Value)
-                marketPlortEntriesList.Add(pair.Key);
-
-        __instance._config._plorts = (from x in __instance._config._plorts
-                             where !marketPlortEntriesList.Exists
-                                 ((y) => y == x)
-                             select x).ToArray();
-
-
-        try
-        {
-            __instance._config._plorts = (from x in __instance._config._plorts
-                                 where !CottonLibrary.removeMarketPlortEntries.Exists((IdentifiableType y) => y.name != x.IdentType.name)
-                                 select x).ToArray();
-        }
-        catch { }
-
-
-
-        __instance._config._plorts = __instance._config._plorts.ToArray().AddRangeToArray(marketPlortEntriesList.ToArray());
-        __instance._config._plorts = __instance._config._plorts.Take(34).ToArray();
-
+                plortEntries.Add(pair.Key);
+        
+        __instance._config._plorts = plortEntries.Take(34).ToArray();
+        
+        CottonLibrary.Market.TryRefreshMarketData();
     }   
     
     [HarmonyPriority(HarmonyLib.Priority.Last)]

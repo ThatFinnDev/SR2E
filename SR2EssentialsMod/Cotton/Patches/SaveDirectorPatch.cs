@@ -13,7 +13,6 @@ public static class SaveDirectorPatch
 {
     public static void Prefix(AutoSaveDirector __instance)
     {
-
         CottonLibrary.slimes = Get<IdentifiableTypeGroup>("SlimesGroup");
         CottonLibrary.baseSlimes = Get<IdentifiableTypeGroup>("BaseSlimeGroup");
         CottonLibrary.largos = Get<IdentifiableTypeGroup>("LargoGroup");
@@ -40,7 +39,6 @@ public static class SaveDirectorPatch
         //if (steamToy)
         //    INTERNAL_SetupLoadForIdent(steamToy.ReferenceId, steamToy);
         // add more platforms please
-
         foreach (SR2EExpansionV2 lib in SR2EEntryPoint.expansionsV2)
         {
             lib.SaveDirectorLoaded();

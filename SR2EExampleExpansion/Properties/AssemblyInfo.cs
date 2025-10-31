@@ -16,6 +16,7 @@ using SR2E.Expansion;
 [assembly: MelonInfo(typeof(SR2EExampleExpansion.ExpansionEntryPoint), SR2EExampleExpansion.BuildInfo.Name, SR2EExampleExpansion.BuildInfo.Version, SR2EExampleExpansion.BuildInfo.Author, SR2EExampleExpansion.BuildInfo.DownloadLink)]
 [assembly: MelonGame("MonomiPark", "SlimeRancher2")]
 [assembly: MelonColor(255, 35, 255, 35)]
+[assembly: MelonAdditionalDependencies("SR2E")]
 [assembly: AssemblyMetadata("co_authors",SR2EExampleExpansion.BuildInfo.CoAuthors)]
 [assembly: AssemblyMetadata("contributors",SR2EExampleExpansion.BuildInfo.Contributors)]
 [assembly: AssemblyMetadata("source_code",SR2EExampleExpansion.BuildInfo.SourceCode)]
