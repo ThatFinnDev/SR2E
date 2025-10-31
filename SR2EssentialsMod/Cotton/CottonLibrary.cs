@@ -75,6 +75,5 @@ public static partial class CottonLibrary
     
     internal static List<Action> createLargoActions = new List<Action>();
     
-    internal static List<string> largoCombos = new List<string>();
 
 }

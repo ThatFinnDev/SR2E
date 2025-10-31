@@ -9,20 +9,20 @@ public static partial class CottonLibrary
     public static class Pedia
     {
             public static IdentifiablePediaEntry CreatePediaEntryForSlime(SlimeDefinition slime, string persistID, LocalizedString intro, LocalizedString slimeology, LocalizedString risks, LocalizedString plort)
-    {
-        return CreateIdentPediaEntry(
-            slime,
-            persistID,
-            Get<IdentifiablePediaEntry>("Pink"),
-            intro,
-            PediaCategoryType.Slimes,
-            PediaDetail.Params(
-                PediaDetail.Create(0, slimeology, PediaDetailType.Slimeology),
-                PediaDetail.Create(1, risks, PediaDetailType.Risk),
-                PediaDetail.Create(2, plort, PediaDetailType.Plort)
-            )
-        );
-    }
+            {
+                return CreateIdentPediaEntry(
+                    slime,
+                    persistID,
+                    Get<IdentifiablePediaEntry>("Pink"),
+                    intro,
+                    PediaCategoryType.Slimes,
+                    PediaDetail.Params(
+                        PediaDetail.Create(0, slimeology, PediaDetailType.Slimeology),
+                        PediaDetail.Create(1, risks, PediaDetailType.Risk),
+                        PediaDetail.Create(2, plort, PediaDetailType.Plort)
+                    )
+                );
+            }
 
     private static Dictionary<PediaDetailType, PediaDetailSection> pediaDetails = new Dictionary<PediaDetailType, PediaDetailSection>();
 

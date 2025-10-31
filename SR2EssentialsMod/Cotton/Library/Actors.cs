@@ -249,22 +249,6 @@ public static partial class CottonLibrary
             obj.prefab = prefab;
         }
 
-        public static IdentifiableType CreatePlortType(string Name, Color32 VacColor, Sprite Icon, string RefID, float marketValue, float marketSaturation)
-        {
-            var plort = ScriptableObject.CreateInstance<IdentifiableType>();
-            Object.DontDestroyOnLoad(plort);
-            plort.hideFlags = HideFlags.HideAndDontSave;
-            plort.name = Name + "Plort";
-            plort.color = VacColor;
-            plort.icon = Icon;
-            plort.IsPlort = true;
-            if (marketValue > 0)
-                Market.MakeSellable(plort, new PrismMarketData(marketValue, marketSaturation));
-            plort.AddToGroup("PlortGroup");
-            //plort.AddToGroup("VaccableNonLiquids");
-            Saving.INTERNAL_SetupLoadForIdent(RefID, plort);
-            return plort;
-        }
 
         public static IdentifiableType CreateBlankType(string Name, Color32 VacColor, Sprite Icon, string RefID)
         {
