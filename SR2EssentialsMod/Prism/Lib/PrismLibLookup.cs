@@ -22,7 +22,7 @@ public static class PrismLibLookup
         new Dictionary<PrismNativeBaseSlime, string>()
         {
             { PrismNativeBaseSlime.Pink, "SlimeDefinition.Pink" },
-            { PrismNativeBaseSlime.Cotton, "SlimeDefinition.Cotton," },
+            { PrismNativeBaseSlime.Cotton, "SlimeDefinition.Cotton" },
             { PrismNativeBaseSlime.Phosphor, "SlimeDefinition.Phosphor" },
             { PrismNativeBaseSlime.Tabby, "SlimeDefinition.Tabby" },
             { PrismNativeBaseSlime.Angler, "SlimeDefinition.Angler" },

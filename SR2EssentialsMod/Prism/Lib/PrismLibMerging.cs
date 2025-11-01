@@ -49,13 +49,13 @@ public static class PrismLibMerging
         foreach (var comp in oldOne.GetComponents<MonoBehaviour>())
             components.TryAdd(comp.GetIl2CppType().Name,(comp,true));
         
-        if (oldTwo)
+        if (oldTwo!=null)
             foreach (var comp in oldTwo.GetComponents<MonoBehaviour>())
                 components.TryAdd(comp.GetIl2CppType().Name,(comp,true));
 
         foreach (var component in components)
             if (component.Value.Item2)
-                if (!component.Key.ContainsAny("AweTowardsLargos", "SlimeEyeComponents", "SlimeMouthComponents", "ColliderTotemLinkerHelper"))
+                if (!component.Key.ContainsAny("CrystalSlimeLaunch","AweTowardsLargos", "SlimeEyeComponents", "SlimeMouthComponents", "ColliderTotemLinkerHelper"))
                 {
                     if (!obj.GetComponent(component.Value.Item1.GetIl2CppType()))
                     {

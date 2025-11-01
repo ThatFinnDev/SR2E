@@ -20,4 +20,4 @@ using SR2E.Expansion;
 [assembly: AssemblyMetadata("contributors",VirtualSlime.BuildInfo.Contributors)]
 [assembly: AssemblyMetadata("source_code",VirtualSlime.BuildInfo.SourceCode)]
 [assembly: AssemblyMetadata("nexus",VirtualSlime.BuildInfo.Nexus)]
-[assembly: SR2EExpansion(VirtualSlime.BuildInfo.RequireLibrary)]
+[assembly: SR2EExpansion(VirtualSlime.BuildInfo.UsePrism)]

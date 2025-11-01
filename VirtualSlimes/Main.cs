@@ -22,7 +22,7 @@ public static class BuildInfo
     public const string DownloadLink = null; // Download Link for the Expansion.  (optional, set as null if none)
     public const string SourceCode = null; // Source Link for the Expansion.  (optional, set as null if none)
     public const string Nexus = null; // Nexus Link for the Expansion.  (optional, set as null if none)
-    public const bool RequireLibrary = true; // Enable if you use Cotton
+    public const bool UsePrism = true; // Enable if you use Prism
 }
 
 public class SlimeMain : SR2EExpansionV2
@@ -43,7 +43,7 @@ public class SlimeMain : SR2EExpansionV2
             EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortByte.png"),
             AddTranslation("Byte Plort", "l.bytePlort"));
         bytePlortCreator.moddedMarketData = new PrismMarketData(27f, 85f); //Controls the market values
-        bytePlortCreator.customBasePrefab = PrismNativePlort.TabbyPlort.GetPrismPlort().GetPrefab();
+        bytePlortCreator.customBasePrefab = PrismNativePlort.Tabby.GetPrismPlort().GetPrefab();
         bytePlortCreator.vacColor = vacColor_byte; // The color of the plort in the vac
         bytePlort = bytePlortCreator.CreatePlort();
         

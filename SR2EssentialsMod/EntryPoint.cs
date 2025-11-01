@@ -370,10 +370,14 @@ public class SR2EEntryPoint : MelonMod
         {
             if (fallBackFont == null)
             {
+                var settings = Get<TMP_Settings>("TMP Settings");
+                if (settings == null) return;
                 string tempPath = Path.Combine(TmpDataPath, "tmpFallbackFont.ttf");
                 File.WriteAllBytes(tempPath, EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.ttf"));
                 Font tempFont = new Font(tempPath);
                 fallBackFont = TMP_FontAsset.CreateFontAsset(tempFont);
+                //settings.m_fallbackFontAssets.Add(fallBackFont);, creates issues for some reason :(
+                settings.m_warningsDisabled = true;
             }
             foreach (var fontAsset in GetAll<TMP_FontAsset>())
             {

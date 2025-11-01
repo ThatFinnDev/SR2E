@@ -3,6 +3,7 @@ using System.Linq;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using Il2CppSystem.Linq;
 using SR2E.Menus;
 using Unity.Mathematics;
 
@@ -43,6 +44,7 @@ public static class MiscEUtil
     
     
     public static Il2CppArrayBase GetAllMembersArray(this IdentifiableTypeGroup group) => Il2CppSystem.Linq.Enumerable.ToArray(group.GetAllMembers());
+    public static List<IdentifiableType> GetAllMembersList(this IdentifiableTypeGroup group) => group.GetAllMembers().ToArray().ToList();
 
 
 

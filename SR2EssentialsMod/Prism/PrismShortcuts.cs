@@ -19,7 +19,7 @@ public static class PrismShortcuts
     public static PrismBaseSlime GetPrismBaseSlime(this PrismNativeBaseSlime nativeBaseSlime)
     {
         var refID = nativeBaseSlime.GetReferenceID();
-        foreach (var slime in CottonLibrary.baseSlimes._memberTypes)
+        foreach (var slime in CottonLibrary.baseSlimes.GetAllMembersList())
             try {
                 if (slime.ReferenceId == refID) return slime.TryCast<SlimeDefinition>().GetPrismBaseSlime();
             } catch { }
@@ -28,7 +28,7 @@ public static class PrismShortcuts
     public static PrismPlort GetPrismPlort(this PrismNativePlort nativePlort)
     {
         var refID = nativePlort.GetReferenceID();
-        foreach (var plort in CottonLibrary.plorts._memberTypes)
+        foreach (var plort in CottonLibrary.plorts.GetAllMembersList())
             try
             {
                 if (plort.ReferenceId == refID) return plort.GetPrismPlort();
