@@ -22,17 +22,3 @@ internal static class SaveFixerPushPedia
     
 }
 
-/*
-[HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGame))]
-internal static class Otherthingpatch
-{
-    internal static void Postfix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, GameV08 gameState, GameModel gameModel)
-    {
-        try {
-            MelonLogger.Msg(gameState.GameName);
-            MelonLogger.Msg(gameState.DisplayName);
-        }
-        catch (Exception e) { MelonLogger.Error(e); }
-    }
-
-}*/

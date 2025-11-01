@@ -1,9 +1,13 @@
+using SR2E.Prism.Enums;
+
 namespace SR2E.Prism.Data;
 
 public class PrismBaseSlime : PrismSlime
 {
-    //public bool _canLargofy = false;
-    //public bool _createAllLargos = false;
+    public static implicit operator PrismBaseSlime(PrismNativeBaseSlime nativeBaseSlime)
+    {
+        return nativeBaseSlime.GetPrismBaseSlime();
+    }
     internal PrismBaseSlime(SlimeDefinition slimeDefinition, bool isNative): base(slimeDefinition, isNative)
     {
         this._slimeDefinition = slimeDefinition;

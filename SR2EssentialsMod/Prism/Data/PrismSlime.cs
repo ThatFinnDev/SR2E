@@ -1,4 +1,5 @@
 using Il2CppSystem.Linq;
+using SR2E.Prism.Enums;
 using UnityEngine.Localization;
 
 namespace SR2E.Prism.Data;
@@ -9,6 +10,7 @@ public class PrismSlime
     {
         return prismSlime.GetSlimeDefinition();
     }
+    
     internal PrismSlime(SlimeDefinition slimeDefinition, bool isNative)
     {
         this._slimeDefinition = slimeDefinition;

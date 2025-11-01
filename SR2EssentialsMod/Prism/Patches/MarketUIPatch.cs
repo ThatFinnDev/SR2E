@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using SR2E.Cotton;
+using SR2E.Prism.Lib;
 using SR2E.Storage;
 
 namespace SR2E.Prism.Patches;
@@ -29,7 +30,7 @@ public static class MarketUIPatch
         
         __instance._config._plorts = plortEntries.Take(34).ToArray();
         
-        CottonLibrary.Market.TryRefreshMarketData();
+        PrismLibMarket.TryRefreshMarketData();
     }   
     
     [HarmonyPriority(HarmonyLib.Priority.Last)]

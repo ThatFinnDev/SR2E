@@ -166,7 +166,19 @@ public static class CottonSlimes
         group._memberTypes.Add(type);
         group.GetRuntimeObject()._memberTypes.Add(type);
     }
-
+    public static void AddToGroup(this IdentifiableTypeGroup group, string groupName)
+    {
+        var group2 = Get<IdentifiableTypeGroup>(groupName);
+        if (group2._memberGroups.Contains(group)) return;
+        group2._memberGroups.Add(group);
+        group2.GetRuntimeObject()._memberGroups.Add(group);
+    }
+    public static bool IsInImmediateGroup(this IdentifiableType type, string groupName)
+    {
+        var group = Get<IdentifiableTypeGroup>(groupName);
+        if (group == null) return false;
+        return group._memberTypes.Contains(type);
+    }
 
     public static void SwitchSlimeAppearances(this SlimeDefinition slimeOneDef, SlimeDefinition slimeTwoDef)
     {

@@ -152,6 +152,36 @@ public static class MiscEUtil
     }
 
     
+    public static List<T> ToList<T>(this HashSet<T> hashSet)
+    {
+        if (hashSet == null) return null;
+        var list = new List<T>(hashSet.Count);
+        foreach (T item in hashSet) list.Add(item);
+        return list;
+    }
+    
+    public static List<T> ToList<T>(this Il2CppSystem.Collections.Generic.HashSet<T> hashSet)
+    {
+        if (hashSet == null) return null;
+        var list = new List<T>(hashSet.Count);
+        foreach (T item in hashSet) list.Add(item);
+        return list;
+    }
+    public static HashSet<T> ToHashSet<T>(this List<T> list)
+    {
+        if (list == null) return null;
+        var hashSet = new HashSet<T>();
+        foreach (T item in list) hashSet.Add(item);
+        return hashSet;
+    }
+    public static Il2CppSystem.Collections.Generic.HashSet<T> ToIl2CppHashSet<T>(this List<T> list)
+    {
+        if (list == null) return null;
+        var hashSet = new Il2CppSystem.Collections.Generic.HashSet<T>();
+        foreach (T item in list) hashSet.Add(item);
+        return hashSet;
+    }
+    
     public static bool IsInsideRange(this int number, int rangeMin, int rangeMax) => number >= rangeMin && number <= rangeMax;
 
     public static bool ContainsAny(this string str, params string[] check) => check.Any(str.Contains);

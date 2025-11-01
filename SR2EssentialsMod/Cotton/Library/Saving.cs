@@ -63,17 +63,5 @@ public static partial class CottonLibrary
                     INTERNAL_SetupSaveForIdent(refresh.Key, refresh.Value);
             }
         }
-        internal static void RefreshIfNotFound(ISaveReferenceTranslation table, IdentifiableType ident)
-        {
-            try
-            {
-                table.GetPersistenceId(ident);
-            }
-            catch
-            {
-                foreach (var refresh in savedIdents)
-                    INTERNAL_SetupSaveForIdent(refresh.Key, refresh.Value);
-            }
-        }
     }
 }

@@ -1,6 +1,7 @@
 using Cotton;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppSystem.Linq;
 using SR2E.Cotton;
 using SR2E.Prism.Data;
@@ -17,21 +18,33 @@ public class PrismLargoCreator
     
     public PrismBaseSlime firstSlime;
     public PrismBaseSlime secondSlime;
-    public PrismLargoMergeSettings largoMergeSettings = new PrismLargoMergeSettings();
     
+    public PrismLargoMergeSettings largoMergeSettings = new PrismLargoMergeSettings();
     public string name => firstSlime._slimeDefinition.Name + secondSlime._slimeDefinition.Name;
     public string referenceID => "SlimeDefinition.Modded" + name;
 
     
     public LocalizedString customLocalized;
-    
-    
-    
     public GameObject customBasePrefab = null;
+    public bool disableMakeTheirPlortEdible = false;
 
-    
-    
+
+    public PrismLargoCreator(PrismNativeBaseSlime firstSlime, PrismNativeBaseSlime secondSlime)
+    {
+        this.firstSlime = firstSlime;
+        this.secondSlime = secondSlime;
+    }
+    public PrismLargoCreator(PrismNativeBaseSlime firstSlime, PrismBaseSlime secondSlime)
+    {
+        this.firstSlime = firstSlime;
+        this.secondSlime = secondSlime;
+    }
     public PrismLargoCreator(PrismBaseSlime firstSlime, PrismBaseSlime secondSlime)
+    {
+        this.firstSlime = firstSlime;
+        this.secondSlime = secondSlime;
+    }
+    public PrismLargoCreator(PrismBaseSlime firstSlime, PrismNativeBaseSlime secondSlime)
     {
         this.firstSlime = firstSlime;
         this.secondSlime = secondSlime;
@@ -51,9 +64,6 @@ public class PrismLargoCreator
         }
         return true;
     }
-
-    
-    
     
     
     
@@ -64,14 +74,21 @@ public class PrismLargoCreator
         if (!IsValid()) return null;
         if (_createdLargo != null) return _createdLargo;
 
-        if (CottonSlimes.DoesLargoComboExist(firstSlime, secondSlime)) return null;
-        
 
+        if (gameContext.SlimeDefinitions.GetLargoByBaseSlimes(firstSlime, secondSlime) != null) return null;
+        if (gameContext.SlimeDefinitions.GetLargoByBaseSlimes(secondSlime, firstSlime) != null) return null;
+        if (CottonSlimes.DoesLargoComboExist(firstSlime, secondSlime)) return null;
+
+        if (largoMergeSettings == null) largoMergeSettings = new PrismLargoMergeSettings();
         var firstSlimeDef = firstSlime.GetSlimeDefinition();
         var secondSlimeDef = secondSlime.GetSlimeDefinition();
+
         if (firstSlimeDef.IsLargo || secondSlimeDef.IsLargo)
             return null;
 
+        firstSlimeDef.CanLargofy = true;
+        secondSlimeDef.CanLargofy = true;
+        
         SlimeDefinition baseLargo = CottonSlimes.GetLargo("PinkRock");
         
         SlimeDefinition largoDef = Object.Instantiate(baseLargo);
@@ -81,14 +98,12 @@ public class PrismLargoCreator
         };
         largoDef.SlimeModules = new[]
         {
-            Get<GameObject>("moduleSlime" + firstSlimeDef.name), Get<GameObject>("moduleSlime" + secondSlimeDef.name)
+            firstSlimeDef.SlimeModules[0],secondSlimeDef.SlimeModules[0]
         };
 
         largoDef._pediaPersistenceSuffix = "modded"+firstSlimeDef.name.ToLower() + "_" + secondSlimeDef.name.ToLower() + "_largo";
 
         largoDef.referenceId = referenceID;
-
-        MelonLogger.Error(largoDef.referenceId);
 
         if (customLocalized != null)
             largoDef.localizedName = customLocalized;
@@ -146,38 +161,87 @@ public class PrismLargoCreator
                     break;
             }
         }
-        largoDef.Diet.RefreshEatMap(CottonLibrary.slimeDefinitions, largoDef);
 
         gameContext.SlimeDefinitions.Slimes = gameContext.SlimeDefinitions.Slimes.AddToNew(largoDef);
         gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(largoDef, largoDef);
         CottonLibrary.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[0]);
         CottonLibrary.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[0]);
 
-        largoDef.AddToGroup("LargoGroup");
         largoDef.AddToGroup("SlimesGroup");
+        largoDef.AddToGroup("IdentifiableTypesGroup");
         CottonLibrary.Saving.INTERNAL_SetupLoadForIdent(largoDef.referenceId, largoDef);
 
-        firstSlime.RefreshEatMap();
-        secondSlime.RefreshEatMap();
-
-
+        
         gameContext.SlimeDefinitions.RefreshDefinitions();
         gameContext.SlimeDefinitions.RefreshIndexes();
 
+
+
+        IdentifiableType firstPlort = null;
+        IdentifiableType secondPlort = null; 
+        foreach (var pair in gameContext.SlimeDefinitions._largoDefinitionByBasePlorts)
+        {
+            if(pair.value!=largoDef) continue;
+            firstPlort = pair.Key.Plort1;
+            secondPlort = pair.Key.Plort2;
+            break;
+        }
+        if(!disableMakeTheirPlortEdible&&firstPlort!=null&&secondPlort!=null)
+        {
+            firstSlime.AddEatmapToSlime(PrismLibDiet.CreateEatmapEntry(SlimeEmotions.Emotion.AGITATION, 0.5f, null, secondPlort, largoDef));
+            secondSlime.AddEatmapToSlime(PrismLibDiet.CreateEatmapEntry(SlimeEmotions.Emotion.AGITATION, 0.5f, null, firstPlort, largoDef));
+            firstSlime.RefreshEatMap();
+            secondSlime.RefreshEatMap();
+        }
+
+
+
         if(largoMergeSettings.mergeComponents)
             PrismLibMerging.MergeComponents(largoDef.prefab, firstSlimeDef.prefab, secondSlimeDef.prefab);
+
         
+        if (firstSlime.GetIsNative())
+            largoDef.AddToGroup(firstSlimeDef.Name+"LargoGroup");
+        else
+        {
+            if (CottonLibrary.customGroups.ContainsKey(firstSlimeDef.Name + "ModdedLargoGroup"))
+                largoDef.AddToGroup(firstSlimeDef.Name + "ModdedLargoGroup");
+            else
+            {
+                var group = CottonLibrary.Actors.CreateIdentifiableGroup(null, firstSlimeDef.Name + "ModdedLargoGroup",
+                    new List<IdentifiableType>() { largoDef }, null, false);
+                group.AddToGroup("EdibleSlimeGroup");
+                if(firstSlimeDef.IsInImmediateGroup("SlimesSinkInShallowWaterGroup")&&secondSlimeDef.IsInImmediateGroup("SlimesSinkInShallowWaterGroup"))
+                    group.AddToGroup("SlimesSinkInShallowWaterGroup");
+            }
+        }
         
+        if (secondSlime.GetIsNative())
+            largoDef.AddToGroup(secondSlimeDef.Name+"LargoGroup");
+        else
+        {
+            if (CottonLibrary.customGroups.ContainsKey(secondSlimeDef.Name + "ModdedLargoGroup"))
+                largoDef.AddToGroup(secondSlimeDef.Name + "ModdedLargoGroup");
+            else
+            {
+                var group = CottonLibrary.Actors.CreateIdentifiableGroup(null, secondSlimeDef.Name + "ModdedLargoGroup",
+                    new List<IdentifiableType>() { largoDef }, null, false);
+                group.AddToGroup("EdibleSlimeGroup");
+                if(firstSlimeDef.IsInImmediateGroup("SlimesSinkInShallowWaterGroup")&&secondSlimeDef.IsInImmediateGroup("SlimesSinkInShallowWaterGroup"))
+                    group.AddToGroup("SlimesSinkInShallowWaterGroup");
+            }
+        }
         
         
         var prismLargo = new PrismLargo(largoDef, false);
         PrismLibDiet.RefreshEatMap(prismLargo);
         
         //if(plort!=null)
-         //   PrismLibDiet.AddEatProduction(prismLargo, plort);
+          //  PrismLibDiet.AddEatProduction(prismLargo, plort);
         
         _createdLargo = prismLargo;
         PrismShortcuts._prismLargoBases.Add(_createdLargo,(firstSlime,secondSlime));
         PrismShortcuts._prismLargos.Add(largoDef,_createdLargo);
         return _createdLargo;
+    }   
 }

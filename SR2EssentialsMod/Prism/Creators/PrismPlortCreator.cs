@@ -1,9 +1,8 @@
 using Cotton;
-using Il2CppMono.Security.X509;
-using Il2CppSony.NP;
 using SR2E.Cotton;
 using SR2E.Prism.Data;
 using SR2E.Prism.Enums;
+using SR2E.Prism.Lib;
 using UnityEngine.Localization;
 
 namespace SR2E.Prism.Creators;
@@ -63,12 +62,15 @@ public class PrismPlortCreator
         plort._pediaPersistenceSuffix = "modded"+name.ToLower()+"_plort";
         
         if(moddedMarketData.HasValue)
-            CottonLibrary.Market.MakeSellable(plort, moddedMarketData.Value);
+            PrismLibMarket.MakeSellable(plort, moddedMarketData.Value);
         plort.AddToGroup("PlortGroup");
+        plort.AddToGroup("EdiblePlortFoodGroup");
+        plort.AddToGroup("PlortGroupDroneExplorer");
+        plort.AddToGroup("IdentifiableTypesGroup");
         //plort.AddToGroup("VaccableNonLiquids");
         
         var basePrefab = customBasePrefab;
-        if (basePrefab == null) basePrefab = CottonLibrary.Actors.GetPlort("PinkPlort").prefab;
+        if (basePrefab == null) basePrefab = PrismNativePlort.Pink.GetPrismPlort().GetPrefab();
         plort.prefab = CreatePrefab("plort"+name, basePrefab);
         plort.prefab.GetComponent<IdentifiableActor>().identType = plort;
         
@@ -82,3 +84,5 @@ public class PrismPlortCreator
         return _createdPlort;
     }
 }
+
+

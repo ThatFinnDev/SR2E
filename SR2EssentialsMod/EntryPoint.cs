@@ -102,7 +102,7 @@ public class SR2EEntryPoint : MelonMod
     static bool IsLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
     private static bool _usePrism = false;
-    internal static bool usePrism => usePrism;
+    internal static bool usePrism => _usePrism;
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
     internal static bool isSaveDirectorLoaded = false;
     internal static string _mlVersion = "undefined";

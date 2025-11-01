@@ -31,8 +31,9 @@ public class SlimeMain : SR2EExpansionV2
     public static Color32 topColor_byte = new Color32(168, 52, 235, 255);
     public static Color32 middleColor_byte = new Color32(145, 23, 207, 255);
     public static Color32 bottomColor_byte = new Color32(18, 1, 48, 255);
-    public static PrismSlime byteSlime;
+    public static PrismBaseSlime byteSlime;
     public static PrismPlort bytePlort;
+    public static PrismLargo bytePinkLargo;
 
     public override void OnPrismCreateAdditions()
     {
@@ -42,7 +43,7 @@ public class SlimeMain : SR2EExpansionV2
             EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortByte.png"),
             AddTranslation("Byte Plort", "l.bytePlort"));
         bytePlortCreator.moddedMarketData = new PrismMarketData(27f, 85f); //Controls the market values
-        bytePlortCreator.customBasePrefab = Get<GameObject>("plortTabby");
+        bytePlortCreator.customBasePrefab = PrismNativePlort.TabbyPlort.GetPrismPlort().GetPrefab();
         bytePlortCreator.vacColor = vacColor_byte; // The color of the plort in the vac
         bytePlort = bytePlortCreator.CreatePlort();
         
@@ -57,13 +58,13 @@ public class SlimeMain : SR2EExpansionV2
             "Byte",
             EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimeByte.png"),
             AddTranslation("Byte Slime", "l.byteSlime"));
-        byteSlimeCreator.vaccable = true; // Controls whether a slime is vaccable
+        byteSlimeCreator.disableVaccable = false; // Controls whether a slime is vaccable
         byteSlimeCreator.plort = bytePlort; // The plort of the slime, can either be an IdentifiableType or PrismPlort
         byteSlimeCreator.vacColor = vacColor_byte; // The color of the slime in the vac and its splat color
-        byteSlimeCreator.canLargofy = false; // Can this slime have largo forms
-        byteSlimeCreator.createAllLargos = false; // Automatically create all largos, requires canLargofy
-        byteSlimeCreator.customBaseAppearance = Get<SlimeAppearance>("CottonDefault"); // If not set, Pink is default, it will duplicate it
-        byteSlimeCreator.customBasePrefab = Get<GameObject>("slimeCotton"); // If not set, Pink is default, it will duplicate it
+        byteSlimeCreator.canLargofy = true; // Can this slime have largo forms, used for createAllLargos, gets overwritten if you create one manually
+        byteSlimeCreator.createAllLargos = true; // Automatically create all largos, requires canLargofy on both slimes
+        byteSlimeCreator.customBaseAppearance = PrismNativeBaseSlime.Cotton.GetPrismBaseSlime().GetSlimeAppearance(); // If not set, Pink is default, it will duplicate it
+        byteSlimeCreator.customBasePrefab = PrismNativeBaseSlime.Cotton.GetPrismBaseSlime().GetPrefab();; // If not set, Pink is default, it will duplicate it
         //if(!byteSlimeCreator.IsValid()) DoStuff(); // Optionally check if valid
         byteSlime = byteSlimeCreator.CreateSlime();
         
@@ -76,7 +77,13 @@ public class SlimeMain : SR2EExpansionV2
         //Some food management
         byteSlime.AddFoodGroup(CottonLibrary.fruits); //Adds what the slime can eat
         byteSlime.RefreshEatMap(); //Refreshes everything
-        
+
+        //Create largo manually
+        //var bytePinkLargoCreator = new PrismLargoCreator(byteSlime, PrismNativeBaseSlime.Pink);
+        //bytePinkLargoCreator.largoMergeSettings = new PrismLargoMergeSettings();
+        //bytePinkLargoCreator.disableMakeTheirPlortEdible = false; // Controls whether a base slime can eat a plort and become a largo
+        //bytePinkLargo = bytePinkLargoCreator.CreateLargo();
+
     }
 
 

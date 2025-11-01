@@ -1,3 +1,4 @@
+using SR2E.Prism.Enums;
 using UnityEngine.Localization;
 
 namespace SR2E.Prism.Data;
@@ -9,6 +10,10 @@ public class PrismPlort
         return prismPlort.GetIdentifiableType();
     }
     
+    public static implicit operator PrismPlort(PrismNativePlort nativePlort)
+    {
+        return nativePlort.GetPrismPlort();
+    }
     internal IdentifiableType _identifiableType;
     private bool _isNative;
     public IdentifiableType GetIdentifiableType() => _identifiableType;

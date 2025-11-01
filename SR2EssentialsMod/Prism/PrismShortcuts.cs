@@ -1,4 +1,9 @@
+using Il2CppSystem.Linq;
+using SR2E.Cotton;
+using SR2E.Prism.Creators;
 using SR2E.Prism.Data;
+using SR2E.Prism.Enums;
+using SR2E.Prism.Lib;
 using SR2E.Storage;
 
 namespace SR2E.Prism;
@@ -10,8 +15,26 @@ public static class PrismShortcuts
 
     internal static TripleDictionary<PrismLargo, PrismBaseSlime, PrismBaseSlime> _prismLargoBases = new TripleDictionary<PrismLargo, PrismBaseSlime, PrismBaseSlime>();
     internal static Dictionary<IdentifiableType, PrismPlort> _prismPlorts = new Dictionary<IdentifiableType, PrismPlort>();
-    
-    
+
+    public static PrismBaseSlime GetPrismBaseSlime(this PrismNativeBaseSlime nativeBaseSlime)
+    {
+        var refID = nativeBaseSlime.GetReferenceID();
+        foreach (var slime in CottonLibrary.baseSlimes._memberTypes)
+            try {
+                if (slime.ReferenceId == refID) return slime.TryCast<SlimeDefinition>().GetPrismBaseSlime();
+            } catch { }
+        return null;
+    }
+    public static PrismPlort GetPrismPlort(this PrismNativePlort nativePlort)
+    {
+        var refID = nativePlort.GetReferenceID();
+        foreach (var plort in CottonLibrary.plorts._memberTypes)
+            try
+            {
+                if (plort.ReferenceId == refID) return plort.GetPrismPlort();
+            } catch { }
+        return null;
+    }
     public static PrismBaseSlime GetPrismBaseSlime(this SlimeDefinition customOrNativeSlime)
     {
         if (customOrNativeSlime == null) return null;
@@ -48,15 +71,15 @@ public static class PrismShortcuts
         return newBaseSlime;
         
     }
+
     
-    
-    public static PrismPlort GetPrismPlort(this IdentifiableType customOrNativeSlime)
+    public static PrismPlort GetPrismPlort(this IdentifiableType customOrNativePlort)
     {
-        if (customOrNativeSlime == null) return null;
-        if (customOrNativeSlime.IsPlort) return null;
-        if (_prismPlorts.ContainsKey(customOrNativeSlime)) return _prismPlorts[customOrNativeSlime];
-        var newSlime = new PrismPlort(customOrNativeSlime, true);
-        _prismPlorts.Add(customOrNativeSlime, newSlime);
-        return newSlime;
+        if (customOrNativePlort == null) return null;
+        if (!customOrNativePlort.IsPlort) return null;
+        if (_prismPlorts.ContainsKey(customOrNativePlort)) return _prismPlorts[customOrNativePlort];
+        var newPlort = new PrismPlort(customOrNativePlort, true);
+        _prismPlorts.Add(customOrNativePlort, newPlort);
+        return newPlort;
     }
 }

@@ -1,3 +1,5 @@
+using Il2CppMonomiPark.SlimeRancher;
+using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using SR2E.Cotton;
 using SR2E.Storage;
@@ -7,7 +9,7 @@ using Unlocks = Il2CppSystem.Collections.Generic.Dictionary<int, Il2CppSystem.Co
 namespace SR2E.Prism.Patches;
 
 /*
-[LibraryPatch()]
+[PrismPatch()]
 [HarmonyPatch(typeof(AppearancesModel),nameof(AppearancesModel.Pull))]
 public class AppearancesSaveFix
 {
@@ -15,6 +17,7 @@ public class AppearancesSaveFix
     {
         try
         {
+            var translation = lookups.toNonIVariant();
             __result = new AppearancesV01();
 
             Selections selections = new Selections();
@@ -22,8 +25,8 @@ public class AppearancesSaveFix
 
             foreach (var selection in __instance.AppearanceSelections._selections)
             {
-                CottonLibrary.Saving.RefreshIfNotFound(lookups,selection.Key);
-                selections.Add(gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._reverseIndex[selection.key.ReferenceId], selection.value.SaveSet);
+                CottonLibrary.Saving.RefreshIfNotFound(translation,selection.Key);
+                selections.Add(translation._identifiableTypeToPersistenceId._reverseIndex[selection.key.ReferenceId], selection.value.SaveSet);
             }
 
             foreach (var unlock in __instance.AppearanceSelections._unlocks)
@@ -35,18 +38,19 @@ public class AppearancesSaveFix
                     list.Add(app.SaveSet);
                 }
 
-                unlocks.Add(gameContext.AutoSaveDirector._saveReferenceTranslation._identifiableTypeToPersistenceId._reverseIndex[unlock.key.ReferenceId], list);
+                unlocks.Add(translation._identifiableTypeToPersistenceId._reverseIndex[unlock.key.ReferenceId], list);
             }
 
             __result.Unlocks = unlocks;
             __result.Selections = selections;
             return false;
         }
-        catch {}
+        catch (Exception e){MelonLogger.Error(e);}
 
         return true;
     }
-}
+}*/
+/*
 [HarmonyPatch(typeof(SavedGame), nameof(SavedGame.BuildActorData))]
 public class CustomActorSaveFix
 {

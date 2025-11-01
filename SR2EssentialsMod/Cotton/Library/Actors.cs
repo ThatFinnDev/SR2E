@@ -350,16 +350,19 @@ public static partial class CottonLibrary
             var group = ScriptableObject.CreateInstance<IdentifiableTypeGroup>();
 
             group._memberTypes = new Il2CppSystem.Collections.Generic.List<IdentifiableType>();
-            foreach (var type in types)
-                group._memberTypes.Add(type);
+            if(types!=null)
+                foreach (var type in types)
+                    group._memberTypes.Add(type);
 
             group._memberGroups = new Il2CppSystem.Collections.Generic.List<IdentifiableTypeGroup>();
-            foreach (var subGroup in subGroups)
-                group._memberGroups.Add(subGroup);
+            if(subGroups!=null)
+                foreach (var subGroup in subGroups)
+                    group._memberGroups.Add(subGroup);
 
             group._isFood = isFood;
 
             group._localizedName = localizedName;
+            if (group._localizedName == null) AddTranslation("empty", "l.group_" + codeName);
 
             group.name = codeName;
 
@@ -367,7 +370,8 @@ public static partial class CottonLibrary
 
             group._runtimeObject = new IdentifiableTypeGroupRuntimeObject(group);
 
-            customGroups.Add(group);
+            customGroups.Add(codeName,group);
+            Get<IdentifiableTypeGroupList>("All Type Groups List").items.Add(group);
             GameContext.Instance.LookupDirector.RegisterIdentifiableTypeGroup(group);
             if(!gameContext.LookupDirector._allIdentifiableTypeGroups.items.Contains(group))
                 gameContext.LookupDirector._allIdentifiableTypeGroups.items.Add(group);
