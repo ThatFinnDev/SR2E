@@ -113,7 +113,7 @@ public static class SR2ELanguageManger
     
     
     
-    public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
+    public static LocalizedString AddTranslation(string localized, string key = null, string table = "Actor")
     {
         if (!InjectTranslations.HasFlag())
         { 
@@ -124,6 +124,19 @@ public static class SR2ELanguageManger
 
 
         StringTableEntry existing = null;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            while (true)
+            {
+                key = "r."+MiscEUtil.GetRandomString(20);
+                StringTableEntry curr = null;
+                try
+                {
+                    curr = table2.GetEntry(key);
+                } catch { }
+                if (curr == null) break;
+            }
+        }
         try { existing = table2.GetEntry(key); } catch { }
         if (existing != null) return new LocalizedString(table2.SharedData.TableCollectionName, existing.SharedEntry.Id);
         System.Collections.Generic.Dictionary<string, string> dictionary;
@@ -138,7 +151,7 @@ public static class SR2ELanguageManger
         StringTableEntry stringTableEntry = table2.AddEntry(key, localized);
         return new LocalizedString(table2.SharedData.TableCollectionName, stringTableEntry.SharedEntry.Id);
         }
-    public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor")
+    public static LocalizedString AddTranslationFromSR2E(string sr2eTranslationID, string key = null, string table = "Actor")
     {
         LocalizedString localizedString = AddTranslation(translation(sr2eTranslationID), key, table);
             
@@ -148,7 +161,7 @@ public static class SR2ELanguageManger
         return localizedString;
     }
         
-    public static void SetTranslation(string localized, string key = "l.SR2ETest", string table = "Actor")
+    public static void SetTranslation(string localized, string key, string table)
     {
         if (!InjectTranslations.HasFlag()) return;
             
@@ -156,7 +169,7 @@ public static class SR2ELanguageManger
             
         table2.GetEntry(key).Value = localized;
     }
-    public static void SetTranslationFromSR2E(string sr2eTranslationID, string key = "l.SR2ETest", string table = "Actor") => SetTranslation(translation(sr2eTranslationID), key, table);
+    public static void SetTranslationFromSR2E(string sr2eTranslationID, string key, string table) => SetTranslation(translation(sr2eTranslationID), key, table);
         
     
     

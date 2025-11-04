@@ -161,7 +161,7 @@ public static class LookupEUtil
             {
                 if (list.Count > maxEntries) break;
                 if (type == null) continue;
-                if (type.ReferenceId.ToUpper().Contains("Gordo")) continue;
+                if (type.ReferenceId.ToUpper().Contains("GORDO")) continue;
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
                 var name = type.GetCompactName();
                 if (name.StartsWith("!")) continue;
@@ -177,7 +177,7 @@ public static class LookupEUtil
         {
             if (list.Count > maxEntries) break;
             if (type == null) continue;
-            if (type.ReferenceId.ToUpper().Contains("Gordo")) continue;
+            if (type.ReferenceId.ToUpper().Contains("GORDO")) continue;
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
@@ -191,7 +191,7 @@ public static class LookupEUtil
     /// <summary>
     /// Returns a List<String> of GetCompactName() of filtered IdentifiableTypes
     /// This includes Slimes, Vaccables, etc.
-    /// The IdentifiableType, Gadgets Gordos "none", "player" have been filtered out
+    /// The IdentifiableType, Gadgets, Gordos "none", "player" have been filtered out
     /// This was primarily made for commands that can't deal with Gadgets
     /// </summary>
     /// <param name="partial">The partial string</param>
@@ -212,7 +212,7 @@ public static class LookupEUtil
             {
                 if (list.Count > maxEntries) break;
                 if (type == null) continue;
-                if (type.ReferenceId.ToUpper().Contains("Gordo")) continue;
+                if (type.ReferenceId.ToUpper().Contains("GORDO")) continue;
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
                 if (type.isGadget()) continue;
                 var name = type.GetCompactName();
@@ -229,7 +229,7 @@ public static class LookupEUtil
         {
             if (list.Count > maxEntries) break;
             if (type == null) continue;
-            if (type.ReferenceId.ToUpper().Contains("Gordo")) continue;
+            if (type.ReferenceId.ToUpper().Contains("GORDO")) continue;
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             if (type.isGadget()) continue;
             var name = type.GetCompactName();
@@ -261,7 +261,6 @@ public static class LookupEUtil
             {
                 if (list.Count > maxEntries) break;
                 if (type == null) continue;
-                if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
                 var name = type.GetCompactName();
                 if (name.StartsWith("!")) continue;
                 list.Add(name);
@@ -276,7 +275,6 @@ public static class LookupEUtil
         {
             if (list.Count > maxEntries) break;
             if (type == null) continue;
-            if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
             if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))

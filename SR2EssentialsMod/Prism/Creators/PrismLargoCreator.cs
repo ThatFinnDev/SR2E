@@ -5,7 +5,6 @@ using Il2CppMonomiPark.SlimeRancher.Slime;
 using Il2CppSystem.Linq;
 using SR2E.Cotton;
 using SR2E.Prism.Data;
-using SR2E.Prism.Enums;
 using SR2E.Prism.Lib;
 using UnityEngine.Localization;
 

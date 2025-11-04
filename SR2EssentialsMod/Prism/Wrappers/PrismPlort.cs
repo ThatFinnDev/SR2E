@@ -1,4 +1,3 @@
-using SR2E.Prism.Enums;
 using UnityEngine.Localization;
 
 namespace SR2E.Prism.Data;

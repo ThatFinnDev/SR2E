@@ -1,6 +1,6 @@
-namespace SR2E.Prism.Enums;
+namespace SR2E.Prism.Data;
 
-public enum PrismNativeBaseSlime
+public enum PrismNativePlort
 {
     Pink = 0,
     Cotton = 10,
@@ -26,7 +26,5 @@ public enum PrismNativeBaseSlime
     Shadow = 210,
     Prisma = 220,
     Hyper = 230,
-    Gold = 240,
-    Lucky = 250, 
-    Tarr = 260
+    Gold = 240
 }

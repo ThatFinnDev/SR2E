@@ -5,7 +5,6 @@ using SR2E.Prism;
 using SR2E.Prism.Creators;
 using SR2E.Prism.Lib;
 using SR2E.Prism.Data;
-using SR2E.Prism.Enums;
 using Object = UnityEngine.Object;
 
 namespace VirtualSlime;
@@ -34,6 +33,7 @@ public class SlimeMain : SR2EExpansionV2
     public static PrismBaseSlime byteSlime;
     public static PrismPlort bytePlort;
     public static PrismLargo bytePinkLargo;
+    public static PrismIdentifiablePediaEntry bytePedia;
 
     public override void OnPrismCreateAdditions()
     {
@@ -78,6 +78,27 @@ public class SlimeMain : SR2EExpansionV2
         byteSlime.AddFoodGroup(CottonLibrary.fruits); //Adds what the slime can eat
         byteSlime.RefreshEatMap(); //Refreshes everything
 
+        
+        //Create Pedia entry
+        var bytePediaCreator = new PrismIdentifiablePediaEntryCreator(
+            byteSlime, PrismPediaCategoryType.Slimes,
+            AddTranslation("Some intro", "l.byte_pedia_intro"));
+        bytePediaCreator.factSet = PrismPediaFactSetType.Slime; //What set of facts should be displayed
+        bytePediaCreator.details = //Create details, you can add absolutely anything you want
+            PrismPediaDetail.From(
+                PrismPediaDetail.Create(PrismPediaDetailType.Slimeology,AddTranslation("Some Slimeology", "l.byte_pedia_slimeology")),
+                PrismPediaDetail.Create(PrismPediaDetailType.RancherRisks,AddTranslation("Some RancherRisks", "l.byte_pedia_rancherrisks")),
+                PrismPediaDetail.Create(PrismPediaDetailType.Plortonomics,AddTranslation("Some Plortonomics", "l.byte_pedia_plortonomics"))
+            );
+        bytePediaCreator.additionalFacts = PrismPediaAdditionalFact.From(
+            PrismPediaAdditionalFact.Create(
+            AddTranslation("Virtual"), 
+            AddTranslation("Yes"), 
+            EmbeddedResourceEUtil.LoadSprite("Assets.icon.png"))
+            );
+        bytePedia = bytePediaCreator.CreateIdentifiablePediaEntry();
+        
+        
         //Create largo manually
         //var bytePinkLargoCreator = new PrismLargoCreator(byteSlime, PrismNativeBaseSlime.Pink);
         //bytePinkLargoCreator.largoMergeSettings = new PrismLargoMergeSettings();

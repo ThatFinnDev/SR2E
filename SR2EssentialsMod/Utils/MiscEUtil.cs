@@ -36,6 +36,17 @@ public static class MiscEUtil
         { Branch.Developer, "dev" },
     };
     
+    private const string AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static readonly int AllowedCharCount = AllowedChars.Length;
+    internal static string GetRandomString(int length)
+    {
+        Span<char> chars = stackalloc char[length];
+        var random = System.Random.Shared;
+        for (int i = 0; i < length; i++)
+            chars[i] = AllowedChars[random.Next(AllowedCharCount)];
+        return new string(chars);
+    }
+    
     
     public static void AddNullAction(this MelonPreferences_Entry entry) => SR2EModMenu.entriesWithActions.Add(entry, null);
     public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => SR2EModMenu.entriesWithActions.Add(entry, action);
@@ -93,7 +104,46 @@ public static class MiscEUtil
         array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
         return array;
     }
+    public static Il2CppReferenceArray<T> ReplaceToNew<T>(this Il2CppReferenceArray<T> array, T obj, int index) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array)
+        {
+            list.Add(item);
+        }
 
+        list.RemoveAt(index);
+        list.Insert(index,obj);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
+    public static Il2CppReferenceArray<T> RemoveAtToNew<T>(this Il2CppReferenceArray<T> array, int index) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array)
+        {
+            list.Add(item);
+        }
+
+        list.RemoveAt(index);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
+    public static Il2CppReferenceArray<T> InsertToNew<T>(this Il2CppReferenceArray<T> array, T obj, int index) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array)
+        {
+            list.Add(item);
+        }
+
+        list.Insert(index,obj);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
     public static Il2CppReferenceArray<T> AddRangeToNew<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();

@@ -1,5 +1,3 @@
-using SR2E.Prism.Enums;
-
 namespace SR2E.Prism.Data;
 
 public class PrismLargoMergeSettings

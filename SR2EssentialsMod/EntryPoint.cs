@@ -155,13 +155,13 @@ public class SR2EEntryPoint : MelonMod
         var old_entries = new string[] {
             "noclipFlySpeed","noclipFlySprintSpeed","experimentalStuff","skipEngagementPrompt","devMode","showUnityErrors",
             "debugLogging","consoleUsesSR2Font","consoleUsesSR2Style","doesConsoleSync","mLLogToConsole","SR2ELogToMLLog","fixSaves",
-            "quickStart","enableCheatMenuButton"
+            "quickStart","enableCheatMenuButton", "useExperimentalLibrary"
         };
         foreach (var entry in old_entries)
             prefs.DeleteEntry(entry);
         
         if(AllowAutoUpdate.HasFlag()) if (!prefs.HasEntry("autoUpdate")) prefs.CreateEntry("autoUpdate", (bool)false, "Update SR2E automatically");
-        if(AllowExperimentalLibrary.HasFlag()) if (!prefs.HasEntry("useExperimentalLibrary")) prefs.CreateEntry("useExperimentalLibrary", (bool)false, "Force enable experimental library", "It's automatically enabled if expansions need it. This will just force it.",false);
+        if(DevMode.HasFlag()) if(AllowPrism.HasFlag()) if (!prefs.HasEntry("forceUsePrism")) prefs.CreateEntry("forceUsePrism", (bool)false, "Force enable prism", "It's automatically enabled if expansions need it. This will just force it.",false);
         if (!prefs.HasEntry("disableFixSaves")) prefs.CreateEntry("disableFixSaves", (bool)false, "Disable save fixing", false).AddNullAction();
         if (!prefs.HasEntry("enableDebugDirector")) prefs.CreateEntry("enableDebugDirector", (bool)false, "Enable debug menu", false).AddAction((System.Action)(() => { SR2EDebugUI.isEnabled = enableDebugDirector; }));
         if (!prefs.HasEntry("mLLogToSR2ELog")) prefs.CreateEntry("mLLogToSR2ELog", (bool)false, "Send MLLogs to console", false).AddNullAction();
@@ -297,7 +297,8 @@ public class SR2EEntryPoint : MelonMod
     
     void PatchGame()
     {
-        if(!_usePrism) try { _usePrism= prefs.GetEntry<bool>("useExperimentalLibrary").Value; }catch { }
+        if(!_usePrism) try { _usePrism= prefs.GetEntry<bool>("forceUsePrism").Value; }catch { }
+        if (!AllowPrism.HasFlag()) _usePrism = false;
         var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
         var devPatches = DevMode.HasFlag();
         foreach (var type in types)
@@ -341,8 +342,13 @@ public class SR2EEntryPoint : MelonMod
                     if (attribute == null) melonBase.Unregister();
                     else
                     {
-                        if (attribute.usePrism) _usePrism = true;
-                        expansionsV2.Add(melonBase as SR2EExpansionV2);
+                        if(attribute.usePrism&&!AllowPrism.HasFlag()) melonBase.Unregister();
+                        else
+                        {
+                            if (attribute.usePrism)
+                                _usePrism = true;
+                            expansionsV2.Add(melonBase as SR2EExpansionV2);
+                        }
                     }
                 }
                 else melonBase.Unregister();

@@ -2,6 +2,7 @@
 using Il2CppMonomiPark.SlimeRancher.Pedia;
 using SR2E.Cotton;
 using SR2E.Expansion;
+using SR2E.Prism.Lib;
 using SR2E.Storage;
 
 namespace SR2E.Prism.Patches;
@@ -34,7 +35,9 @@ internal static class SaveDirectorPatch
     }
     internal static void Postfix()
     {
-        CottonLibrary.Pedia.PediaDetailInitialize();
+        PrismShortcuts.emptyTranslation = AddTranslation("");
+        PrismShortcuts.unavailableIcon = Get<Sprite>("unavailableIcon");
+        PrismaLibPedia.PediaDetailTypesInitialize();
         
         // 0.6: ffs why
         //var steamToy = Get<ToyDefinition>("SteamFox");

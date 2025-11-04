@@ -1,7 +1,6 @@
 using Cotton;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using SR2E.Prism.Data;
-using SR2E.Prism.Enums;
 
 namespace SR2E.Prism.Lib;
 

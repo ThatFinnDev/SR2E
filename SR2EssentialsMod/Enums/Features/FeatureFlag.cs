@@ -25,9 +25,9 @@ public enum FeatureFlag
     /// </summary>
     Experiments=50,
     /// <summary>
-    /// Allow experimental Library
+    /// Allow prism
     /// </summary>
-    AllowExperimentalLibrary=60,
+    AllowPrism=60,
     /// <summary>
     /// Enable the enable dev key codes
     /// </summary>

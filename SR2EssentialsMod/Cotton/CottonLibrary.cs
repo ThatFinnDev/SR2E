@@ -3,7 +3,7 @@ using System.Linq;
 using Cotton;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using SR2E.Prism;
-using SR2E.Prism.Enums;
+using SR2E.Prism.Data;
 using UnityEngine.Localization;
 namespace SR2E.Cotton;
 
