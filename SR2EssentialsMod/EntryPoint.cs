@@ -366,7 +366,7 @@ public class SR2EEntryPoint : MelonMod
     }
     public override void OnApplicationQuit()
     {
-        try { if (SystemContext.Instance.SceneLoader.IsCurrentSceneGroupGameplay()) autoSaveDirector.SaveGame(); }catch { }
+        try { if (systemContext.SceneLoader.IsCurrentSceneGroupGameplay()) autoSaveDirector.SaveGame(); }catch { }
     }
 
     private static TMP_FontAsset fallBackFont;
@@ -458,7 +458,7 @@ public class SR2EEntryPoint : MelonMod
                 break;
             case "PlayerCore":
                 NoClipComponent.playerSettings = Get<KCCSettings>("");
-                NoClipComponent.player = SceneContext.Instance.player.transform;
+                NoClipComponent.player = sceneContext.player.transform;
                 NoClipComponent.playerController = NoClipComponent.player.GetComponent<SRCharacterController>();
                 NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
                 break;

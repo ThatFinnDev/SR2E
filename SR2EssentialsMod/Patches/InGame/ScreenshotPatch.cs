@@ -13,14 +13,14 @@ internal static class ScreenshotPatch
         {
             yield return null;
         }
-        SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(true);
+        sceneContext.PlayerState.VacuumItem.gameObject.SetActive(true);
     }
     
     internal static void Prefix(ScreenshotPauseItemModel __instance)
     {
         if (SR2ECheatMenu.betterScreenshot)
         {
-            SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(false);
+            sceneContext.PlayerState.VacuumItem.gameObject.SetActive(false);
             MelonCoroutines.Start(WaitForUnpause());
         }
     }

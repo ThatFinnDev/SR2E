@@ -18,11 +18,14 @@ internal class GameContextPatch
 {
     internal static void Postfix(GameContext __instance)
     {
-        _killDamage = new Damage
+        var damageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>();
+        damageSource._logMessage = "Modded.SR2EKill";
+        damageSource.name = "ModdedSR2EDamage";
+        damageSource.hideFlags |= HideFlags.HideAndDontSave;
+         _killDamage = new Damage
         {
-            Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
+            Amount = 99999999, DamageSource = damageSource,
         };
-        _killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
         
         foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
         {

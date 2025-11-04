@@ -1,5 +1,6 @@
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using SR2E.Cotton;
+using SR2E.Prism.Lib;
 using SR2E.Storage;
 
 namespace SR2E.Prism.Patches;
@@ -12,9 +13,9 @@ public static class GameLoadSummaryPatch
     {
         try
         {
-            foreach (var actor in CottonLibrary.savedIdents)
+            foreach (var actor in PrismLibSaving.savedIdents)
             {
-                CottonLibrary.Saving.RefreshIfNotFound(gameContext.AutoSaveDirector._saveReferenceTranslation,actor.Value);
+                PrismLibSaving.RefreshIfNotFound(autoSaveDirector._saveReferenceTranslation,actor.Value);
             }
         }
         catch {}

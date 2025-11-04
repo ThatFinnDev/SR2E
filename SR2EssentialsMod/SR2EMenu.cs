@@ -197,7 +197,7 @@ public abstract class SR2EMenu : MonoBehaviour
         foreach (var pair in SR2EEntryPoint.menus)
             if(pair.Key!=this) pair.Key._menuToOpenOnClose = null;
         
-        switch (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name)
+        switch (systemContext.SceneLoader.CurrentSceneGroup.name)
         {
             case "StandaloneStart":
             case "CompanyLogo":

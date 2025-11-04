@@ -12,7 +12,7 @@ internal class ToggleUICommand : SR2ECommand
         if (!args.IsBetween(0,0)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         HudUI.Instance.gameObject.SetActive(!HudUI.Instance.gameObject.active);
-        SceneContext.Instance.PlayerState.VacuumItem.gameObject.SetActive(HudUI.Instance.gameObject.active);
+        sceneContext.PlayerState.VacuumItem.gameObject.SetActive(HudUI.Instance.gameObject.active);
         SendMessage(translation("cmd.toggleui.success"));
         return true;
     }

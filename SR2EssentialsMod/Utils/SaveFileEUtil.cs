@@ -243,7 +243,7 @@ public static class SaveFileEUtil
             }
         }
         if(loadMenuMenuOnSuccess) ExecuteInTicks((System.Action)(() => {
-            SystemContext.Instance.SceneLoader.LoadMainMenuSceneGroup();
+            systemContext.SceneLoader.LoadMainMenuSceneGroup();
         }), 1);
         if (failedSome) return SomeSaveIDFailed;
         return NoError;

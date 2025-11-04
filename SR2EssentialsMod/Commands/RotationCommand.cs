@@ -17,7 +17,7 @@ internal class RotationCommand : SR2ECommand
         if (!TryParseVector3(args[0], args[1], args[2], out rotation)) return false;
         bool absolute = false;
         if (args.Length==4) if (!TryParseBool(args[3], out absolute)) return false;
-        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
+        Camera cam = Camera.current; if (cam == null) return SendNoCamera();
         
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {

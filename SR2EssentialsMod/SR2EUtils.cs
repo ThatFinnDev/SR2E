@@ -46,7 +46,7 @@ namespace SR2E
         [Obsolete("Please use "+nameof(MiscEUtil)+"."+nameof(MiscEUtil.BRANCHES), true)] public static readonly Dictionary<Branch,string> BRANCHES = MiscEUtil.BRANCHES;
         [Obsolete("Please use "+nameof(ContextShortcuts)+"."+nameof(ContextShortcuts.IsBetween), true)] public static bool IsBetween(string[] list, uint min, int max)=>ContextShortcuts.IsBetween(list, min, max);
         
-        [Obsolete("Please use SceneContext.Instance.player")] public static GameObject? player;
+        [Obsolete("Please use sceneContext.player")] public static GameObject? player;
         
         [Obsolete("Please use "+nameof(EmbeddedResourceEUtil)+"."+nameof(EmbeddedResourceEUtil.LoadString),true)] public static string LoadTextFile(string name) => EmbeddedResourceEUtil.LoadString(name);
         [Obsolete("Please use "+nameof(SpawnEUtil)+"."+nameof(SpawnEUtil.SpawnGadget),true)] public static GameObject SpawnGadget(GadgetDefinition def, Vector3 pos) => SpawnEUtil.SpawnGadget(def, pos).GetGameObject();

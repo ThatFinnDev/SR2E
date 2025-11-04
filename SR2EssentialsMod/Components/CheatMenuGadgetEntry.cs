@@ -35,12 +35,12 @@ internal class CheatMenuGadgetEntry : MonoBehaviour
             }
 
             int newValue = (int)valueFloat;
-            if (newValue > 0 && !SceneContext.Instance.GadgetDirector.HasBlueprint(item.Cast<GadgetDefinition>()))
-                SceneContext.Instance.GadgetDirector.AddBlueprint(item.Cast<GadgetDefinition>());
+            if (newValue > 0 && !sceneContext.GadgetDirector.HasBlueprint(item.Cast<GadgetDefinition>()))
+                sceneContext.GadgetDirector.AddBlueprint(item.Cast<GadgetDefinition>());
             
             //Adding one updates the new value everywhere. Not doing can cause issues
-            SceneContext.Instance.GadgetDirector._model.SetCount(item,newValue-1);
-            SceneContext.Instance.GadgetDirector.AddItem(item,1);
+            sceneContext.GadgetDirector._model.SetCount(item,newValue-1);
+            sceneContext.GadgetDirector.AddItem(item,1);
             handleText.SetText(newValue.ToString());
         }));}
 
@@ -49,7 +49,7 @@ internal class CheatMenuGadgetEntry : MonoBehaviour
         if(!didStartRan) Start();
 
         dontChange = true;
-        amountSlider.value = SceneContext.Instance.GadgetDirector.GetItemCount(item);
-        handleText.SetText(SceneContext.Instance.GadgetDirector.GetItemCount(item).ToString());
+        amountSlider.value = sceneContext.GadgetDirector.GetItemCount(item);
+        handleText.SetText(sceneContext.GadgetDirector.GetItemCount(item).ToString());
     }
 }

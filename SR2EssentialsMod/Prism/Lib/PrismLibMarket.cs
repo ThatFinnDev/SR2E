@@ -12,16 +12,16 @@ public static class PrismLibMarket
         if (ident == null) return;
         if (ident.IsPlayer) return;
         if (ident.isGadget()) return;
-        if (CottonLibrary.marketData.ContainsKey(ident)) CottonLibrary.marketData.Remove(ident);
+        if (PrismShortcuts.marketData.ContainsKey(ident)) PrismShortcuts.marketData.Remove(ident);
 
-        if (CottonLibrary.removeMarketPlortEntries.Contains(ident))
-            CottonLibrary.removeMarketPlortEntries.Remove(ident);
-        CottonLibrary.marketPlortEntries.Add(new PlortEntry
+        if (PrismShortcuts.removeMarketPlortEntries.Contains(ident))
+            PrismShortcuts.removeMarketPlortEntries.Remove(ident);
+        PrismShortcuts.marketPlortEntries.Add(new PlortEntry
             {
                 IdentType = ident
             },
             prismMarketData.hideInMarketUI);
-        CottonLibrary.marketData.Add(ident, prismMarketData);
+        PrismShortcuts.marketData.Add(ident, prismMarketData);
         TryRefreshMarketData();
     }
 
@@ -33,7 +33,7 @@ public static class PrismLibMarket
             if (settings == null) return;
             List<PlortValueConfiguration> entries = new List<PlortValueConfiguration>();
             entries.AddRange(settings.PlortsTable.Plorts);
-            foreach (var entry in CottonLibrary.marketData)
+            foreach (var entry in PrismShortcuts.marketData)
             {
                 foreach (var existingEntry in settings.PlortsTable.Plorts)
                 {
@@ -78,20 +78,20 @@ public static class PrismLibMarket
 
 
 
-        if (CottonLibrary.marketData.ContainsKey(ident)) return true;
-        foreach (var keyPair in CottonLibrary.marketPlortEntries)
+        if (PrismShortcuts.marketData.ContainsKey(ident)) return true;
+        foreach (var keyPair in PrismShortcuts.marketPlortEntries)
         {
             PlortEntry entry = keyPair.Key;
             if (entry.IdentType == ident)
                 return true;
         }
 
-        if (CottonLibrary.removeMarketPlortEntries.Count != 0)
+        if (PrismShortcuts.removeMarketPlortEntries.Count != 0)
             foreach (var pair in PrismLibLookup.refIDTranslationPrismNativeBaseSlime)
                 if (pair.Value == ident.ReferenceId)
                 {
                     bool returnBool = true;
-                    foreach (IdentifiableType removed in CottonLibrary.removeMarketPlortEntries)
+                    foreach (IdentifiableType removed in PrismShortcuts.removeMarketPlortEntries)
                         if (ident == removed)
                         {
                             returnBool = false;
@@ -104,23 +104,23 @@ public static class PrismLibMarket
         return false;
     }
 
-    public static void MakeNOTSellable(IdentifiableType ident)
+    public static void MakeNotSellable(IdentifiableType ident)
     {
         if (ident == null) return;
         if (ident.IsPlayer) return;
         if (ident.isGadget()) return;
-        CottonLibrary.removeMarketPlortEntries.Add(ident);
-        foreach (var keyPair in CottonLibrary.marketPlortEntries)
+        PrismShortcuts.removeMarketPlortEntries.Add(ident);
+        foreach (var keyPair in PrismShortcuts.marketPlortEntries)
         {
             PlortEntry entry = keyPair.Key;
             if (entry.IdentType == ident)
             {
-                CottonLibrary.marketPlortEntries.Remove(entry);
+                PrismShortcuts.marketPlortEntries.Remove(entry);
                 break;
             }
         }
 
-        if (CottonLibrary.marketData.ContainsKey(ident))
-            CottonLibrary.marketData.Remove(ident);
+        if (PrismShortcuts.marketData.ContainsKey(ident))
+            PrismShortcuts.marketData.Remove(ident);
     }
 }

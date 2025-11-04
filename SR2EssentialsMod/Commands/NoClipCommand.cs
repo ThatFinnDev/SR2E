@@ -14,9 +14,9 @@ internal class NoClipCommand : SR2ECommand
         if (!args.IsBetween(0, 0)) return SendNoArguments();
         try
         {
-            if (!SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>())
+            if (!sceneContext.Camera.RemoveComponent<NoClipComponent>())
             {
-                SceneContext.Instance.Camera.AddComponent<NoClipComponent>();
+                sceneContext.Camera.AddComponent<NoClipComponent>();
                 //SR2ESavableDataV2.Instance.playerSavedData.noclipState = true;
                 SendMessage(translation("cmd.noclip.success"));
             }

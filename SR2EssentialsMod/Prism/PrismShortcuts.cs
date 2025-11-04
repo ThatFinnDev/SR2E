@@ -1,4 +1,5 @@
 using Il2CppMonomiPark.SlimeRancher.Pedia;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppSystem.Linq;
 using SR2E.Cotton;
 using SR2E.Prism.Creators;
@@ -11,6 +12,12 @@ namespace SR2E.Prism;
 
 public static class PrismShortcuts
 {
+    internal static Dictionary<IdentifiableType, PrismMarketData> marketData = new (0);
+    internal static Dictionary<PlortEntry, bool> marketPlortEntries = new ();
+    internal static List<IdentifiableType> removeMarketPlortEntries = new ();
+    internal static List<System.Action> createLargoActions = new ();
+    
+    
     internal static Dictionary<SlimeDefinition, PrismBaseSlime> _prismBaseSlimes = new Dictionary<SlimeDefinition, PrismBaseSlime>();
     internal static Dictionary<SlimeDefinition, PrismLargo> _prismLargos = new Dictionary<SlimeDefinition, PrismLargo>();
 

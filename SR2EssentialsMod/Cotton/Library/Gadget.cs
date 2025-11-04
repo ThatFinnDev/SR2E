@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.World;
+using SR2E.Prism.Lib;
 
 namespace SR2E.Cotton;
 
@@ -74,7 +75,7 @@ public static partial class CottonLibrary
             definition.CountLimit = parameters.countLimit;
             definition.icon = parameters.icon;
 
-            Saving.SetupForSaving(definition,definition.referenceId);
+            PrismLibSaving.SetupForSaving(definition);
 
             return definition;
         }
@@ -96,7 +97,7 @@ public static partial class CottonLibrary
 
             definition.name = name;
             definition.referenceId = $"GadgetDefinition.{name}";
-            Saving.SetupForSaving(definition,definition.referenceId);
+            PrismLibSaving.SetupForSaving(definition);
             definition.prefab = Object.Instantiate(definition.prefab);
 
             definition.prefab.GetComponent<Gadget>().identType = definition;

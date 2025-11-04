@@ -74,8 +74,6 @@ public class PrismLargoCreator
         if (_createdLargo != null) return _createdLargo;
 
 
-        if (gameContext.SlimeDefinitions.GetLargoByBaseSlimes(firstSlime, secondSlime) != null) return null;
-        if (gameContext.SlimeDefinitions.GetLargoByBaseSlimes(secondSlime, firstSlime) != null) return null;
         if (CottonSlimes.DoesLargoComboExist(firstSlime, secondSlime)) return null;
 
         if (largoMergeSettings == null) largoMergeSettings = new PrismLargoMergeSettings();
@@ -168,7 +166,7 @@ public class PrismLargoCreator
 
         largoDef.AddToGroup("SlimesGroup");
         largoDef.AddToGroup("IdentifiableTypesGroup");
-        CottonLibrary.Saving.INTERNAL_SetupLoadForIdent(largoDef.referenceId, largoDef);
+        PrismLibSaving.SetupForSaving(largoDef,largoDef.referenceId);
 
         
         gameContext.SlimeDefinitions.RefreshDefinitions();

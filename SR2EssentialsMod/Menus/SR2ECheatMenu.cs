@@ -66,7 +66,7 @@ public class SR2ECheatMenu : SR2EMenu
     protected override void OnOpen()
     {
         //Refinery
-        List<IdentifiableType> refineryItems = SceneContext.Instance.GadgetDirector._refineryTypeGroup.GetAllMembers().ToArray().ToList();
+        List<IdentifiableType> refineryItems = sceneContext.GadgetDirector._refineryTypeGroup.GetAllMembers().ToArray().ToList();
         refineryItems.Sort((x, y) => string.Compare(x.GetName(), y.GetName(), StringComparison.OrdinalIgnoreCase));
         foreach (IdentifiableType refineryItem in refineryItems)
         {
@@ -79,7 +79,7 @@ public class SR2ECheatMenu : SR2EMenu
         }
         //Gadgets
 
-        List<IdentifiableType> gadgetItems = SceneContext.Instance.GadgetDirector._gadgetsGroup.GetAllMembers().ToArray().ToList();
+        List<IdentifiableType> gadgetItems = sceneContext.GadgetDirector._gadgetsGroup.GetAllMembers().ToArray().ToList();
         gadgetItems.Sort((x, y) => string.Compare(x.GetName(), y.GetName(), StringComparison.OrdinalIgnoreCase));
         foreach (IdentifiableType gadgetItem in gadgetItems)
         {
@@ -107,7 +107,7 @@ public class SR2ECheatMenu : SR2EMenu
         }
 
 
-        noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SceneContext.Instance.Camera.GetComponent<NoClipComponent>() == null ? "off" : "on"));
+        noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (sceneContext.Camera.GetComponent<NoClipComponent>() == null ? "off" : "on"));
         refillButton.textInstance.text = translation("cheatmenu.cheatbuttons.refillinv");
         if (EnableInfHealth.HasFlag()) infHealthButton.textInstance.text = translation("cheatmenu.cheatbuttons.infhealth" + (InfiniteHealthCommand.infHealth? "on" : "off"));
         if (EnableInfEnergy.HasFlag()) infEnergyButton.textInstance.text = translation("cheatmenu.cheatbuttons.infenergy" + (InfiniteEnergyCommand.infEnergy? "on" : "off"));
@@ -139,7 +139,7 @@ public class SR2ECheatMenu : SR2EMenu
         foreach (CheatMenuSlot slot in cheatSlots)
         {
             i++;
-            slot.gameObject.SetActive(SceneContext.Instance.PlayerState.Ammo.Slots[i].IsUnlocked);
+            slot.gameObject.SetActive(sceneContext.PlayerState.Ammo.Slots[i].IsUnlocked);
             slot.OnOpen();
         }
     }
@@ -247,7 +247,7 @@ public class SR2ECheatMenu : SR2EMenu
             {
                 AudioEUtil.PlaySound(MenuSound.Click);
                 SR2ECommandManager.ExecuteByString("noclip", true,true);
-                noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (SceneContext.Instance.Camera.GetComponent<NoClipComponent>()!=null ? "on" : "off"));
+                noclipButton.textInstance.text = translation("cheatmenu.cheatbuttons.noclip" + (sceneContext.Camera.GetComponent<NoClipComponent>()!=null ? "on" : "off"));
             });
         refillButton = new SR2ECheatMenuButton(translation("cheatmenu.cheatbuttons.refillinv"), () =>
         {

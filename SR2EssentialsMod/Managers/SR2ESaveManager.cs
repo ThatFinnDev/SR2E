@@ -110,7 +110,7 @@ internal static class SR2ESaveManager
         {
             try
             {
-                var provider = SystemContext.Instance.GetStorageProvider();
+                var provider = systemContext.GetStorageProvider();
                 return provider.TryCast<FileStorageProvider>().savePath + "/SR2E.data";
             }
             catch 

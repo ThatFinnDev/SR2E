@@ -38,20 +38,20 @@ internal class PlayerCommand : SR2ECommand
         switch (args[0])
         {
             case "size":
-                if (args.Length == 1) { SendMessage(translation("cmd.player.size.show",SceneContext.Instance.player.transform.localScale.x)); return true; }
+                if (args.Length == 1) { SendMessage(translation("cmd.player.size.show",sceneContext.player.transform.localScale.x)); return true; }
                 float size;
                 if (!TryParseFloat(args[1], out size, 0, false)) return false;
                 KinematicCharacterMotor KCC = null;
-                try { KCC = SceneContext.Instance.player.GetComponent<KinematicCharacterMotor>(); }
+                try { KCC = sceneContext.player.GetComponent<KinematicCharacterMotor>(); }
                 catch { return SendNullKinematicCharacterMotor();}
-                SceneContext.Instance.player.transform.localScale = Vector3.one * size;
+                sceneContext.player.transform.localScale = Vector3.one * size;
                 KCC.CapsuleHeight = playerColliderHeightBase * size;
                 KCC.CapsuleRadius = playerColliderRadBase * size;
                 SendMessage(translation("cmd.player.size.edit",size));
                 return true;
             case "gravity":
                 SRCharacterController SRCC = null;
-                try { SRCC = SceneContext.Instance.player.GetComponent<SRCharacterController>(); }
+                try { SRCC = sceneContext.player.GetComponent<SRCharacterController>(); }
                 catch { return SendNullSRCharacterController();}
                 if (args.Length == 1) { SendMessage(translation("cmd.player.gravity.show",SRCC._gravityMagnitude.Value)); return true; }
                 float level;
@@ -64,9 +64,9 @@ internal class PlayerCommand : SR2ECommand
                 VacModes mode;
                 try { mode = Enum.Parse<VacModes>(args[1]); }
                 catch { return SendNotValidVacMode(args[1]); }
-                SceneContext.Instance.Camera.RemoveComponent<FlingMode>();
-                SceneContext.Instance.Camera.RemoveComponent<IdentifiableObjectDragger>();
-                var vacuumItem = SceneContext.Instance.PlayerState.VacuumItem;
+                sceneContext.Camera.RemoveComponent<FlingMode>();
+                sceneContext.Camera.RemoveComponent<IdentifiableObjectDragger>();
+                var vacuumItem = sceneContext.PlayerState.VacuumItem;
                 vacuumItem.gameObject.SetActive(true);
                 switch (mode)
                 {
@@ -75,10 +75,10 @@ internal class PlayerCommand : SR2ECommand
                     case VacModes.AUTO_SHOOT: vacuumItem._vacMode = VacuumItem.VacMode.SHOOT; break;
                     /*case VacModes.DRAG: 
                         vacuumItem._vacMode = VacuumItem.VacMode.NONE;
-                        ExecuteInSeconds((() => { vacuumItem.gameObject.SetActive(false); SceneContext.Instance.Camera.AddComponent<IdentifiableObjectDragger>(); }), 1.5f); break;
+                        ExecuteInSeconds((() => { vacuumItem.gameObject.SetActive(false); sceneContext.Camera.AddComponent<IdentifiableObjectDragger>(); }), 1.5f); break;
                     case VacModes.LAUNCH: 
                         vacuumItem._vacMode = VacuumItem.VacMode.NONE; 
-                        ExecuteInSeconds((() => { vacuumItem.gameObject.SetActive(false); SceneContext.Instance.Camera.AddComponent<FlingMode>(); }), 1.5f);break;*/
+                        ExecuteInSeconds((() => { vacuumItem.gameObject.SetActive(false); sceneContext.Camera.AddComponent<FlingMode>(); }), 1.5f);break;*/
                 }
                 currVacMode = mode;
                 SendMessage(translation("cmd.player.vacmode.success",mode.ToString().Replace("VacModes","")));
@@ -89,7 +89,7 @@ internal class PlayerCommand : SR2ECommand
     static VacModes currVacMode;
     public override void OnPlayerCoreLoad()
     {
-        switch (SceneContext.Instance.PlayerState.VacuumItem._vacMode)
+        switch (sceneContext.PlayerState.VacuumItem._vacMode)
         {
             case VacuumItem.VacMode.NONE:
                 currVacMode = VacModes.NONE;

@@ -47,7 +47,7 @@ internal class GadgetCommand : SR2ECommand
         if (args[1] == "*")
         {
             bool isSilent = silent;
-            foreach (GadgetDefinition def in Resources.FindObjectsOfTypeAll<GadgetDefinition>())
+            foreach (var def in sceneContext.GadgetDirector._gadgetsGroup.GetAllMembersList())
             {
                 silent=isSilent?true:args[0]!="get";
                 if(args.Length==3) Execute(new []{args[0], def.name, args[2]});
@@ -77,7 +77,7 @@ internal class GadgetCommand : SR2ECommand
             case "add": 
             case "set":
                 int newValue = 0;
-                int oldValue = SceneContext.Instance.GadgetDirector.GetItemCount(type);
+                int oldValue = sceneContext.GadgetDirector.GetItemCount(type);
                 switch (args[0])
                 {
                     case "set": newValue = amount; break;
@@ -86,11 +86,11 @@ internal class GadgetCommand : SR2ECommand
                 }
                 newValue=Mathf.Clamp(newValue, 0, int.MaxValue);
                 
-                if (newValue > 0 && !SceneContext.Instance.GadgetDirector.HasBlueprint(type)) SceneContext.Instance.GadgetDirector.AddBlueprint(type);
+                if (newValue > 0 && !sceneContext.GadgetDirector.HasBlueprint(type)) sceneContext.GadgetDirector.AddBlueprint(type);
                 
                 //Adding one updates the new value everywhere. Not doing can causes issues
-                SceneContext.Instance.GadgetDirector._model.SetCount(type,newValue-1);
-                SceneContext.Instance.GadgetDirector.AddItem(type,1);
+                sceneContext.GadgetDirector._model.SetCount(type,newValue-1);
+                sceneContext.GadgetDirector.AddItem(type,1);
                 
                 switch (args[0])
                 {
@@ -100,19 +100,19 @@ internal class GadgetCommand : SR2ECommand
                 }
                 break;
             case "get":
-                SendMessage(translation("cmd.gadget.successget",SceneContext.Instance.GadgetDirector.GetItemCount(type),itemName)); 
+                SendMessage(translation("cmd.gadget.successget",sceneContext.GadgetDirector.GetItemCount(type),itemName)); 
                 break;
             /*case "lock":
-                if (!SceneContext.Instance.GadgetDirector.HasBlueprint(type))
+                if (!sceneContext.GadgetDirector.HasBlueprint(type))
                     return SendError(translation("cmd.gadget.errorlock",itemName));
                 //This function doesn't exist  :(
-                SceneContext.Instance.GadgetDirector.RemoveBlueprint(type);
+                sceneContext.GadgetDirector.RemoveBlueprint(type);
                 SendMessage(translation("cmd.gadget.successlock",itemName)); 
                 break;*/
             case "unlock":
-                if (SceneContext.Instance.GadgetDirector.HasBlueprint(type))
+                if (sceneContext.GadgetDirector.HasBlueprint(type))
                     return SendError(translation("cmd.gadget.errorunlock",itemName));
-                SceneContext.Instance.GadgetDirector.AddBlueprint(type,showPopup);
+                sceneContext.GadgetDirector.AddBlueprint(type,showPopup);
                 SendMessage(translation("cmd.gadget.successunlock",itemName)); 
                 break;
         }

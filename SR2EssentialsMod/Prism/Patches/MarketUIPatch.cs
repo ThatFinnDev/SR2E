@@ -16,7 +16,7 @@ public static class MarketUIPatch
     {
         List<PlortEntry> plortEntries = new List<PlortEntry>(__instance._config._plorts);
         foreach (var entry in __instance._config._plorts)
-            foreach (var type in CottonLibrary.removeMarketPlortEntries)
+            foreach (var type in PrismShortcuts.removeMarketPlortEntries)
             {
                 if (entry.IdentType.ReferenceId == type.ReferenceId)
                 {
@@ -24,7 +24,7 @@ public static class MarketUIPatch
                     break;
                 }
             }
-        foreach (var pair in CottonLibrary.marketPlortEntries)
+        foreach (var pair in PrismShortcuts.marketPlortEntries)
             if (!pair.Value)
                 plortEntries.Add(pair.Key);
         

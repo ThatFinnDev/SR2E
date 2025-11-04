@@ -44,7 +44,7 @@ internal class CheatMenuSlot : MonoBehaviour
         string itemName = type.GetName().Replace("'","").Replace(" ","");
         entryInput.text = itemName;
         slot.Clear();
-        SceneContext.Instance.PlayerState.Ammo.MaybeAddToSpecificSlot(type, null, slotID, 
+        sceneContext.PlayerState.Ammo.MaybeAddToSpecificSlot(type, null, slotID, 
             (int)amountSlider.value);
     }
     public void Select()
@@ -74,7 +74,7 @@ internal class CheatMenuSlot : MonoBehaviour
     private AmmoSlot slot {
         get
         {
-            try { return SceneContext.Instance.PlayerState.Ammo.Slots[slotID]; }
+            try { return sceneContext.PlayerState.Ammo.Slots[slotID]; }
             catch { return null; }
         }
     }

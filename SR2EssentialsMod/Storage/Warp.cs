@@ -16,10 +16,10 @@ public class Warp
     internal SR2EError WarpPlayerThere()
     {
         if (!inGame) return SR2EError.NotInGame;
-        if (SceneContext.Instance.Player == null) return SR2EError.PlayerNull;
-        TeleportablePlayer p = SceneContext.Instance.Player.GetComponent<TeleportablePlayer>();
+        if (sceneContext.Player == null) return SR2EError.PlayerNull;
+        TeleportablePlayer p = sceneContext.Player.GetComponent<TeleportablePlayer>();
         if (p == null) return SR2EError.TeleportablePlayerNull;
-        SRCharacterController cc = SceneContext.Instance.Player.GetComponent<SRCharacterController>();
+        SRCharacterController cc = sceneContext.Player.GetComponent<SRCharacterController>();
         if (cc == null) return SR2EError.SRCharacterControllerNull;
         MenuEUtil.CloseOpenMenu();
         if (sceneGroup == p.SceneGroup.ReferenceId)
@@ -37,7 +37,7 @@ public class Warp
                 StaticTeleporterNode node = SR2EWarpManager.teleporters[sceneGroup];
                 SR2EWarpManager.warpTo = this;
 
-                SceneContext.Instance.Camera.RemoveComponent<NoClipComponent>();
+                sceneContext.Camera.RemoveComponent<NoClipComponent>();
                 NativeEUtil.TryHideMenus();
                 NativeEUtil.TryUnPauseGame();
                 ExecuteInTicks((Action)(() =>
@@ -45,7 +45,7 @@ public class Warp
                     try
                     {
                         
-                        StaticTeleporterNode obj = GameObject.Instantiate(node, SceneContext.Instance.Player.transform.position,
+                        StaticTeleporterNode obj = GameObject.Instantiate(node, sceneContext.Player.transform.position,
                             Quaternion.identity);
                         node.enabled = true;
                         node.Network = sceneContext.TeleportNetwork;

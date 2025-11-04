@@ -55,15 +55,15 @@ internal class PediaCommand : SR2ECommand
         switch (args[0])
         {
             case "lock":
-                if (!SceneContext.Instance.PediaDirector.IsUnlocked(id))
+                if (!sceneContext.PediaDirector.IsUnlocked(id))
                     return SendError(translation("cmd.pedia.errorlock",itemName));
-                SceneContext.Instance.PediaDirector.DebugReLock(id);
+                sceneContext.PediaDirector.DebugReLock(id);
                 SendMessage(translation("cmd.pedia.successlock",itemName)); 
                 break;
             case "unlock":
-                if (SceneContext.Instance.PediaDirector.IsUnlocked(id))
+                if (sceneContext.PediaDirector.IsUnlocked(id))
                     return SendError(translation("cmd.pedia.errorunlock",itemName));
-                SceneContext.Instance.PediaDirector.Unlock(id,showPopup);
+                sceneContext.PediaDirector.Unlock(id,showPopup);
                 SendMessage(translation("cmd.pedia.successunlock",itemName)); 
                 break;
         }

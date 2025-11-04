@@ -73,7 +73,7 @@ public class PrismPlortCreator
         plort.prefab = CreatePrefab("plort"+name, basePrefab);
         plort.prefab.GetComponent<IdentifiableActor>().identType = plort;
         
-        CottonLibrary.Saving.INTERNAL_SetupLoadForIdent(referenceID, plort);
+        PrismLibSaving.SetupForSaving(plort,referenceID);
         
         var prismPlort = new PrismPlort(plort, false);
         

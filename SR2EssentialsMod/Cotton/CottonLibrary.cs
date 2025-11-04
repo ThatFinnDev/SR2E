@@ -30,15 +30,7 @@ public static partial class CottonLibrary
 
     internal static Dictionary<string, IdentifiableTypeGroup> customGroups = new Dictionary<string, IdentifiableTypeGroup>();
     
-    internal static Dictionary<string, IdentifiableType> savedIdents = new Dictionary<string, IdentifiableType>();
 
-    internal static Dictionary<IdentifiableType, PrismMarketData> marketData =
-        new Dictionary<IdentifiableType, PrismMarketData>(0);
-
-    internal static Dictionary<PlortEntry, bool> marketPlortEntries =
-        new Dictionary<PlortEntry, bool>();
-
-    internal static List<IdentifiableType> removeMarketPlortEntries = new List<IdentifiableType>();
 
     public static IdentifiableTypeGroup? slimes;
     public static IdentifiableTypeGroup? plorts;
@@ -51,10 +43,6 @@ public static partial class CottonLibrary
     public static IdentifiableTypeGroup? nectar;
     public static IdentifiableTypeGroup? crafts;
     public static IdentifiableTypeGroup? chicks;
-    public static GameObject? player;
-
-
-    public static SlimeDefinitions? slimeDefinitions => gameContext.SlimeDefinitions; 
     
 
     private static SlimeAppearanceDirector _mainAppearanceDirector;
@@ -64,6 +52,7 @@ public static partial class CottonLibrary
         get
         {
             if (_mainAppearanceDirector == null)
+                
                 _mainAppearanceDirector = Get<SlimeAppearanceDirector>("MainSlimeAppearanceDirector");
             return _mainAppearanceDirector;
         }
@@ -73,7 +62,6 @@ public static partial class CottonLibrary
 
 
     
-    internal static List<Action> createLargoActions = new List<Action>();
     
 
 }

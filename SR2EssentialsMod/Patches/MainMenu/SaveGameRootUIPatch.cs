@@ -49,7 +49,7 @@ internal static class SaveGameRootUIPatch
                     MelonLogger.Msg("Error when importing save: "+error);
                     return;
                 }
-                SystemContext.Instance.SceneLoader.LoadMainMenuSceneGroup();
+                systemContext.SceneLoader.LoadMainMenuSceneGroup();
             }
         }
         else

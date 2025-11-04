@@ -6,7 +6,7 @@ namespace SR2E.Prism.Lib;
 
 public static class PrismLibMerging
 {
-    
+
     public static SlimeDiet MergeDiet(SlimeDiet firstDiet, SlimeDiet secondDiet)
     {
         var mergedDiet = PrismLibDiet.CreateNewDiet();
@@ -14,18 +14,14 @@ public static class PrismLibMerging
         mergedDiet.EatMap=mergedDiet.EatMap.AddRangeNoMultipleToNew(firstDiet.EatMap);
         mergedDiet.EatMap=mergedDiet.EatMap.AddRangeNoMultipleToNew(secondDiet.EatMap);
 
-        mergedDiet.AdditionalFoodIdents =
-            mergedDiet.AdditionalFoodIdents.AddRangeNoMultipleToNew(firstDiet.AdditionalFoodIdents);
-        mergedDiet.AdditionalFoodIdents =
-            mergedDiet.AdditionalFoodIdents.AddRangeNoMultipleToNew(secondDiet.AdditionalFoodIdents);
+        mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRangeNoMultipleToNew(firstDiet.AdditionalFoodIdents);
+        mergedDiet.AdditionalFoodIdents = mergedDiet.AdditionalFoodIdents.AddRangeNoMultipleToNew(secondDiet.AdditionalFoodIdents);
 
         mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRangeNoMultipleToNew(firstDiet.FavoriteIdents);
         mergedDiet.FavoriteIdents = mergedDiet.FavoriteIdents.AddRangeNoMultipleToNew(secondDiet.FavoriteIdents);
 
-        mergedDiet.MajorFoodIdentifiableTypeGroups =
-            mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultipleToNew(firstDiet.MajorFoodIdentifiableTypeGroups);
-        mergedDiet.MajorFoodIdentifiableTypeGroups =
-            mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultipleToNew(secondDiet.MajorFoodIdentifiableTypeGroups);
+        mergedDiet.MajorFoodIdentifiableTypeGroups = mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultipleToNew(firstDiet.MajorFoodIdentifiableTypeGroups);
+        mergedDiet.MajorFoodIdentifiableTypeGroups = mergedDiet.MajorFoodIdentifiableTypeGroups.AddRangeNoMultipleToNew(secondDiet.MajorFoodIdentifiableTypeGroups);
 
         mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRangeNoMultipleToNew(firstDiet.ProduceIdents);
         mergedDiet.ProduceIdents = mergedDiet.ProduceIdents.AddRangeNoMultipleToNew(secondDiet.ProduceIdents);
@@ -103,10 +99,10 @@ public static class PrismLibMerging
         SlimeAppearance.Palette secondColorSloomber = slime2.INTERNAL_GetSloomberPalette();
 
 
-        bool useTwinShader = CottonSlimes.INTERNAL_GetLargoHasTwinEffect(slime1, slime2);
+        bool useTwinShader = INTERNAL_GetLargoHasTwinEffect(slime1, slime2);
 
-        bool useSloomberShader = CottonSlimes.INTERNAL_GetLargoHasSloomberEffect(slime1, slime2);
-        Material sloomberMat = CottonSlimes.GetSlime("Sloomber").AppearancesDefault[0]._structures[0].DefaultMaterials[0];
+        bool useSloomberShader = INTERNAL_GetLargoHasSloomberEffect(slime1, slime2);
+        Material sloomberMat = PrismNativeBaseSlime.Sloomber.GetPrismBaseSlime().GetSlimeDefinition().AppearancesDefault[0]._structures[0].DefaultMaterials[0];
 
         foreach (var structure in slime1.Structures)
         {
@@ -680,5 +676,106 @@ public static class PrismLibMerging
         return new Il2CppReferenceArray<SlimeAppearanceStructure>(newStructures.ToArray());
     }
 
+    internal static SlimeAppearance.Palette INTERNAL_GetTwinPalette(this SlimeAppearance app)
+    {
+        Material mat = null;
+        foreach (var structure in app._structures)
+        {
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+            {
+                mat = structure.DefaultMaterials[0];
+                break;
+            }
+        }
+
+        if (mat == null) return new SlimeAppearance.Palette();
+
+        return new SlimeAppearance.Palette()
+        {
+            Ammo = new Color32(255, 255, 255, 255),
+            Top = mat.GetColor("_TwinTopColor"),
+            Middle = mat.GetColor("_TwinMiddleColor"),
+            Bottom = mat.GetColor("_TwinBottomColor"),
+        };
+    }
+
+    internal static SlimeAppearance.Palette INTERNAL_GetSloomberPalette(this SlimeAppearance app)
+    {
+        Material mat = null;
+        foreach (var structure in app._structures)
+        {
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+            {
+                mat = structure.DefaultMaterials[0];
+                break;
+            }
+        }
+
+        return new SlimeAppearance.Palette()
+        {
+            Ammo = new Color32(255, 255, 255, 255),
+            Top = mat.GetColor("_SloomberTopColor"),
+            Middle = mat.GetColor("_SloomberMiddleColor"),
+            Bottom = mat.GetColor("_SloomberBottomColor"),
+        };
+    }
+
+    internal static bool INTERNAL_GetLargoHasTwinEffect(SlimeAppearance slime1, SlimeAppearance slime2)
+    {
+        bool result = false;
+
+        foreach (var structure in slime1._structures)
+        {
+            if (structure.DefaultMaterials.Count != 0 &&
+                structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLETWINEFFECT_ON"))
+            {
+                result = true;
+                break;
+            }
+        }
+
+        foreach (var structure in slime2._structures)
+        {
+            if (result) break;
+
+            if (structure.DefaultMaterials.Count != 0 &&
+                structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLETWINEFFECT_ON"))
+            {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    internal static bool INTERNAL_GetLargoHasSloomberEffect(SlimeAppearance slime1, SlimeAppearance slime2)
+    {
+        bool result = false;
+
+        foreach (var structure in slime1._structures)
+        {
+            if (structure.DefaultMaterials.Count != 0 &&
+                structure.DefaultMaterials[0].IsKeywordEnabled("_BODYCOLORING_SLOOMBER"))
+            {
+                result = true;
+                break;
+            }
+        }
+
+        foreach (var structure in slime2._structures)
+        {
+            if (result) break;
+
+            if (structure.DefaultMaterials.Count != 0 &&
+                structure.DefaultMaterials[0].IsKeywordEnabled("_BODYCOLORING_SLOOMBER"))
+            {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
 
 }

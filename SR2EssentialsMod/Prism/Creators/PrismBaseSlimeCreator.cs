@@ -177,7 +177,7 @@ public class PrismBaseSlimeCreator
         if(!gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.ContainsKey(slimeDef))
             gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.Add(slimeDef, slimeDef);
 
-        CottonLibrary.Saving.INTERNAL_SetupLoadForIdent(referenceID, slimeDef);
+        PrismLibSaving.SetupForSaving(slimeDef,referenceID);
 
         if(!disableVaccable) slimeDef.AddToGroup("VaccableBaseSlimeGroup");
         slimeDef.AddToGroup("SmallSlimeGroup");
@@ -198,11 +198,11 @@ public class PrismBaseSlimeCreator
 
         if (!disableEdibleByTarrs)
             PrismNativeBaseSlime.Tarr.GetPrismBaseSlime().RefreshEatMap();
-        var prismSlime = new PrismBaseSlime(slimeDef, false);
+        var prismSlime = new PrismBaseSlime(slimeDef, false,canLargofy);
         
         if (canLargofy&&createAllLargos)
         {
-            CottonLibrary.createLargoActions.Add(() =>
+            PrismShortcuts.createLargoActions.Add(() =>
             {
                 foreach (var slime in CottonLibrary.baseSlimes.GetAllMembers().ToList())
                 {
@@ -210,9 +210,9 @@ public class PrismBaseSlimeCreator
                     {
                         var otherSlimeDef = slime.TryCast<SlimeDefinition>();
                         if(otherSlimeDef==slimeDef) continue;
-                        if (otherSlimeDef.CanLargofy)
+                        if (otherSlimeDef.GetPrismBaseSlime()._allowLargos)
                         {
-                            var largoCreator = new PrismLargoCreator(prismSlime, otherSlimeDef.GetPrismBaseSlime()).CreateLargo();
+                            new PrismLargoCreator(prismSlime, otherSlimeDef.GetPrismBaseSlime()).CreateLargo();
                         }
                     }
                     catch (Exception e)

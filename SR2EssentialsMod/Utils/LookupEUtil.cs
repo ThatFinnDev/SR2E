@@ -68,9 +68,16 @@ public static class LookupEUtil
         if (string.IsNullOrWhiteSpace(name)) return null;
         name = name.ToUpper();
         if (name == "NONE" || name == "PLAYER") return null;
-        GadgetDefinition[] ids = Resources.FindObjectsOfTypeAll<GadgetDefinition>();
-        foreach (GadgetDefinition type in ids) if (type.name.ToUpper() == name) return type;
-        foreach (GadgetDefinition type in ids) try { if (type.GetCompactUpperName() == name.Replace("_", "")) return type; }catch { }
+        var ids = sceneContext.GadgetDirector._gadgetsGroup.GetAllMembersList();
+        foreach (var type in ids) 
+            if (type.name.ToUpper() == name) 
+                if(type.isGadget())
+                    return type.Cast<GadgetDefinition>();
+        name=name.Replace("_", "");
+        foreach (var type in ids)
+            if (type.GetCompactUpperName() == name)
+                if(type.isGadget())
+                    return type.Cast<GadgetDefinition>();
         return null;
     }
 
@@ -251,7 +258,7 @@ public static class LookupEUtil
     /// <returns>List<string></returns>
     public static List<string> GetGadgetDefinitionStringListByPartialName(string partial, bool useContain, int maxEntries)
     {
-        var types = SceneContext.Instance.GadgetDirector._gadgetsGroup.GetAllMembers().ToList();
+        var types = sceneContext.GadgetDirector._gadgetsGroup.GetAllMembers().ToList();
         maxEntries -= 1;
         //If partial string is empty, no need to match the name
         var list = new List<string>();

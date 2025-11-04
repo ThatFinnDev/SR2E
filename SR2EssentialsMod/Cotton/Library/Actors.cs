@@ -371,7 +371,7 @@ public static partial class CottonLibrary
 
             customGroups.Add(codeName,group);
             Get<IdentifiableTypeGroupList>("All Type Groups List").items.Add(group);
-            GameContext.Instance.LookupDirector.RegisterIdentifiableTypeGroup(group);
+            gameContext.LookupDirector.RegisterIdentifiableTypeGroup(group);
             if(!gameContext.LookupDirector._allIdentifiableTypeGroups.items.Contains(group))
                 gameContext.LookupDirector._allIdentifiableTypeGroups.items.Add(group);
             return group;

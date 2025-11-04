@@ -84,11 +84,11 @@ internal class SR2EDebugUI : MonoBehaviour
 		if (Time.timeScale == 0)  return;
 		if (!inGame) return;
 		if (SR2EWarpManager.warpTo != null) return;
-		switch (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name) { case "StandaloneStart": case "CompanyLogo": case "LoadScene": return; }
+		switch (systemContext.SceneLoader.CurrentSceneGroup.name) { case "StandaloneStart": case "CompanyLogo": case "LoadScene": return; }
 		if (LKey.Alpha0.OnKeyDown()) SR2ECommandManager.ExecuteByString("upgrade set * 10", true);
 		if (LKey.Alpha7.OnKeyDown()) SR2ECommandManager.ExecuteByString("infenergy true", true);
 		if (LKey.Alpha8.OnKeyDown()) SR2ECommandManager.ExecuteByString("infhealth", true);
-		if (LKey.Alpha9.OnKeyDown()) GameContext.Instance.AutoSaveDirector.SaveAllNow();
+		if (LKey.Alpha9.OnKeyDown()) autoSaveDirector.SaveAllNow();
 		if (LKey.P.OnKeyDown()) SR2ECommandManager.ExecuteByString("pedia unlock * false", true);
 		if (LKey.K.OnKeyDown()) SR2ECommandManager.ExecuteByString("clearinv", true);
 		if (LKey.L.OnKeyDown()) SR2ECommandManager.ExecuteByString("refillinv", true);

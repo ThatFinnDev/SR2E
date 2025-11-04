@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using SR2E.Prism.Lib;
 
 namespace SR2E.Cotton;
 
@@ -253,7 +254,7 @@ public static partial class CottonLibrary
                                 bool hasNonPink = false;
                                 foreach (var m in cons.Slimeset.Members)
                                 {
-                                    if (m.IdentType.name.ToLower() != "pink" && !savedIdents.ContainsValue(m.IdentType))
+                                    if (m.IdentType.name.ToLower() != "pink" && !PrismLibSaving.savedIdents.ContainsValue(m.IdentType))
                                     {
                                         hasNonPink = true;
                                         break;

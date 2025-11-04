@@ -11,7 +11,7 @@ public static class ContextShortcuts
     public static SceneContext sceneContext => SceneContext.Instance;
     internal static Damage _killDamage;
     public static Damage killDamage => _killDamage;
-    public static AutoSaveDirector autoSaveDirector => GameContext.Instance.AutoSaveDirector;
+    public static AutoSaveDirector autoSaveDirector => gameContext.AutoSaveDirector;
 
     public static bool inGame
     {
@@ -19,8 +19,8 @@ public static class ContextShortcuts
         {
             try
             {
-                if (SceneContext.Instance == null) return false;
-                if (SceneContext.Instance.PlayerState == null) return false;
+                if (sceneContext == null) return false;
+                if (sceneContext.PlayerState == null) return false;
             }
             catch
             { return false; }

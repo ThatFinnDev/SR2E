@@ -43,7 +43,7 @@ public static class PrismLibDiet
 
     public static void RefreshEatMap(this PrismSlime prismSlime)
     {
-        prismSlime.GetSlimeDiet().RefreshEatMap(CottonLibrary.slimeDefinitions, prismSlime);
+        prismSlime.GetSlimeDiet().RefreshEatMap(gameContext.SlimeDefinitions, prismSlime);
     }
 
     

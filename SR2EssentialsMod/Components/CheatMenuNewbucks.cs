@@ -21,7 +21,7 @@ internal class CheatMenuNewbucks : MonoBehaviour
             if (dontChange>0)
             { dontChange--; return; }
             dontChange = 0;
-            int newValue = Mathf.Clamp((int)Math.Pow(value, 3.51),0,SceneContext.Instance.PlayerState._model.maxCurrency);
+            int newValue = Mathf.Clamp((int)Math.Pow(value, 3.51),0,sceneContext.PlayerState._model.maxCurrency);
             handleText.SetText(newValue.ToString());
             CurrencyEUtil.SetCurrency("newbuck", newValue, newValue);
         }));

@@ -20,21 +20,16 @@ public static class CottonSlimes
 {
     internal static bool DoesLargoComboExist(SlimeDefinition slime1, SlimeDefinition slime2)
     {
-        foreach (var pair in PrismShortcuts._prismLargoBases)
+        try
         {
-            var def1 = pair.Value.Item1.GetSlimeDefinition();
-            if (slime1 == def1)
-            {
-                if (slime2 == pair.Value.Item2.GetSlimeDefinition())
-                    return true;
-            }
-            if (slime2 == def1)
-            {
-                if (slime1 == pair.Value.Item2.GetSlimeDefinition())
-                    return true;
-            } 
-        }
-
+            if (gameContext.SlimeDefinitions.GetLargoByBaseSlimes(slime1, slime2) != null)
+                return true;
+        } catch { }
+        try
+        {
+            if (gameContext.SlimeDefinitions.GetLargoByBaseSlimes(slime2, slime1) != null)
+                return true;
+        } catch { }
         return false;
     }
 
@@ -55,107 +50,6 @@ public static class CottonSlimes
         };
     }
 
-    internal static SlimeAppearance.Palette INTERNAL_GetTwinPalette(this SlimeAppearance app)
-    {
-        Material mat = null;
-        foreach (var structure in app._structures)
-        {
-            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
-            {
-                mat = structure.DefaultMaterials[0];
-                break;
-            }
-        }
-
-        if (mat == null) return new SlimeAppearance.Palette();
-
-        return new SlimeAppearance.Palette()
-        {
-            Ammo = new Color32(255, 255, 255, 255),
-            Top = mat.GetColor("_TwinTopColor"),
-            Middle = mat.GetColor("_TwinMiddleColor"),
-            Bottom = mat.GetColor("_TwinBottomColor"),
-        };
-    }
-
-    internal static SlimeAppearance.Palette INTERNAL_GetSloomberPalette(this SlimeAppearance app)
-    {
-        Material mat = null;
-        foreach (var structure in app._structures)
-        {
-            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
-            {
-                mat = structure.DefaultMaterials[0];
-                break;
-            }
-        }
-
-        return new SlimeAppearance.Palette()
-        {
-            Ammo = new Color32(255, 255, 255, 255),
-            Top = mat.GetColor("_SloomberTopColor"),
-            Middle = mat.GetColor("_SloomberMiddleColor"),
-            Bottom = mat.GetColor("_SloomberBottomColor"),
-        };
-    }
-
-    internal static bool INTERNAL_GetLargoHasTwinEffect(SlimeAppearance slime1, SlimeAppearance slime2)
-    {
-        bool result = false;
-
-        foreach (var structure in slime1._structures)
-        {
-            if (structure.DefaultMaterials.Count != 0 &&
-                structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLETWINEFFECT_ON"))
-            {
-                result = true;
-                break;
-            }
-        }
-
-        foreach (var structure in slime2._structures)
-        {
-            if (result) break;
-
-            if (structure.DefaultMaterials.Count != 0 &&
-                structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLETWINEFFECT_ON"))
-            {
-                result = true;
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    internal static bool INTERNAL_GetLargoHasSloomberEffect(SlimeAppearance slime1, SlimeAppearance slime2)
-    {
-        bool result = false;
-
-        foreach (var structure in slime1._structures)
-        {
-            if (structure.DefaultMaterials.Count != 0 &&
-                structure.DefaultMaterials[0].IsKeywordEnabled("_BODYCOLORING_SLOOMBER"))
-            {
-                result = true;
-                break;
-            }
-        }
-
-        foreach (var structure in slime2._structures)
-        {
-            if (result) break;
-
-            if (structure.DefaultMaterials.Count != 0 &&
-                structure.DefaultMaterials[0].IsKeywordEnabled("_BODYCOLORING_SLOOMBER"))
-            {
-                result = true;
-                break;
-            }
-        }
-
-        return result;
-    }
 
 
 
@@ -220,10 +114,6 @@ public static class CottonSlimes
 
         return null;
     }
-
-    
-    
-    
     public static SlimeDefinition GetBaseSlime(string name)
     {
         foreach (IdentifiableType type in baseSlimes.GetAllMembersArray())
@@ -231,7 +121,6 @@ public static class CottonSlimes
                 return type.Cast<SlimeDefinition>();
         return null;
     }
-
     public static SlimeDefinition GetLargo(string name)
     {
         foreach (IdentifiableType type in largos.GetAllMembersArray())
@@ -297,7 +186,7 @@ public static class CottonSlimes
         
         type.AddToGroup("GordoGroup");
         
-        Saving.INTERNAL_SetupLoadForIdent(refID, type);
+        PrismLibSaving.SetupForSaving(type,refID);
         return type;
     }
 
@@ -331,8 +220,8 @@ public static class CottonSlimes
             i++;
         }
 
-        GameContext.Instance.LookupDirector._gordoDict.Add(gordoType, gordo);
-        GameContext.Instance.LookupDirector._gordoEntries.items.Add(gordo);
+        gameContext.LookupDirector._gordoDict.Add(gordoType, gordo);
+        gameContext.LookupDirector._gordoEntries.items.Add(gordo);
         
         gordoType.prefab = gordo;
         
