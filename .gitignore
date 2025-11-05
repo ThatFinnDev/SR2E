@@ -503,27 +503,27 @@ XMLToMD/*.md
 *.kate-swp
 
 
-VirtualSlimes/mono_crash.*
-VirtualSlimes/[Dd]ebug/
-VirtualSlimes/[Dd]ebugPublic/
-VirtualSlimes/[Rr]elease/
-VirtualSlimes/[Rr]eleases/
-VirtualSlimes/x64/
-VirtualSlimes/x86/
-VirtualSlimes/[Aa][Rr][Mm]/
-VirtualSlimes/[Aa][Rr][Mm]64/
-VirtualSlimes/bld/
-VirtualSlimes/[Bb]in/
-VirtualSlimes/[Ll]og/
-VirtualSlimes/[Ll]ogs/
-VirtualSlimes/Output
-VirtualSlimes/Libs/MelonLoader.dll
-VirtualSlimes//packages/LavaGang.MelonLoader.0.6.1
-VirtualSlimes/Libs
-VirtualSlimes/.idea
-VirtualSlimes/.vs
-VirtualSlimes/obj
-VirtualSlimes/start.bat
+PurpleCotton/mono_crash.*
+PurpleCotton/[Dd]ebug/
+PurpleCotton/[Dd]ebugPublic/
+PurpleCotton/[Rr]elease/
+PurpleCotton/[Rr]eleases/
+PurpleCotton/x64/
+PurpleCotton/x86/
+PurpleCotton/[Aa][Rr][Mm]/
+PurpleCotton/[Aa][Rr][Mm]64/
+PurpleCotton/bld/
+PurpleCotton/[Bb]in/
+PurpleCotton/[Ll]og/
+PurpleCotton/[Ll]ogs/
+PurpleCotton/Output
+PurpleCotton/Libs/MelonLoader.dll
+PurpleCotton//packages/LavaGang.MelonLoader.0.6.1
+PurpleCotton/Libs
+PurpleCotton/.idea
+PurpleCotton/.vs
+PurpleCotton/obj
+PurpleCotton/start.bat
 SR2EExampleExpansion/start.sh
 
 

@@ -145,6 +145,29 @@ public class SR2EModMenu : SR2EMenu
                 colorBlock.selectedColor = new Color(0.8706f, 0.5298f, 0.4216f, 1f);
                 b.colors = colorBlock;
             }
+            bool useIcon = false;
+            try
+            {
+                var sprite = EmbeddedResourceEUtil.LoadSprite("icon.png", melonBase.MelonAssembly.Assembly);
+                if(sprite==null) throw new Exception();
+                b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                b.transform.GetChild(1).gameObject.SetActive(true);
+                useIcon=true;
+            }
+            catch { }
+
+            if (!useIcon)
+            {
+                try
+                {
+                    var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", melonBase.MelonAssembly.Assembly);
+                    if(sprite==null) throw new Exception();
+                    b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                    b.transform.GetChild(1).gameObject.SetActive(true);
+                    useIcon=true;
+                }
+                catch { }
+            }
             b.onClick.AddListener((Action)(() =>
             {
                 AudioEUtil.PlaySound(MenuSound.Click);
@@ -157,29 +180,6 @@ public class SR2EModMenu : SR2EMenu
                 string versionText = "\n" + translation("modmenu.modinfo.version",melonBase.Info.Version);
                 ;
 
-                bool useIcon = false;
-                try
-                {
-                    var sprite = EmbeddedResourceEUtil.LoadSprite("icon.png", melonBase.MelonAssembly.Assembly);
-                    if(sprite==null) throw new Exception();
-                    b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
-                    b.transform.GetChild(1).gameObject.SetActive(true);
-                    useIcon=true;
-                }
-                catch { }
-
-                if (!useIcon)
-                {
-                    try
-                    {
-                        var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", melonBase.MelonAssembly.Assembly);
-                        if(sprite==null) throw new Exception();
-                        b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
-                        b.transform.GetChild(1).gameObject.SetActive(true);
-                        useIcon=true;
-                    }
-                    catch { }
-                }
                 foreach (var meta in melonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
                 {
                     if (meta == null) continue;

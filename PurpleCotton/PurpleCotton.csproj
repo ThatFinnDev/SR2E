@@ -3,10 +3,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <OutputType>Library</OutputType>
-    <RootNamespace>SR2EExampleExpansion</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Development</Configurations>
-    <PackageId>SR2EExampleExpansion</PackageId>
+    <PackageId>PurpleCotton</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>embedded</DebugType>
@@ -28,6 +27,7 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="*.csv" />
+    <EmbeddedResource Include="Assets\**" />
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />
     <EmbeddedResource Include="Languages\**" />
