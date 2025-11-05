@@ -14,9 +14,9 @@ public class PediaHightlightPatch
     {
         
         if (__instance == null) return;
-        if (!PrismaLibPedia._additionalFactsMap.ContainsKey(__instance)) return;
+        if (!PrismLibPedia._additionalFactsMap.ContainsKey(__instance)) return;
         var modifiedResult = __result.ToList();
-        foreach (var additionalFact in PrismaLibPedia._additionalFactsMap[__instance])
+        foreach (var additionalFact in PrismLibPedia._additionalFactsMap[__instance])
         {
             var native = additionalFact.ConvertToNativeType();
             if (native.Label == null) native.Label = PrismShortcuts.emptyTranslation;

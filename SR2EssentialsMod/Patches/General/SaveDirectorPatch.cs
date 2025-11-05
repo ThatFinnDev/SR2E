@@ -1,6 +1,5 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
 using Il2CppSystem.Reflection;
-using SR2E.Cotton;
 
 namespace SR2E.Patches.General;
 

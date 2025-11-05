@@ -68,6 +68,7 @@ public class PrismBaseSlimeCreator
 
         var slimeDef = Object.Instantiate( PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetSlimeDefinition());
         Object.DontDestroyOnLoad(slimeDef);
+        slimeDef.hideFlags = HideFlags.DontUnloadUnusedAsset;
         slimeDef.hideFlags = HideFlags.HideAndDontSave;
         slimeDef.Name = name;
         slimeDef.name = name;
@@ -76,6 +77,7 @@ public class PrismBaseSlimeCreator
         var baseAppearance = customBaseAppearance;
         if (baseAppearance == null) baseAppearance = PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetSlimeAppearance();
         SlimeAppearance appearance = Object.Instantiate(baseAppearance);
+        appearance.hideFlags = HideFlags.DontUnloadUnusedAsset;
         Object.DontDestroyOnLoad(appearance);
         appearance.name = name+"Default";
         appearance._icon = icon;

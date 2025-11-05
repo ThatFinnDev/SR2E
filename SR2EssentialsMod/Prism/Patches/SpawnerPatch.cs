@@ -1,48 +1,22 @@
-using SR2E.Cotton;
+using SR2E.Prism.Lib;
 using SR2E.Storage;
 
 namespace SR2E.Prism.Patches;
 
 [PrismPatch()]
-//[HarmonyPatch(typeof(DirectedActorSpawner))]
+[HarmonyPatch(typeof(DirectedActorSpawner))]
 internal class SpawnerPatch
 {
     [HarmonyPatch(nameof(DirectedActorSpawner.Awake))]
     [HarmonyPostfix]
     static void PostAwake(DirectedActorSpawner __instance)
     {
-        foreach (var action in CottonLibrary.executeOnSpawnerAwake)
-        {
-            action(__instance);
-        }
-    }
-    
-    [HarmonyPatch(nameof(DirectedActorSpawner.MaybeReplaceId))]
-    [HarmonyPrefix]
-    static bool Replacement(DirectedActorSpawner __instance, ref IdentifiableType __result, IdentifiableType id)
-    {
-        if (!__instance) return false;
-        if (__instance.WasCollected) return false;
-        
-        foreach (var replacement in CottonLibrary.spawnerReplacements)
-        {
+        foreach (var action in PrismLibSpawning.executeOnSpawnerAwake)
             try
             {
-                if (CottonLibrary.Spawning.IsInZone(replacement.zones))
-                {
-                    var chance = Randoms.SHARED.GetProbability(1f / replacement.chance);
-                    if (chance)
-                    {
-                        __result = replacement.ident;
-                        return false;
-                    }
-                }
+                action.Invoke(__instance);
             }
-            catch { }
-        }
-
-        __result = id;
-        
-        return false;
+            catch (Exception e) { MelonLogger.Error(e); }
     }
+    
 }

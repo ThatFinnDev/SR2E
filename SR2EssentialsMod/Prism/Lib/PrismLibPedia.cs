@@ -5,8 +5,9 @@ using UnityEngine.Localization;
 
 namespace SR2E.Prism.Lib;
 
-public static class PrismaLibPedia
+public static class PrismLibPedia
 {
+    internal static Dictionary<PrismPediaCategoryType, PediaCategory> pediaCategories = new();
     static Dictionary<PrismPediaDetailType, PediaDetailSection> pediaDetailSectionLookup = new Dictionary<PrismPediaDetailType, PediaDetailSection>();
     static Dictionary<PrismPediaFactSetType, PediaHighlightSet> pediaPrismFactSetLookup = new Dictionary<PrismPediaFactSetType, PediaHighlightSet>() { };
     internal static Dictionary<PediaEntry, List<PrismPediaAdditionalFact>> _additionalFactsMap = new Dictionary<PediaEntry, List<PrismPediaAdditionalFact>>();
@@ -76,14 +77,15 @@ public static class PrismaLibPedia
         pediaPrismFactSetLookup.Add(PrismPediaFactSetType.None, Get<PediaHighlightSet>("TutorialPediaTemplate"));
         pediaPrismFactSetLookup.Add(PrismPediaFactSetType.Resource, Get<PediaHighlightSet>("ResourceHighlights"));
         pediaPrismFactSetLookup.Add(PrismPediaFactSetType.Slime, Get<PediaHighlightSet>("SlimeHighlights"));
-        pediaPrismFactSetLookup.Add(PrismPediaFactSetType.Food, Get<PediaHighlightSet>("FoodHighlights"));
+        pediaPrismFactSetLookup.Add(PrismPediaFactSetType.Food, Get<PediaHighlightSet>("FoodHightlights")); //yes, there is a typo in there...
 
         _identifiablePediaEntryPrefab = Get<IdentifiablePediaEntry>("Pink");
         if (_identifiablePediaEntryPrefab == null)
             _identifiablePediaEntryPrefab = GetAny<IdentifiablePediaEntry>();
-        
+        if(_identifiablePediaEntryPrefab!=null) Object.DontDestroyOnLoad(_identifiablePediaEntryPrefab);
         _fixedPediaEntryPrefab = Get<FixedPediaEntry>("PrismaPlorts");
         if (_fixedPediaEntryPrefab == null)
             _fixedPediaEntryPrefab = GetAny<FixedPediaEntry>();
+        if(_fixedPediaEntryPrefab!=null) Object.DontDestroyOnLoad(_identifiablePediaEntryPrefab);
     }
 }

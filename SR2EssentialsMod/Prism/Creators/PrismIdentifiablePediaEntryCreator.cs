@@ -35,7 +35,8 @@ public class PrismIdentifiablePediaEntryCreator
         if (!IsValid()) return null;
         if (_createdPediaEntry != null) return _createdPediaEntry;
         
-        var entry = Object.Instantiate(PrismaLibPedia._identifiablePediaEntryPrefab);
+        var entry = Object.Instantiate(PrismLibPedia._identifiablePediaEntryPrefab);
+        entry.hideFlags = HideFlags.DontUnloadUnusedAsset;
         Object.DontDestroyOnLoad(entry);
 
         entry._title = identifiableType.localizedName;
@@ -48,7 +49,7 @@ public class PrismIdentifiablePediaEntryCreator
             foreach (var detail in details)
                 _details.Add(detail.ConvertToNativeType());
         entry._details = _details.ToArray();
-        PrismaLibPedia.pediaEntryLookup[categoryType].Add(entry);
+        PrismLibPedia.pediaEntryLookup[categoryType].Add(entry);
         
         var prismEntry = new PrismIdentifiablePediaEntry(entry, false);
 
@@ -59,6 +60,8 @@ public class PrismIdentifiablePediaEntryCreator
             foreach (var additionalFact in additionalFacts)
                 prismEntry.AddAdditionalFact(additionalFact);
         
+        if (PrismLibPedia.pediaCategories.ContainsKey(categoryType))
+            PrismLibPedia.pediaCategories[categoryType].GetRuntimeCategory();
         return prismEntry;
     }
 }

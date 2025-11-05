@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using SR2E.Cotton;
 using SR2E.Prism.Lib;
 using SR2E.Storage;
 

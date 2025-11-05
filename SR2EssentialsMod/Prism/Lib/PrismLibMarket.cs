@@ -1,6 +1,5 @@
 using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using SR2E.Cotton;
 using SR2E.Prism.Data;
 
 namespace SR2E.Prism.Lib;

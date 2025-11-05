@@ -1,10 +1,9 @@
 using System.Linq;
-using SR2E.Cotton;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using SR2E.Storage;
 
 namespace SR2E.Prism.Patches;
-
+/*
 [PrismPatch()]
 [HarmonyPatch(typeof(SnareModel),nameof(SnareModel.GetGordoIdForBait))]
 public class GordoCapturePatch
@@ -16,4 +15,4 @@ public class GordoCapturePatch
         if (pair.Value)
             __result = pair.Value;
     }
-}
+}*/

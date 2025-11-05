@@ -24,7 +24,6 @@ using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using SR2E.Buttons;
 using SR2E.Components;
-using SR2E.Cotton;
 using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Menus;

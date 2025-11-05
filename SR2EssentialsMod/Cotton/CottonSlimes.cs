@@ -1,3 +1,14 @@
+/*
+ 
+ 
+ 
+ TODO:
+ MIGRATE GORDO TO PRISM
+ IMPROVE PREFAB MECHANIC
+ 
+ 
+ 
+ 
 using System;
 using SR2E.Prism.Lib;
 using UnityEngine.Localization; 
@@ -5,10 +16,6 @@ namespace SR2E.Cotton;
 
 public static class CottonSlimes
 {
-
-
-
-
 
 
 
@@ -96,4 +103,4 @@ public static class CottonSlimes
     }
     internal static Dictionary<string, IdentifiableType> gordoBaitDict = new Dictionary<string, IdentifiableType>();
 
-}
+}*/

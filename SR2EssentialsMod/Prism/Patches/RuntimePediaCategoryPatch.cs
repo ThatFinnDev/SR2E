@@ -1,5 +1,4 @@
 using Il2CppMonomiPark.SlimeRancher.Pedia;
-using SR2E.Cotton;
 using SR2E.Prism.Data;
 using SR2E.Prism.Lib;
 using SR2E.Storage;
@@ -24,10 +23,12 @@ internal class RuntimePediaCategoryPatch
     };
     public static void Postfix(PediaCategory __instance, ref PediaRuntimeCategory __result)
     {
-        
         if (categories.TryGetValue(__instance.name, out PrismPediaCategoryType category))
         {
-            foreach (var pedia in PrismaLibPedia.pediaEntryLookup[category])
+            if (PrismLibPedia.pediaCategories.ContainsKey(category))
+                PrismLibPedia.pediaCategories.Remove(category);
+            PrismLibPedia.pediaCategories.Add(category,__instance);
+            foreach (var pedia in PrismLibPedia.pediaEntryLookup[category])
             {
                 if (!__result._items.Contains(pedia))
                      __result._items.Add(pedia);

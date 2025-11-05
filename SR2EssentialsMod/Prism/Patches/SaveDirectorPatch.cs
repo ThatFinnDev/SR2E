@@ -1,6 +1,5 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
-using SR2E.Cotton;
 using SR2E.Expansion;
 using SR2E.Prism.Lib;
 using SR2E.Storage;
@@ -19,7 +18,7 @@ internal static class SaveDirectorPatch
     {
         PrismShortcuts.emptyTranslation = AddTranslation("");
         PrismShortcuts.unavailableIcon = Get<Sprite>("unavailableIcon");
-        PrismaLibPedia.PediaDetailTypesInitialize();
+        PrismLibPedia.PediaDetailTypesInitialize();
         
         foreach (var category in Resources.FindObjectsOfTypeAll<PediaCategory>())
             try

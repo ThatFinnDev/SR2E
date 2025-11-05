@@ -3,7 +3,6 @@ using System.Linq;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppSystem.Linq;
-using SR2E.Cotton;
 using SR2E.Prism.Creators;
 using SR2E.Prism.Data;
 using SR2E.Prism.Lib;

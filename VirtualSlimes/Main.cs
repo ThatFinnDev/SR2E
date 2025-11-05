@@ -78,6 +78,9 @@ public class SlimeMain : SR2EExpansionV2
         byteSlime.AddFoodGroup(PrismLibLookup.fruitFoodGroup); //Adds what the slime can eat
         byteSlime.RefreshEatMap(); //Refreshes everything
 
+        //Make it spawn
+        var byteSpawnLocations = new PrismSpawnLocations[] { PrismSpawnLocations.RainbowFields };
+        PrismLibSpawning.MakeSpawnable(byteSlime, PrismSpawnerActiveTime.AllTheTime, byteSpawnLocations,0.3f, PrismSpawnerType.Slime);
         
         //Create Pedia entry
         var bytePediaCreator = new PrismIdentifiablePediaEntryCreator(
@@ -87,7 +90,7 @@ public class SlimeMain : SR2EExpansionV2
         bytePediaCreator.details = //Create details, you can add absolutely anything you want
             PrismPediaDetail.From(
                 PrismPediaDetail.Create(PrismPediaDetailType.Slimeology,AddTranslation("Some Slimeology", "l.byte_pedia_slimeology")),
-                PrismPediaDetail.Create(PrismPediaDetailType.RancherRisks,AddTranslation("Some RancherRisks", "l.byte_pedia_rancherrisks")),
+                PrismPediaDetail.Create(PrismPediaDetailType.RancherRisks,AddTranslation("Some Rancherrisks", "l.byte_pedia_rancherrisks")),
                 PrismPediaDetail.Create(PrismPediaDetailType.Plortonomics,AddTranslation("Some Plortonomics", "l.byte_pedia_plortonomics"))
             );
         //Custom additional fact
@@ -103,7 +106,6 @@ public class SlimeMain : SR2EExpansionV2
         //Create largo manually
         //var bytePinkLargoCreator = new PrismLargoCreator(byteSlime, PrismNativeBaseSlime.Pink);
         //bytePinkLargoCreator.largoMergeSettings = new PrismLargoMergeSettings();
-        //bytePinkLargoCreator.disableMakeTheirPlortEdible = false; // Controls whether a base slime can eat a plort and become a largo
         //bytePinkLargo = bytePinkLargoCreator.CreateLargo();
 
     }

@@ -1,5 +1,4 @@
 using Il2CppMonomiPark.SlimeRancher.Persist;
-using SR2E.Cotton;
 using SR2E.Prism.Lib;
 using SR2E.Storage;
 

@@ -1,7 +1,6 @@
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Slime;
-using SR2E.Cotton;
 using SR2E.Prism.Data;
 using SR2E.Prism.Lib;
 using UnityEngine.Localization;
@@ -23,7 +22,6 @@ public class PrismLargoCreator
     
     public LocalizedString customLocalized;
     public GameObject customBasePrefab = null;
-    public bool disableMakeTheirPlortEdible = false;
 
 
     public PrismLargoCreator(PrismNativeBaseSlime firstSlime, PrismNativeBaseSlime secondSlime)
@@ -110,7 +108,7 @@ public class PrismLargoCreator
         largoDef.FavoriteToyIdents = new Il2CppReferenceArray<ToyDefinition>(PrismLibMerging.MergeFavoriteToys(firstSlime, secondSlime));
 
         Object.DontDestroyOnLoad(largoDef);
-        largoDef.hideFlags = HideFlags.HideAndDontSave;
+        largoDef.hideFlags = HideFlags.DontUnloadUnusedAsset;
         largoDef.name = name;
 
         largoDef.prefab = Object.Instantiate(baseLargo.prefab, prefabHolder.transform);
@@ -126,6 +124,7 @@ public class PrismLargoCreator
         SlimeAppearance appearance = Object.Instantiate(baseLargo.AppearancesDefault[0]);
         largoDef.AppearancesDefault[0] = appearance;
         Object.DontDestroyOnLoad(appearance);
+        appearance.hideFlags = HideFlags.DontUnloadUnusedAsset;
         appearance.name = firstSlimeDef.AppearancesDefault[0].name + secondSlimeDef.AppearancesDefault[0].name;
 
         appearance._dependentAppearances = new[]
@@ -179,7 +178,7 @@ public class PrismLargoCreator
             secondPlort = pair.Key.Plort2;
             break;
         }
-        if(!disableMakeTheirPlortEdible&&firstPlort!=null&&secondPlort!=null)
+        if(firstPlort!=null&&secondPlort!=null)
         {
             firstSlime.AddEatmapToSlime(PrismLibDiet.CreateEatmapEntry(SlimeEmotions.Emotion.AGITATION, 0.5f, null, secondPlort, largoDef), true);
             secondSlime.AddEatmapToSlime(PrismLibDiet.CreateEatmapEntry(SlimeEmotions.Emotion.AGITATION, 0.5f, null, firstPlort, largoDef), true);

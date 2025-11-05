@@ -1,5 +1,4 @@
 ﻿using Il2CppMonomiPark.SlimeRancher.Economy;
-using SR2E.Cotton;
 using SR2E.Storage;
 
 namespace SR2E.Prism.Patches.Callback;

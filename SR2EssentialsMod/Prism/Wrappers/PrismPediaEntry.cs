@@ -64,28 +64,28 @@ public class PrismPediaEntry
     public void AddAdditionalFact(PrismPediaAdditionalFact? fact)
     {
         if (fact == null) return;
-        if (!PrismaLibPedia._additionalFactsMap.ContainsKey(_pediaEntry))
-            PrismaLibPedia._additionalFactsMap[_pediaEntry] = new List<PrismPediaAdditionalFact>();
-        PrismaLibPedia._additionalFactsMap[_pediaEntry].Add(fact.Value);
+        if (!PrismLibPedia._additionalFactsMap.ContainsKey(_pediaEntry))
+            PrismLibPedia._additionalFactsMap[_pediaEntry] = new List<PrismPediaAdditionalFact>();
+        PrismLibPedia._additionalFactsMap[_pediaEntry].Add(fact.Value);
     }
     public void RemoveAdditionalFact(PrismPediaAdditionalFact? fact)
     {
         if (fact == null) return;
-        if (!PrismaLibPedia._additionalFactsMap.ContainsKey(_pediaEntry)) return;
-        if (PrismaLibPedia._additionalFactsMap[_pediaEntry].Contains(fact.Value))
-            PrismaLibPedia._additionalFactsMap[_pediaEntry].Remove(fact.Value);
+        if (!PrismLibPedia._additionalFactsMap.ContainsKey(_pediaEntry)) return;
+        if (PrismLibPedia._additionalFactsMap[_pediaEntry].Contains(fact.Value))
+            PrismLibPedia._additionalFactsMap[_pediaEntry].Remove(fact.Value);
     }
     public void RemoveAtAdditionalFact(int index)
     {
         if (index < 0) return;
-        if (!PrismaLibPedia._additionalFactsMap.ContainsKey(_pediaEntry)) return;
-        if (PrismaLibPedia._additionalFactsMap[_pediaEntry].Count>index)
-            PrismaLibPedia._additionalFactsMap[_pediaEntry].RemoveAt(index);
+        if (!PrismLibPedia._additionalFactsMap.ContainsKey(_pediaEntry)) return;
+        if (PrismLibPedia._additionalFactsMap[_pediaEntry].Count>index)
+            PrismLibPedia._additionalFactsMap[_pediaEntry].RemoveAt(index);
     }
 
     public void ClearAdditionalFacts()
     {
-        if (PrismaLibPedia._additionalFactsMap.ContainsKey(_pediaEntry)) return;
-            PrismaLibPedia._additionalFactsMap.Remove(_pediaEntry);
+        if (PrismLibPedia._additionalFactsMap.ContainsKey(_pediaEntry)) return;
+            PrismLibPedia._additionalFactsMap.Remove(_pediaEntry);
     }
 }
