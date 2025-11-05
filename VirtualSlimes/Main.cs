@@ -61,6 +61,8 @@ public class SlimeMain : SR2EExpansionV2
         byteSlimeCreator.vacColor = vacColor_byte; // The color of the slime in the vac and its splat color
         byteSlimeCreator.canLargofy = true; // Can this slime have largo forms, used for createAllLargos, gets overwritten if you create one manually
         byteSlimeCreator.createAllLargos = true; // Automatically create all largos, requires canLargofy on both slimes
+        byteSlimeCreator.disableAutoModdedLargos = false; // Disables autolargos for combini between 2 non-native slimes. Do this if your slime has custom components that break in auto largo
+        //byteSlimeCreator.customAutoLargoMergeSettings = new PrismLargoMergeSettings(); //Custom auto largo settings
         byteSlimeCreator.customBaseAppearance = PrismNativeBaseSlime.Cotton.GetPrismBaseSlime().GetSlimeAppearance(); // If not set, Pink is default, it will duplicate it
         byteSlimeCreator.customBasePrefab = PrismNativeBaseSlime.Cotton.GetPrismBaseSlime().GetPrefab();; // If not set, Pink is default, it will duplicate it
         //if(!byteSlimeCreator.IsValid()) DoStuff(); // Optionally check if valid

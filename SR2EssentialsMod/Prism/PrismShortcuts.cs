@@ -33,6 +33,19 @@ public static class PrismShortcuts
     internal static Sprite unavailableIcon;
     
     
+    private static SlimeAppearanceDirector _mainAppearanceDirector;
+
+    public static SlimeAppearanceDirector mainAppearanceDirector
+    {
+        get
+        {
+            if (_mainAppearanceDirector == null)
+                
+                _mainAppearanceDirector = Get<SlimeAppearanceDirector>("MainSlimeAppearanceDirector");
+            return _mainAppearanceDirector;
+        }
+        set { _mainAppearanceDirector = value; }
+    }
     internal static Dictionary<string, List<Action>> onSceneLoaded = new Dictionary<string, List<Action>>();
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {

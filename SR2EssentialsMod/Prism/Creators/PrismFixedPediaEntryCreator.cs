@@ -48,7 +48,7 @@ public class PrismFixedPediaEntryCreator
         if (_createdPediaEntry != null) return _createdPediaEntry;
         
         var entry = Object.Instantiate(PrismaLibPedia._fixedPediaEntryPrefab);
-
+        Object.DontDestroyOnLoad(entry);
         entry._title = titleLocalized;
         entry._icon = icon!=null?icon:PrismShortcuts.unavailableIcon;
         entry._description = descriptionLocalized;

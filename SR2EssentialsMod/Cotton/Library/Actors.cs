@@ -234,20 +234,7 @@ public static partial class CottonLibrary
 
             return obj;
         }
-
-
-        public static IdentifiableType CreateBlankType(string Name, Color32 VacColor, Sprite Icon, string RefID)
-        {
-            var type = Object.Instantiate(LookupEUtil.veggieFoodTypes.GetEntryByName("CarrotVeggie"));
-            Object.DontDestroyOnLoad(type);
-            type.hideFlags = HideFlags.HideAndDontSave;
-            type.name = Name;
-            type.color = VacColor;
-            type.icon = Icon;
-            type.Prism_AddToGroup("VaccableNonLiquids");
-            //INTERNAL_SetupLoadForIdent(RefID, type);
-            return type;
-        }
+        
 
         public static void MakeVaccable(IdentifiableType ident)
         {

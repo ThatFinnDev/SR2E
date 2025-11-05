@@ -157,10 +157,12 @@ public class PrismLargoCreator
             }
         }
 
-        gameContext.SlimeDefinitions.Slimes = gameContext.SlimeDefinitions.Slimes.AddToNew(largoDef);
-        gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(largoDef, largoDef);
-        CottonLibrary.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[0]);
-        CottonLibrary.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[0]);
+        if(!gameContext.SlimeDefinitions.Slimes.Contains(largoDef))
+            gameContext.SlimeDefinitions.Slimes = gameContext.SlimeDefinitions.Slimes.AddToNew(largoDef);
+        if(!gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.ContainsKey(largoDef))
+            gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.Add(largoDef, largoDef);
+        PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[0]);
+        PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[0]);
 
         PrismLibSaving.SetupForSaving(largoDef,largoDef.referenceId);
         

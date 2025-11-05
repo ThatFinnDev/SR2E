@@ -12,19 +12,6 @@ public static partial class CottonLibrary
 
     
 
-    private static SlimeAppearanceDirector _mainAppearanceDirector;
-
-    public static SlimeAppearanceDirector mainAppearanceDirector
-    {
-        get
-        {
-            if (_mainAppearanceDirector == null)
-                
-                _mainAppearanceDirector = Get<SlimeAppearanceDirector>("MainSlimeAppearanceDirector");
-            return _mainAppearanceDirector;
-        }
-        set { _mainAppearanceDirector = value; }
-    }
 
 
 

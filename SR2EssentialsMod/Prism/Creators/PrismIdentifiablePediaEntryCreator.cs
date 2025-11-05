@@ -36,6 +36,7 @@ public class PrismIdentifiablePediaEntryCreator
         if (_createdPediaEntry != null) return _createdPediaEntry;
         
         var entry = Object.Instantiate(PrismaLibPedia._identifiablePediaEntryPrefab);
+        Object.DontDestroyOnLoad(entry);
 
         entry._title = identifiableType.localizedName;
         entry._identifiableType = identifiableType;

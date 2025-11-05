@@ -1,9 +1,67 @@
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using SR2E.Prism.Data;
 
 namespace SR2E.Prism.Lib;
 
-public static class PrismLibColoring
+public static class PrismLibAppearances
 {
+    public static void SwitchSlimeAppearances(SlimeDefinition slimeOneDef, SlimeDefinition slimeTwoDef)
+    {
+        var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures;
+        slimeOneDef.AppearancesDefault[0]._structures = slimeTwoDef.AppearancesDefault[0]._structures;
+        slimeTwoDef.AppearancesDefault[0]._structures = appearanceOne;
+        var appearanceSplatOne = slimeOneDef.AppearancesDefault[0]._splatColor;
+        slimeOneDef.AppearancesDefault[0]._splatColor = slimeTwoDef.AppearancesDefault[0]._splatColor;
+        slimeTwoDef.AppearancesDefault[0]._splatColor = appearanceSplatOne;
+
+        var colorPalate = slimeOneDef.AppearancesDefault[0]._colorPalette;
+        slimeOneDef.AppearancesDefault[0]._colorPalette = slimeTwoDef.AppearancesDefault[0]._colorPalette;
+        slimeTwoDef.AppearancesDefault[0]._colorPalette = colorPalate;
+
+        var structureIcon = slimeOneDef.AppearancesDefault[0]._icon;
+        slimeOneDef.AppearancesDefault[0]._icon = slimeTwoDef.AppearancesDefault[0]._icon;
+        slimeTwoDef.AppearancesDefault[0]._icon = structureIcon;
+        var icon = slimeOneDef.icon;
+        slimeOneDef.icon = slimeTwoDef.icon;
+        slimeTwoDef.icon = icon;
+
+        var debugIcon = slimeOneDef.debugIcon;
+        slimeOneDef.debugIcon = slimeTwoDef.debugIcon;
+        slimeTwoDef.debugIcon = debugIcon;
+
+    }
+    public static void SetStructColor(SlimeAppearanceStructure structure, int id, Color color)
+    {
+        structure.DefaultMaterials[0].SetColor(id, color);
+    }
+
+    public static void AddStructure(SlimeAppearance appearance, SlimeAppearanceStructure structure)
+    {
+        appearance.Structures=appearance.Structures.AddToNew(structure);
+    }
+    public static SlimeAppearanceStructure AddStructure(SlimeAppearance app, Mesh mesh, SlimeAppearance.SlimeBone rootBone, SlimeAppearance.SlimeBone parentBone, string elementName)
+    {
+        var structPrefab = app._structures[0].Element.Prefabs[0].gameObject.CopyObject();
+        structPrefab.GetComponent<SkinnedMeshRenderer>().sharedMesh = mesh;
+        
+        var structObj = structPrefab.GetComponent<SlimeAppearanceObject>();
+        structObj.IgnoreLODIndex = true;
+        structObj.RootBone = rootBone;
+        structObj.ParentBone = parentBone;
+        structObj.AttachedBones = new Il2CppStructArray<SlimeAppearance.SlimeBone>(0);
+        
+        var structure = new SlimeAppearanceStructure(app._structures[0]);
+        structure.Element = ScriptableObject.CreateInstance<SlimeAppearanceElement>();
+        structure.Element.CastsShadows = true;
+        structure.Element.Name = elementName;
+        structure.Element.Prefabs = new Il2CppReferenceArray<SlimeAppearanceObject>(new[]
+        {
+            structObj
+        });
+        
+        app._structures = app._structures.AddToNew(structure);
+        return structure;
+    }
     public static void SetPlortBaseColors(this PrismPlort prismPlort, Color32 Top, Color32 Middle, Color32 Bottom)
     {
         var material = prismPlort.GetPrefab().GetComponent<MeshRenderer>().material;

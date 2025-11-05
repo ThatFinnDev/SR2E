@@ -22,9 +22,11 @@ public class PrismBaseSlimeCreator
     public bool disableSinkInShallowWater = true;
     public bool disableEdibleByTarrs = true;
     public bool disableVaccable = true;
-    
+
+    public PrismLargoMergeSettings customAutoLargoMergeSettings = null;
     public bool canLargofy = false;
     public bool createAllLargos = false;
+    public bool disableAutoModdedLargos = false;
     public Color32 vacColor = new Color32(0,0,0,255);
 
     
@@ -173,7 +175,8 @@ public class PrismBaseSlimeCreator
             gameContext.SlimeDefinitions.Slimes = gameContext.SlimeDefinitions.Slimes.AddToNew(slimeDef);
         if(!gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.ContainsKey(slimeDef))
             gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.Add(slimeDef, slimeDef);
-
+        PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(slimeDef, slimeDef.AppearancesDefault[0]);
+        PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(slimeDef, slimeDef.AppearancesDefault[0]);
         PrismLibSaving.SetupForSaving(slimeDef,referenceID);
 
         if(!disableVaccable) slimeDef.Prism_AddToGroup("VaccableBaseSlimeGroup");
@@ -195,7 +198,7 @@ public class PrismBaseSlimeCreator
 
         if (!disableEdibleByTarrs)
             PrismNativeBaseSlime.Tarr.GetPrismBaseSlime().RefreshEatMap();
-        var prismSlime = new PrismBaseSlime(slimeDef, false,canLargofy);
+        var prismSlime = new PrismBaseSlime(slimeDef, false,canLargofy,disableAutoModdedLargos);
         
         if (canLargofy&&createAllLargos)
         {
@@ -207,9 +210,13 @@ public class PrismBaseSlimeCreator
                     {
                         var otherSlimeDef = slime.TryCast<SlimeDefinition>();
                         if(otherSlimeDef==slimeDef) continue;
-                        if (otherSlimeDef.GetPrismBaseSlime()._allowLargos)
+                        var otherPrism = otherSlimeDef.GetPrismBaseSlime();
+                        if (otherPrism._allowLargos&& !(disableAutoModdedLargos && !otherPrism.GetIsNative()))
                         {
-                            new PrismLargoCreator(prismSlime, otherSlimeDef.GetPrismBaseSlime()).CreateLargo();
+                            var largoCreator = new PrismLargoCreator(prismSlime, otherPrism);
+                            if (customAutoLargoMergeSettings != null)
+                                largoCreator.largoMergeSettings = customAutoLargoMergeSettings;
+                            largoCreator.CreateLargo();
                         }
                     }
                     catch (Exception e)

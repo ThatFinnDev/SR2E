@@ -85,8 +85,8 @@ public static class PrismLibMarket
             if (entry.IdentType == ident)
                 return true;
         }
-
-        if (PrismShortcuts.removeMarketPlortEntries.Count != 0)
+        
+        if(ident.ReferenceId!="IdentifiableType.UnstablePlort")
             foreach (var pair in PrismLibLookup.refIDTranslationPrismNativeBaseSlime)
                 if (pair.Value == ident.ReferenceId)
                 {
@@ -94,10 +94,9 @@ public static class PrismLibMarket
                     foreach (IdentifiableType removed in PrismShortcuts.removeMarketPlortEntries)
                         if (ident == removed)
                         {
-                            returnBool = false;
+                            returnBool = false; 
                             break;
                         }
-
                     return returnBool;
                 }
 
@@ -109,7 +108,8 @@ public static class PrismLibMarket
         if (ident == null) return;
         if (ident.IsPlayer) return;
         if (ident.isGadget()) return;
-        PrismShortcuts.removeMarketPlortEntries.Add(ident);
+        if(!PrismShortcuts.removeMarketPlortEntries.Contains(ident))
+         PrismShortcuts.removeMarketPlortEntries.Add(ident);
         foreach (var keyPair in PrismShortcuts.marketPlortEntries)
         {
             PlortEntry entry = keyPair.Key;
