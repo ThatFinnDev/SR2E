@@ -75,7 +75,7 @@ public static class SR2EFeatureFlags
             if(!flagsToForceOff.HasFlag(flag))
             {
                 xmlElement.SetAttribute("value", flag.HasFlag().ToString().ToLower());
-                xmlElement.SetAttribute("default", flag.HasFlag().ToString().ToLower());
+                xmlElement.SetAttribute("default", flag.GetDefault().ToString().ToLower());
             }
             else
             {
@@ -300,7 +300,7 @@ public static class SR2EFeatureFlags
         {EnableCheatMenu, new FFR[]{new FFRDeactivated(DisableCheats)}},
         {AddCheatMenuButton,new FFR[]{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
         {AddModMenuButton,new FFR[]{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
-        {AllowPrism,new FFR[]{new FFRActivated(InjectTranslations),new FFRActivated(Experiments)}},
+        {AllowPrism,new FFR[]{new FFRActivated(InjectTranslations)}},
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {
