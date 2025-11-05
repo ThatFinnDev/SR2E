@@ -1,6 +1,4 @@
-﻿using Cotton;
-using SR2E.Cotton;
-using SR2E.Expansion;
+﻿using SR2E.Expansion;
 using SR2E.Prism;
 using SR2E.Prism.Creators;
 using SR2E.Prism.Lib;
@@ -75,7 +73,7 @@ public class SlimeMain : SR2EExpansionV2
         byteSlime.SetSlimeBaseColorsSpecific(topColor_byte, middleColor_byte, bottomColor_byte, middleColor_byte, 0, 0, false, 4);
         
         //Some food management
-        byteSlime.AddFoodGroup(CottonLibrary.fruits); //Adds what the slime can eat
+        byteSlime.AddFoodGroup(PrismLibLookup.fruitFoodGroup); //Adds what the slime can eat
         byteSlime.RefreshEatMap(); //Refreshes everything
 
         
@@ -90,6 +88,7 @@ public class SlimeMain : SR2EExpansionV2
                 PrismPediaDetail.Create(PrismPediaDetailType.RancherRisks,AddTranslation("Some RancherRisks", "l.byte_pedia_rancherrisks")),
                 PrismPediaDetail.Create(PrismPediaDetailType.Plortonomics,AddTranslation("Some Plortonomics", "l.byte_pedia_plortonomics"))
             );
+        //Custom additional fact
         bytePediaCreator.additionalFacts = PrismPediaAdditionalFact.From(
             PrismPediaAdditionalFact.Create(
             AddTranslation("Virtual"), 

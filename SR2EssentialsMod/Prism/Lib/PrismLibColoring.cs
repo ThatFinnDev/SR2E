@@ -10,6 +10,7 @@ public static class PrismLibColoring
         material.SetColor("_TopColor", Top);
         material.SetColor("_MiddleColor", Middle);
         material.SetColor("_BottomColor", Bottom);
+        
     }
 
     public static void SetPlortTwinColors(this PrismPlort prismPlort, Color32 Top, Color32 Middle, Color32 Bottom)
@@ -174,7 +175,19 @@ public static class PrismLibColoring
         mat.DisableKeyword("_ENABLETWINEFFECT_ON");
     }
 
-    /*public static void SetSlimeMatTopColor(this Material mat, Color color) => mat.SetColor("_TopColor", color);
+    /*
+    
+       public static void SetPalette(this SlimeAppearance app, Material slimeMaterial, SlimeDefinition definition)
+       {
+           app._colorPalette = new SlimeAppearance.Palette
+           {
+               Ammo = definition.color,
+               Bottom = slimeMaterial.GetColor("_BottomColor"),
+               Middle = slimeMaterial.GetColor("_MiddleColor"),
+               Top = slimeMaterial.GetColor("_TopColor"),
+           };
+       }
+     public static void SetSlimeMatTopColor(this Material mat, Color color) => mat.SetColor("_TopColor", color);
     public static void SetSlimeMatMiddleColor(this Material mat, Color color) => mat.SetColor("_MiddleColor", color);
 
     public static void SetSlimeMatBottomColor(this Material mat, Color color) => mat.SetColor("_BottomColor", color);

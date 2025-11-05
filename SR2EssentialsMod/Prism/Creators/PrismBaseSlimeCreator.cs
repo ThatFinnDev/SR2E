@@ -1,8 +1,5 @@
 using System.Linq;
-using Cotton;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppSystem.Linq;
-using SR2E.Cotton;
 using SR2E.Prism.Data;
 using SR2E.Prism.Lib;
 using UnityEngine.Localization;
@@ -179,12 +176,12 @@ public class PrismBaseSlimeCreator
 
         PrismLibSaving.SetupForSaving(slimeDef,referenceID);
 
-        if(!disableVaccable) slimeDef.AddToGroup("VaccableBaseSlimeGroup");
-        slimeDef.AddToGroup("SmallSlimeGroup");
+        if(!disableVaccable) slimeDef.Prism_AddToGroup("VaccableBaseSlimeGroup");
+        slimeDef.Prism_AddToGroup("SmallSlimeGroup");
         if(!disableEdibleByTarrs)
-            slimeDef.AddToGroup("EdibleSlimeGroup");
-        slimeDef.AddToGroup("IdentifiableTypesGroup");
-        if(!disableSinkInShallowWater) slimeDef.AddToGroup("SlimesSinkInShallowWaterGroup");
+            slimeDef.Prism_AddToGroup("EdibleSlimeGroup");
+        slimeDef.Prism_AddToGroup("IdentifiableTypesGroup");
+        if(!disableSinkInShallowWater) slimeDef.Prism_AddToGroup("SlimesSinkInShallowWaterGroup");
         
         
         slimeDef.AppearancesDefault[0]._colorPalette = new SlimeAppearance.Palette
@@ -204,7 +201,7 @@ public class PrismBaseSlimeCreator
         {
             PrismShortcuts.createLargoActions.Add(() =>
             {
-                foreach (var slime in CottonLibrary.baseSlimes.GetAllMembers().ToList())
+                foreach (var slime in LookupEUtil.baseSlimeTypes)
                 {
                     try
                     {

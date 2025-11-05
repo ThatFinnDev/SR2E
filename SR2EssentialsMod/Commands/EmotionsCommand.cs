@@ -29,7 +29,7 @@ internal class EmotionsCommand : SR2ECommand
             case "sleepiness": emotion = SlimeEmotions.Emotion.SLEEPINESS; break;
             default: return SendUnknown();
         }
-        Camera cam = Camera.current; if (cam == null) return SendNoCamera();
+        Camera cam = MiscEUtil.GetActiveCamera(); if (cam == null) return SendNoCamera();
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {
             var slime = hit.collider.gameObject.GetComponent<SlimeEmotions>();

@@ -8,32 +8,14 @@ using SR2E.Storage;
 namespace SR2E.Prism.Patches;
 
 
-[PrismPatch()]
-[HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
+//[PrismPatch()]
+//[HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
 internal static class SaveDirectorPatch
 {
-    static void Prefix(AutoSaveDirector __instance)
+    internal static void Prefix(AutoSaveDirector __instance)
     {
-        CottonLibrary.slimes = Get<IdentifiableTypeGroup>("SlimesGroup");
-        CottonLibrary.baseSlimes = Get<IdentifiableTypeGroup>("BaseSlimeGroup");
-        CottonLibrary.largos = Get<IdentifiableTypeGroup>("LargoGroup");
-        CottonLibrary.food = Get<IdentifiableTypeGroup>("FoodGroup");
-        CottonLibrary.meat = Get<IdentifiableTypeGroup>("MeatGroup");
-        CottonLibrary.veggies = Get<IdentifiableTypeGroup>("VeggieGroup");
-        CottonLibrary.fruits = Get<IdentifiableTypeGroup>("FruitGroup");
-        CottonLibrary.nectar = Get<IdentifiableTypeGroup>("NectarFoodGroup");
-        CottonLibrary.plorts = Get<IdentifiableTypeGroup>("PlortGroup");
-        CottonLibrary.crafts = Get<IdentifiableTypeGroup>("CraftGroup");
-        CottonLibrary.chicks = Get<IdentifiableTypeGroup>("ChickGroup");
-
-        foreach (SR2EExpansionV2 expansion in SR2EEntryPoint.expansionsV2)
-            try
-            {
-                expansion.BeforeSaveDirectorLoaded(__instance);
-            }
-            catch (Exception e) { MelonLogger.Error(e); }
     }
-    internal static void Postfix()
+    internal static void Postfix(AutoSaveDirector __instanc)
     {
         PrismShortcuts.emptyTranslation = AddTranslation("");
         PrismShortcuts.unavailableIcon = Get<Sprite>("unavailableIcon");

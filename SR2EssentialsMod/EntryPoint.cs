@@ -29,6 +29,7 @@ using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Patches.Context;
+using SR2E.Prism;
 using SR2E.Storage;
 using UnityEngine.Networking;
 
@@ -104,7 +105,6 @@ public class SR2EEntryPoint : MelonMod
     private static bool _usePrism = false;
     internal static bool usePrism => _usePrism;
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
-    internal static bool isSaveDirectorLoaded = false;
     internal static string _mlVersion = "undefined";
     
     
@@ -477,7 +477,7 @@ public class SR2EEntryPoint : MelonMod
             case "LoadScene": foreach (var expansion in expansionsAll) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
         }
 
-        if (usePrism)  try { CottonLibrary.OnSceneWasLoaded(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
+        if (usePrism)  try { PrismShortcuts.OnSceneWasLoaded(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
         
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
     }
@@ -507,23 +507,13 @@ public class SR2EEntryPoint : MelonMod
         foreach (var pair in menus) pair.Key.ReloadFont();
     }
 
-    internal static void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
-    {
-        foreach (var expansion in expansionsAll) try { expansion.OnSaveDirectorLoading(autoSaveDirector); }catch (Exception e) { MelonLogger.Error(e); }
-    }
-    
 
-    internal static void SaveDirectorLoaded()
-    {
-        if (isSaveDirectorLoaded) return;
-        isSaveDirectorLoaded = true;
-        foreach (var expansion in expansionsAll) try { expansion.SaveDirectorLoaded(autoSaveDirector); } catch (Exception e) { MelonLogger.Error(e); }
-    }
+    
 
     public override void OnSceneWasInitialized(int buildIndex, string sceneName)
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: " + sceneName);
-        if (usePrism)  try { CottonLibrary.OnSceneWasInitialized(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
+        if (usePrism)  try { PrismShortcuts.OnSceneWasInitialized(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
         if (sceneName == "MainMenuUI") mainMenuLoaded = true;
         switch (sceneName)
         {

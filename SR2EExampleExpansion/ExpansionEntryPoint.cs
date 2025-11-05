@@ -30,14 +30,16 @@ namespace SR2EExampleExpansion
         {
             
         }
-        public override void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector)
+
+        public override void AfterSaveDirectorLoaded(AutoSaveDirector saveDirector)
+        {
+        }
+
+        public override void BeforeSaveDirectorLoaded(AutoSaveDirector saveDirector)
         {
             
         }
-        public override void SaveDirectorLoaded(AutoSaveDirector autoSaveDirector)
-        {
-            
-        }
+
 
         public override void LoadCommands()
         {
@@ -54,6 +56,11 @@ namespace SR2EExampleExpansion
         {
             
         }
+
+        public override void OnSceneContext(SceneContext sceneContext)
+        {
+        }
+
     }
 
 }

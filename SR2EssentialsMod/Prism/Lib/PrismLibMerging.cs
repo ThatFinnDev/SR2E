@@ -1,4 +1,3 @@
-using Cotton;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using SR2E.Prism.Data;
 
@@ -676,7 +675,7 @@ public static class PrismLibMerging
         return new Il2CppReferenceArray<SlimeAppearanceStructure>(newStructures.ToArray());
     }
 
-    internal static SlimeAppearance.Palette INTERNAL_GetTwinPalette(this SlimeAppearance app)
+    static SlimeAppearance.Palette INTERNAL_GetTwinPalette(this SlimeAppearance app)
     {
         Material mat = null;
         foreach (var structure in app._structures)
@@ -699,7 +698,7 @@ public static class PrismLibMerging
         };
     }
 
-    internal static SlimeAppearance.Palette INTERNAL_GetSloomberPalette(this SlimeAppearance app)
+    static SlimeAppearance.Palette INTERNAL_GetSloomberPalette(this SlimeAppearance app)
     {
         Material mat = null;
         foreach (var structure in app._structures)

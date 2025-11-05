@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppSystem.Linq;
@@ -18,6 +20,7 @@ public static class PrismShortcuts
     internal static List<System.Action> createLargoActions = new ();
     
     
+    internal static Dictionary<IdentifiableTypeGroup, PrismIdentifiableTypeGroup> _prismIdentifiableTypeGroups = new Dictionary<IdentifiableTypeGroup, PrismIdentifiableTypeGroup>();
     internal static Dictionary<SlimeDefinition, PrismBaseSlime> _prismBaseSlimes = new Dictionary<SlimeDefinition, PrismBaseSlime>();
     internal static Dictionary<SlimeDefinition, PrismLargo> _prismLargos = new Dictionary<SlimeDefinition, PrismLargo>();
 
@@ -28,23 +31,37 @@ public static class PrismShortcuts
     internal static Dictionary<PediaEntry, PrismPediaEntry> _prismUnknownPediaEntries = new Dictionary<PediaEntry, PrismPediaEntry>();
     internal static LocalizedString emptyTranslation;
     internal static Sprite unavailableIcon;
+    
+    
+    internal static Dictionary<string, List<Action>> onSceneLoaded = new Dictionary<string, List<Action>>();
+    internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
+    {
+        var pair = onSceneLoaded.FirstOrDefault(x => sceneName.Contains(x.Key));
+
+        if (pair.Value != null)
+            foreach (var action in pair.Value)
+                action();
+    }
+    internal static void OnSceneWasInitialized(int buildIndex, string sceneName)
+    {
+    }
+
+    
+    
     public static PrismBaseSlime GetPrismBaseSlime(this PrismNativeBaseSlime nativeBaseSlime)
     {
-        var refID = nativeBaseSlime.GetReferenceID();
-        foreach (var slime in CottonLibrary.baseSlimes.GetAllMembersList())
-            try {
-                if (slime.ReferenceId == refID) return slime.TryCast<SlimeDefinition>().GetPrismBaseSlime();
-            } catch { }
+        try
+        {
+            return LookupEUtil.baseSlimeTypes.GetEntryByRefID(nativeBaseSlime.GetReferenceID()).GetPrismBaseSlime();
+        } catch { }
         return null;
     }
     public static PrismPlort GetPrismPlort(this PrismNativePlort nativePlort)
     {
-        var refID = nativePlort.GetReferenceID();
-        foreach (var plort in CottonLibrary.plorts.GetAllMembersList())
-            try
-            {
-                if (plort.ReferenceId == refID) return plort.GetPrismPlort();
-            } catch { }
+        try
+        {
+            return LookupEUtil.plortTypes.GetEntryByRefID(nativePlort.GetReferenceID()).GetPrismPlort();
+        } catch { }
         return null;
     }
     public static PrismBaseSlime GetPrismBaseSlime(this SlimeDefinition customOrNativeSlime)
@@ -93,6 +110,16 @@ public static class PrismShortcuts
         _prismPlorts.Add(customOrNativePlort, newPlort);
         return newPlort;
     }
+
+    public static PrismIdentifiableTypeGroup GetPrismIdentifiableGroup(this IdentifiableTypeGroup group)
+    {
+        if (group == null) return null;
+        if (_prismIdentifiableTypeGroups.ContainsKey(group)) return _prismIdentifiableTypeGroups[group];
+        var newPlort = new PrismIdentifiableTypeGroup(group, true);
+        _prismIdentifiableTypeGroups.Add(group, newPlort);
+        return newPlort;
+    }
+
 
     
     

@@ -8,6 +8,10 @@ public class PrismIdentifiablePediaEntry : PrismPediaEntry
     {
         return identifiablePediaEntry.GetIdentifiablePediaEntry();
     }
+    public static implicit operator PrismIdentifiablePediaEntry(IdentifiablePediaEntry identifiablePediaEntry)
+    {
+        return identifiablePediaEntry.GetPrismIdentifiablePediaEntry();
+    }
     public IdentifiablePediaEntry GetIdentifiablePediaEntry() => _pediaEntry.TryCast<IdentifiablePediaEntry>();
     public IdentifiableType GetIdentifiableType() => GetIdentifiablePediaEntry().IdentifiableType;
     internal PrismIdentifiablePediaEntry(PediaEntry pediaEntry, bool isNative): base(pediaEntry, isNative)

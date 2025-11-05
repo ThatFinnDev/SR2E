@@ -18,7 +18,7 @@ internal class TargetingPatch
         if (eatStrings == null) return;
         if (eatStrings._foodGroupStringMap == null) return;
             
-        foreach (var group in gameContext.LookupDirector._allIdentifiableTypeGroups.items)
+        foreach (var group in LookupEUtil._identifiableTypeGroupList.items)
             if (group._localizedName != null && group._isFood)
                 eatStrings._foodGroupStringMap.TryAdd(group, group._localizedName);
     }

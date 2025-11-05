@@ -18,7 +18,7 @@ internal class PositionCommand: SR2ECommand
         bool absolute = false;
         if (args.Length==4) if (!TryParseBool(args[3], out absolute)) return false;
         
-        Camera cam = Camera.current; if (cam == null) return SendNoCamera();
+        Camera cam = MiscEUtil.GetActiveCamera(); if (cam == null) return SendNoCamera();
              
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {

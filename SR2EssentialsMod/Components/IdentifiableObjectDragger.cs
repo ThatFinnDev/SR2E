@@ -21,7 +21,7 @@ internal class IdentifiableObjectDragger : MonoBehaviour
         get
         {
             Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
-            Vector3 mouseWorldPosition = Camera.current.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, Camera.current.nearClipPlane));
+            Vector3 mouseWorldPosition = MiscEUtil.GetActiveCamera().ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, MiscEUtil.GetActiveCamera().nearClipPlane));
             return mouseWorldPosition;
         }
     }
@@ -39,7 +39,7 @@ internal class IdentifiableObjectDragger : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (Physics.Raycast(new Ray(Camera.current.transform.position, Camera.current.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
+            if (Physics.Raycast(new Ray(MiscEUtil.GetActiveCamera().transform.position, MiscEUtil.GetActiveCamera().transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
             {
                 if (hit.transform.GetComponent<Rigidbody>())
                 {
@@ -61,7 +61,7 @@ internal class IdentifiableObjectDragger : MonoBehaviour
         if (isDragging && draggedObject)
         {
             draggedObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            if (Physics.Raycast(new Ray(mousePos, Camera.current.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
+            if (Physics.Raycast(new Ray(mousePos, MiscEUtil.GetActiveCamera().transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
             {
                 draggedObject.transform.position = hit.point;
             }

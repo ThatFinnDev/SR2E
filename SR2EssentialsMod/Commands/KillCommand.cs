@@ -13,7 +13,7 @@ internal class KillCommand : SR2ECommand
         if (!args.IsBetween(0,0)) return SendNoArguments();
         if (!inGame) return SendLoadASaveFirst();
         
-        Camera cam = Camera.current; if (cam == null) return SendNoCamera();
+        Camera cam = MiscEUtil.GetActiveCamera(); if (cam == null) return SendNoCamera();
         GameObject gameObject = null;
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask)) gameObject = hit.collider.gameObject;
         else return SendNotLookingAtAnything();

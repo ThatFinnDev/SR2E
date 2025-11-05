@@ -8,6 +8,10 @@ public class PrismFixedPediaEntry : PrismPediaEntry
     {
         return fixedPediaEntry.GetFixedPediaEntry();
     }
+    public static implicit operator PrismFixedPediaEntry(FixedPediaEntry fixedPediaEntry)
+    {
+        return fixedPediaEntry.GetPrismFixedPediaEntry();
+    }
     public FixedPediaEntry GetFixedPediaEntry() => _pediaEntry.TryCast<FixedPediaEntry>();
     
     internal PrismFixedPediaEntry(PediaEntry pediaEntry, bool isNative): base(pediaEntry, isNative)

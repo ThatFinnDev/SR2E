@@ -1,4 +1,5 @@
-﻿using Il2CppMonomiPark.SlimeRancher;
+﻿using System;
+using Il2CppMonomiPark.SlimeRancher;
 
 namespace SR2E.Expansion;
 
@@ -18,11 +19,19 @@ public abstract class SR2EExpansionV2 : SR2EExpansionV1
     /// Requires Prism
     /// </summary>
     public virtual void AfterPrismCreateAdditions() { }
+    
+    
+    
     /// <summary>
     /// Get's called before the AutoSaveDirector has been loaded
-    /// Requires Prism
     /// </summary>
     public virtual void BeforeSaveDirectorLoaded(AutoSaveDirector saveDirector) { }
+    /// <summary>
+    /// Get's called after the AutoSaveDirector has been loaded
+    /// You should use this method to add your translations to SR2
+    /// and to add your own buttons.
+    /// </summary>
+    public virtual void AfterSaveDirectorLoaded(AutoSaveDirector saveDirector) { }
     /// <summary>
     /// This gets called after all largos have been created
     /// Requires Prism
@@ -33,4 +42,13 @@ public abstract class SR2EExpansionV2 : SR2EExpansionV1
     /// Gets executed once SceeneContext loads. In Postfix of the Start method
     /// </summary>
     public virtual void OnSceneContext(SceneContext sceneContext) { }
+    
+    
+    
+    
+    [Obsolete("Use BeforeSaveDirectorLoaded instead", true)]
+    public override void OnSaveDirectorLoading(AutoSaveDirector autoSaveDirector) {}
+
+    [Obsolete("Use AfterSaveDirectorLoaded instead", true)]
+    public override void SaveDirectorLoaded(AutoSaveDirector autoSaveDirector) {}
 }

@@ -1,8 +1,6 @@
-using Cotton;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Slime;
-using Il2CppSystem.Linq;
 using SR2E.Cotton;
 using SR2E.Prism.Data;
 using SR2E.Prism.Lib;
@@ -74,7 +72,7 @@ public class PrismLargoCreator
         if (_createdLargo != null) return _createdLargo;
 
 
-        if (CottonSlimes.DoesLargoComboExist(firstSlime, secondSlime)) return null;
+        if (PrismLibLookup.DoesLargoComboExist(firstSlime, secondSlime)) return null;
 
         if (largoMergeSettings == null) largoMergeSettings = new PrismLargoMergeSettings();
         var firstSlimeDef = firstSlime.GetSlimeDefinition();
@@ -86,7 +84,7 @@ public class PrismLargoCreator
         firstSlimeDef.CanLargofy = true;
         secondSlimeDef.CanLargofy = true;
         
-        SlimeDefinition baseLargo = CottonSlimes.GetLargo("PinkRock");
+        SlimeDefinition baseLargo = LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkRock");
         
         SlimeDefinition largoDef = Object.Instantiate(baseLargo);
         largoDef.BaseSlimes = new[]
@@ -164,15 +162,11 @@ public class PrismLargoCreator
         CottonLibrary.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[0]);
         CottonLibrary.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[0]);
 
-        largoDef.AddToGroup("SlimesGroup");
-        largoDef.AddToGroup("IdentifiableTypesGroup");
         PrismLibSaving.SetupForSaving(largoDef,largoDef.referenceId);
-
+        
         
         gameContext.SlimeDefinitions.RefreshDefinitions();
         gameContext.SlimeDefinitions.RefreshIndexes();
-
-
 
         IdentifiableType firstPlort = null;
         IdentifiableType secondPlort = null; 
@@ -185,8 +179,8 @@ public class PrismLargoCreator
         }
         if(!disableMakeTheirPlortEdible&&firstPlort!=null&&secondPlort!=null)
         {
-            firstSlime.AddEatmapToSlime(PrismLibDiet.CreateEatmapEntry(SlimeEmotions.Emotion.AGITATION, 0.5f, null, secondPlort, largoDef));
-            secondSlime.AddEatmapToSlime(PrismLibDiet.CreateEatmapEntry(SlimeEmotions.Emotion.AGITATION, 0.5f, null, firstPlort, largoDef));
+            firstSlime.AddEatmapToSlime(PrismLibDiet.CreateEatmapEntry(SlimeEmotions.Emotion.AGITATION, 0.5f, null, secondPlort, largoDef), true);
+            secondSlime.AddEatmapToSlime(PrismLibDiet.CreateEatmapEntry(SlimeEmotions.Emotion.AGITATION, 0.5f, null, firstPlort, largoDef), true);
             firstSlime.RefreshEatMap();
             secondSlime.RefreshEatMap();
         }
@@ -198,40 +192,44 @@ public class PrismLargoCreator
 
         
         if (firstSlime.GetIsNative())
-            largoDef.AddToGroup(firstSlimeDef.Name+"LargoGroup");
+            largoDef.Prism_AddToGroup(firstSlimeDef.Name+"LargoGroup");
         else
         {
-            if (CottonLibrary.customGroups.ContainsKey(firstSlimeDef.Name + "ModdedLargoGroup"))
-                largoDef.AddToGroup(firstSlimeDef.Name + "ModdedLargoGroup");
+            if (LookupEUtil.allIdentifiableTypeGroups.ContainsKey(firstSlimeDef.Name + "ModdedLargoGroup"))
+                largoDef.Prism_AddToGroup(firstSlimeDef.Name + "ModdedLargoGroup");
             else
             {
-                var group = CottonLibrary.Actors.CreateIdentifiableGroup(null, firstSlimeDef.Name + "ModdedLargoGroup",
-                    new List<IdentifiableType>() { largoDef }, null, false);
+                var creator = new PrismIdentifiableTypeGroupCreator(firstSlimeDef.Name + "ModdedLargoGroup", PrismShortcuts.emptyTranslation);
+                creator.memberTypes = new List<IdentifiableType>() { largoDef };
+                var group = creator.CreateIdentifiableTypeGroup();
                 group.AddToGroup("EdibleSlimeGroup");
-                if(firstSlimeDef.IsInImmediateGroup("SlimesSinkInShallowWaterGroup")&&secondSlimeDef.IsInImmediateGroup("SlimesSinkInShallowWaterGroup"))
+                group.AddToGroup("LargoGroup");
+                if(firstSlime.IsInImmediateGroup("SlimesSinkInShallowWaterGroup")&&secondSlime.IsInImmediateGroup("SlimesSinkInShallowWaterGroup"))
                     group.AddToGroup("SlimesSinkInShallowWaterGroup");
             }
         }
         
         if (secondSlime.GetIsNative())
-            largoDef.AddToGroup(secondSlimeDef.Name+"LargoGroup");
+            largoDef.Prism_AddToGroup(secondSlimeDef.Name+"LargoGroup");
         else
         {
-            if (CottonLibrary.customGroups.ContainsKey(secondSlimeDef.Name + "ModdedLargoGroup"))
-                largoDef.AddToGroup(secondSlimeDef.Name + "ModdedLargoGroup");
+            if (LookupEUtil.allIdentifiableTypeGroups.ContainsKey(secondSlimeDef.Name + "ModdedLargoGroup"))
+                largoDef.Prism_AddToGroup(secondSlimeDef.Name + "ModdedLargoGroup");
             else
             {
-                var group = CottonLibrary.Actors.CreateIdentifiableGroup(null, secondSlimeDef.Name + "ModdedLargoGroup",
-                    new List<IdentifiableType>() { largoDef }, null, false);
+                var creator = new PrismIdentifiableTypeGroupCreator(secondSlimeDef.Name + "ModdedLargoGroup", PrismShortcuts.emptyTranslation);
+                creator.memberTypes = new List<IdentifiableType>() { largoDef };
+                var group = creator.CreateIdentifiableTypeGroup();
                 group.AddToGroup("EdibleSlimeGroup");
-                if(firstSlimeDef.IsInImmediateGroup("SlimesSinkInShallowWaterGroup")&&secondSlimeDef.IsInImmediateGroup("SlimesSinkInShallowWaterGroup"))
+                group.AddToGroup("LargoGroup");
+                if(firstSlime.IsInImmediateGroup("SlimesSinkInShallowWaterGroup")&&secondSlime.IsInImmediateGroup("SlimesSinkInShallowWaterGroup"))
                     group.AddToGroup("SlimesSinkInShallowWaterGroup");
             }
         }
         
         
         var prismLargo = new PrismLargo(largoDef, false);
-        PrismLibDiet.RefreshEatMap(prismLargo);
+        prismLargo.RefreshEatMap();
         
         //if(plort!=null)
           //  PrismLibDiet.AddEatProduction(prismLargo, plort);

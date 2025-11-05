@@ -47,7 +47,20 @@ public static class MiscEUtil
         return new string(chars);
     }
     
-    
+    public static Camera GetActiveCamera()
+    {
+        Camera[] cams = Camera.allCameras;
+        Camera active = null;
+
+        foreach (var c in cams)
+        {
+            if (active == null || c.depth > active.depth)
+                active = c;
+        }
+
+        return active;
+    }
+
     public static void AddNullAction(this MelonPreferences_Entry entry) => SR2EModMenu.entriesWithActions.Add(entry, null);
     public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => SR2EModMenu.entriesWithActions.Add(entry, action);
 

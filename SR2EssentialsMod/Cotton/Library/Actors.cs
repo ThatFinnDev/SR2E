@@ -1,10 +1,6 @@
 using System;
-using Cotton;
-using Il2Cpp;
 using Il2CppMonomiPark.SlimeRancher;
-using SR2E.Prism;
-using UnityEngine;
-using UnityEngine.Localization;
+using SR2E.Prism.Lib;
 namespace SR2E.Cotton;
 
 public static partial class CottonLibrary
@@ -118,8 +114,8 @@ public static partial class CottonLibrary
         public static GameObject CreateFoodObject(IdentifiableType ident, Mesh mesh, Texture2D texture, Texture2D masks,
             float scale, IColliderData colliderData, out GameObject baitObject)
         {
-            var obj = GetVeggie("CarrotVeggie").prefab.CopyObject();
-            baitObject = GetVeggie("CarrotVeggie").gordoSnareBaitPrefab.CopyObject();
+            var obj = LookupEUtil.veggieFoodTypes.GetEntryByName("CarrotVeggie").prefab.CopyObject();
+            baitObject = LookupEUtil.veggieFoodTypes.GetEntryByName("CarrotVeggie").gordoSnareBaitPrefab.CopyObject();
 
             obj.name = $"customFood{ident.name}";
             baitObject.name = $"customFood{ident.name}_GordoSnareBait";
@@ -158,8 +154,9 @@ public static partial class CottonLibrary
             mat.SetTexture("_Albedo", texture);
             mat.SetTexture("_Masks", masks);
             model.GetComponent<MeshRenderer>().material = mat;
-
-            SetObjectIdent(obj, ident);
+            
+            obj.GetComponent<IdentifiableActor>().identType = ident;
+            ident.prefab = obj;
 
             obj.transform.localScale = Vector3.one * scale;
 
@@ -178,8 +175,8 @@ public static partial class CottonLibrary
             IdentifiableType babyIdent, Texture2D babyTexture, Texture2D babyMasks, out GameObject baitObject,
             out GameObject babyObject)
         {
-            var obj = GetMeat("Hen").prefab.CopyObject();
-            baitObject = GetMeat("Hen").gordoSnareBaitPrefab.CopyObject();
+            var obj = LookupEUtil.meatFoodTypes.GetEntryByName("Hen").prefab.CopyObject();
+            baitObject = LookupEUtil.meatFoodTypes.GetEntryByName("Hen").gordoSnareBaitPrefab.CopyObject();
 
             obj.name = $"customFood{ident.name}";
             baitObject.name = $"customFood{ident.name}_GordoSnareBait";
@@ -196,7 +193,8 @@ public static partial class CottonLibrary
                 r.material = mat;
             }
 
-            SetObjectIdent(obj, ident);
+            obj.GetComponent<IdentifiableActor>().identType = ident;
+            ident.prefab = obj;
 
             ident.gordoSnareBaitPrefab = baitObject;
 
@@ -209,7 +207,7 @@ public static partial class CottonLibrary
                 r.material = mat;
             }
 
-            babyObject = GetChick("Chick").prefab.CopyObject();
+            babyObject = LookupEUtil.chickFoodTypes.GetEntryByName("Chick").prefab.CopyObject();
 
             babyIdent.prefab = babyObject;
             babyIdent.color = ident.color;
@@ -228,7 +226,8 @@ public static partial class CottonLibrary
                 r.material = mat2;
             }
 
-            SetObjectIdent(babyObject, babyIdent);
+            obj.GetComponent<IdentifiableActor>().identType = ident;
+            ident.prefab = obj;
 
             var reproduce = obj.GetComponent<Reproduce>();
             reproduce.ChildPrefab = babyObject;
@@ -236,28 +235,16 @@ public static partial class CottonLibrary
             return obj;
         }
 
-        public static void SetObjectIdent(GameObject prefab, IdentifiableType obj)
-        {
-            if (obj is SlimeDefinition)
-            {
-                prefab.GetComponent<SlimeEat>().SlimeDefinition = obj.TryCast<SlimeDefinition>();
-                prefab.GetComponent<SlimeAppearanceApplicator>().SlimeDefinition = obj.TryCast<SlimeDefinition>();
-            }
-
-            prefab.GetComponent<IdentifiableActor>().identType = obj;
-            obj.prefab = prefab;
-        }
-
 
         public static IdentifiableType CreateBlankType(string Name, Color32 VacColor, Sprite Icon, string RefID)
         {
-            var type = Object.Instantiate(GetVeggie("CarrotVeggie"));
+            var type = Object.Instantiate(LookupEUtil.veggieFoodTypes.GetEntryByName("CarrotVeggie"));
             Object.DontDestroyOnLoad(type);
             type.hideFlags = HideFlags.HideAndDontSave;
             type.name = Name;
             type.color = VacColor;
             type.icon = Icon;
-            type.AddToGroup("VaccableNonLiquids");
+            type.Prism_AddToGroup("VaccableNonLiquids");
             //INTERNAL_SetupLoadForIdent(RefID, type);
             return type;
         }
@@ -268,113 +255,10 @@ public static partial class CottonLibrary
                 throw new NullReferenceException(
                     "This object cannot be made vaccable, it's missing a Vacuumable component, you need to add one.");
 
-            ident.AddToGroup("VaccableNonLiquids");
+            ident.Prism_AddToGroup("VaccableNonLiquids");
         }
         
 
-        public static IdentifiableType GetPlort(string name)
-        {
-            foreach (IdentifiableType type in plorts.GetAllMembersArray())
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
 
-            return null;
-        }
-
-        public static IdentifiableType GetChick(string name)
-        {
-            foreach (IdentifiableType type in chicks.GetAllMembersArray())
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
-
-            return null;
-        }
-
-        public static IdentifiableType GetNectar(string name)
-        {
-            foreach (IdentifiableType type in nectar.GetAllMembersArray())
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
-
-            return null;
-        }
-
-        public static IdentifiableType GetVeggie(string name)
-        {
-            foreach (IdentifiableType type in veggies.GetAllMembersArray())
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
-
-            return null;
-        }
-
-        public static IdentifiableType GetFruit(string name)
-        {
-            foreach (IdentifiableType type in fruits.GetAllMembersArray())
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
-
-            return null;
-        }
-
-        public static IdentifiableType GetMeat(string name)
-        {
-            foreach (IdentifiableType type in meat.GetAllMembersArray())
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
-
-            return null;
-        }
-
-        public static IdentifiableType GetFood(string name)
-        {
-            foreach (IdentifiableType type in food.GetAllMembersArray())
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
-
-            return null;
-        }
-
-        public static IdentifiableType GetCraft(string name)
-        {
-            foreach (IdentifiableType type in crafts.GetAllMembersArray())
-                if (type.name.ToUpper() == name.ToUpper())
-                    return type;
-
-            return null;
-        }
-        public static IdentifiableTypeGroup CreateIdentifiableGroup(LocalizedString localizedName, string codeName,
-            List<IdentifiableType> types, List<IdentifiableTypeGroup> subGroups, bool isFood = false)
-        {
-            var group = ScriptableObject.CreateInstance<IdentifiableTypeGroup>();
-
-            group._memberTypes = new Il2CppSystem.Collections.Generic.List<IdentifiableType>();
-            if(types!=null)
-                foreach (var type in types)
-                    group._memberTypes.Add(type);
-
-            group._memberGroups = new Il2CppSystem.Collections.Generic.List<IdentifiableTypeGroup>();
-            if(subGroups!=null)
-                foreach (var subGroup in subGroups)
-                    group._memberGroups.Add(subGroup);
-
-            group._isFood = isFood;
-
-            group._localizedName = localizedName;
-            if (group._localizedName == null) AddTranslation("empty", "l.group_" + codeName);
-
-            group.name = codeName;
-
-            group.AllowedCategories = new Il2CppSystem.Collections.Generic.List<IdentifiableCategory>();
-
-            group._runtimeObject = new IdentifiableTypeGroupRuntimeObject(group);
-
-            customGroups.Add(codeName,group);
-            Get<IdentifiableTypeGroupList>("All Type Groups List").items.Add(group);
-            gameContext.LookupDirector.RegisterIdentifiableTypeGroup(group);
-            if(!gameContext.LookupDirector._allIdentifiableTypeGroups.items.Contains(group))
-                gameContext.LookupDirector._allIdentifiableTypeGroups.items.Add(group);
-            return group;
-        }
     }
 }

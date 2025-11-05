@@ -1,7 +1,5 @@
 using System.Linq;
-using Cotton;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Pedia;
 using SR2E.Prism.Lib;
 using SR2E.Storage;

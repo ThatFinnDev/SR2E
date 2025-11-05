@@ -1,5 +1,4 @@
 using Il2CppMonomiPark.SlimeRancher.Pedia;
-using SR2E.Cotton;
 using SR2E.Prism.Data;
 using SR2E.Prism.Lib;
 using UnityEngine.Localization;

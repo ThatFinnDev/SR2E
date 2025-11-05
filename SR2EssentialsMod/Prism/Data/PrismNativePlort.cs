@@ -26,5 +26,8 @@ public enum PrismNativePlort
     Shadow = 210,
     Prisma = 220,
     Hyper = 230,
-    Gold = 240
+    Gold = 240,
+    //Lucky = 250, 
+    //Tarr = 260,
+    Unstable = 270
 }

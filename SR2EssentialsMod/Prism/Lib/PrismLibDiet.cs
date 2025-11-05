@@ -1,13 +1,13 @@
-using Cotton;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Slime;
-using SR2E.Cotton;
 using SR2E.Prism.Data;
 
 namespace SR2E.Prism.Lib;
 
 public static class PrismLibDiet
-{
+{    
+    internal static Dictionary<SlimeDefinition, Dictionary<SlimeDiet.EatMapEntry, bool>> customEatmaps = new ();
+
     public static SlimeDiet.EatMapEntry CreateEatmapEntry(SlimeEmotions.Emotion driver, float minDrive, IdentifiableType produce, IdentifiableType eat, IdentifiableType becomes)
         => new SlimeDiet.EatMapEntry
         {
@@ -28,15 +28,32 @@ public static class PrismLibDiet
         };
 
 
-    
-    public static void AddEatmapToSlime(this PrismSlime prismSlime, SlimeDiet.EatMapEntry eatmap)
+   internal static bool _CarefulCheck(Il2CppSystem.Collections.Generic.List<SlimeDiet.EatMapEntry> list,
+        SlimeDiet.EatMapEntry eatmap)
+   {
+       if (list == null) return false;
+       if (eatmap == null) return false;
+       foreach (var entry in list)
+       {
+           if (entry.BecomesIdent != entry.BecomesIdent) continue;
+           if (entry.EatsIdent != entry.EatsIdent) continue;
+           if (entry.Driver != entry.Driver) continue;
+           if (entry.MinDrive != entry.MinDrive) continue;
+           if (entry.ProducesIdent != entry.ProducesIdent) continue;
+           return false;
+       } 
+       return true;
+    }
+    public static void AddEatmapToSlime(this PrismSlime prismSlime, SlimeDiet.EatMapEntry eatmap, bool beCareful = false)
     {
-        if (!CottonSlimes.customEatmaps.TryGetValue(prismSlime, out var eatmaps))
-        {
-            eatmaps = new List<SlimeDiet.EatMapEntry>();
-            CottonSlimes.customEatmaps.Add(prismSlime, eatmaps);
-        }
-        eatmaps.Add(eatmap);
+        var eatmaps = new Dictionary<SlimeDiet.EatMapEntry,bool>();
+        if (customEatmaps.TryGetValue(prismSlime, out var dict))
+            eatmaps = dict;
+        else customEatmaps.Add(prismSlime, eatmaps);
+        eatmaps.Add(eatmap,beCareful);
+        if(beCareful)
+            if(!_CarefulCheck(prismSlime.GetSlimeDiet().EatMap,eatmap)) 
+                return;
         prismSlime.GetSlimeDiet().EatMap.Add(eatmap);
     }
 
@@ -123,10 +140,10 @@ public static class PrismLibDiet
         FavoriteIdents = new Il2CppReferenceArray<IdentifiableType>(0),
         AdditionalFoodIdents = new Il2CppReferenceArray<IdentifiableType>(0),
         MajorFoodIdentifiableTypeGroups = new Il2CppReferenceArray<IdentifiableTypeGroup>(0),
-        BecomesOnTarrifyIdentifiableType = Get<IdentifiableType>("Tarr"),
-        EdiblePlortIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("EdiblePlortFoodGroup"),
-        StableResourceIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("StableResourcesGroup"),
-        UnstableResourceIdentifiableTypeGroup = Get<IdentifiableTypeGroup>("UnstableResourcesGroup"),
-        UnstablePlort = CottonLibrary.Actors.GetPlort("UnstablePlort")
+        BecomesOnTarrifyIdentifiableType = PrismNativeBaseSlime.Tarr.GetPrismBaseSlime(),
+        EdiblePlortIdentifiableTypeGroup = LookupEUtil.allIdentifiableTypeGroups["EdiblePlortFoodGroup"],
+        StableResourceIdentifiableTypeGroup = LookupEUtil.allIdentifiableTypeGroups["StableResourcesGroup"],
+        UnstableResourceIdentifiableTypeGroup = LookupEUtil.allIdentifiableTypeGroups["UnstableResourcesGroup"],
+        UnstablePlort = PrismNativePlort.Unstable.GetPrismPlort()
     };
 }

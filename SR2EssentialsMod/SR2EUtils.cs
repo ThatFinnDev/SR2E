@@ -85,7 +85,7 @@ namespace SR2E
         [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.GetWeatherStateDefinitionByName),true)] public static WeatherStateDefinition WeatherState(string name) => LookupEUtil.GetWeatherStateDefinitionByName(name);
         [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.weatherStateDefinitions),true)] public static WeatherStateDefinition[] weatherStateDefinitions => LookupEUtil.weatherStateDefinitions;
         [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.weatherStateDefinitions),true)] public static Il2CppArrayBase<WeatherStateDefinition> weatherStates => autoSaveDirector._configuration.WeatherStates.items.ToArray();
-        [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.vaccableGroup),true)] public static IdentifiableTypeGroup vaccableGroup { get { return LookupEUtil.vaccableGroup; } set { LookupEUtil.vaccableGroup = value; } }
+        [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.vaccableTypes),true)] public static IdentifiableTypeGroup vaccableGroup { get { return LookupEUtil.allIdentifiableTypeGroups["VaccableNonLiquids"]; } set {  } }
         [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.FXLibrary),true)] public static TripleDictionary<GameObject, ParticleSystemRenderer, string> FXLibrary { get { return LookupEUtil.FXLibrary; } set { LookupEUtil.FXLibrary = value; } }
         [Obsolete("Please use "+nameof(LookupEUtil)+"."+nameof(LookupEUtil.FXLibraryReversable),true)] public static TripleDictionary<string, ParticleSystemRenderer, GameObject> FXLibraryReversable { get { return LookupEUtil.FXLibraryReversable; } set { LookupEUtil.FXLibraryReversable = value; } }
         

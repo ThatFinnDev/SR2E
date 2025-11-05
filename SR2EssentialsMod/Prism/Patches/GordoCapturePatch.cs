@@ -1,5 +1,5 @@
 using System.Linq;
-using Cotton;
+using SR2E.Cotton;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using SR2E.Storage;
 

@@ -36,7 +36,7 @@ internal class FXPlayCommand : SR2ECommand
 
         if (currFX != null && !currFX.isStopped) return SendError(translation("cmd.fxplayer.waitforstop"));
         
-        Camera cam = Camera.current; if (cam == null) return SendNoCamera();
+        Camera cam = MiscEUtil.GetActiveCamera(); if (cam == null) return SendNoCamera();
         
         float playbackSpeed = 0;
         bool playAndPause = false;

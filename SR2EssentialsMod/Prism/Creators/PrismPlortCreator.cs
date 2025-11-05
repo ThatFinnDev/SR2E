@@ -1,5 +1,3 @@
-using Cotton;
-using SR2E.Cotton;
 using SR2E.Prism.Data;
 using SR2E.Prism.Lib;
 using UnityEngine.Localization;
@@ -62,11 +60,10 @@ public class PrismPlortCreator
         
         if(moddedMarketData.HasValue)
             PrismLibMarket.MakeSellable(plort, moddedMarketData.Value);
-        plort.AddToGroup("PlortGroup");
-        plort.AddToGroup("EdiblePlortFoodGroup");
-        plort.AddToGroup("PlortGroupDroneExplorer");
-        plort.AddToGroup("IdentifiableTypesGroup");
-        //plort.AddToGroup("VaccableNonLiquids");
+        plort.Prism_AddToGroup("PlortGroup");
+        plort.Prism_AddToGroup("EdiblePlortFoodGroup");
+        plort.Prism_AddToGroup("PlortGroupDroneExplorer");
+        plort.Prism_AddToGroup("IdentifiableTypesGroup");
         
         var basePrefab = customBasePrefab;
         if (basePrefab == null) basePrefab = PrismNativePlort.Pink.GetPrismPlort().GetPrefab();

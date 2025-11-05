@@ -36,8 +36,6 @@ internal class GameContextPatch
                 LookupEUtil.FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
         }
 
-        LookupEUtil.vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
-
         foreach (KeyValuePair<string, string> pair in teleportersToAdd)
             AddTeleporter(pair.Key, pair.Value);
 
