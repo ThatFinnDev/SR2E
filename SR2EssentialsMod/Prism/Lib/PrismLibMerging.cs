@@ -78,7 +78,8 @@ public static class PrismLibMerging
 
         return toys.ToArray();
     }
-    
+
+    private static bool testOne = true;
     /// <summary>
     /// Merges two appearance structures together for a largo.
     /// </summary>
@@ -89,11 +90,11 @@ public static class PrismLibMerging
     public static Il2CppReferenceArray<SlimeAppearanceStructure> MergeStructures(SlimeAppearance slime1, SlimeAppearance slime2, PrismLargoMergeSettings settings)
     {
         var newStructures = new List<SlimeAppearanceStructure>(0);
-        SlimeAppearance.Palette firstColor = slime1._colorPalette;
+        SlimeAppearance.Palette firstColor = slime1.INTERNAL_GetMainPalette();
         SlimeAppearance.Palette firstColorTwin = slime1.INTERNAL_GetTwinPalette();
         SlimeAppearance.Palette firstColorSloomber = slime1.INTERNAL_GetSloomberPalette();
 
-        SlimeAppearance.Palette secondColor = slime2._colorPalette;
+        SlimeAppearance.Palette secondColor = slime2.INTERNAL_GetMainPalette();
         SlimeAppearance.Palette secondColorTwin = slime2.INTERNAL_GetTwinPalette();
         SlimeAppearance.Palette secondColorSloomber = slime2.INTERNAL_GetSloomberPalette();
 
@@ -121,14 +122,14 @@ public static class PrismLibMerging
 
                         try
                         {
-                            if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                            if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                             {
                                 mat.SetColor("_TopColor", firstColor.Top);
                                 mat.SetColor("_MiddleColor", firstColor.Middle);
                                 mat.SetColor("_BottomColor", firstColor.Bottom);
                                 mat.SetColor("_SpecColor", firstColor.Middle);
                             }
-                            else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                            else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                             {
                                 mat.SetColor("_TopColor", secondColor.Top);
                                 mat.SetColor("_MiddleColor", secondColor.Middle);
@@ -166,14 +167,14 @@ public static class PrismLibMerging
 
                         try
                         {
-                            if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                            if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                             {
                                 mat.SetColor("_TopColor", firstColor.Top);
                                 mat.SetColor("_MiddleColor", firstColor.Middle);
                                 mat.SetColor("_BottomColor", firstColor.Bottom);
                                 mat.SetColor("_SpecColor", firstColor.Middle);
                             }
-                            else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                            else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                             {
                                 mat.SetColor("_TopColor", secondColor.Top);
                                 mat.SetColor("_MiddleColor", secondColor.Middle);
@@ -197,13 +198,13 @@ public static class PrismLibMerging
                             {
                                 mat.EnableKeyword("_ENABLETWINEFFECT_ON");
 
-                                if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                                if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                 {
                                     mat.SetColor("_TwinTopColor", firstColorTwin.Top);
                                     mat.SetColor("_TwinMiddleColor", firstColorTwin.Middle);
                                     mat.SetColor("_TwinBottomColor", firstColor.Bottom);
                                 }
-                                else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                                else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                 {
                                     mat.SetColor("_TwinTopColor", secondColorTwin.Top);
                                     mat.SetColor("_TwinMiddleColor", secondColorTwin.Middle);
@@ -227,13 +228,13 @@ public static class PrismLibMerging
                                     mat.EnableKeyword("_BODYCOLORING_SLOOMBER");
                                     mat.DisableKeyword("_BODYCOLORING_DEFAULT");
 
-                                    if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                                    if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                     {
                                         mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
                                         mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                                         mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                                     }
-                                    else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                                    else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                     {
                                         mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
                                         mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
@@ -266,14 +267,14 @@ public static class PrismLibMerging
 
                 try
                 {
-                    if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                    if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                     {
                         mat.SetColor("_TopColor", firstColor.Top);
                         mat.SetColor("_MiddleColor", firstColor.Middle);
                         mat.SetColor("_BottomColor", firstColor.Bottom);
                         mat.SetColor("_SpecColor", firstColor.Middle);
                     }
-                    else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                    else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                     {
                         mat.SetColor("_TopColor", secondColor.Top);
                         mat.SetColor("_MiddleColor", secondColor.Middle);
@@ -299,13 +300,13 @@ public static class PrismLibMerging
                         mat.EnableKeyword("_BODYCOLORING_SLOOMBER");
                         mat.DisableKeyword("_BODYCOLORING_DEFAULT");
 
-                        if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                        if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                         {
                             mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
                             mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                             mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                         }
-                        else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                        else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                         {
                             mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
                             mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
@@ -326,13 +327,13 @@ public static class PrismLibMerging
                     {
                         mat.EnableKeyword("_ENABLETWINEFFECT_ON");
 
-                        if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                        if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                         {
                             mat.SetColor("_TwinTopColor", firstColorTwin.Top);
                             mat.SetColor("_TwinMiddleColor", firstColorTwin.Middle);
                             mat.SetColor("_TwinBottomColor", firstColorTwin.Bottom);
                         }
-                        else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                        else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                         {
                             mat.SetColor("_TwinTopColor", secondColorTwin.Top);
                             mat.SetColor("_TwinMiddleColor", secondColorTwin.Middle);
@@ -373,14 +374,14 @@ public static class PrismLibMerging
 
                         try
                         {
-                            if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                            if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                             {
                                 mat.SetColor("_TopColor", firstColor.Top);
                                 mat.SetColor("_MiddleColor", firstColor.Middle);
                                 mat.SetColor("_BottomColor", firstColor.Bottom);
                                 mat.SetColor("_SpecColor", firstColor.Middle);
                             }
-                            else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                            else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                             {
                                 mat.SetColor("_TopColor", secondColor.Top);
                                 mat.SetColor("_MiddleColor", secondColor.Middle);
@@ -407,13 +408,13 @@ public static class PrismLibMerging
                                 mat.EnableKeyword("_BODYCOLORING_SLOOMBER");
                                 mat.DisableKeyword("_BODYCOLORING_DEFAULT");
 
-                                if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                                if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                 {
                                     mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
                                     mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                                     mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                                 }
-                                else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                                else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                 {
                                     mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
                                     mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
@@ -436,13 +437,13 @@ public static class PrismLibMerging
                             {
                                 mat.EnableKeyword("_ENABLETWINEFFECT_ON");
 
-                                if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                                if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                 {
                                     mat.SetColor("_TwinTopColor", firstColorTwin.Top);
                                     mat.SetColor("_TwinMiddleColor", firstColorTwin.Middle);
                                     mat.SetColor("_TwinBottomColor", firstColorTwin.Bottom);
                                 }
-                                else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                                else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                 {
                                     mat.SetColor("_TwinTopColor", secondColorTwin.Top);
                                     mat.SetColor("_TwinMiddleColor", secondColorTwin.Middle);
@@ -479,14 +480,14 @@ public static class PrismLibMerging
 
                         try
                         {
-                            if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                            if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                             {
                                 mat.SetColor("_TopColor", firstColor.Top);
                                 mat.SetColor("_MiddleColor", firstColor.Middle);
                                 mat.SetColor("_BottomColor", firstColor.Bottom);
                                 mat.SetColor("_SpecColor", firstColor.Middle);
                             }
-                            else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                            else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                             {
                                 mat.SetColor("_TopColor", secondColor.Top);
                                 mat.SetColor("_MiddleColor", secondColor.Middle);
@@ -513,13 +514,13 @@ public static class PrismLibMerging
                                 mat.EnableKeyword("_BODYCOLORING_SLOOMBER");
                                 mat.DisableKeyword("_BODYCOLORING_DEFAULT");
 
-                                if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                                if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                 {
                                     mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
                                     mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                                     mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                                 }
-                                else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                                else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                 {
                                     mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
                                     mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
@@ -542,13 +543,13 @@ public static class PrismLibMerging
                             {
                                 mat.EnableKeyword("_ENABLETWINEFFECT_ON");
 
-                                if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                                if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                 {
                                     mat.SetColor("_TwinTopColor", firstColorTwin.Top);
                                     mat.SetColor("_TwinMiddleColor", firstColorTwin.Middle);
                                     mat.SetColor("_TwinBottomColor", firstColorTwin.Bottom);
                                 }
-                                else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                                else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                 {
                                     mat.SetColor("_TwinTopColor", secondColorTwin.Top);
                                     mat.SetColor("_TwinMiddleColor", secondColorTwin.Middle);
@@ -583,14 +584,14 @@ public static class PrismLibMerging
 
                 try
                 {
-                    if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                    if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                     {
                         mat.SetColor("_TopColor", firstColor.Top);
                         mat.SetColor("_MiddleColor", firstColor.Middle);
                         mat.SetColor("_BottomColor", firstColor.Bottom);
                         mat.SetColor("_SpecColor", firstColor.Middle);
                     }
-                    else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                    else if (settings.baseColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                     {
                         mat.SetColor("_TopColor", secondColor.Top);
                         mat.SetColor("_MiddleColor", secondColor.Middle);
@@ -616,13 +617,13 @@ public static class PrismLibMerging
                         mat.EnableKeyword("_BODYCOLORING_SLOOMBER");
                         mat.DisableKeyword("_BODYCOLORING_DEFAULT");
 
-                        if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                        if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                         {
                             mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
                             mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                             mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                         }
-                        else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                        else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                         {
                             mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
                             mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
@@ -643,13 +644,13 @@ public static class PrismLibMerging
                     {
                         mat.EnableKeyword("_ENABLETWINEFFECT_ON");
 
-                        if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst)
+                        if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                         {
                             mat.SetColor("_TwinTopColor", firstColorTwin.Top);
                             mat.SetColor("_TwinMiddleColor", firstColorTwin.Middle);
                             mat.SetColor("_TwinBottomColor", firstColorTwin.Bottom);
                         }
-                        else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond)
+                        else if (settings.twinColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                         {
                             mat.SetColor("_TwinTopColor", secondColorTwin.Top);
                             mat.SetColor("_TwinMiddleColor", secondColorTwin.Middle);
@@ -710,6 +711,7 @@ public static class PrismLibMerging
             }
         }
 
+        if (mat == null) return new SlimeAppearance.Palette();
         return new SlimeAppearance.Palette()
         {
             Ammo = new Color32(255, 255, 255, 255),
@@ -718,7 +720,27 @@ public static class PrismLibMerging
             Bottom = mat.GetColor("_SloomberBottomColor"),
         };
     }
+    static SlimeAppearance.Palette INTERNAL_GetMainPalette(this SlimeAppearance app)
+    {
+        Material mat = null;
+        foreach (var structure in app._structures)
+        {
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+            {
+                mat = structure.DefaultMaterials[0];
+                break;
+            }
+        }
 
+        if (mat == null) return new SlimeAppearance.Palette();
+        return new SlimeAppearance.Palette()
+        {
+            Ammo = new Color32(255, 255, 255, 255),
+            Top = mat.GetColor("_TopColor"),
+            Middle = mat.GetColor("_MiddleColor"),
+            Bottom = mat.GetColor("_BottomColor"),
+        };
+    }
     internal static bool INTERNAL_GetLargoHasTwinEffect(SlimeAppearance slime1, SlimeAppearance slime2)
     {
         bool result = false;

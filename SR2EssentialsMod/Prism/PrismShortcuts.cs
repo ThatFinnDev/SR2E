@@ -20,11 +20,11 @@ public static class PrismShortcuts
     
     
     internal static Dictionary<IdentifiableTypeGroup, PrismIdentifiableTypeGroup> _prismIdentifiableTypeGroups = new Dictionary<IdentifiableTypeGroup, PrismIdentifiableTypeGroup>();
-    internal static Dictionary<SlimeDefinition, PrismBaseSlime> _prismBaseSlimes = new Dictionary<SlimeDefinition, PrismBaseSlime>();
-    internal static Dictionary<SlimeDefinition, PrismLargo> _prismLargos = new Dictionary<SlimeDefinition, PrismLargo>();
+    internal static Dictionary<string, PrismBaseSlime> _prismBaseSlimes = new Dictionary<string, PrismBaseSlime>();
+    internal static Dictionary<string, PrismLargo> _prismLargos = new Dictionary<string, PrismLargo>();
 
     internal static TripleDictionary<PrismLargo, PrismBaseSlime, PrismBaseSlime> _prismLargoBases = new TripleDictionary<PrismLargo, PrismBaseSlime, PrismBaseSlime>();
-    internal static Dictionary<IdentifiableType, PrismPlort> _prismPlorts = new Dictionary<IdentifiableType, PrismPlort>();
+    internal static Dictionary<string, PrismPlort> _prismPlorts = new Dictionary<string, PrismPlort>();
     internal static Dictionary<FixedPediaEntry, PrismFixedPediaEntry> _prismFixedPediaEntries = new Dictionary<FixedPediaEntry, PrismFixedPediaEntry>();
     internal static Dictionary<IdentifiablePediaEntry, PrismIdentifiablePediaEntry> _prismIdentifiablePediaEntries = new Dictionary<IdentifiablePediaEntry, PrismIdentifiablePediaEntry>();
     internal static Dictionary<PediaEntry, PrismPediaEntry> _prismUnknownPediaEntries = new Dictionary<PediaEntry, PrismPediaEntry>();
@@ -80,9 +80,9 @@ public static class PrismShortcuts
     {
         if (customOrNativeSlime == null) return null;
         if (customOrNativeSlime.IsLargo) return null;
-        if (_prismBaseSlimes.ContainsKey(customOrNativeSlime)) return _prismBaseSlimes[customOrNativeSlime];
+        if (_prismBaseSlimes.ContainsKey(customOrNativeSlime.ReferenceId)) return _prismBaseSlimes[customOrNativeSlime.ReferenceId];
         var newSlime = new PrismBaseSlime(customOrNativeSlime, true);
-        _prismBaseSlimes.Add(customOrNativeSlime, newSlime);
+        _prismBaseSlimes.Add(customOrNativeSlime.ReferenceId, newSlime);
         return newSlime;
     }
     
@@ -90,9 +90,9 @@ public static class PrismShortcuts
     {
         if (customOrNativeSlime == null) return null;
         if (!customOrNativeSlime.IsLargo) return null;
-        if (_prismLargos.ContainsKey(customOrNativeSlime)) return _prismLargos[customOrNativeSlime];
+        if (_prismLargos.ContainsKey(customOrNativeSlime.ReferenceId)) return _prismLargos[customOrNativeSlime.ReferenceId];
         var newSlime = new PrismLargo(customOrNativeSlime, true);
-        _prismLargos.Add(customOrNativeSlime, newSlime);
+        _prismLargos.Add(customOrNativeSlime.ReferenceId, newSlime);
         return newSlime;
     }
     
@@ -101,14 +101,14 @@ public static class PrismShortcuts
         if (customOrNativeSlime == null) return null;
         if (customOrNativeSlime.IsLargo)
         {
-            if (_prismLargos.ContainsKey(customOrNativeSlime)) return _prismBaseSlimes[customOrNativeSlime];
+            if (_prismLargos.ContainsKey(customOrNativeSlime.ReferenceId)) return _prismBaseSlimes[customOrNativeSlime.ReferenceId];
             var newLargo = new PrismLargo(customOrNativeSlime, true);
-            _prismLargos.Add(customOrNativeSlime, newLargo);
+            _prismLargos.Add(customOrNativeSlime.ReferenceId, newLargo);
             return newLargo;
         }
-        if (_prismBaseSlimes.ContainsKey(customOrNativeSlime)) return _prismBaseSlimes[customOrNativeSlime];
+        if (_prismBaseSlimes.ContainsKey(customOrNativeSlime.ReferenceId)) return _prismBaseSlimes[customOrNativeSlime.ReferenceId];
         var newBaseSlime = new PrismBaseSlime(customOrNativeSlime, true);
-        _prismBaseSlimes.Add(customOrNativeSlime, newBaseSlime);
+        _prismBaseSlimes.Add(customOrNativeSlime.ReferenceId, newBaseSlime);
         return newBaseSlime;
         
     }
@@ -117,9 +117,9 @@ public static class PrismShortcuts
     {
         if (customOrNativePlort == null) return null;
         if (!customOrNativePlort.IsPlort) return null;
-        if (_prismPlorts.ContainsKey(customOrNativePlort)) return _prismPlorts[customOrNativePlort];
+        if (_prismPlorts.ContainsKey(customOrNativePlort.ReferenceId)) return _prismPlorts[customOrNativePlort.ReferenceId];
         var newPlort = new PrismPlort(customOrNativePlort, true);
-        _prismPlorts.Add(customOrNativePlort, newPlort);
+        _prismPlorts.Add(customOrNativePlort.ReferenceId, newPlort);
         return newPlort;
     }
 

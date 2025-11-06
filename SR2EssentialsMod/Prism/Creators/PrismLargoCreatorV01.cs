@@ -132,6 +132,34 @@ public class PrismLargoCreatorV01
             firstSlimeDef.AppearancesDefault[0], secondSlimeDef.AppearancesDefault[0]
         };
 
+        if (largoMergeSettings.baseColors==PrismThreeMergeStrategy.Merge)
+        {
+            var firstPalette = firstSlime.GetSlimeAppearance()._colorPalette;
+            var secondPalette = secondSlime.GetSlimeAppearance()._colorPalette;
+            appearance._splatColor = Color.Lerp(firstSlime.GetSlimeAppearance()._splatColor, secondSlime.GetSlimeAppearance()._splatColor, 0.5f);
+            largoDef.color = Color.Lerp(firstSlimeDef.color, secondSlimeDef.color, 0.5f);
+            appearance._colorPalette = new SlimeAppearance.Palette()
+            {
+                Ammo = Color.Lerp(firstPalette.Ammo, secondPalette.Ammo, 0.5f),
+                Bottom = Color.Lerp(firstPalette.Bottom, secondPalette.Bottom, 0.5f),
+                Middle = Color.Lerp(firstPalette.Middle, secondPalette.Middle, 0.5f),
+                Top = Color.Lerp(firstPalette.Top, secondPalette.Top, 0.5f),
+            };
+        }
+        else
+        {
+            var prioritizedAppearance = largoMergeSettings.baseColors == PrismThreeMergeStrategy.PrioritizeFirst ? firstSlime.GetSlimeAppearance() : secondSlime.GetSlimeAppearance();
+            largoDef.color = largoMergeSettings.baseColors == PrismThreeMergeStrategy.PrioritizeFirst ? firstSlimeDef.color : secondSlimeDef.color;
+            appearance._splatColor = prioritizedAppearance._splatColor;
+            appearance._colorPalette = new SlimeAppearance.Palette()
+            {
+                Ammo = prioritizedAppearance._colorPalette.Ammo,
+                Bottom = prioritizedAppearance._colorPalette.Bottom, 
+                Middle = prioritizedAppearance._colorPalette.Middle,
+                Top = prioritizedAppearance._colorPalette.Top,
+            };
+        }
+        
         appearance._structures = PrismLibMerging.MergeStructures(appearance._dependentAppearances[0],
             appearance._dependentAppearances[1], largoMergeSettings);
 
@@ -237,7 +265,7 @@ public class PrismLargoCreatorV01
         
         _createdLargo = prismLargo;
         PrismShortcuts._prismLargoBases.Add(_createdLargo,(firstSlime,secondSlime));
-        PrismShortcuts._prismLargos.Add(largoDef,_createdLargo);
+        PrismShortcuts._prismLargos.Add(largoDef.ReferenceId,_createdLargo);
         return _createdLargo;
     }   
 }

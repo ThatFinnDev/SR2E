@@ -76,7 +76,7 @@ public class PrismPlortCreatorV01
         
         
         _createdPlort = prismPlort;
-        PrismShortcuts._prismPlorts.Add(plort,prismPlort);
+        PrismShortcuts._prismPlorts.Add(plort.ReferenceId,prismPlort);
         return _createdPlort;
     }
 }

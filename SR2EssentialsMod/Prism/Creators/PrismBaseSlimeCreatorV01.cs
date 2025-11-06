@@ -211,7 +211,7 @@ public class PrismBaseSlimeCreatorV01
                     try
                     {
                         var otherSlimeDef = slime.TryCast<SlimeDefinition>();
-                        if(otherSlimeDef==slimeDef) continue;
+                        if(otherSlimeDef.ReferenceId==slimeDef.ReferenceId) continue;
                         var otherPrism = otherSlimeDef.GetPrismBaseSlime();
                         if (otherPrism._allowLargos&& !(disableAutoModdedLargos && !otherPrism.GetIsNative()))
                         {
@@ -236,7 +236,7 @@ public class PrismBaseSlimeCreatorV01
             PrismLibDiet.AddEatProduction(prismSlime, plort);
         
         _createdSlime = prismSlime;
-        PrismShortcuts._prismBaseSlimes.Add(slimeDef,_createdSlime);
+        PrismShortcuts._prismBaseSlimes.Add(slimeDef.ReferenceId,_createdSlime);
         return _createdSlime;
     }
 
