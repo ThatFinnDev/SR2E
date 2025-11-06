@@ -5,7 +5,7 @@ using UnityEngine.Localization;
 
 namespace SR2E.Prism.Creators;
 
-public class PrismFixedPediaEntryCreator
+public class PrismFixedPediaEntryCreatorV01
 {
     PrismFixedPediaEntry _createdPediaEntry;
     public string name;
@@ -18,7 +18,7 @@ public class PrismFixedPediaEntryCreator
     public PrismPediaDetail[] details;
 
     public string customPersistenceSuffix = null;
-    public PrismFixedPediaEntryCreator(string name, PrismPediaCategoryType categoryType, LocalizedString titleLocalized, LocalizedString descriptionLocalized)
+    public PrismFixedPediaEntryCreatorV01(string name, PrismPediaCategoryType categoryType, LocalizedString titleLocalized, LocalizedString descriptionLocalized)
     {
         this.name = name;
         this.categoryType = categoryType;

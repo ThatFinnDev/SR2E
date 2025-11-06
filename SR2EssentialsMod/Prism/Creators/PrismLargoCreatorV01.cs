@@ -8,7 +8,7 @@ using UnityEngine.Localization;
 
 namespace SR2E.Prism.Creators;
 
-public class PrismLargoCreator
+public class PrismLargoCreatorV01
 {
     private PrismLargo _createdLargo;
     
@@ -24,22 +24,22 @@ public class PrismLargoCreator
     public GameObject customBasePrefab = null;
 
 
-    public PrismLargoCreator(PrismNativeBaseSlime firstSlime, PrismNativeBaseSlime secondSlime)
+    public PrismLargoCreatorV01(PrismNativeBaseSlime firstSlime, PrismNativeBaseSlime secondSlime)
     {
         this.firstSlime = firstSlime;
         this.secondSlime = secondSlime;
     }
-    public PrismLargoCreator(PrismNativeBaseSlime firstSlime, PrismBaseSlime secondSlime)
+    public PrismLargoCreatorV01(PrismNativeBaseSlime firstSlime, PrismBaseSlime secondSlime)
     {
         this.firstSlime = firstSlime;
         this.secondSlime = secondSlime;
     }
-    public PrismLargoCreator(PrismBaseSlime firstSlime, PrismBaseSlime secondSlime)
+    public PrismLargoCreatorV01(PrismBaseSlime firstSlime, PrismBaseSlime secondSlime)
     {
         this.firstSlime = firstSlime;
         this.secondSlime = secondSlime;
     }
-    public PrismLargoCreator(PrismBaseSlime firstSlime, PrismNativeBaseSlime secondSlime)
+    public PrismLargoCreatorV01(PrismBaseSlime firstSlime, PrismNativeBaseSlime secondSlime)
     {
         this.firstSlime = firstSlime;
         this.secondSlime = secondSlime;
@@ -200,7 +200,7 @@ public class PrismLargoCreator
                 largoDef.Prism_AddToGroup(firstSlimeDef.Name + "ModdedLargoGroup");
             else
             {
-                var creator = new PrismIdentifiableTypeGroupCreator(firstSlimeDef.Name + "ModdedLargoGroup", PrismShortcuts.emptyTranslation);
+                var creator = new PrismIdentifiableTypeGroupCreatorV01(firstSlimeDef.Name + "ModdedLargoGroup", PrismShortcuts.emptyTranslation);
                 creator.memberTypes = new List<IdentifiableType>() { largoDef };
                 var group = creator.CreateIdentifiableTypeGroup();
                 group.AddToGroup("EdibleSlimeGroup");
@@ -218,7 +218,7 @@ public class PrismLargoCreator
                 largoDef.Prism_AddToGroup(secondSlimeDef.Name + "ModdedLargoGroup");
             else
             {
-                var creator = new PrismIdentifiableTypeGroupCreator(secondSlimeDef.Name + "ModdedLargoGroup", PrismShortcuts.emptyTranslation);
+                var creator = new PrismIdentifiableTypeGroupCreatorV01(secondSlimeDef.Name + "ModdedLargoGroup", PrismShortcuts.emptyTranslation);
                 creator.memberTypes = new List<IdentifiableType>() { largoDef };
                 var group = creator.CreateIdentifiableTypeGroup();
                 group.AddToGroup("EdibleSlimeGroup");

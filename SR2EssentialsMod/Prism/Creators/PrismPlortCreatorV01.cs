@@ -4,7 +4,7 @@ using UnityEngine.Localization;
 
 namespace SR2E.Prism.Creators;
 
-public class PrismPlortCreator
+public class PrismPlortCreatorV01
 {
     private PrismPlort _createdPlort;
     
@@ -20,7 +20,7 @@ public class PrismPlortCreator
     public PrismMarketData? moddedMarketData = null;
     
     
-    public PrismPlortCreator(string name, Sprite icon, LocalizedString localized)
+    public PrismPlortCreatorV01(string name, Sprite icon, LocalizedString localized)
     {
         this.name = name;
         this.icon = icon;

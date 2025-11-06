@@ -6,7 +6,7 @@ using UnityEngine.Localization;
 
 namespace SR2E.Prism.Creators;
 
-public class PrismBaseSlimeCreator
+public class PrismBaseSlimeCreatorV01
 {
     private PrismBaseSlime _createdSlime;
     
@@ -31,7 +31,7 @@ public class PrismBaseSlimeCreator
 
     
     
-    public PrismBaseSlimeCreator(string name, Sprite icon, LocalizedString localized)
+    public PrismBaseSlimeCreatorV01(string name, Sprite icon, LocalizedString localized)
     {
         this.name = name;
         this.icon = icon;
@@ -215,7 +215,7 @@ public class PrismBaseSlimeCreator
                         var otherPrism = otherSlimeDef.GetPrismBaseSlime();
                         if (otherPrism._allowLargos&& !(disableAutoModdedLargos && !otherPrism.GetIsNative()))
                         {
-                            var largoCreator = new PrismLargoCreator(prismSlime, otherPrism);
+                            var largoCreator = new PrismLargoCreatorV01(prismSlime, otherPrism);
                             if (customAutoLargoMergeSettings != null)
                                 largoCreator.largoMergeSettings = customAutoLargoMergeSettings;
                             largoCreator.CreateLargo();

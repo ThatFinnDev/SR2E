@@ -108,19 +108,23 @@ internal static class SaveGameRootUIPatch
     [HarmonyPostfix, HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.OnItemSelect))]
     internal static void OnItemSelect(SaveGamesRootUI __instance, int index)
     {
-        ScrollRect rect = __instance.gameObject.GetObjectRecursively<ScrollRect>("ButtonsScrollView");
-        if (rect == null) return;
-        int activeIndex = 0;
-        foreach (var child in rect.content.transform.GetChildren())
+        try
         {
-            if (!child.gameObject.activeSelf) continue;
-            if (activeIndex == index)
+            ScrollRect rect = __instance.gameObject.GetObjectRecursively<ScrollRect>("ButtonsScrollView");
+            if (rect == null) return;
+            int activeIndex = 0;
+            foreach (var child in rect.content.transform.GetChildren())
             {
-                ScrollTo(rect,child.GetComponent<RectTransform>());
-                return;
+                if (!child.gameObject.activeSelf) continue;
+                if (activeIndex == index)
+                {
+                    ScrollTo(rect,child.GetComponent<RectTransform>());
+                    return;
+                }
+                activeIndex++;
             }
-            activeIndex++;
         }
+        catch {}
         
     }
 
@@ -130,6 +134,7 @@ internal static class SaveGameRootUIPatch
         SR2EEntryPoint.baseUIAddSliders.Add(__instance);
         if (!AllowSaveExport.HasFlag()) return;
         ui = __instance;
+        if (__instance.name.Contains("SRLE")) return;
         ExecuteInTicks((Action)(() =>
         {
             RectTransform actionPanel = ui.gameObject.GetObjectRecursively<RectTransform>("ActionPanel");

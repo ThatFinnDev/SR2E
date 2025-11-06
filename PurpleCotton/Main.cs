@@ -40,7 +40,7 @@ public class SlimeMain : SR2EExpansionV2
     public override void OnPrismCreateAdditions()
     {
         //Create PurplecottonPlort
-        var purplecottonPlortCreator = new PrismPlortCreator(
+        var purplecottonPlortCreator = new PrismPlortCreatorV01(
             "Purplecotton",
             EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortPurplecotton.png"),
             AddTranslationFromSR2E("purplecotton.plort", "l.purplecottonPlort"));
@@ -56,7 +56,7 @@ public class SlimeMain : SR2EExpansionV2
         purplecottonPlort.GetPrefab().GetComponent<MeshRenderer>().material.SetTexture("_StripeTexture", EmbeddedResourceEUtil.LoadTexture2D("Assets.purplecottonPlort_falloff_map.png"));
         
         //Create Purplecotton Slime
-        var purplecottonSlimeCreator = new PrismBaseSlimeCreator(
+        var purplecottonSlimeCreator = new PrismBaseSlimeCreatorV01(
             "Purplecotton",
             EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePurplecotton.png"),
             AddTranslationFromSR2E("purplecotton.slime", "l.purplecottonSlime"));
@@ -89,7 +89,7 @@ public class SlimeMain : SR2EExpansionV2
         PrismLibSpawning.MakeSpawnable(purplecottonSlime, PrismSpawnerActiveTime.AllTheTime, purplecottonSpawnLocations,0.3f, PrismSpawnerType.Slime);
         
         //Create Pedia entry
-        var purplecottonPediaCreator = new PrismIdentifiablePediaEntryCreator(
+        var purplecottonPediaCreator = new PrismIdentifiablePediaEntryCreatorV01(
             purplecottonSlime, PrismPediaCategoryType.Slimes,
             AddTranslationFromSR2E("purplecotton.pedia.intro"));
         purplecottonPediaCreator.factSet = PrismPediaFactSetType.Slime; //What set of facts should be displayed
@@ -102,8 +102,8 @@ public class SlimeMain : SR2EExpansionV2
         //Custom additional fact
         purplecottonPediaCreator.additionalFacts = PrismPediaAdditionalFact.From(
             PrismPediaAdditionalFact.Create(
-                AddTranslationFromSR2E("pedia.fact.purple.title"), 
-            AddTranslationFromSR2E("pedia.fact.purple.description"), 
+                AddTranslationFromSR2E("purplecotton.pedia.fact.purple.title"), 
+            AddTranslationFromSR2E("purplecotton.pedia.fact.purple.description"), 
             EmbeddedResourceEUtil.LoadSprite("Assets.icon.png"))
             );
         purplecottonPedia = purplecottonPediaCreator.CreateIdentifiablePediaEntry();

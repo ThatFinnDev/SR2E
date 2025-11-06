@@ -36,7 +36,6 @@
   <ItemGroup>
     <EmbeddedResource Include="*.csv" />
     <EmbeddedResource Include="Assets\**" />
-    <EmbeddedResource Include="srtwoessentials.assetbundle" />
     <EmbeddedResource Remove="Libs\**" />
     <EmbeddedResource Remove="packages\**" />
     <EmbeddedResource Remove="DocGenerator\**" />

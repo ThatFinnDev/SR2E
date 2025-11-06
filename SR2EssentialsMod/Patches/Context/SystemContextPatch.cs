@@ -39,7 +39,7 @@ internal class SystemContextPatch
     internal static void Postfix(SystemContext __instance)
     {
         if(ChangeSystemContextIsModded.HasFlag()) SystemContext.IsModded = true;
-        bundle = EmbeddedResourceEUtil.LoadBundle("srtwoessentials.assetbundle");
+        bundle = EmbeddedResourceEUtil.LoadBundle("Assets.srtwoessentials.assetbundle");
         foreach (string path in bundle.GetAllAssetNames())
         {
             var asset = bundle.LoadAsset(path);

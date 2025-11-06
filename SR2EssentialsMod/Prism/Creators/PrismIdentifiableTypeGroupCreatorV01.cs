@@ -3,7 +3,7 @@ using UnityEngine.Localization;
 
 namespace SR2E.Prism.Creators;
 
-public class PrismIdentifiableTypeGroupCreator
+public class PrismIdentifiableTypeGroupCreatorV01
 {
     
     PrismIdentifiableTypeGroup _createdGroup;
@@ -12,7 +12,7 @@ public class PrismIdentifiableTypeGroupCreator
     public List<IdentifiableType> memberTypes;
     public List<IdentifiableTypeGroup> memberGroupes;
     public bool isFood = false;
-    public PrismIdentifiableTypeGroupCreator(string name, LocalizedString localized)
+    public PrismIdentifiableTypeGroupCreatorV01(string name, LocalizedString localized)
     {
         this.name = name;
         this.localized = localized;
