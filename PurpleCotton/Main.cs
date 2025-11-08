@@ -30,7 +30,7 @@ public class SlimeMain : SR2EExpansionV2
     public static Color32 bottomColor_purplecotton = new Color32(18, 1, 48, 255);
     public static PrismBaseSlime purplecottonSlime;
     public static PrismPlort purplecottonPlort;
-    public static PrismLargo purplecottonPinkLargo;
+    public static PrismGordo purplecottonGordo;
     public static PrismIdentifiablePediaEntry purplecottonPedia;
 
     public override void OnNormalInitializeMelon()
@@ -112,8 +112,17 @@ public class SlimeMain : SR2EExpansionV2
         //Create largo manually
         //var purplecottonPinkLargoCreator = new PrismLargoCreator(purplecottonSlime, PrismNativeBaseSlime.Pink);
         //purplecottonPinkLargoCreator.largoMergeSettings = new PrismLargoMergeSettings();
-        //purplecottonPinkLargo = purplecottonPinkLargoCreator.CreateLargo();
-
+        //var purplecottonPinkLargo = purplecottonPinkLargoCreator.CreateLargo();
+        
+        
+        
+        //Create gordo
+        var purplecottonGordoCreator = new PrismGordoCreatorV01(
+            purplecottonSlime,
+            EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePurplecotton.png"),
+            AddTranslationFromSR2E("purplecotton.gordo"));
+        purplecottonGordo = purplecottonGordoCreator.CreateGordo();
+        purplecottonGordo.SetRequiredBait(LookupEUtil.fruitFoodTypes.GetEntryByRefID("IdentifiableType.PogoFruit"));
     }
 
 

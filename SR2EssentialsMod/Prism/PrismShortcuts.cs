@@ -21,6 +21,7 @@ public static class PrismShortcuts
     
     internal static Dictionary<IdentifiableTypeGroup, PrismIdentifiableTypeGroup> _prismIdentifiableTypeGroups = new Dictionary<IdentifiableTypeGroup, PrismIdentifiableTypeGroup>();
     internal static Dictionary<string, PrismBaseSlime> _prismBaseSlimes = new Dictionary<string, PrismBaseSlime>();
+    internal static Dictionary<string, PrismGordo> _prismGordos = new Dictionary<string, PrismGordo>();
     internal static Dictionary<string, PrismLargo> _prismLargos = new Dictionary<string, PrismLargo>();
 
     internal static TripleDictionary<PrismLargo, PrismBaseSlime, PrismBaseSlime> _prismLargoBases = new TripleDictionary<PrismLargo, PrismBaseSlime, PrismBaseSlime>();
@@ -85,7 +86,16 @@ public static class PrismShortcuts
         _prismBaseSlimes.Add(customOrNativeSlime.ReferenceId, newSlime);
         return newSlime;
     }
-    
+    public static PrismGordo GetPrismGordo(this IdentifiableType customOrNativeGordo)
+    {
+        if (customOrNativeGordo == null) return null;
+        if (customOrNativeGordo.prefab==null) return null;
+        if (!customOrNativeGordo.prefab.HasComponent<GordoIdentifiable>()) return null;
+        if (_prismGordos.ContainsKey(customOrNativeGordo.ReferenceId)) return _prismGordos[customOrNativeGordo.ReferenceId];
+        var newGordo = new PrismGordo(customOrNativeGordo, true);
+        _prismGordos.Add(customOrNativeGordo.ReferenceId, newGordo);
+        return newGordo;
+    }
     public static PrismLargo GetPrismLargo(this SlimeDefinition customOrNativeSlime)
     {
         if (customOrNativeSlime == null) return null;

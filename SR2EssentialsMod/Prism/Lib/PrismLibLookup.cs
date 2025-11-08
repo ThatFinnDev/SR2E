@@ -26,8 +26,9 @@ public static class PrismLibLookup
     public static void Prism_AddToGroup(this IdentifiableType type, string groupName)
     {
         var group = LookupEUtil.allIdentifiableTypeGroups[groupName];
-        if (group.GetAllMembersList().Contains(type)) return;
+        if (group.IsMember(type)) return;
         group._memberTypes.Add(type);
+        if (group.GetRuntimeObject().IsMember(type)) return;
         group.GetRuntimeObject()._memberTypes.Add(type);
     }
     public static void Prism_AddToGroup(this IdentifiableTypeGroup group, string groupName)
@@ -35,6 +36,7 @@ public static class PrismLibLookup
         var group2 = LookupEUtil.allIdentifiableTypeGroups[groupName];
         if (group2._memberGroups.Contains(group)) return;
         group2._memberGroups.Add(group);
+        if (group2.GetRuntimeObject()._memberGroups.Contains(group)) return;
         group2.GetRuntimeObject()._memberGroups.Add(group);
     }
     public static void AddToGroup(this PrismIdentifiableTypeGroup group, string groupName)
@@ -42,6 +44,7 @@ public static class PrismLibLookup
         var group2 = LookupEUtil.allIdentifiableTypeGroups[groupName];
         if (group2._memberGroups.Contains(group._group)) return;
         group2._memberGroups.Add(group._group);
+        if (group2.GetRuntimeObject()._memberGroups.Contains(group._group)) return;
         group2.GetRuntimeObject()._memberGroups.Add(group._group);
     }
     public static bool Prism_IsInImmediateGroup(this IdentifiableType type, string groupName)

@@ -47,7 +47,6 @@ public class PrismPlortCreatorV01
         if (!IsValid()) return null;
         if (_createdPlort != null) return _createdPlort;
         var plort = ScriptableObject.CreateInstance<IdentifiableType>();
-        Object.DontDestroyOnLoad(plort);
         plort.hideFlags = HideFlags.DontUnloadUnusedAsset;
         plort.name = name + "Plort";
         plort.color = vacColor;

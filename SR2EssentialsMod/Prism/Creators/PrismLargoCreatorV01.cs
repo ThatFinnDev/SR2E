@@ -81,8 +81,64 @@ public class PrismLargoCreatorV01
 
         firstSlimeDef.CanLargofy = true;
         secondSlimeDef.CanLargofy = true;
+
+        SlimeDefinition baseLargo = null;
+        if(firstSlimeDef.ReferenceId=="SlimeDefinition.Boom"||secondSlimeDef.referenceId=="SlimeDefinition.Boom") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkBoom");
         
-        SlimeDefinition baseLargo = LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkRock");
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Phosphor"||secondSlimeDef.referenceId=="SlimeDefinition.Phosphor") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkPhosphor");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Hyper"||secondSlimeDef.referenceId=="SlimeDefinition.Hyper") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.HyperPink");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Sloomber"||secondSlimeDef.referenceId=="SlimeDefinition.Sloomber") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkSloomber");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Tabby"||secondSlimeDef.referenceId=="SlimeDefinition.Tabby") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkTabby");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Crystal"||secondSlimeDef.referenceId=="SlimeDefinition.Crystal") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkCrystal");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Saber"||secondSlimeDef.referenceId=="SlimeDefinition.Saber") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.SaberPink");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Honey"||secondSlimeDef.referenceId=="SlimeDefinition.Honey") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkHoney");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Dervish"||secondSlimeDef.referenceId=="SlimeDefinition.Dervish") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkDervish");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Hunter"||secondSlimeDef.referenceId=="SlimeDefinition.Hunter") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkHunter");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Angler"||secondSlimeDef.referenceId=="SlimeDefinition.Angler") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.AnglerPink");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Dervish"||secondSlimeDef.referenceId=="SlimeDefinition.Dervish") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkDervish");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Cotton"||secondSlimeDef.referenceId=="SlimeDefinition.Cotton") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.CottonPink");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Batty"||secondSlimeDef.referenceId=="SlimeDefinition.Batty") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.BattyPink");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Flutter"||secondSlimeDef.referenceId=="SlimeDefinition.Flutter") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.FlutterPink");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Twin"||secondSlimeDef.referenceId=="SlimeDefinition.Twin") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkTwin");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Tangle"||secondSlimeDef.referenceId=="SlimeDefinition.Tangle") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkTangle");
+        
+        else if(firstSlimeDef.ReferenceId=="SlimeDefinition.Ringtail"||secondSlimeDef.referenceId=="SlimeDefinition.Ringtail") 
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.RingtailPink");
+        
+        else
+            baseLargo=LookupEUtil.largoTypes.GetEntryByRefID("SlimeDefinition.PinkRock");
         
         SlimeDefinition largoDef = Object.Instantiate(baseLargo);
         largoDef.BaseSlimes = new[]
@@ -107,10 +163,9 @@ public class PrismLargoCreatorV01
 
         largoDef.FavoriteToyIdents = new Il2CppReferenceArray<ToyDefinition>(PrismLibMerging.MergeFavoriteToys(firstSlime, secondSlime));
 
-        Object.DontDestroyOnLoad(largoDef);
         largoDef.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        largoDef.Name = name;
         largoDef.name = name;
-
         largoDef.prefab = Object.Instantiate(baseLargo.prefab, prefabHolder.transform);
         largoDef.prefab.name = $"slime{name}";
         largoDef.prefab.GetComponent<Identifiable>().identType = largoDef;
@@ -118,12 +173,13 @@ public class PrismLargoCreatorV01
         largoDef.prefab.GetComponent<SlimeAppearanceApplicator>().SlimeDefinition = largoDef;
         largoDef.prefab.GetComponent<PlayWithToys>().SlimeDefinition = largoDef;
         largoDef.prefab.GetComponent<ReactToToyNearby>().SlimeDefinition = largoDef;
-        largoDef.prefab.RemoveComponent<RockSlimeRoll>();
-        largoDef.prefab.RemoveComponent<DamagePlayerOnTouch>();
+        if(!firstSlimeDef.prefab.HasComponent<RockSlimeRoll>()&&!secondSlimeDef.prefab.HasComponent<RockSlimeRoll>())
+            largoDef.prefab.RemoveComponent<RockSlimeRoll>();
+        if(!firstSlimeDef.prefab.HasComponent<DamagePlayerOnTouch>()&&!secondSlimeDef.prefab.HasComponent<DamagePlayerOnTouch>())
+            largoDef.prefab.RemoveComponent<DamagePlayerOnTouch>();
 
         SlimeAppearance appearance = Object.Instantiate(baseLargo.AppearancesDefault[0]);
         largoDef.AppearancesDefault[0] = appearance;
-        Object.DontDestroyOnLoad(appearance);
         appearance.hideFlags = HideFlags.DontUnloadUnusedAsset;
         appearance.name = firstSlimeDef.AppearancesDefault[0].name + secondSlimeDef.AppearancesDefault[0].name;
 
@@ -184,19 +240,15 @@ public class PrismLargoCreatorV01
             }
         }
 
-        if(!gameContext.SlimeDefinitions.Slimes.Contains(largoDef))
-            gameContext.SlimeDefinitions.Slimes = gameContext.SlimeDefinitions.Slimes.AddToNew(largoDef);
-        if(!gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.ContainsKey(largoDef))
-            gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.Add(largoDef, largoDef);
         PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[0]);
         PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[0]);
 
+        
         PrismLibSaving.SetupForSaving(largoDef,largoDef.referenceId);
         
-        
+        //gameContext.SlimeDefinitions.RefreshIndexes();
         gameContext.SlimeDefinitions.RefreshDefinitions();
-        gameContext.SlimeDefinitions.RefreshIndexes();
-
+        
         IdentifiableType firstPlort = null;
         IdentifiableType secondPlort = null; 
         foreach (var pair in gameContext.SlimeDefinitions._largoDefinitionByBasePlorts)

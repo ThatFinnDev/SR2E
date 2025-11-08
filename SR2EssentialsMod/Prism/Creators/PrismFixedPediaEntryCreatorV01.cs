@@ -49,7 +49,6 @@ public class PrismFixedPediaEntryCreatorV01
         
         var entry = Object.Instantiate(PrismLibPedia._fixedPediaEntryPrefab);
         entry.hideFlags = HideFlags.DontUnloadUnusedAsset;
-        Object.DontDestroyOnLoad(entry);
         entry._title = titleLocalized;
         entry._icon = icon!=null?icon:PrismShortcuts.unavailableIcon;
         entry._description = descriptionLocalized;

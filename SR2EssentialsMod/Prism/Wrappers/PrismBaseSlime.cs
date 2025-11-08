@@ -8,6 +8,22 @@ public class PrismBaseSlime : PrismSlime
     {
         return nativeBaseSlime.GetPrismBaseSlime();
     }
+
+    public Material GetBaseMaterial()
+    {
+        try
+        {
+            foreach (var structure in GetSlimeAppearance()._structures)
+                try
+                {
+                    if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                    {
+                        return structure.DefaultMaterials[0];
+                    }
+                } catch {}
+        } catch { }
+        return null;
+    }
     internal PrismBaseSlime(SlimeDefinition slimeDefinition, bool isNative): base(slimeDefinition, isNative)
     {
         this._slimeDefinition = slimeDefinition;

@@ -80,12 +80,11 @@ public static class PrismLibPedia
         pediaPrismFactSetLookup.Add(PrismPediaFactSetType.Food, Get<PediaHighlightSet>("FoodHightlights")); //yes, there is a typo in there...
 
         _identifiablePediaEntryPrefab = Get<IdentifiablePediaEntry>("Pink");
-        if (_identifiablePediaEntryPrefab == null)
-            _identifiablePediaEntryPrefab = GetAny<IdentifiablePediaEntry>();
-        if(_identifiablePediaEntryPrefab!=null) Object.DontDestroyOnLoad(_identifiablePediaEntryPrefab);
+        if (_identifiablePediaEntryPrefab == null) _identifiablePediaEntryPrefab = GetAny<IdentifiablePediaEntry>();
+        if (_identifiablePediaEntryPrefab != null) _identifiablePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset; 
+        
         _fixedPediaEntryPrefab = Get<FixedPediaEntry>("PrismaPlorts");
-        if (_fixedPediaEntryPrefab == null)
-            _fixedPediaEntryPrefab = GetAny<FixedPediaEntry>();
-        if(_fixedPediaEntryPrefab!=null) Object.DontDestroyOnLoad(_identifiablePediaEntryPrefab);
+        if (_fixedPediaEntryPrefab == null) _fixedPediaEntryPrefab = GetAny<FixedPediaEntry>();
+        if (_fixedPediaEntryPrefab != null) _fixedPediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset;
     }
 }

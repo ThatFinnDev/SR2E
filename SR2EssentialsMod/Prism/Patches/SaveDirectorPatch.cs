@@ -14,7 +14,7 @@ internal static class SaveDirectorPatch
     internal static void Prefix(AutoSaveDirector __instance)
     {
     }
-    internal static void Postfix(AutoSaveDirector __instanc)
+    internal static void Postfix(AutoSaveDirector __instance)
     {
         PrismShortcuts.emptyTranslation = AddTranslation("");
         PrismShortcuts.unavailableIcon = Get<Sprite>("unavailableIcon");

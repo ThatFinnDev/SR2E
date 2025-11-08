@@ -13,12 +13,12 @@ public class PrismLibSaving
         if (string.IsNullOrWhiteSpace(RefID)) RefID = ident.ReferenceId;
         savedIdents.TryAdd(RefID, ident);
 
-        gameContext.LookupDirector.AddIdentifiableTypeToGroup(ident,
-            autoSaveDirector._configuration._identifiableTypes);
+        if(!autoSaveDirector._configuration._identifiableTypes.IsMember(ident))
+            gameContext.LookupDirector.AddIdentifiableTypeToGroup(ident, autoSaveDirector._configuration._identifiableTypes);
         gameContext.LookupDirector._identifiableTypeByRefId.TryAdd(RefID, ident);
         INTERNAL_SetupSaveForIdent(RefID, ident);
     }
-    
+
     internal static void INTERNAL_SetupSaveForIdent(string RefID, IdentifiableType ident)
     {
         var t = autoSaveDirector._saveReferenceTranslation;
@@ -36,8 +36,7 @@ public class PrismLibSaving
         {
             gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.TryAdd(ident, ident.Cast<SlimeDefinition>());
             if (!gameContext.SlimeDefinitions.Slimes.Contains(ident.Cast<SlimeDefinition>()))
-                gameContext.SlimeDefinitions.Slimes =
-                    gameContext.SlimeDefinitions.Slimes.AddToNew(ident.Cast<SlimeDefinition>());
+                gameContext.SlimeDefinitions.Slimes = gameContext.SlimeDefinitions.Slimes.AddToNew(ident.Cast<SlimeDefinition>());
         }
 
         ident.referenceId = RefID;

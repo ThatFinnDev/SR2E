@@ -19,9 +19,9 @@ public class PrismBaseSlimeCreatorV01
     public PrismPlort plort = null;
     public GameObject customBasePrefab = null;
     public SlimeAppearance customBaseAppearance = null;
-    public bool disableSinkInShallowWater = true;
-    public bool disableEdibleByTarrs = true;
-    public bool disableVaccable = true;
+    public bool disableSinkInShallowWater = false;
+    public bool disableEdibleByTarrs = false;
+    public bool disableVaccable = false;
 
     public PrismLargoMergeSettings customAutoLargoMergeSettings = null;
     public bool canLargofy = false;
@@ -67,9 +67,7 @@ public class PrismBaseSlimeCreatorV01
         if (_createdSlime != null) return _createdSlime;
 
         var slimeDef = Object.Instantiate( PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetSlimeDefinition());
-        Object.DontDestroyOnLoad(slimeDef);
         slimeDef.hideFlags = HideFlags.DontUnloadUnusedAsset;
-        slimeDef.hideFlags = HideFlags.HideAndDontSave;
         slimeDef.Name = name;
         slimeDef.name = name;
         slimeDef.AppearancesDefault = new Il2CppReferenceArray<SlimeAppearance>(0);
@@ -78,7 +76,6 @@ public class PrismBaseSlimeCreatorV01
         if (baseAppearance == null) baseAppearance = PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetSlimeAppearance();
         SlimeAppearance appearance = Object.Instantiate(baseAppearance);
         appearance.hideFlags = HideFlags.DontUnloadUnusedAsset;
-        Object.DontDestroyOnLoad(appearance);
         appearance.name = name+"Default";
         appearance._icon = icon;
         slimeDef.AppearancesDefault = slimeDef.AppearancesDefault.AddToNew(appearance);
@@ -173,15 +170,12 @@ public class PrismBaseSlimeCreatorV01
         slimeDef.color = vacColor;
         slimeDef.icon = icon;
 
-        if(!gameContext.SlimeDefinitions.Slimes.Contains(slimeDef))
-            gameContext.SlimeDefinitions.Slimes = gameContext.SlimeDefinitions.Slimes.AddToNew(slimeDef);
-        if(!gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.ContainsKey(slimeDef))
-            gameContext.SlimeDefinitions._slimeDefinitionsByIdentifiable.Add(slimeDef, slimeDef);
         PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(slimeDef, slimeDef.AppearancesDefault[0]);
         PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(slimeDef, slimeDef.AppearancesDefault[0]);
         PrismLibSaving.SetupForSaving(slimeDef,referenceID);
 
-        if(!disableVaccable) slimeDef.Prism_AddToGroup("VaccableBaseSlimeGroup");
+        if(!disableVaccable) 
+            slimeDef.Prism_AddToGroup("VaccableBaseSlimeGroup");
         slimeDef.Prism_AddToGroup("SmallSlimeGroup");
         if(!disableEdibleByTarrs)
             slimeDef.Prism_AddToGroup("EdibleSlimeGroup");
@@ -218,6 +212,8 @@ public class PrismBaseSlimeCreatorV01
                             var largoCreator = new PrismLargoCreatorV01(prismSlime, otherPrism);
                             if (customAutoLargoMergeSettings != null)
                                 largoCreator.largoMergeSettings = customAutoLargoMergeSettings;
+                            else largoCreator.largoMergeSettings = new PrismLargoMergeSettings();
+                            largoCreator.largoMergeSettings.baseColors = PrismThreeMergeStrategy.PrioritizeFirst;
                             largoCreator.CreateLargo();
                         }
                     }

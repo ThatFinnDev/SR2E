@@ -37,7 +37,6 @@ public class PrismIdentifiablePediaEntryCreatorV01
         
         var entry = Object.Instantiate(PrismLibPedia._identifiablePediaEntryPrefab);
         entry.hideFlags = HideFlags.DontUnloadUnusedAsset;
-        Object.DontDestroyOnLoad(entry);
 
         entry._title = identifiableType.localizedName;
         entry._identifiableType = identifiableType;

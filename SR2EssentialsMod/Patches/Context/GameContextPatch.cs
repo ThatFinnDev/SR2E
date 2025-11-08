@@ -125,8 +125,11 @@ internal class GameContextPatch
     };
     internal static void AddTeleporter(string sceneGroup, string gadgetName)
     {
-        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupEUtil.GetGadgetDefinitionByName(gadgetName).prefab.transform.GetObjectRecursively<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-        teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
+        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupEUtil.GetGadgetDefinitionByName(gadgetName).prefab.transform.GetObjectRecursively<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>(),prefabHolder.transform);
+        teleporter.gameObject.SetActive(false); 
+        teleporter.name = "TP-"+sceneGroup; 
+        teleporter.gameObject.MakePrefab(); 
+        teleporter._hasDestination = true;
         SR2EWarpManager.teleporters.TryAdd(sceneGroup, teleporter);
     }
 

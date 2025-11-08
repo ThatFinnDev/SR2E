@@ -271,6 +271,7 @@ public class SR2EEntryPoint : MelonMod
         if (!ShowUnityErrors.HasFlag()) return;
         if (message.Equals(string.Empty)) return;
         string toDisplay = message;
+        if(trace.StartsWith("TMPro.TextMeshProUGUI.Rebuild (UnityEngine.UI.CanvasUpdate update)")) return;
         if (!trace.Equals(string.Empty)) toDisplay += "\n" + trace;
         toDisplay = Regex.Replace(toDisplay, @"\[INFO]\s|\[ERROR]\s|\[WARNING]\s", "");
         switch (type)

@@ -248,6 +248,7 @@ public static class LookupEUtil
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
                 var name = type.GetCompactName();
                 if (name.StartsWith("!")) continue;
+                if(list.Contains(name)) continue;
                 list.Add(name);
             }
             list.Sort();
@@ -263,6 +264,7 @@ public static class LookupEUtil
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
+            if(list.Contains(name)) continue;
             if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
@@ -299,6 +301,7 @@ public static class LookupEUtil
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
                 var name = type.GetCompactName();
                 if (name.StartsWith("!")) continue;
+                if(list.Contains(name)) continue;
                 list.Add(name);
             }
             list.Sort();
@@ -315,6 +318,7 @@ public static class LookupEUtil
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
+            if(list.Contains(name)) continue;
             if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
@@ -351,6 +355,7 @@ public static class LookupEUtil
                 if (type.isGadget()) continue;
                 var name = type.GetCompactName();
                 if (name.StartsWith("!")) continue;
+                if(list.Contains(name)) continue;
                 list.Add(name);
             }
             list.Sort();
@@ -368,6 +373,7 @@ public static class LookupEUtil
             if (type.isGadget()) continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
+            if(list.Contains(name)) continue;
             if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
@@ -397,6 +403,7 @@ public static class LookupEUtil
                 if (type == null) continue;
                 var name = type.GetCompactName();
                 if (name.StartsWith("!")) continue;
+                if(list.Contains(name)) continue;
                 list.Add(name);
             }
             list.Sort();
@@ -411,6 +418,7 @@ public static class LookupEUtil
             if (type == null) continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
+            if(list.Contains(name)) continue;
             if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }
@@ -440,6 +448,7 @@ public static class LookupEUtil
                 if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
                 var name = type.GetCompactName();
                 if (name.StartsWith("!")) continue;
+                if(list.Contains(name)) continue;
                 list.Add(name);
             }
             list.Sort();
@@ -455,6 +464,7 @@ public static class LookupEUtil
             if (type.ReferenceId.ToUpper() == "NONE" || type.ReferenceId.ToUpper() == "PLAYER") continue;
             var name = type.GetCompactName();
             if (name.StartsWith("!")) continue;
+            if(list.Contains(name)) continue;
             if(name.ToUpper().StartsWithOrContain(partial.ToUpper(),useContain))
                 list.Add(name);
         }

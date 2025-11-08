@@ -35,7 +35,6 @@ public class PrismIdentifiableTypeGroupCreatorV01
 
         var group = ScriptableObject.CreateInstance<IdentifiableTypeGroup>();
         group.hideFlags = HideFlags.DontUnloadUnusedAsset;
-        Object.DontDestroyOnLoad(group);
 
         group._memberTypes = new Il2CppSystem.Collections.Generic.List<IdentifiableType>();
         if(memberTypes!=null)

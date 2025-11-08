@@ -49,12 +49,15 @@ public static class PrismLibMerging
 
         foreach (var component in components)
             if (component.Value.Item2)
-                if (!component.Key.ContainsAny("CrystalSlimeLaunch","AweTowardsLargos", "SlimeEyeComponents", "SlimeMouthComponents", "ColliderTotemLinkerHelper"))
+                if (!component.Key.ContainsAny("CrystalSlimeLaunch",
+                        "AweTowardsLargos", "SlimeEyeComponents", "SlimeMouthComponents", "ColliderTotemLinkerHelper"))
                 {
                     if (!obj.GetComponent(component.Value.Item1.GetIl2CppType()))
                     {
                         var newComp = obj.AddComponent(component.Value.Item1.GetIl2CppType());
                         newComp.CopyFields(component.Value.Item1);
+                        if (newComp.TryCast<Behaviour>() != null)
+                            newComp.Cast<Behaviour>().enabled = true;
                     }
                     //MelonLogger.Msg(component.Key);
                 }
@@ -80,6 +83,7 @@ public static class PrismLibMerging
     }
 
     private static bool testOne = true;
+    private static bool logCombineErrors = true;
     /// <summary>
     /// Merges two appearance structures together for a largo.
     /// </summary>
@@ -100,6 +104,8 @@ public static class PrismLibMerging
 
 
         bool useTwinShader = INTERNAL_GetLargoHasTwinEffect(slime1, slime2);
+        bool useBoomShader = INTERNAL_GetLargoHasBoomEffect(slime1, slime2);
+        bool useHyperShader = INTERNAL_GetLargoHasHyperEffect(slime1, slime2);
 
         bool useSloomberShader = INTERNAL_GetLargoHasSloomberEffect(slime1, slime2);
         Material sloomberMat = PrismNativeBaseSlime.Sloomber.GetPrismBaseSlime().GetSlimeDefinition().AppearancesDefault[0]._structures[0].DefaultMaterials[0];
@@ -147,9 +153,7 @@ public static class PrismLibMerging
                                 mat.SetColor("_SpecColor", middle);
                             }
                         }
-                        catch
-                        {
-                        }
+                        catch (Exception e) { if(logCombineErrors) MelonLogger.Error(e); }
                     }
                 }
             }
@@ -192,6 +196,8 @@ public static class PrismLibMerging
                                 mat.SetColor("_SpecColor", middle);
                             }
 
+                            if(useBoomShader) mat.EnableKeyword("_ENABLEBOOMCRACKS_ON");
+                            if(useHyperShader) mat.EnableKeyword("_ENABLEHYPEREFFECT_ON");
                             
                             // 0.6 - Twin material
                             if (useTwinShader)
@@ -231,13 +237,11 @@ public static class PrismLibMerging
                                     if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                     {
                                         mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
-                                        mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                                         mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                                     }
                                     else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                     {
                                         mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
-                                        mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
                                         mat.SetColor("_SloomberBottomColor", secondColorSloomber.Bottom);
                                     }
                                     else if (settings.sloomberColors==PrismThreeMergeStrategy.Merge)
@@ -246,15 +250,12 @@ public static class PrismLibMerging
                                         var middle = Color.Lerp(firstColorSloomber.Middle, secondColorSloomber.Middle, 0.5f);
                                         var bottom = Color.Lerp(firstColorSloomber.Bottom, secondColorSloomber.Bottom, 0.5f);
                                         mat.SetColor("_SloomberTopColor", top);
-                                        mat.SetColor("_SloomberMiddleColor", middle);
                                         mat.SetColor("_SloomberBottomColor", bottom);
                                     }
                                 }
                             }
                         }
-                        catch
-                        {
-                        }
+                        catch (Exception e) { if(logCombineErrors) MelonLogger.Error(e); }
                     }
                 }
             }
@@ -303,26 +304,25 @@ public static class PrismLibMerging
                         if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                         {
                             mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
-                            mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                             mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                         }
                         else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                         {
                             mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
-                            mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
                             mat.SetColor("_SloomberBottomColor", secondColorSloomber.Bottom);
                         }
                         else if (settings.sloomberColors==PrismThreeMergeStrategy.Merge)
                         {
                             var top = Color.Lerp(firstColorSloomber.Top, secondColorSloomber.Top, 0.5f);
-                            var middle = Color.Lerp(firstColorSloomber.Middle, secondColorSloomber.Middle, 0.5f);
                             var bottom = Color.Lerp(firstColorSloomber.Bottom, secondColorSloomber.Bottom, 0.5f);
                             mat.SetColor("_SloomberTopColor", top);
-                            mat.SetColor("_SloomberMiddleColor", middle);
                             mat.SetColor("_SloomberBottomColor", bottom);
                         }
                     }
 
+                    if(useBoomShader) mat.EnableKeyword("_ENABLEBOOMCRACKS_ON");
+                    if(useHyperShader) mat.EnableKeyword("_ENABLEHYPEREFFECT_ON");
+                    
                     if (useTwinShader)
                     {
                         mat.EnableKeyword("_ENABLETWINEFFECT_ON");
@@ -350,9 +350,7 @@ public static class PrismLibMerging
                         }
                     }
                 }
-                catch
-                {
-                }
+                catch (Exception e) { if(logCombineErrors) MelonLogger.Error(e); }
             }
         }
 
@@ -363,8 +361,7 @@ public static class PrismLibMerging
             {
                 if (settings.face==PrismTwoMergeStrategy.KeepSecond)
                 {
-                    if (structure != null && !newStructures.Contains(structure) &&
-                        structure.DefaultMaterials.Length != 0)
+                    if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
                     {
                         var newStructure = new SlimeAppearanceStructure(structure);
                         newStructures.Add(newStructure);
@@ -411,28 +408,25 @@ public static class PrismLibMerging
                                 if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                 {
                                     mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
-                                    mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                                     mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                                 }
                                 else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                 {
                                     mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
-                                    mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
                                     mat.SetColor("_SloomberBottomColor", secondColorSloomber.Bottom);
                                 }
                                 else if (settings.sloomberColors==PrismThreeMergeStrategy.Merge)
                                 {
                                     var top = Color.Lerp(firstColorSloomber.Top, secondColorSloomber.Top, 0.5f);
-                                    var middle = Color.Lerp(firstColorSloomber.Middle, secondColorSloomber.Middle,
-                                        0.5f);
-                                    var bottom = Color.Lerp(firstColorSloomber.Bottom, secondColorSloomber.Bottom,
-                                        0.5f);
+                                    var bottom = Color.Lerp(firstColorSloomber.Bottom, secondColorSloomber.Bottom, 0.5f);
                                     mat.SetColor("_SloomberTopColor", top);
-                                    mat.SetColor("_SloomberMiddleColor", middle);
                                     mat.SetColor("_SloomberBottomColor", bottom);
                                 }
                             }
 
+                            if(useBoomShader) mat.EnableKeyword("_ENABLEBOOMCRACKS_ON");
+                            if(useHyperShader) mat.EnableKeyword("_ENABLEHYPEREFFECT_ON");
+                            
                             if (useTwinShader)
                             {
                                 mat.EnableKeyword("_ENABLETWINEFFECT_ON");
@@ -460,9 +454,7 @@ public static class PrismLibMerging
                                 }
                             }
                         }
-                        catch
-                        {
-                        }
+                        catch (Exception e) { if(logCombineErrors) MelonLogger.Error(e); }
                     }
                 }
             }
@@ -517,28 +509,25 @@ public static class PrismLibMerging
                                 if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                                 {
                                     mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
-                                    mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                                     mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                                 }
                                 else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                                 {
                                     mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
-                                    mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
                                     mat.SetColor("_SloomberBottomColor", secondColorSloomber.Bottom);
                                 }
                                 else if (settings.sloomberColors==PrismThreeMergeStrategy.Merge)
                                 {
                                     var top = Color.Lerp(firstColorSloomber.Top, secondColorSloomber.Top, 0.5f);
-                                    var middle = Color.Lerp(firstColorSloomber.Middle, secondColorSloomber.Middle,
-                                        0.5f);
-                                    var bottom = Color.Lerp(firstColorSloomber.Bottom, secondColorSloomber.Bottom,
-                                        0.5f);
+                                    var bottom = Color.Lerp(firstColorSloomber.Bottom, secondColorSloomber.Bottom, 0.5f);
                                     mat.SetColor("_SloomberTopColor", top);
-                                    mat.SetColor("_SloomberMiddleColor", middle);
                                     mat.SetColor("_SloomberBottomColor", bottom);
                                 }
                             }
 
+                            if(useBoomShader) mat.EnableKeyword("_ENABLEBOOMCRACKS_ON");
+                            if(useHyperShader) mat.EnableKeyword("_ENABLEHYPEREFFECT_ON");
+                            
                             if (useTwinShader)
                             {
                                 mat.EnableKeyword("_ENABLETWINEFFECT_ON");
@@ -566,15 +555,12 @@ public static class PrismLibMerging
                                 }
                             }
                         }
-                        catch
-                        {
-                        }
+                        catch (Exception e) { if(logCombineErrors) MelonLogger.Error(e); }
                     }
 
                 }
             }
-            else if (structure != null && !newStructures.Contains(structure) &&
-                     structure.DefaultMaterials.Length != 0)
+            else if (structure != null && !newStructures.Contains(structure) && structure.DefaultMaterials.Length != 0)
             {
 
                 var newStructure = new SlimeAppearanceStructure(structure);
@@ -620,26 +606,25 @@ public static class PrismLibMerging
                         if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeFirst&&testOne)
                         {
                             mat.SetColor("_SloomberTopColor", firstColorSloomber.Top);
-                            mat.SetColor("_SloomberMiddleColor", firstColorSloomber.Middle);
                             mat.SetColor("_SloomberBottomColor", firstColorSloomber.Bottom);
                         }
                         else if (settings.sloomberColors==PrismThreeMergeStrategy.PrioritizeSecond&&testOne)
                         {
                             mat.SetColor("_SloomberTopColor", secondColorSloomber.Top);
-                            mat.SetColor("_SloomberMiddleColor", secondColorSloomber.Middle);
                             mat.SetColor("_SloomberBottomColor", secondColorSloomber.Bottom);
                         }
                         else if (settings.sloomberColors==PrismThreeMergeStrategy.Merge)
                         {
                             var top = Color.Lerp(firstColorSloomber.Top, secondColorSloomber.Top, 0.5f);
-                            var middle = Color.Lerp(firstColorSloomber.Middle, secondColorSloomber.Middle, 0.5f);
                             var bottom = Color.Lerp(firstColorSloomber.Bottom, secondColorSloomber.Bottom, 0.5f);
                             mat.SetColor("_SloomberTopColor", top);
-                            mat.SetColor("_SloomberMiddleColor", middle);
                             mat.SetColor("_SloomberBottomColor", bottom);
                         }
                     }
 
+                    if(useBoomShader) mat.EnableKeyword("_ENABLEBOOMCRACKS_ON");
+                    if(useHyperShader) mat.EnableKeyword("_ENABLEHYPEREFFECT_ON");
+                    
                     if (useTwinShader)
                     {
                         mat.EnableKeyword("_ENABLETWINEFFECT_ON");
@@ -667,9 +652,7 @@ public static class PrismLibMerging
                         }
                     }
                 }
-                catch
-                {
-                }
+                catch (Exception e) { if(logCombineErrors) MelonLogger.Error(e); }
             }
         }
 
@@ -716,7 +699,6 @@ public static class PrismLibMerging
         {
             Ammo = new Color32(255, 255, 255, 255),
             Top = mat.GetColor("_SloomberTopColor"),
-            Middle = mat.GetColor("_SloomberMiddleColor"),
             Bottom = mat.GetColor("_SloomberBottomColor"),
         };
     }
@@ -741,62 +723,46 @@ public static class PrismLibMerging
             Bottom = mat.GetColor("_BottomColor"),
         };
     }
+    internal static bool INTERNAL_GetLargoHasHyperEffect(SlimeAppearance slime1, SlimeAppearance slime2)
+    {
+        foreach (var structure in slime1._structures)
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                try { if (structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLEHYPEREFFECT_ON")) return true; } catch { }
+        foreach (var structure in slime2._structures)
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                try { if (structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLEHYPEREFFECT_ON")) return true; } catch { }
+        return false;
+    }
+    internal static bool INTERNAL_GetLargoHasBoomEffect(SlimeAppearance slime1, SlimeAppearance slime2)
+    {
+        foreach (var structure in slime1._structures)
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                try { if (structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLEBOOMCRACKS_ON")) return true; } catch { }
+        foreach (var structure in slime2._structures)
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                try { if (structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLEBOOMCRACKS_ON")) return true; } catch { }
+        return false;
+    }
     internal static bool INTERNAL_GetLargoHasTwinEffect(SlimeAppearance slime1, SlimeAppearance slime2)
     {
-        bool result = false;
-
         foreach (var structure in slime1._structures)
-        {
-            if (structure.DefaultMaterials.Count != 0 &&
-                structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLETWINEFFECT_ON"))
-            {
-                result = true;
-                break;
-            }
-        }
-
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                try { if (structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLETWINEFFECT_ON")) return true; } catch { }
         foreach (var structure in slime2._structures)
-        {
-            if (result) break;
-
-            if (structure.DefaultMaterials.Count != 0 &&
-                structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLETWINEFFECT_ON"))
-            {
-                result = true;
-                break;
-            }
-        }
-
-        return result;
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                try { if (structure.DefaultMaterials[0].IsKeywordEnabled("_ENABLETWINEFFECT_ON")) return true; } catch { }
+        return false;
     }
-
+ 
     internal static bool INTERNAL_GetLargoHasSloomberEffect(SlimeAppearance slime1, SlimeAppearance slime2)
     {
-        bool result = false;
-
         foreach (var structure in slime1._structures)
-        {
-            if (structure.DefaultMaterials.Count != 0 &&
-                structure.DefaultMaterials[0].IsKeywordEnabled("_BODYCOLORING_SLOOMBER"))
-            {
-                result = true;
-                break;
-            }
-        }
-
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                try { if (structure.DefaultMaterials[0].IsKeywordEnabled("_BODYCOLORING_SLOOMBER")) return true; } catch { }
         foreach (var structure in slime2._structures)
-        {
-            if (result) break;
-
-            if (structure.DefaultMaterials.Count != 0 &&
-                structure.DefaultMaterials[0].IsKeywordEnabled("_BODYCOLORING_SLOOMBER"))
-            {
-                result = true;
-                break;
-            }
-        }
-
-        return result;
+            if (structure.Element.Type == SlimeAppearanceElement.ElementType.BODY)
+                try { if (structure.DefaultMaterials[0].IsKeywordEnabled("_BODYCOLORING_SLOOMBER")) return true; } catch { }
+        return false;
     }
 
 }
