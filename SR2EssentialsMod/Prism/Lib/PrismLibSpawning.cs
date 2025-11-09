@@ -4,7 +4,9 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using SR2E.Prism.Data;
 
 namespace SR2E.Prism.Lib;
-
+/// <summary>
+/// A library of helper functions for dealing with spawning
+/// </summary>
 public static class PrismLibSpawning
 {
 
@@ -15,12 +17,28 @@ public static class PrismLibSpawning
     internal static List<Action<DirectedActorSpawner>> executeOnSpawnerAwake = new List<Action<DirectedActorSpawner>>();
 
 
-
+    /// <summary>
+    /// Makes an Identifiable able to spawn.
+    /// </summary>
+    /// <param name="ident">The object's type</param>
+    /// <param name="activeTime">The time of day the object will spawn in.</param>
+    /// <param name="locations">Which zones to spawn in.</param>
+    /// <param name="weight">The chance to spawn.</param>
+    /// <param name="spawnerTargets">Which spawner type to inject into.</param>
     public static void MakeSpawnable(IdentifiableType ident, PrismSpawnerActiveTime activeTime,
         PrismSpawnLocations[] locations, float weight, PrismSpawnerType spawnerTargets) =>
         MakeSpawnable(ident, activeTime, locations, weight, spawnerTargets,
             null, Array.Empty<string>());
 
+    /// <summary>
+    /// Makes an Identifiable able to spawn.
+    /// </summary>
+    /// <param name="ident">The object's type</param>
+    /// <param name="activeTime">The time of day the object will spawn in.</param>
+    /// <param name="zones">Which zones to spawn in.</param>
+    /// <param name="weight">The chance to spawn.</param>
+    /// <param name="spawnerTargets">Which spawner type to inject into.</param>
+    /// <param name="requiredConditions">Required conditions on when not to inject into a spawner.</param>
     public static void MakeSpawnable(IdentifiableType ident, PrismSpawnerActiveTime activeTime,
         PrismSpawnLocations[] zones, float weight, PrismSpawnerType spawnerTargets,
         PrismSpawnConditions[] requiredConditions) =>
@@ -31,11 +49,10 @@ public static class PrismLibSpawning
     /// Makes an Identifiable able to spawn.
     /// </summary>
     /// <param name="ident">The object's type</param>
-    /// <param name="timeWindow">The time of day the object will spawn in.</param>
-    /// <param name="zones">Which zones to spawn in.</param>
+    /// <param name="activeTime">The time of day the object will spawn in.</param>
+    /// <param name="locations">Which zones to spawn in.</param>
     /// <param name="weight">The chance to spawn.</param>
-    /// <param name="spawnerTargets">Which spawner type to inject into.</param>
-    /// <param name="mode">Which spawning behavior to use.</param>
+    /// <param name="spawnerType">Which spawner type to inject into.</param>
     /// <param name="requiredConditions">Required conditions on when not to inject into a spawner.</param>
     /// <param name="customZoneSceneNames">An array of custom scene names.</param>
     /// <exception cref="InvalidOperationException">Occurs when an invalid SpawningMode is used. Should never happen.</exception>
@@ -125,7 +142,14 @@ public static class PrismLibSpawning
 
         return false;
     }
-
+    /// <summary>
+    /// Adds spawning settings to a spawner
+    /// </summary>
+    /// <param name="spawner">The spawner to add the settings to</param>
+    /// <param name="ident">The identifiable type to spawn</param>
+    /// <param name="weight">The weight of the spawn</param>
+    /// <param name="activeTime">The time of day the spawn is active</param>
+    /// <param name="requiredConditions">The required conditions for the spawn</param>
     public static void AddSpawningSettings(DirectedActorSpawner spawner, IdentifiableType ident, float weight,
         PrismSpawnerActiveTime activeTime, PrismSpawnConditions[] requiredConditions)
     {

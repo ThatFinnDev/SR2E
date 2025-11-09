@@ -1,4 +1,4 @@
-namespace SR2E.Prism.Colliders;
+/*namespace SR2E.Prism.Colliders;
 
 public interface IColliderData
 {
@@ -12,4 +12,4 @@ public interface IColliderData
 
     public float GetHeight();
     public float GetDepth();
-}
+}*/

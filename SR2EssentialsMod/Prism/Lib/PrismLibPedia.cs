@@ -5,6 +5,9 @@ using UnityEngine.Localization;
 
 namespace SR2E.Prism.Lib;
 
+/// <summary>
+/// A library of helper functions for dealing with the pedia
+/// </summary>
 public static class PrismLibPedia
 {
     internal static Dictionary<PrismPediaCategoryType, PediaCategory> pediaCategories = new();
@@ -22,16 +25,31 @@ public static class PrismLibPedia
 
 
 
+    /// <summary>
+    /// Gets the pedia entries for a given category
+    /// </summary>
+    /// <param name="type">The category to get the entries for</param>
+    /// <returns>The pedia entries for the given category</returns>
     public static List<PediaEntry> GetPediaEntries(this PrismPediaCategoryType type)
     {
         if (pediaEntryLookup.ContainsKey(type)) return pediaEntryLookup[type];
         return null;
     }
+    /// <summary>
+    /// Gets the pedia highlight set for a given fact set type
+    /// </summary>
+    /// <param name="type">The fact set type to get the highlight set for</param>
+    /// <returns>The pedia highlight set for the given fact set type</returns>
     public static PediaHighlightSet GetPediaHighlightSet(this PrismPediaFactSetType type)
     {
         if (pediaPrismFactSetLookup.ContainsKey(type)) return pediaPrismFactSetLookup[type];
         return null;
     }
+    /// <summary>
+    /// Gets the pedia detail section for a given detail type
+    /// </summary>
+    /// <param name="type">The detail type to get the detail section for</param>
+    /// <returns>The pedia detail section for the given detail type</returns>
     public static PediaDetailSection GetPediaDetailSection(this PrismPediaDetailType type)
     {
         if (pediaDetailSectionLookup.ContainsKey(type)) return pediaDetailSectionLookup[type];

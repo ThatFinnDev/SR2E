@@ -1,4 +1,4 @@
-using System;
+/*using System;
 
 namespace SR2E.Prism.Colliders;
 
@@ -14,4 +14,4 @@ public class CubeColliderData : IColliderData
     public float GetWidth() => size.x;
     public float GetHeight() => size.y;
     public float GetDepth() => size.z;
-}
+}*/

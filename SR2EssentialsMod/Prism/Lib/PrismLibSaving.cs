@@ -1,12 +1,19 @@
 using Il2CppMonomiPark.SlimeRancher;
 
 namespace SR2E.Prism.Lib;
-
+/// <summary>
+/// A library of helper functions for dealing with saving and loading
+/// </summary>
 public class PrismLibSaving
 {
     internal static Dictionary<string, IdentifiableType> savedIdents = new ();
     
     
+    /// <summary>
+    /// Setups an identifiable type for saving
+    /// </summary>
+    /// <param name="ident">The identifiable type to setup</param>
+    /// <param name="RefID">The reference ID to use for saving</param>
     public static void SetupForSaving(IdentifiableType ident, string RefID = null)
     {
         if (ident == null) return;
@@ -16,10 +23,10 @@ public class PrismLibSaving
         if(!autoSaveDirector._configuration._identifiableTypes.IsMember(ident))
             gameContext.LookupDirector.AddIdentifiableTypeToGroup(ident, autoSaveDirector._configuration._identifiableTypes);
         gameContext.LookupDirector._identifiableTypeByRefId.TryAdd(RefID, ident);
-        INTERNAL_SetupSaveForIdent(RefID, ident);
+        SetupSaveForIdent(RefID, ident);
     }
 
-    internal static void INTERNAL_SetupSaveForIdent(string RefID, IdentifiableType ident)
+    private static void SetupSaveForIdent(string RefID, IdentifiableType ident)
     {
         var t = autoSaveDirector._saveReferenceTranslation;
         t._identifiableTypeLookup.TryAdd(RefID, ident);
@@ -53,7 +60,7 @@ public class PrismLibSaving
         catch
         {
             foreach (var refresh in savedIdents)
-                INTERNAL_SetupSaveForIdent(refresh.Key, refresh.Value);
+                SetupSaveForIdent(refresh.Key, refresh.Value);
         }
     }
 }

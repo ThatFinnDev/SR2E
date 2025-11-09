@@ -181,4 +181,14 @@ public static class UnityEUtil
         
         return copy;
     }
+    public static GameObject CreatePrefab(GameObject obj)
+    {
+        var copy = obj.CopyObject();
+        Object.DontDestroyOnLoad(copy);
+        
+        copy.transform.parent = prefabHolder.transform;
+
+        
+        return copy;
+    }
 }

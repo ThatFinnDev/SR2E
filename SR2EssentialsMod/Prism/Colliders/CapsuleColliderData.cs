@@ -1,4 +1,4 @@
-using System;
+/*using System;
 
 namespace SR2E.Prism.Colliders;
 
@@ -17,4 +17,4 @@ public class CapsuleColliderData : IColliderData
 
     public float GetHeight() => radius;
     public float GetDepth() => radius;
-}
+}*/

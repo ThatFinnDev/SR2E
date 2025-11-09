@@ -1,4 +1,4 @@
-using System;
+/*using System;
 
 namespace SR2E.Prism.Colliders;
 
@@ -16,4 +16,4 @@ public class SphereColliderData : IColliderData
 
     public float GetHeight() => radius;
     public float GetDepth() => radius;
-}
+}*/

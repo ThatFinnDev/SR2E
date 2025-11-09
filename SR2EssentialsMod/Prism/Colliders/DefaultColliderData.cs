@@ -1,4 +1,4 @@
-using System;
+/*using System;
 
 namespace SR2E.Prism.Colliders;
 
@@ -14,4 +14,4 @@ public class DefaultColliderData : IColliderData
 
     public float GetHeight() => 1.5f;
     public float GetDepth() => 1.5f;
-}
+}*/

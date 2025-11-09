@@ -2,9 +2,17 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using SR2E.Prism.Data;
 
 namespace SR2E.Prism.Lib;
-
+/// <summary>
+/// A library of helper functions for dealing with slime appearances
+/// </summary>
 public static class PrismLibAppearances
 {
+    /*
+    /// <summary>
+    /// Switches the appearances of two slimes
+    /// </summary>
+    /// <param name="slimeOneDef">The first slime to switch</param>
+    /// <param name="slimeTwoDef">The second slime to switch</param>
     public static void SwitchSlimeAppearances(SlimeDefinition slimeOneDef, SlimeDefinition slimeTwoDef)
     {
         var appearanceOne = slimeOneDef.AppearancesDefault[0]._structures;
@@ -29,16 +37,36 @@ public static class PrismLibAppearances
         slimeOneDef.debugIcon = slimeTwoDef.debugIcon;
         slimeTwoDef.debugIcon = debugIcon;
 
-    }
+    }*/
+    /// <summary>
+    /// Sets the color of a slime appearance structure
+    /// </summary>
+    /// <param name="structure">The structure to set the color of</param>
+    /// <param name="id">The id of the color to set</param>
+    /// <param name="color">The color to set</param>
     public static void SetStructColor(SlimeAppearanceStructure structure, int id, Color color)
     {
         structure.DefaultMaterials[0].SetColor(id, color);
     }
 
+    /// <summary>
+    /// Adds a structure to a slime appearance
+    /// </summary>
+    /// <param name="appearance">The appearance to add the structure to</param>
+    /// <param name="structure">The structure to add</param>
     public static void AddStructure(SlimeAppearance appearance, SlimeAppearanceStructure structure)
     {
         appearance.Structures=appearance.Structures.AddToNew(structure);
     }
+    /// <summary>
+    /// Adds a structure to a slime appearance
+    /// </summary>
+    /// <param name="app">The appearance to add the structure to</param>
+    /// <param name="mesh">The mesh of the structure</param>
+    /// <param name="rootBone">The root bone of the structure</param>
+    /// <param name="parentBone">The parent bone of the structure</param>
+    /// <param name="elementName">The name of the element</param>
+    /// <returns>The new structure</returns>
     public static SlimeAppearanceStructure AddStructure(SlimeAppearance app, Mesh mesh, SlimeAppearance.SlimeBone rootBone, SlimeAppearance.SlimeBone parentBone, string elementName)
     {
         var structPrefab = app._structures[0].Element.Prefabs[0].gameObject.CopyObject();
@@ -62,6 +90,13 @@ public static class PrismLibAppearances
         app._structures = app._structures.AddToNew(structure);
         return structure;
     }
+    /// <summary>
+    /// Sets the base colors of a plort
+    /// </summary>
+    /// <param name="prismPlort">The plort to set the colors of</param>
+    /// <param name="Top">The top color</param>
+    /// <param name="Middle">The middle color</param>
+    /// <param name="Bottom">The bottom color</param>
     public static void SetPlortBaseColors(this PrismPlort prismPlort, Color32 Top, Color32 Middle, Color32 Bottom)
     {
         var material = prismPlort.GetPrefab().GetComponent<MeshRenderer>().material;
@@ -71,6 +106,13 @@ public static class PrismLibAppearances
         
     }
 
+    /// <summary>
+    /// Sets the twin colors of a plort
+    /// </summary>
+    /// <param name="prismPlort">The plort to set the colors of</param>
+    /// <param name="Top">The top color</param>
+    /// <param name="Middle">The middle color</param>
+    /// <param name="Bottom">The bottom color</param>
     public static void SetPlortTwinColors(this PrismPlort prismPlort, Color32 Top, Color32 Middle, Color32 Bottom)
     {
         var material = prismPlort.GetPrefab().GetComponent<MeshRenderer>().material;
@@ -78,6 +120,18 @@ public static class PrismLibAppearances
         material.SetColor("_TwinMiddleColor", Middle);
         material.SetColor("_TwinBottomColor", Bottom);
     }
+    /// <summary>
+    /// Sets the base colors of a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to set the colors of</param>
+    /// <param name="top">The top color</param>
+    /// <param name="middle">The middle color</param>
+    /// <param name="bottom">The bottom color</param>
+    /// <param name="special">The special color</param>
+    /// <param name="index">The index of the appearance</param>
+    /// <param name="index2">The index of the material</param>
+    /// <param name="isSS">Whether the appearance is a secret style</param>
+    /// <param name="structure">The index of the structure</param>
     public static void SetSlimeBaseColorsSpecific(this PrismSlime prismSlime, Color32 top, Color32 middle, Color32 bottom, Color32 special, int index, int index2, bool isSS, int structure)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -97,6 +151,13 @@ public static class PrismLibAppearances
         mat.SetColor("_SpecColor", special);
     }
 
+    /// <summary>
+    /// Sets the base colors of a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to set the colors of</param>
+    /// <param name="top">The top color</param>
+    /// <param name="middle">The middle color</param>
+    /// <param name="bottom">The bottom color</param>
     public static void SetSlimeBaseColors(this PrismSlime prismSlime, Color32 top, Color32 middle, Color32 bottom)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -111,6 +172,13 @@ public static class PrismLibAppearances
         }
     }
 
+    /// <summary>
+    /// Sets the twin colors of a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to set the colors of</param>
+    /// <param name="top">The top color</param>
+    /// <param name="middle">The middle color</param>
+    /// <param name="bottom">The bottom color</param>
     public static void SetSlimeTwinColors(this PrismSlime prismSlime, Color32 top, Color32 middle, Color32 bottom)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -124,6 +192,13 @@ public static class PrismLibAppearances
             mat.SetColor("_TwinSpecColor", middle);
         }
     }
+    /// <summary>
+    /// Sets the sloomber colors of a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to set the colors of</param>
+    /// <param name="top">The top color</param>
+    /// <param name="middle">The middle color</param>
+    /// <param name="bottom">The bottom color</param>
     public static void SetSlimeSloomberColors(this PrismSlime prismSlime, Color32 top, Color32 middle, Color32 bottom)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -138,6 +213,17 @@ public static class PrismLibAppearances
         }
     }
     
+    /// <summary>
+    /// Sets the twin colors of a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to set the colors of</param>
+    /// <param name="top">The top color</param>
+    /// <param name="middle">The middle color</param>
+    /// <param name="bottom">The bottom color</param>
+    /// <param name="index">The index of the appearance</param>
+    /// <param name="index2">The index of the material</param>
+    /// <param name="isSS">Whether the appearance is a secret style</param>
+    /// <param name="structure">The index of the structure</param>
     public static void SetSlimeTwinColorsSpecific(this PrismSlime prismSlime, Color32 top, Color32 middle, Color32 bottom, int index, int index2, bool isSS, int structure)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -156,6 +242,17 @@ public static class PrismLibAppearances
         mat.SetColor("_TwinBottomColor", bottom);
     }
 
+    /// <summary>
+    /// Sets the sloomber colors of a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to set the colors of</param>
+    /// <param name="top">The top color</param>
+    /// <param name="middle">The middle color</param>
+    /// <param name="bottom">The bottom color</param>
+    /// <param name="index">The index of the appearance</param>
+    /// <param name="index2">The index of the material</param>
+    /// <param name="isSS">Whether the appearance is a secret style</param>
+    /// <param name="structure">The index of the structure</param>
     public static void SetSlimeSloomberColorsSpecific(this PrismSlime prismSlime, Color32 top, Color32 middle, Color32 bottom, int index, int index2, bool isSS, int structure)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -174,7 +271,14 @@ public static class PrismLibAppearances
         mat.SetColor("_SloomberBottomColor", bottom);
     }
 
-    // Twin effect uses the shader keyword "_ENABLETWINEFFECT_ON"
+    /// <summary>
+    /// Enables the twin effect on a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to enable the effect on</param>
+    /// <param name="index">The index of the appearance</param>
+    /// <param name="index2">The index of the material</param>
+    /// <param name="isSS">Whether the appearance is a secret style</param>
+    /// <param name="structure">The index of the structure</param>
     public static void EnableTwinEffectSpecific(this PrismSlime prismSlime, int index, int index2, bool isSS, int structure)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -191,7 +295,10 @@ public static class PrismLibAppearances
         mat.EnableKeyword("_ENABLETWINEFFECT_ON");
     }
 
-    // Twin effect uses the shader keyword "_ENABLETWINEFFECT_ON"
+    /// <summary>
+    /// Enables the twin effect on a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to enable the effect on</param>
     public static void EnableTwinEffect(this PrismSlime prismSlime)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -204,7 +311,10 @@ public static class PrismLibAppearances
         }
     }
 
-    // Sloomber effect uses the shader keyword "_BODYCOLORING_SLOOMBER"
+    /// <summary>
+    /// Enables the sloomber effect on a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to enable the effect on</param>
     public static void EnableSloomberEffect(this PrismSlime prismSlime)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();
@@ -217,6 +327,14 @@ public static class PrismLibAppearances
         }
     }
 
+    /// <summary>
+    /// Disables the twin effect on a slime
+    /// </summary>
+    /// <param name="prismSlime">The slime to disable the effect on</param>
+    /// <param name="index">The index of the appearance</param>
+    /// <param name="index2">The index of the material</param>
+    /// <param name="isSS">Whether the appearance is a secret style</param>
+    /// <param name="structure">The index of the structure</param>
     public static void DisableTwinEffect(this PrismSlime prismSlime, int index, int index2, bool isSS, int structure)
     {
         var slimeDef = prismSlime.GetSlimeDefinition();

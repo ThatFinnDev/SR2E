@@ -5,6 +5,7 @@ namespace SR2E.Utils;
 public static class CurrencyEUtil
 {
     public static ICurrency toICurrency(this CurrencyDefinition currencyDefinition) => currencyDefinition.TryCast<ICurrency>();
+    public static CurrencyDefinition toCurrency(this ICurrency iCurrency) => iCurrency.TryCast<CurrencyDefinition>();
     public static bool SetCurrency(string referenceID, int amount)
     {
         if (string.IsNullOrWhiteSpace(referenceID)) return false;

@@ -3,9 +3,16 @@ using Il2CppMonomiPark.SlimeRancher.UI;
 using SR2E.Prism.Data;
 
 namespace SR2E.Prism.Lib;
-
+/// <summary>
+/// A library of helper functions for dealing with the market
+/// </summary>
 public static class PrismLibMarket
 {
+    /// <summary>
+    /// Makes an identifiable type sellable in the plort market
+    /// </summary>
+    /// <param name="ident">The identifiable type to make sellable</param>
+    /// <param name="prismMarketData">The market data for the identifiable type</param>
     public static void MakeSellable(IdentifiableType ident, PrismMarketData prismMarketData)
     {
         if (ident == null) return;
@@ -62,6 +69,11 @@ public static class PrismLibMarket
         }
     }
 
+    /// <summary>
+    /// Checks if an identifiable type is sellable in the plort market
+    /// </summary>
+    /// <param name="ident">The identifiable type to check</param>
+    /// <returns>Whether or not the identifiable type is sellable</returns>
     public static bool IsSellable(IdentifiableType ident)
     {
         if (ident == null) return false;
@@ -102,6 +114,10 @@ public static class PrismLibMarket
         return false;
     }
 
+    /// <summary>
+    /// Makes an identifiable type not sellable in the plort market
+    /// </summary>
+    /// <param name="ident">The identifiable type to make not sellable</param>
     public static void MakeNotSellable(IdentifiableType ident)
     {
         if (ident == null) return;

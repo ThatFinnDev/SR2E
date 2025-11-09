@@ -1,4 +1,4 @@
-using System;
+/*using System;
 
 namespace SR2E.Prism.Colliders;
 
@@ -16,4 +16,4 @@ public class MeshColliderData : IColliderData
 
     public float GetHeight() => throw new NotImplementedException();
     public float GetDepth() => throw new NotImplementedException();
-}
+}*/

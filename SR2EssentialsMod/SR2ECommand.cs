@@ -10,6 +10,9 @@ namespace SR2E;
 /// </summary>
 public abstract class SR2ECommand
 {
+    /// <summary>
+    /// If the command should not print any messages to the console
+    /// </summary>
     public bool silent = false;
     /// <summary>
     /// The ID of this command (Always lowercase)
@@ -45,6 +48,9 @@ public abstract class SR2ECommand
     public virtual CommandType type { get; } = CommandType.None;
 
 
+    /// <summary>
+    /// If the command should be hidden from the help command and autocomplete
+    /// </summary>
     public virtual bool Hidden { get; }
 
 
@@ -78,9 +84,6 @@ public abstract class SR2ECommand
     /// </summary>
     public virtual void Update()
     { }
-    /// <summary>
-    /// Gets called when the scene GameCore loads
-    /// </summary>
     
     /// <summary>
     /// Gets executed every time the scene "StandaloneEngagementPrompt" gets loaded.
@@ -155,6 +158,7 @@ public abstract class SR2ECommand
     /// <summary>
     /// Sends the usage of the command to the in game console 
     /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns
     public bool SendUsage()
     {
         SendMessage(translation("cmd.usage", Usage));
@@ -163,12 +167,14 @@ public abstract class SR2ECommand
     /// <summary>
     /// Sends the no arguments message
     /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns
     public bool SendNoArguments() => SendError(translation("cmd.noarguments"));
     
     
     /// <summary>
     /// Sends the load a save first message
     /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns
     public bool SendLoadASaveFirst() => SendError(translation("cmd.loadasavefirst"));
     /// <summary>
     /// Sends the cheats disabled message
@@ -188,6 +194,7 @@ public abstract class SR2ECommand
     /// <summary>
     /// Display an error in the console
     /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns
     public bool SendError(string message)
     {
         if (!silent) SR2ELogManager.SendError(message, SR2EEntryPoint.SR2ELogToMLLog);
@@ -202,42 +209,223 @@ public abstract class SR2ECommand
         if (!silent) SR2ELogManager.SendWarning(message, SR2EEntryPoint.SR2ELogToMLLog);
     }
 
+    /// <summary>
+    /// Sends a "command is in maintenance" error message
+    /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendCommandMaintenance() => SendError(translation("cmd.error.maintenance"));
+    /// <summary>
+    /// Sends a "not a valid pedia entry" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidPedia(object obj) => SendError(translation("cmd.error.notvalidpedia",obj));
+    /// <summary>
+    /// Sends a "not a valid vac mode" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidVacMode(object obj) => SendError(translation("cmd.error.notvalidvacmode",obj));
+    /// <summary>
+    /// Sends a "not a valid weather" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidWeather(object obj) => SendError(translation("cmd.error.notvalidweather",obj));
+    /// <summary>
+    /// Sends a "not a valid key code" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidKeyCode(object obj) => SendError(translation("cmd.error.notvalidkeycode",obj));
+    /// <summary>
+    /// Sends a "not a valid integer" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidInt(object obj) => SendError(translation("cmd.error.notvalidint",obj));
+    /// <summary>
+    /// Sends a "not a valid float" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidFloat(object obj) => SendError(translation("cmd.error.notvalidfloat",obj));
+    /// <summary>
+    /// Sends a "not a valid double" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidDouble(object obj) => SendError(translation("cmd.error.notvaliddouble",obj));
+    /// <summary>
+    /// Sends a "not a valid boolean" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidBool(object obj) => SendError(translation("cmd.error.notvalidbool",obj));
+    /// <summary>
+    /// Sends a "not a valid trool" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidTrool(object obj) => SendError(translation("cmd.error.notvalidtrool",obj));
+    /// <summary>
+    /// Sends a "not a valid Vector3" error message
+    /// </summary>
+    /// <param name="objX">The invalid X value</param>
+    /// <param name="objY">The invalid Y value</param>
+    /// <param name="objZ">The invalid Z value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidVector3(object objX,object objY,object objZ) => SendError(translation("cmd.error.notvalidvector3",objX,objY,objZ));
+    /// <summary>
+    /// Sends a "not a valid identifiable type" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidIdentType(object obj) => SendError(translation("cmd.error.notvalididenttype",obj));
+    /// <summary>
+    /// Sends a "not a valid gadget" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidGadget(object obj) => SendError(translation("cmd.error.notvalidgadget",obj));
+    /// <summary>
+    /// Sends a "not a valid upgrade" error message
+    /// </summary>
+    /// <param name="obj">The invalid object name</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidUpgrade(object obj) => SendError(translation("cmd.error.notvalidupgrade",obj));
+    /// <summary>
+    /// Sends an "integer is not at least" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The minimum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotIntAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notintatleast",currValue,obj));
+    /// <summary>
+    /// Sends an "integer is not above" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The minimum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotIntAbove(object currValue, object obj) => SendError(translation("cmd.error.notintabove",currValue,obj));
+    /// <summary>
+    /// Sends an "integer is not under" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The maximum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotIntUnder(object currValue, object obj) => SendError(translation("cmd.error.notintbelow",currValue,obj));
+    /// <summary>
+    /// Sends a "float is not at least" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The minimum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotFloatAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notfloatatleast",currValue,obj));
+    /// <summary>
+    /// Sends a "float is not above" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The minimum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotFloatAbove(object currValue, object obj) => SendError(translation("cmd.error.notfloatabove",currValue,obj));
+    /// <summary>
+    /// Sends a "float is not under" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The maximum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotFloatUnder(object currValue, object obj) => SendError(translation("cmd.error.notfloatbelow",currValue,obj));
+    /// <summary>
+    /// Sends a "double is not at least" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The minimum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotDoubleAtLeast(object currValue, object obj) => SendError(translation("cmd.error.notdoubleatleast",currValue,obj));
+    /// <summary>
+    /// Sends a "double is not above" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The minimum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotDoubleAbove(object currValue, object obj) => SendError(translation("cmd.error.notdoubleabove",currValue,obj));
+    /// <summary>
+    /// Sends a "double is not under" error message
+    /// </summary>
+    /// <param name="currValue">The current value</param>
+    /// <param name="obj">The maximum value</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotDoubleUnder(object currValue, object obj) => SendError(translation("cmd.error.notdoublebelow",currValue,obj));
+    /// <summary>
+    /// Sends a "SRCharacterController is null" error message
+    /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNullSRCharacterController() => SendError(translation("cmd.error.srccnull"));
+    /// <summary>
+    /// Sends a "TeleportablePlayer is null" error message
+    /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNullTeleportablePlayer() => SendError(translation("cmd.error.teleportableplayernull"));
+    /// <summary>
+    /// Sends a "KinematicCharacterMotor is null" error message
+    /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNullKinematicCharacterMotor() => SendError(translation("cmd.error.kinematiccharactermotornull"));
+    /// <summary>
+    /// Sends a "scene group not supported" error message
+    /// </summary>
+    /// <param name="obj">The unsupported scene group</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendUnsupportedSceneGroup(object obj) => SendError(translation("cmd.error.scenegroupnotsupported",obj));
+    /// <summary>
+    /// Sends a "no camera found" error message
+    /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNoCamera() => SendError(translation("cmd.error.nocamera"));
+    /// <summary>
+    /// Sends a "not looking at a valid object" error message
+    /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotLookingAtValidObject() => SendError(translation("cmd.error.notlookingatvalidobject"));
+    /// <summary>
+    /// Sends a "not looking at anything" error message
+    /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotLookingAtAnything() => SendError(translation("cmd.error.notlookingatanything"));
+    /// <summary>
+    /// Sends an "unknown error" message
+    /// </summary>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendUnknown() => SendError(translation("cmd.error.unknown"));
+    /// <summary>
+    /// Sends an "is a gadget, not an item" error message
+    /// </summary>
+    /// <param name="obj">The object that is a gadget</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendIsGadgetNotItem(object obj) => SendError(translation("cmd.error.isgadgetnotitem",obj));
+    /// <summary>
+    /// Sends a "too many arguments" error message
+    /// </summary>
+    /// <param name="obj">The maximum number of arguments</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendErrorToManyArgs(object obj) => SendError(translation("cmd.error.errortoomanyargs",obj));
+    /// <summary>
+    /// Sends a "not a valid option" error message
+    /// </summary>
+    /// <param name="obj">The invalid option</param>
+    /// <returns>False, for easy chaining in Execute methods</returns>
     public bool SendNotValidOption(object obj) => SendError(translation("cmd.error.notvalidoption",obj));
 
 
+    /// <summary>
+    /// Tries to parse a Vector3 from three string inputs
+    /// </summary>
+    /// <param name="inputX">The X component</param>
+    /// <param name="inputY">The Y component</param>
+    /// <param name="inputZ">The Z component</param>
+    /// <param name="value">The output Vector3</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseVector3(string inputX, string inputY, string inputZ, out Vector3 value)
     {
         value = Vector3.zero;
@@ -245,6 +433,15 @@ public abstract class SR2ECommand
         catch { return SendNotValidVector3(inputX,inputY,inputZ); }
         return true;
     }
+    /// <summary>
+    /// Tries to parse a float from a string input with bounds
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output float</param>
+    /// <param name="min">The minimum value</param>
+    /// <param name="inclusive">If the minimum is inclusive</param>
+    /// <param name="max">The maximum value</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseFloat(string input, out float value, float min, bool inclusive, float max)
     {
         value = 0;
@@ -258,6 +455,14 @@ public abstract class SR2ECommand
         if (value >= max) return SendNotFloatUnder(input, max);
         return true;
     }
+    /// <summary>
+    /// Tries to parse a float from a string input with a minimum bound
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output float</param>
+    /// <param name="min">The minimum value</param>
+    /// <param name="inclusive">If the minimum is inclusive</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseFloat(string input, out float value, float min, bool inclusive)
     {
         value = 0;
@@ -270,6 +475,13 @@ public abstract class SR2ECommand
         else if (value <= min) return SendNotFloatAbove(input,min);
         return true;
     }
+    /// <summary>
+    /// Tries to parse a float from a string input with a maximum bound
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output float</param>
+    /// <param name="max">The maximum value</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseFloat(string input, out float value, float max)
     {
         value = 0;
@@ -278,6 +490,12 @@ public abstract class SR2ECommand
         if (value >= max) return SendNotFloatUnder(input, max);
         return true;
     }
+    /// <summary>
+    /// Tries to parse a float from a string input
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output float</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseFloat(string input, out float value)
     {
         value = 0;
@@ -285,6 +503,15 @@ public abstract class SR2ECommand
         catch { return SendNotValidFloat(input); }
         return true;
     }
+    /// <summary>
+    /// Tries to parse an integer from a string input with bounds
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output integer</param>
+    /// <param name="min">The minimum value</param>
+    /// <param name="inclusiveMin">If the minimum is inclusive</param>
+    /// <param name="max">The maximum value</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseInt(string input, out int value, int min, bool inclusiveMin, int max)
     {
         value = 0;
@@ -298,6 +525,16 @@ public abstract class SR2ECommand
         if (value >= max) return SendNotIntUnder(input, max);
         return true;
     }
+    /// <summary>
+    /// Tries to parse an integer from a string input with bounds
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output integer</param>
+    /// <param name="min">The minimum value</param>
+    /// <param name="inclusiveMin">If the minimum is inclusive</param>
+    /// <param name="max">The maximum value</param>
+    /// <param name="inclusiveMax">If the maximum is inclusive</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseInt(string input, out int value, int min, bool inclusiveMin, int max, bool inclusiveMax)
     {
         value = 0;
@@ -316,6 +553,14 @@ public abstract class SR2ECommand
         return true;
     }
 
+    /// <summary>
+    /// Tries to parse an integer from a string input with a minimum bound
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output integer</param>
+    /// <param name="min">The minimum value</param>
+    /// <param name="inclusive">If the minimum is inclusive</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseInt(string input, out int value, int min, bool inclusive)
     {
         value = 0;
@@ -328,6 +573,13 @@ public abstract class SR2ECommand
         else if (value <= min) return SendNotIntAbove(input,min);
         return true;
     }
+    /// <summary>
+    /// Tries to parse an integer from a string input with a maximum bound
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output integer</param>
+    /// <param name="max">The maximum value</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseInt(string input, out int value, int max)
     {
         value = 0;
@@ -336,6 +588,12 @@ public abstract class SR2ECommand
         if (value >= max) return SendNotIntUnder(input, max);
         return true;
     }
+    /// <summary>
+    /// Tries to parse an integer from a string input
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output integer</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseInt(string input, out int value)
     {
         value = 0;
@@ -343,6 +601,12 @@ public abstract class SR2ECommand
         catch { return SendNotValidInt(input); }
         return true;
     }
+    /// <summary>
+    /// Tries to parse a boolean from a string input
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output boolean</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseBool(string input, out bool value)
     {
         value = false;
@@ -350,6 +614,12 @@ public abstract class SR2ECommand
         if (input.ToLower() == "true") value = true;
         return true;
     }
+    /// <summary>
+    /// Tries to parse a Trool (true, false, toggle) from a string input
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output Trool</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseTrool(string input, out Trool value)
     {
         value = Trool.False;
@@ -358,6 +628,12 @@ public abstract class SR2ECommand
         if (input.ToLower() == "toggle") value = Trool.Toggle;
         return true;
     }
+    /// <summary>
+    /// Tries to parse a KeyCode from a string input
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output KeyCode</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseKeyCode( string input, out KeyCode value)
     {
         string keyToParse = input;
@@ -369,6 +645,12 @@ public abstract class SR2ECommand
         value = KeyCode.None;
         return SendNotValidKeyCode(input);
     }
+    /// <summary>
+    /// Tries to parse a Key from a string input
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output Key</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseKey( string input, out Key value)
     {
         string keyToParse = input;
@@ -380,6 +662,12 @@ public abstract class SR2ECommand
         value = Key.None;
         return SendNotValidKeyCode(input);
     }
+    /// <summary>
+    /// Tries to parse an LKey from a string input
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="value">The output LKey</param>
+    /// <returns>True if successful, false otherwise</returns>
     public bool TryParseLKey( string input, out LKey value)
     {
         string keyToParse = input;

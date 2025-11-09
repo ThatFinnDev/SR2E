@@ -122,14 +122,19 @@ public static class NativeEUtil
 
     public static void TryDisableSR2Input()
     {
-        
-        gameContext.InputDirector._paused.Map.Disable();
-        gameContext.InputDirector._mainGame.Map.Disable();
+        try
+        {
+            gameContext.InputDirector._paused.Map.Disable();
+            gameContext.InputDirector._mainGame.Map.Disable();
+        } catch { }
     }
 
     public static void TryEnableSR2Input()
     {
-        gameContext.InputDirector._paused.Map.Enable();
-        gameContext.InputDirector._mainGame.Map.Enable();
+        try
+        {
+            gameContext.InputDirector._paused.Map.Enable();
+            gameContext.InputDirector._mainGame.Map.Enable();
+        } catch { }
     }
 }
