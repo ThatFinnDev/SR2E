@@ -6,6 +6,6 @@ public enum PrismPediaDetailType
     RancherRisks = 10,
     Plortonomics = 20,
     About = 30,
-    OnTheRanch = 40, //Called HowToUse in assets
+    OnTheRanch = 40, //HowToUse
     Instructions = 50
 }

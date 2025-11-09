@@ -102,7 +102,7 @@ public static class PrismLibLookup
             { PrismNativeBaseSlime.Angler, "SlimeDefinition.Angler" },
             { PrismNativeBaseSlime.Rock, "SlimeDefinition.Rock" },
             { PrismNativeBaseSlime.Honey, "SlimeDefinition.Honey" },
-            { PrismNativeBaseSlime.Boom, "SlimeDefinition.Boom," },
+            { PrismNativeBaseSlime.Boom, "SlimeDefinition.Boom" },
             { PrismNativeBaseSlime.Puddle, "SlimeDefinition.Puddle" },
             { PrismNativeBaseSlime.Fire, "SlimeDefinition.Fire" },
             { PrismNativeBaseSlime.Batty, "SlimeDefinition.Batty" },

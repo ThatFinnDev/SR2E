@@ -213,7 +213,6 @@ public class PrismBaseSlimeCreatorV01
                             if (customAutoLargoMergeSettings != null)
                                 largoCreator.largoMergeSettings = customAutoLargoMergeSettings;
                             else largoCreator.largoMergeSettings = new PrismLargoMergeSettings();
-                            largoCreator.largoMergeSettings.baseColors = PrismThreeMergeStrategy.PrioritizeFirst;
                             largoCreator.CreateLargo();
                         }
                     }

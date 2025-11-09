@@ -18,7 +18,7 @@ public static class MenuEUtil
     internal static void OpenPopUpBlock(SR2EPopUp popUp)
     {
         if (popUpBlock.transform.GetParent() != popUp.transform.GetParent()) return;
-        var instance = GameObject.Instantiate(popUpBlock, popUpBlock);
+        var instance = GameObject.Instantiate(popUpBlock, popUpBlock.transform);
         instance.gameObject.SetActive(true);
         instance.SetSiblingIndex(popUp.transform.GetSiblingIndex()-1);
         popUp.block = instance;

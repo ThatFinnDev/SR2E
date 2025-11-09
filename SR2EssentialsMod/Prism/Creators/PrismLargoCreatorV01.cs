@@ -188,7 +188,9 @@ public class PrismLargoCreatorV01
             firstSlimeDef.AppearancesDefault[0], secondSlimeDef.AppearancesDefault[0]
         };
 
-        if (largoMergeSettings.baseColors==PrismThreeMergeStrategy.Merge)
+        var optimalPriortization = PrismLibMerging.GetOptimalRandomizationV01(firstSlimeDef,secondSlimeDef);
+        if (largoMergeSettings.baseColors==PrismColorMergeStrategy.Merge||
+            (largoMergeSettings.baseColors == PrismColorMergeStrategy.Optimal && optimalPriortization==PrismThreeMergeStrategy.Merge))
         {
             var firstPalette = firstSlime.GetSlimeAppearance()._colorPalette;
             var secondPalette = secondSlime.GetSlimeAppearance()._colorPalette;
@@ -204,8 +206,18 @@ public class PrismLargoCreatorV01
         }
         else
         {
-            var prioritizedAppearance = largoMergeSettings.baseColors == PrismThreeMergeStrategy.PrioritizeFirst ? firstSlime.GetSlimeAppearance() : secondSlime.GetSlimeAppearance();
-            largoDef.color = largoMergeSettings.baseColors == PrismThreeMergeStrategy.PrioritizeFirst ? firstSlimeDef.color : secondSlimeDef.color;
+            SlimeAppearance prioritizedAppearance = null;
+            switch (optimalPriortization)
+            {
+                case PrismThreeMergeStrategy.PrioritizeSecond :
+                    prioritizedAppearance = secondSlime.GetSlimeAppearance();
+                    largoDef.color = secondSlimeDef.color;
+                    break;
+                default:
+                    prioritizedAppearance = firstSlime.GetSlimeAppearance();
+                    largoDef.color = firstSlimeDef.color;
+                    break;
+            }
             appearance._splatColor = prioritizedAppearance._splatColor;
             appearance._colorPalette = new SlimeAppearance.Palette()
             {
@@ -215,9 +227,8 @@ public class PrismLargoCreatorV01
                 Top = prioritizedAppearance._colorPalette.Top,
             };
         }
-        
-        appearance._structures = PrismLibMerging.MergeStructures(appearance._dependentAppearances[0],
-            appearance._dependentAppearances[1], largoMergeSettings);
+        appearance._structures = PrismLibMerging.MergeStructuresV01(appearance._dependentAppearances[0],
+            appearance._dependentAppearances[1], largoMergeSettings,optimalPriortization);
 
         try
         {
@@ -227,7 +238,7 @@ public class PrismLargoCreatorV01
         {
             switch (largoMergeSettings.body)
             {
-                case PrismTwoMergeStrategy.KeepSecond:
+                case PrismBFMergeStrategy.KeepSecond:
                     largoDef.Diet = secondSlimeDef.Diet;
                     MelonLogger.BigError("Largo Error",
                         "Failed to merge diet, and largo settings are incorrectly set! Defaulting to slime 2's diet.");
@@ -269,7 +280,7 @@ public class PrismLargoCreatorV01
 
 
         if(largoMergeSettings.mergeComponents)
-            PrismLibMerging.MergeComponents(largoDef.prefab, firstSlimeDef.prefab, secondSlimeDef.prefab);
+            PrismLibMerging.MergeComponentsV01(largoDef.prefab, firstSlimeDef.prefab, secondSlimeDef.prefab);
 
         
         if (firstSlime.GetIsNative())

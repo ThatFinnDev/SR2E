@@ -3,14 +3,22 @@ namespace SR2E.Prism.Data;
 public class PrismLargoMergeSettings
 {
     public bool mergeComponents = true;
-    public PrismTwoMergeStrategy body = PrismTwoMergeStrategy.KeepFirst;
-    public PrismTwoMergeStrategy face = PrismTwoMergeStrategy.KeepFirst;
-    public PrismThreeMergeStrategy baseColors = PrismThreeMergeStrategy.Merge;
-    public PrismThreeMergeStrategy twinColors = PrismThreeMergeStrategy.Merge;
-    public PrismThreeMergeStrategy sloomberColors = PrismThreeMergeStrategy.Merge;
-    public PrismLargoMergeSettings() {}
+    public PrismBFMergeStrategy body;
+    public PrismBFMergeStrategy face;
+    public PrismColorMergeStrategy baseColors;
+    public PrismColorMergeStrategy twinColors;
+    public PrismColorMergeStrategy sloomberColors;
 
-    public PrismLargoMergeSettings(bool mergeComponents,PrismTwoMergeStrategy body, PrismTwoMergeStrategy face, PrismThreeMergeStrategy baseColors, PrismThreeMergeStrategy twinColors, PrismThreeMergeStrategy sloomberColors)
+    public PrismLargoMergeSettings()
+    {
+        body = PrismBFMergeStrategy.Optimal;
+        face = PrismBFMergeStrategy.Optimal;
+        baseColors = PrismColorMergeStrategy.Optimal;
+        twinColors = PrismColorMergeStrategy.Optimal;
+        sloomberColors = PrismColorMergeStrategy.Optimal;
+    }
+
+    public PrismLargoMergeSettings(bool mergeComponents,PrismBFMergeStrategy body, PrismBFMergeStrategy face, PrismColorMergeStrategy baseColors, PrismColorMergeStrategy twinColors, PrismColorMergeStrategy sloomberColors)
     {
         this.mergeComponents=mergeComponents;
         this.body = body;

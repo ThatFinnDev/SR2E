@@ -13,7 +13,8 @@ public class PrismGordoCreatorV01
     public LocalizedString localized;
     public PrismBaseSlime baseSlime = null;
     public string referenceID => "IdentifiableType.Modded" + baseSlime._slimeDefinition.name +"Gordo";
-    
+
+    public int customMaxEatCount = 0;
     public Material customEyesBlink;
     public Material customEyesNormal;
     public Material customMouthHappy;
@@ -61,6 +62,8 @@ public class PrismGordoCreatorV01
         var gordo = baseType.prefab.CopyObject();
         gordo.GetComponent<GordoIdentifiable>().identType = gordoType;
         gordo.GetComponent<GordoEat>().SlimeDefinition = baseSlime;
+        if(customMaxEatCount!=0)
+            gordo.GetComponent<GordoEat>().TargetCount = customMaxEatCount;
         
         gordo.hideFlags = HideFlags.DontUnloadUnusedAsset;
         var faceComp = gordo.GetComponent<GordoFaceComponents>();
