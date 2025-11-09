@@ -188,7 +188,11 @@ public class PrismLargoCreatorV01
             firstSlimeDef.AppearancesDefault[0], secondSlimeDef.AppearancesDefault[0]
         };
 
-        var optimalPriortization = PrismLibMerging.GetOptimalRandomizationV01(firstSlimeDef,secondSlimeDef);
+        bool firstFace = PrismLibMerging.ShouldUseFirstStructure(largoMergeSettings.face, !PrismLibMerging.GetLargoHasDefaultFace(firstSlime.GetSlimeAppearance()));
+        if (firstFace)
+            appearance._face = Object.Instantiate(firstSlime.GetSlimeAppearance()._face);
+        else appearance._face = Object.Instantiate(secondSlime.GetSlimeAppearance()._face);
+        var optimalPriortization = PrismLibMerging.GetOptimalV01(firstSlimeDef,secondSlimeDef);
         if (largoMergeSettings.baseColors==PrismColorMergeStrategy.Merge||
             (largoMergeSettings.baseColors == PrismColorMergeStrategy.Optimal && optimalPriortization==PrismThreeMergeStrategy.Merge))
         {
