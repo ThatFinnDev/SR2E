@@ -16,7 +16,7 @@ internal class ScaleCommand: SR2ECommand
         Vector3 scale;
         if (!TryParseVector3(args[0], args[1], args[2], out scale)) return false;
         
-        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
+        Camera cam = MiscEUtil.GetActiveCamera(); if (cam == null) return SendNoCamera();
              
         if (Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
         {

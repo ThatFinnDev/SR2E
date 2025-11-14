@@ -26,6 +26,7 @@ internal static class LocalizationDirectorLoadTablePatch
                 }
             }
         }
+        SR2EEntryPoint.CheckFallBackFont();
         yield break;
     }
 }

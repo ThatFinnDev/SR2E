@@ -132,7 +132,23 @@ public static class SR2EVolumeProfileManager
         volumeHolder= obj.GetComponent<Volume>();
         foreach (var pair in EmbeddedResourceEUtil.LoadResources("Assets.VolumePresets"))
             LoadProfile(pair.Key, pair.Value);
-        
+        try
+        {
+            foreach (var path in Directory.GetFiles(SR2EEntryPoint.CustomVolumeProfilesPath))
+            {
+                try
+                {
+                    if (!path.EndsWith(".xml")) return;
+                    var name = Path.GetFileNameWithoutExtension(path);
+                    LoadProfile(name, File.ReadAllBytes(path));
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Error(e);
+                    MelonLogger.Error("Error loading volume profile: "+path);
+                }
+            }
+        } catch (Exception e) { }
         
     }
     

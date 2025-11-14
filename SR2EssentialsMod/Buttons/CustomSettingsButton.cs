@@ -33,13 +33,13 @@ public static class CustomSettingsCreator
     internal static void ApplyModel()
     {
         if (optionsItemDefinitions == null)
-            optionsItemDefinitions = GameContext.Instance.OptionsDirector._optionsItemDefinitionsProvider.defaultAsset.ProfileBasedDefinitions;
+            optionsItemDefinitions = gameContext.OptionsDirector._optionsItemDefinitionsProvider.defaultAsset.ProfileBasedDefinitions;
 
-        GameContext.Instance.OptionsDirector._optionsModel = new OptionsModel(optionsItemDefinitions);
+        gameContext.OptionsDirector._optionsModel = new OptionsModel(optionsItemDefinitions);
         
         foreach (var setting in settingModels)
         {
-            GameContext.Instance.OptionsDirector._optionsModel.optionsById.Add(setting.Key, setting.Value);
+            gameContext.OptionsDirector._optionsModel.optionsById.Add(setting.Key, setting.Value);
         }
 
         var newGameUI = Resources.FindObjectsOfTypeAll<NewGameRootUI>().First();

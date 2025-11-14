@@ -3,12 +3,12 @@
 A mod for SlimeRancher 2 that adds a mod menu to the main menu and an in-game console with commands (expandable by other mods/expansions). This includes cheats, etc.
 
 # Installation guides
-Windows: [Click Here](https://sr2e.thatfinn.dev/docs/installation/windows-installation-guide)<br />
-Linux: [Click Here](https://sr2e.thatfinn.dev/docs/installation/linux-installation-guide)
+Windows: [Click Here](https://sr2e.sr2.dev/docs/installation/windows-installation-guide)<br />
+Linux: [Click Here](https://sr2e.sr2.dev/docs/installation/linux-installation-guide)
 
 # Mod's website
 including information about the mod, usage<br />
-Web: [Click Here](https://sr2e.thatfinn.dev)
+Web: [Click Here](https://sr2e.sr2.dev)
 
 # Need help? Found bugs?
 Please let me know on Discord or in GitHub Issues!<br />

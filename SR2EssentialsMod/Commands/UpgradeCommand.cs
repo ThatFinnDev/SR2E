@@ -75,27 +75,27 @@ internal class UpgradeCommand : SR2ECommand
         switch (args[0])
         {
             case "increment":
-                newLevel = SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id) + level;
+                newLevel = sceneContext.PlayerState._model.upgradeModel.GetUpgradeLevel(id) + level;
                 if(newLevel > maxUpgrade) newLevel = maxUpgrade;
-                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
+                sceneContext.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
                 if(newLevel==maxUpgrade) SendMessage(translation("cmd.upgrade.successset",itemName,newLevel));
                 else SendMessage(translation("cmd.upgrade.successadd",itemName,level));
                 break;
             case "set":
                 newLevel = level;
                 if(newLevel > maxUpgrade) newLevel = maxUpgrade;
-                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
+                sceneContext.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
                 SendMessage(translation("cmd.upgrade.successset",itemName,newLevel)); 
                 break;
             case "decrement":
-                newLevel = Mathf.Clamp((SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id) - level), 0, int.MaxValue);
+                newLevel = Mathf.Clamp((sceneContext.PlayerState._model.upgradeModel.GetUpgradeLevel(id) - level), 0, int.MaxValue);
                 if(newLevel < 0) newLevel = 0;
-                SceneContext.Instance.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
+                sceneContext.PlayerState._model.upgradeModel.SetUpgradeLevel(id, newLevel);
                 if(newLevel==maxUpgrade) SendMessage(translation("cmd.upgrade.successset",itemName,newLevel));
                 else SendMessage(translation("cmd.upgrade.successremove",itemName,level));
                 break;
             case "get":
-                SendMessage(translation("cmd.upgrade.successget",SceneContext.Instance.PlayerState._model.upgradeModel.GetUpgradeLevel(id),itemName)); 
+                SendMessage(translation("cmd.upgrade.successget",sceneContext.PlayerState._model.upgradeModel.GetUpgradeLevel(id),itemName)); 
                 break;
         }
         return false;

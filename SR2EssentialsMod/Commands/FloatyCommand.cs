@@ -19,7 +19,7 @@ internal class FloatyCommand : SR2ECommand
         if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
         
-        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
+        Camera cam = MiscEUtil.GetActiveCamera(); if (cam == null) return SendNoCamera();
         
         float duration = -1;
         if(args!=null) if(!TryParseFloat(args[0], out duration, 0, false)) return false;

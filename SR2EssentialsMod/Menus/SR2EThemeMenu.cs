@@ -56,6 +56,7 @@ public class SR2EThemeMenu : SR2EMenu
             GameObject dropDownObj = Instantiate(dropdownTemplate, contentRec);
             dropDownObj.SetActive(true);
             TMP_Dropdown dropdown = dropDownObj.GetObjectRecursively<TMP_Dropdown>("Dropdown");
+            dropDownObj.GetObjectRecursively<Canvas>("Canvas").overrideSorting=false;
             dropdown.ClearOptions();
             //idk how to convert to il2cpp list
             var options = new Il2CppSystem.Collections.Generic.List<string>();
@@ -143,11 +144,11 @@ public class SR2EThemeMenu : SR2EMenu
         toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
         toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"thememenu.title");
     }
-
-    protected override void OnUpdate()
+    public override void OnCloseUIPressed()
     {
-        if (Key.Escape.OnKeyPressed())
-            if(MenuEUtil.openPopUps.Count==0) 
-                Close();
+        if (MenuEUtil.isAnyPopUpOpen) return;
+        
+        Close();
     }
+
 }

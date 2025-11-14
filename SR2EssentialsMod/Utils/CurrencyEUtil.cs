@@ -5,6 +5,7 @@ namespace SR2E.Utils;
 public static class CurrencyEUtil
 {
     public static ICurrency toICurrency(this CurrencyDefinition currencyDefinition) => currencyDefinition.TryCast<ICurrency>();
+    public static CurrencyDefinition toCurrency(this ICurrency iCurrency) => iCurrency.TryCast<CurrencyDefinition>();
     public static bool SetCurrency(string referenceID, int amount)
     {
         if (string.IsNullOrWhiteSpace(referenceID)) return false;
@@ -13,7 +14,7 @@ public static class CurrencyEUtil
         if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
 
         var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-        SceneContext.Instance.PlayerState._model.SetCurrency(def.toICurrency(), amount);
+        sceneContext.PlayerState._model.SetCurrency(def.toICurrency(), amount);
         return true;
     }
 
@@ -25,7 +26,7 @@ public static class CurrencyEUtil
         if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
 
         var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-        SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(), amount,
+        sceneContext.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(), amount,
             amountEverCollected);
         return true;
     }
@@ -38,7 +39,7 @@ public static class CurrencyEUtil
         if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
 
         var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-        SceneContext.Instance.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(),
+        sceneContext.PlayerState._model.SetCurrencyAndAmountEverCollected(def.toICurrency(),
             GetCurrency(referenceID), amountEverCollected);
         return true;
     }
@@ -51,7 +52,7 @@ public static class CurrencyEUtil
         if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
 
         var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-        SceneContext.Instance.PlayerState._model.AddCurrency(def.toICurrency(), amount);
+        sceneContext.PlayerState._model.AddCurrency(def.toICurrency(), amount);
         return true;
     }
 
@@ -63,7 +64,7 @@ public static class CurrencyEUtil
         if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
 
         var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-        var curr = SceneContext.Instance.PlayerState._model.GetCurrencyAmount(def.toICurrency());
+        var curr = sceneContext.PlayerState._model.GetCurrencyAmount(def.toICurrency());
         if (curr.ToString() == "NaN") return 0;
         return curr;
     }
@@ -76,7 +77,7 @@ public static class CurrencyEUtil
         if (!id.StartsWith("CurrencyDefinition.")) id = "CurrencyDefinition." + id;
 
         var def = gameContext.LookupDirector.CurrencyList.FindCurrencyByReferenceId(id);
-        var curr = SceneContext.Instance.PlayerState._model.GetCurrencyAmountEverCollected(def.toICurrency());
+        var curr = sceneContext.PlayerState._model.GetCurrencyAmountEverCollected(def.toICurrency());
         if (curr.ToString() == "NaN") return 0;
         return curr;
     }

@@ -36,7 +36,7 @@ internal class InfiniteEnergyCommand : SR2ECommand
             jetpackAbilityData._upwardThrustForceIncrement = normalUpwardThrustForceIncrement;
 
             energyMeter.maxEnergy = new NullableFloatProperty(normalEnergy);
-            SceneContext.Instance.PlayerState.SetEnergy(0);
+            sceneContext.PlayerState.SetEnergy(0);
             SendMessage(translation("cmd.infenergy.successnolonger"));
         }
         else
@@ -56,7 +56,7 @@ internal class InfiniteEnergyCommand : SR2ECommand
                 jetpackAbilityData._upwardThrustForceIncrement = 5f;
             }
 
-            try { SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue); }catch { }
+            try { sceneContext.PlayerState.SetEnergy(int.MaxValue); }catch { }
             normalEnergy = energyMeter.maxEnergy;
             energyMeter.maxEnergy = new NullableFloatProperty(2.14748365E+09f);
             SendMessage(translation("cmd.infenergy.success"));
@@ -69,9 +69,9 @@ internal class InfiniteEnergyCommand : SR2ECommand
         try
         {
             if (infEnergy)
-                if (SceneContext.Instance != null)
-                    if (SceneContext.Instance.PlayerState != null)
-                        SceneContext.Instance.PlayerState.SetEnergy(int.MaxValue);
+                if (sceneContext != null)
+                    if (sceneContext.PlayerState != null)
+                        sceneContext.PlayerState.SetEnergy(int.MaxValue);
         }
         catch { }
     }

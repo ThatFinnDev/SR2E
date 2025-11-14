@@ -1,4 +1,5 @@
 ﻿using Il2CppTMPro;
+using SR2E.Enums;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Popups;
@@ -28,7 +29,7 @@ public class SR2ETextViewer : SR2EPopUp
 
     protected override void OnUpdate()
     {
-        if (Key.Escape.OnKeyPressed())
+        if (LKey.Escape.OnKeyDown())
             Close();
     }
 }

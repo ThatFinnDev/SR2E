@@ -1,5 +1,7 @@
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.UI.Framework.Audio;
+using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using SR2E.Buttons;
 using SR2E.Enums.Sounds;
@@ -7,6 +9,7 @@ using SR2E.Managers;
 using SR2E.Menus;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
+using UnityEngine.UI;
 
 namespace SR2E.Patches.Context;
 
@@ -15,11 +18,14 @@ internal class GameContextPatch
 {
     internal static void Postfix(GameContext __instance)
     {
-        _killDamage = new Damage
+        var damageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>();
+        damageSource._logMessage = "Modded.SR2EKill";
+        damageSource.name = "ModdedSR2EDamage";
+        damageSource.hideFlags |= HideFlags.HideAndDontSave;
+         _killDamage = new Damage
         {
-            Amount = 99999999, DamageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>(),
+            Amount = 99999999, DamageSource = damageSource,
         };
-        _killDamage.DamageSource.hideFlags |= HideFlags.HideAndDontSave;
         
         foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
         {
@@ -29,8 +35,6 @@ internal class GameContextPatch
             if (!LookupEUtil.FXLibraryReversable.ContainsKey(pname))
                 LookupEUtil.FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
         }
-
-        LookupEUtil.vaccableGroup = Get<IdentifiableTypeGroup>("VaccableNonLiquids");
 
         foreach (KeyValuePair<string, string> pair in teleportersToAdd)
             AddTeleporter(pair.Key, pair.Value);
@@ -46,13 +50,20 @@ internal class GameContextPatch
             }
 
             if (AddCheatMenuButton.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
-            if (DevMode.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugDirector.DebugStatsManager.TogglePlayerDebugUI(); }));
+            if (DevMode.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugUI.DebugStatsManager.TogglePlayerDebugUI(); }));
 
         }
 
         Time.timeScale = 1f;
         try
         {
+            LookupEUtil.closeInput = Get<InputEvent>("Close");
+            if(LookupEUtil.closeInput != null)
+                LookupEUtil.closeInput.add_Performed((System.Action<InputEventData>)((data) =>
+                {
+                    var menu = MenuEUtil.GetOpenMenu();
+                    if(menu!=null) menu.OnCloseUIPressed();
+                }));
             LookupEUtil.actionMaps = new Dictionary<string, InputActionMap>();
             LookupEUtil.MainGameActions = new Dictionary<string, InputAction>();
             LookupEUtil.PausedActions = new Dictionary<string, InputAction>();
@@ -92,25 +103,16 @@ internal class GameContextPatch
             MelonLogger.Error(e);
             MelonLogger.Error("There was a problem loading sounds!");
         }
-        //
+        
         foreach (var expansion in SR2EEntryPoint.expansionsAll)
-            try
-            {
-                expansion.OnGameContext(__instance);
-            }
-            catch (Exception e)
-            {
-                MelonLogger.Error(e);
-            }
+            try { expansion.OnGameContext(__instance); }
+            catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var pair in SR2EEntryPoint.menus)
+            try { pair.Key.OnGameContext(__instance); }
+            catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in SR2ECommandManager.commands)
-            try
-            {
-                pair.Value.OnGameContext(__instance);
-            }
-            catch (Exception e)
-            {
-                MelonLogger.Error(e);
-            }
+            try { pair.Value.OnGameContext(__instance); }
+            catch (Exception e) { MelonLogger.Error(e); }
     }
 
     internal static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
@@ -123,8 +125,11 @@ internal class GameContextPatch
     };
     internal static void AddTeleporter(string sceneGroup, string gadgetName)
     {
-        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupEUtil.GetGadgetDefinitionByName(gadgetName).prefab.transform.GetObjectRecursively<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>());
-        teleporter.gameObject.SetActive(false); teleporter.name = "TP-"+sceneGroup; teleporter.gameObject.MakePrefab(); teleporter.gameObject.MakePrefab(); teleporter._hasDestination = true;
+        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupEUtil.GetGadgetDefinitionByName(gadgetName).prefab.transform.GetObjectRecursively<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>(),prefabHolder.transform);
+        teleporter.gameObject.SetActive(false); 
+        teleporter.name = "TP-"+sceneGroup; 
+        teleporter.gameObject.MakePrefab(); 
+        teleporter._hasDestination = true;
         SR2EWarpManager.teleporters.TryAdd(sceneGroup, teleporter);
     }
 

@@ -23,7 +23,7 @@ public static class LoadPatch
 public static class SavePatch
 {
     [HarmonyFinalizer]
-    static Exception Pull(Exception __exception)
+    static Exception Finalizer(Exception __exception)
     {
         if (__exception == null) return null;
         if (IgnoreSaveErrors.HasFlag())

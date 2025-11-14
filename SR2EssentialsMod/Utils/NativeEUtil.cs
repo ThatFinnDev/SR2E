@@ -48,6 +48,9 @@ public static class NativeEUtil
 
     public static void TryPauseGame(bool usePauseMenu = true)
     {
+        if (SR2EEntryPoint.mainMenuLoaded)
+            Time.timeScale = 0;
+        
         try
         {
             systemContext.SceneLoader.TryPauseGame();
@@ -60,8 +63,12 @@ public static class NativeEUtil
             } catch { }
     }
 
-    public static void TryUnPauseGame(bool usePauseMenu = true, bool usePauseMenuElse = true)
+    public static void TryUnPauseGame(bool usePauseMenu = true)
     {
+
+        if (SR2EEntryPoint.mainMenuLoaded)
+            Time.timeScale = 1;
+        
         try
         {
             systemContext.SceneLoader.UnpauseGame();
@@ -71,12 +78,6 @@ public static class NativeEUtil
             try
             {
                 sceneContext.PauseMenuDirector.UnPauseGame();
-            } catch { }
-        else if (usePauseMenuElse)
-            try
-            {
-                if (GetAnyInScene<PauseMenuRoot>() != null)
-                    sceneContext.PauseMenuDirector.PauseGame();
             } catch { }
     }
 
@@ -121,11 +122,19 @@ public static class NativeEUtil
 
     public static void TryDisableSR2Input()
     {
-        Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Disable();
+        try
+        {
+            gameContext.InputDirector._paused.Map.Disable();
+            gameContext.InputDirector._mainGame.Map.Disable();
+        } catch { }
     }
 
     public static void TryEnableSR2Input()
     {
-        Object.FindObjectOfType<InputSystemUIInputModule>().actionsAsset.Enable();
+        try
+        {
+            gameContext.InputDirector._paused.Map.Enable();
+            gameContext.InputDirector._mainGame.Map.Enable();
+        } catch { }
     }
 }

@@ -18,7 +18,7 @@ internal class AccessDoorPatch
         RanchCommand.accessDoors.RemoveAll(item => item == null);
         try
         {
-            __instance.CurrState = GameContext.Instance.AutoSaveDirector.SavedGame.GameState.Ranch.AccessDoorStates[__instance.Id];
+            __instance.CurrState = autoSaveDirector.SavedGame.GameState.Ranch.AccessDoorStates[__instance.Id];
         }
         catch {}
         

@@ -3,6 +3,7 @@ using System.Linq;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using Il2CppSystem.Linq;
 using SR2E.Menus;
 using Unity.Mathematics;
 
@@ -35,7 +36,36 @@ public static class MiscEUtil
         { Branch.Developer, "dev" },
     };
     
+    private const string AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static readonly int AllowedCharCount = AllowedChars.Length;
+    internal static string GetRandomString(int length)
+    {
+        Span<char> chars = stackalloc char[length];
+        var random = System.Random.Shared;
+        for (int i = 0; i < length; i++)
+            chars[i] = AllowedChars[random.Next(AllowedCharCount)];
+        return new string(chars);
+    }
     
+    public static Camera GetActiveCamera()
+    {
+        Camera[] cams = Camera.allCameras;
+        Camera active = null;
+
+        foreach (var c in cams)
+        {
+            if (active == null || c.depth > active.depth)
+                active = c;
+        }
+
+        return active;
+    }
+
+    internal static SlimeAppearance.AppearanceSaveSet GetAppearanceSet(this IdentifiableType type)
+    {
+        if (type.TryCast<SlimeDefinition>() != null) return SlimeAppearance.AppearanceSaveSet.CLASSIC;
+        return SlimeAppearance.AppearanceSaveSet.NONE;
+;    }
     public static void AddNullAction(this MelonPreferences_Entry entry) => SR2EModMenu.entriesWithActions.Add(entry, null);
     public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => SR2EModMenu.entriesWithActions.Add(entry, action);
 
@@ -43,6 +73,7 @@ public static class MiscEUtil
     
     
     public static Il2CppArrayBase GetAllMembersArray(this IdentifiableTypeGroup group) => Il2CppSystem.Linq.Enumerable.ToArray(group.GetAllMembers());
+    public static List<IdentifiableType> GetAllMembersList(this IdentifiableTypeGroup group) => group.GetAllMembers().ToArray().ToList();
 
 
 
@@ -64,8 +95,21 @@ public static class MiscEUtil
         }
     }
     
-    public static Il2CppReferenceArray<T> AddToNew<T>(this Il2CppReferenceArray<T> array, T obj)
-        where T : Il2CppObjectBase
+    public static Il2CppReferenceArray<T> RemoveToNew<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array)
+        {
+            list.Add(item);
+        }
+
+        if(list.Contains(obj))
+            list.Remove(obj);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
+    public static Il2CppReferenceArray<T> AddToNew<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
         foreach (var item in array)
@@ -78,7 +122,46 @@ public static class MiscEUtil
         array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
         return array;
     }
+    public static Il2CppReferenceArray<T> ReplaceToNew<T>(this Il2CppReferenceArray<T> array, T obj, int index) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array)
+        {
+            list.Add(item);
+        }
 
+        list.RemoveAt(index);
+        list.Insert(index,obj);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
+    public static Il2CppReferenceArray<T> RemoveAtToNew<T>(this Il2CppReferenceArray<T> array, int index) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array)
+        {
+            list.Add(item);
+        }
+
+        list.RemoveAt(index);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
+    public static Il2CppReferenceArray<T> InsertToNew<T>(this Il2CppReferenceArray<T> array, T obj, int index) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array)
+        {
+            list.Add(item);
+        }
+
+        list.Insert(index,obj);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
     public static Il2CppReferenceArray<T> AddRangeToNew<T>(this Il2CppReferenceArray<T> array, Il2CppReferenceArray<T> obj) where T : Il2CppObjectBase
     {
         var list = new Il2CppSystem.Collections.Generic.List<T>();
@@ -138,6 +221,36 @@ public static class MiscEUtil
         return new Il2CppStringArray(strArray);
     }
 
+    
+    public static List<T> ToList<T>(this HashSet<T> hashSet)
+    {
+        if (hashSet == null) return null;
+        var list = new List<T>(hashSet.Count);
+        foreach (T item in hashSet) list.Add(item);
+        return list;
+    }
+    
+    public static List<T> ToList<T>(this Il2CppSystem.Collections.Generic.HashSet<T> hashSet)
+    {
+        if (hashSet == null) return null;
+        var list = new List<T>(hashSet.Count);
+        foreach (T item in hashSet) list.Add(item);
+        return list;
+    }
+    public static HashSet<T> ToHashSet<T>(this List<T> list)
+    {
+        if (list == null) return null;
+        var hashSet = new HashSet<T>();
+        foreach (T item in list) hashSet.Add(item);
+        return hashSet;
+    }
+    public static Il2CppSystem.Collections.Generic.HashSet<T> ToIl2CppHashSet<T>(this List<T> list)
+    {
+        if (list == null) return null;
+        var hashSet = new Il2CppSystem.Collections.Generic.HashSet<T>();
+        foreach (T item in list) hashSet.Add(item);
+        return hashSet;
+    }
     
     public static bool IsInsideRange(this int number, int rangeMin, int rangeMax) => number >= rangeMin && number <= rangeMax;
 

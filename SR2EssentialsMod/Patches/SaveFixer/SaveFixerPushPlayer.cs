@@ -46,9 +46,9 @@ internal static class SaveFixerPushPlayer
                     if (needsRemoving(favouriteGadgetID,loadReferenceTranslation))
                         player.FavoriteGadgets.Remove(favouriteGadgetID);
 
-                try //This can fail on old saves which don't have this feature yet. We can safely ignore this
+                try
                 {
-                    foreach(var viewedBluePrintID in player.ViewedItems.ViewedBlueprints._buckets.ToList())
+                    foreach(var viewedBluePrintID in player.ViewedItems.ViewedBlueprints.ToList())
                         if (needsRemoving(viewedBluePrintID,loadReferenceTranslation))
                             player.ViewedItems.ViewedBlueprints.Remove(viewedBluePrintID);
                 }

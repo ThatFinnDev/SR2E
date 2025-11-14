@@ -18,7 +18,7 @@ public static class MenuEUtil
     internal static void OpenPopUpBlock(SR2EPopUp popUp)
     {
         if (popUpBlock.transform.GetParent() != popUp.transform.GetParent()) return;
-        var instance = GameObject.Instantiate(popUpBlock, popUpBlock);
+        var instance = GameObject.Instantiate(popUpBlock, popUpBlock.transform);
         instance.gameObject.SetActive(true);
         instance.SetSiblingIndex(popUp.transform.GetSiblingIndex()-1);
         popUp.block = instance;
@@ -145,7 +145,7 @@ public static class MenuEUtil
 
 
 
-    
+    public static bool isAnyPopUpOpen => openPopUps.Count != 0;
     public static bool isAnyMenuOpen
     {
         get
@@ -160,7 +160,21 @@ public static class MenuEUtil
             return false;
         }
     }
-
+    public static void CloseOpenPopUps()
+    {
+        try
+        {
+            for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
+            {
+                Transform child = SR2EEntryPoint.SR2EStuff.transform.GetChild(i);
+                if (child.HasComponent<SR2EPopUp>())
+                {
+                    GameObject.Destroy(child.gameObject);
+                }
+            }
+        }
+        catch { }
+    }
     public static void CloseOpenMenu()
     {
         SR2EMenu menu = GetOpenMenu();

@@ -1,0 +1,76 @@
+using System;
+using System.Linq;
+using SR2E.Storage;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+namespace SR2E.Managers;
+
+/// <summary>
+/// Taken from https://github.com/Atmudia/SRLE/blob/sr2/Utils/InputManager.cs
+/// </summary>
+[Obsolete("Please use InputEUtil instead!",true)] 
+public static class SR2EInputManager
+{
+    [Obsolete("Please use Mouse.current",true)] public static Vector2 MousePosition => Mouse.current.position.ReadValue();
+    [Obsolete("Please use Mouse.current",true)] public static Vector2 MouseScrollDelta => Mouse.current.scroll.ReadValue();
+
+    [Obsolete("Please use Mouse.current",true)] public static bool GetMouseButtonDown(int btn)
+    {
+        return btn switch
+        {
+            0 => Mouse.current.leftButton.wasPressedThisFrame,
+            1 => Mouse.current.rightButton.wasPressedThisFrame,
+            2 => Mouse.current.middleButton.wasPressedThisFrame,
+            _ => false
+        };
+    }
+    [Obsolete("Please use Mouse.current",true)] public static bool GetMouseButtonUp(int btn)
+    {
+        return btn switch
+        {
+            0 => Mouse.current.leftButton.wasReleasedThisFrame,
+            1 => Mouse.current.rightButton.wasReleasedThisFrame,
+            2 => Mouse.current.middleButton.wasReleasedThisFrame,
+            _ => false
+        };
+    }
+
+    [Obsolete("Please use Mouse.current",true)] public static bool GetMouseButton(int btn)
+    {
+        return btn switch
+        {
+            0 => Mouse.current.leftButton.isPressed,
+            1 => Mouse.current.rightButton.isPressed,
+            2 => Mouse.current.middleButton.isPressed,
+            _ => false
+        };
+    }
+
+    [Obsolete("Please use LKey.OnKey instead!",true)] public static bool GetKey(Key key) => Keyboard.current[key].isPressed;
+    
+    [Obsolete("Please use LKey.OnKeyDown instead!",true)] public static bool GetKeyDown(Key key) => Keyboard.current[key].wasPressedThisFrame;
+    
+
+    [Obsolete("Please use LKey.OnKeyDown instead!",true)] public static bool OnKeyPressed(this Key key) => GetKeyDown(key);
+    [Obsolete("Please use LKey.OnKey instead!",true)] public static bool OnKey(this Key key) => GetKey(key);
+
+    [Obsolete("Please use LMultiKey.OnKeyDown instead!",true)] public static bool OnKeyPressed(this MultiKey multiKey)
+    {
+        int i = 0;
+        bool wasThisFrame = false;
+        foreach (var key in multiKey.requiredKeys)
+        {
+            if (key.OnKey())
+                i++;
+
+            if (wasThisFrame)
+                continue;
+            if (key.OnKeyPressed())
+                wasThisFrame = true;
+        }
+
+        return i == multiKey.requiredKeys.Count && wasThisFrame;
+    }
+    
+}

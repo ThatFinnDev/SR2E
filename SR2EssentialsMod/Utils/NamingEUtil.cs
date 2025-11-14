@@ -72,7 +72,7 @@ public static class NamingEUtil
     
     
     //General Localized
-    public static string _GN(Object obj, LocalizedString localizedString, bool addQuotesIfSpaces = true)
+    static string _GN(Object obj, LocalizedString localizedString, bool addQuotesIfSpaces = true)
     {
         if (obj == null) return null;
         try
@@ -86,7 +86,7 @@ public static class NamingEUtil
         catch
         { return obj.name; }
     }
-    public static string _GCN(Object obj, LocalizedString localizedString)
+    static string _GCN(Object obj, LocalizedString localizedString)
     {
         if (obj == null) return null;
         try
@@ -97,7 +97,7 @@ public static class NamingEUtil
         catch
         { return obj.name.Replace(" ","").Replace("_",""); }
     }
-    public static string _GCUN(Object obj, LocalizedString localizedString)
+    static string _GCUN(Object obj, LocalizedString localizedString)
     {
         if (obj == null) return null;
         try

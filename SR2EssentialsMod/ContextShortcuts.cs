@@ -11,7 +11,7 @@ public static class ContextShortcuts
     public static SceneContext sceneContext => SceneContext.Instance;
     internal static Damage _killDamage;
     public static Damage killDamage => _killDamage;
-    public static AutoSaveDirector autoSaveDirector => GameContext.Instance.AutoSaveDirector;
+    public static AutoSaveDirector autoSaveDirector => gameContext.AutoSaveDirector;
 
     public static bool inGame
     {
@@ -19,8 +19,8 @@ public static class ContextShortcuts
         {
             try
             {
-                if (SceneContext.Instance == null) return false;
-                if (SceneContext.Instance.PlayerState == null) return false;
+                if (sceneContext == null) return false;
+                if (sceneContext.PlayerState == null) return false;
             }
             catch
             { return false; }
@@ -40,5 +40,34 @@ public static class ContextShortcuts
         }
 
         return true;
+    }
+    
+    
+    public static string mlVersion
+    { get {
+            if(SR2EEntryPoint._mlVersion=="undefined")
+                try { SR2EEntryPoint._mlVersion = MelonLoader.BuildInfo.Version;  }
+                catch (Exception e)
+                {
+                    //Do this if ML changes MelonLoader.BuildInfo.Version again...
+                    MelonLogger.Error("MelonLoader.BuildInfo.Version changed, if you are using not using the latest ML version, please update," +
+                                      "otherwise this will be fixed in the next SR2E release!");
+                    try
+                    {
+                        string logFilePath = Application.dataPath + "/../MelonLoader/Latest.log";
+                        using (System.IO.FileStream logFileStream = new System.IO.FileStream(logFilePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
+                        using (System.IO.StreamReader logFileReader = new System.IO.StreamReader(logFileStream))
+                        {
+                            string text = logFileReader.ReadToEnd();
+                            var split = text.Split("\n");
+                            if (string.IsNullOrWhiteSpace(split[0])) SR2EEntryPoint._mlVersion = split[2].Split("v")[1].Split(" ")[0];
+                            else SR2EEntryPoint._mlVersion = split[1].Split("v")[1].Split(" ")[0];
+                        }
+                        
+                    }
+                    catch { SR2EEntryPoint._mlVersion = "unknown"; }
+                }
+            return SR2EEntryPoint._mlVersion;
+        }
     }
 }

@@ -1,8 +1,10 @@
+using System;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppTMPro;
 
 namespace SR2E.Expansion;
 
+[Obsolete("Please use SR2EExpansionV2.")]
 public abstract class SR2EExpansionV1 : MelonMod
 {
     public static TMP_FontAsset sr2Font => SR2E.SR2EEntryPoint.SR2Font;

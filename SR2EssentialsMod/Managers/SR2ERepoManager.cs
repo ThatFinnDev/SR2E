@@ -18,7 +18,7 @@ public static class SR2ERepoManager
     static void StartSeperate()
     {
         
-        List<RepoSave> repoSaves = new List<RepoSave>(){new RepoSave("official","https://api.sr2e.thatfinn.dev/repo.json")};
+        List<RepoSave> repoSaves = new List<RepoSave>(){new RepoSave("official","https://api.sr2e.sr2.dev/repo.json")};
         repoSaves.AddRange(SR2ESaveManager.data.repos);
         foreach (RepoSave repoSave in repoSaves)
         {

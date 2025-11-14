@@ -8,7 +8,10 @@ public static class ActionsEUtil
     public static void ExecuteInTicks(Action action, int ticks)
     {
         if (action == null) return;
-        actionCounter.Add((Action)(() => { action.Invoke(); }),ticks);
+        actionCounter.Add((Action)(() =>
+        {
+            try { action.Invoke(); } catch (Exception e) { MelonLogger.Error(e); }
+        }),ticks);
     }
     public static void ExecuteInSeconds(Action action, float seconds)
     {

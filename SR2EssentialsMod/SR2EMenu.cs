@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Il2CppInterop.Runtime.Attributes;
 using Il2CppTMPro;
 using SR2E.Commands;
 using SR2E.Enums;
@@ -17,6 +18,7 @@ namespace SR2E;
 public abstract class SR2EMenu : MonoBehaviour
 {
     private bool changedOpenState = false;
+
 
     public static MenuIdentifier GetMenuIdentifier() => new();
 
@@ -36,7 +38,9 @@ public abstract class SR2EMenu : MonoBehaviour
     protected virtual void OnOpen()
     {
     }
-
+    public virtual void OnCloseUIPressed()
+    {
+    }
     public virtual void ApplyFont(TMP_FontAsset font)
     {
         foreach (var text in gameObject.GetAllChildrenOfType<TMP_Text>())
@@ -163,6 +167,7 @@ public abstract class SR2EMenu : MonoBehaviour
         AudioEUtil.PlaySound(MenuSound.CloseMenu);
     }
 
+    [HideFromIl2Cpp]
     protected Action SelectCategorySound
     {
         get
@@ -192,7 +197,7 @@ public abstract class SR2EMenu : MonoBehaviour
         foreach (var pair in SR2EEntryPoint.menus)
             if(pair.Key!=this) pair.Key._menuToOpenOnClose = null;
         
-        switch (SystemContext.Instance.SceneLoader.CurrentSceneGroup.name)
+        switch (systemContext.SceneLoader.CurrentSceneGroup.name)
         {
             case "StandaloneStart":
             case "CompanyLogo":
@@ -223,5 +228,11 @@ public abstract class SR2EMenu : MonoBehaviour
 
     protected Sprite whitePillBg => MenuEUtil.whitePillBg; 
     protected Texture2D whitePillBgTex => MenuEUtil.whitePillBgTex;
+    
+    
+    /// <summary>
+    /// Gets executed once GameContext loads. In Postfix of the Start method
+    /// </summary>
+    public virtual void OnGameContext(GameContext gameContext) { }
 }
 

@@ -6,7 +6,7 @@ public class CreateAssetBundles
     [MenuItem("Tools/Build AssetBundles")]
     static void BuildAllAssetBundles()
     {
-        string assetBundleDirectory = "../SR2EssentialsMod/";
+        string assetBundleDirectory = "../SR2EssentialsMod/Assets/";
         if(!Directory.Exists(assetBundleDirectory))
         {
             Directory.CreateDirectory(assetBundleDirectory);

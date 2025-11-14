@@ -3,7 +3,7 @@
 © 2025 ThatFinn
 
 ## 1. Permission to View and Modify
-You may view, modify, and use the source code of **SR2E** for personal, non-commercial, or compatible modding purposes.
+You are granted permission to view the source code of **SR2E**. Any modification or use of the source code is prohibited, except as explicitly permitted in other sections of this license.
 
 ## 2. Copyleft on Derivatives
 If you redistribute or release a modified version of this project, your derivative work must:
@@ -17,7 +17,7 @@ If you redistribute or release a modified version of this project, your derivati
 - Redistributing a modified version of the project **does not require permission from individual contributors**; the project license governs all code in the repository.
 
 ## 4. Dependency Use
-Other mods or projects may use this project as a dependency without triggering copyleft obligations, as long as the project remains required and unmodified.
+Other mods or projects may use this project as a dependency for personal, non-commercial, or compatible modding purposes. This use does not trigger copyleft obligations, as long as the project remains required and unmodified.
 
 ## 5. No Replacement / Commercial Exploitation
 You may not redistribute this project, or a derivative work, in a way that:

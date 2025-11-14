@@ -18,7 +18,7 @@ internal class ClearInventoryCommand : SR2ECommand
         if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
-        int numberOfSlots = SceneContext.Instance.PlayerState.Ammo.Slots.Length - 1;
+        int numberOfSlots = sceneContext.PlayerState.Ammo.Slots.Length - 1;
         int slotToClear = -1;
         if (args!=null)
         {
@@ -31,17 +31,17 @@ internal class ClearInventoryCommand : SR2ECommand
 
         if(slotToClear==-1)
         {
-            foreach (AmmoSlot slot in SceneContext.Instance.PlayerState.Ammo.Slots)
+            foreach (AmmoSlot slot in sceneContext.PlayerState.Ammo.Slots)
                 if(slot.IsUnlocked) slot.Clear();
             SendMessage(translation("cmd.clearinv.success"));
             return true;
         }
 
-        bool isUnlocked = SceneContext.Instance.PlayerState.Ammo.Slots[slotToClear].IsUnlocked;
+        bool isUnlocked = sceneContext.PlayerState.Ammo.Slots[slotToClear].IsUnlocked;
         if (!isUnlocked) return SendError(translation("cmd.clearinv.error.slotnotunlocked",slotToClear+1));
            
         
-        SceneContext.Instance.PlayerState.Ammo.Slots[slotToClear].Clear();
+        sceneContext.PlayerState.Ammo.Slots[slotToClear].Clear();
         SendMessage(translation("cmd.clearinv.successsingle",slotToClear+1));
         return true;
     }

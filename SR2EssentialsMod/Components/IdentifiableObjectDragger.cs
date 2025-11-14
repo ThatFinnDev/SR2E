@@ -1,3 +1,4 @@
+using SR2E.Enums;
 using SR2E.Managers;
 using UnityEngine.InputSystem;
 
@@ -20,17 +21,17 @@ internal class IdentifiableObjectDragger : MonoBehaviour
         get
         {
             Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
-            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, Camera.main.nearClipPlane));
+            Vector3 mouseWorldPosition = MiscEUtil.GetActiveCamera().ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, MiscEUtil.GetActiveCamera().nearClipPlane));
             return mouseWorldPosition;
         }
     }
     public void Update()
     {
-        if (Key.Q.OnKey())
+        if (LKey.Q.OnKey())
         {
             distanceFromCamera -= Time.deltaTime * distanceChangeSpeed;
         }
-        if (Key.E.OnKey())
+        if (LKey.E.OnKey())
         {
             distanceFromCamera += Time.deltaTime * distanceChangeSpeed;
         }
@@ -38,7 +39,7 @@ internal class IdentifiableObjectDragger : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (Physics.Raycast(new Ray(Camera.main.transform.position, Camera.main.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
+            if (Physics.Raycast(new Ray(MiscEUtil.GetActiveCamera().transform.position, MiscEUtil.GetActiveCamera().transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
             {
                 if (hit.transform.GetComponent<Rigidbody>())
                 {
@@ -60,7 +61,7 @@ internal class IdentifiableObjectDragger : MonoBehaviour
         if (isDragging && draggedObject)
         {
             draggedObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            if (Physics.Raycast(new Ray(mousePos, Camera.main.transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
+            if (Physics.Raycast(new Ray(mousePos, MiscEUtil.GetActiveCamera().transform.forward), out var hit,Mathf.Infinity,MiscEUtil.defaultMask))
             {
                 draggedObject.transform.position = hit.point;
             }

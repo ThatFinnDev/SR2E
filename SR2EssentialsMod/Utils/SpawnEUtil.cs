@@ -21,9 +21,7 @@ public static class SpawnEUtil
     {
         if (ident == null) return null;
         if (ident.TryCast<GadgetDefinition>()!=null) return SpawnGadget(ident.TryCast<GadgetDefinition>(), pos, rot).GetGameObject();
-        return InstantiationHelpers.InstantiateActor(ident.prefab,
-            SRSingleton<SceneContext>.Instance.RegionRegistry.CurrentSceneGroup, pos, rot,
-            false, SlimeAppearance.AppearanceSaveSet.NONE, SlimeAppearance.AppearanceSaveSet.NONE);
+        return InstantiationHelpers.InstantiateActor(ident.prefab, sceneContext.RegionRegistry.CurrentSceneGroup, pos, rot);
     }
     public static GameObject SpawnDynamic(this GameObject obj, Vector3 pos, Quaternion rot)
     {

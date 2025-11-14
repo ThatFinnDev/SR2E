@@ -1,9 +1,18 @@
+using Il2CppMonomiPark.SlimeRancher;
+using Il2CppMonomiPark.SlimeRancher.Economy;
+
 namespace SR2E.Utils;
 
 public static class ConvertEUtil
 {
+    public static ISaveReferenceTranslation toIVariant(this SaveReferenceTranslation saveReferenceTranslation) => saveReferenceTranslation.TryCast<ISaveReferenceTranslation>();
+    public static SaveReferenceTranslation toNonIVariant(this ISaveReferenceTranslation iSaveReferenceTranslation) => iSaveReferenceTranslation.TryCast<SaveReferenceTranslation>();
+    public static ILoadReferenceTranslation toIVariant(this LoadReferenceTranslation saveReferenceTranslation) => saveReferenceTranslation.TryCast<ILoadReferenceTranslation>();
+    public static LoadReferenceTranslation toNonIVariant(this ILoadReferenceTranslation saveReferenceTranslation) => saveReferenceTranslation.TryCast<LoadReferenceTranslation>();
+
     public static Sprite Texture2DToSprite(this Texture2D texture)
     {
+        if (texture == null) return null;
         return Sprite.Create(texture, new Rect(0f, 0f, (float)texture.width, (float)texture.height), new Vector2(0.5f, 0.5f), 1f);
     }
     public static Texture2D Base64ToTexture2D(string base64)

@@ -38,8 +38,8 @@ internal class SystemContextPatch
     }
     internal static void Postfix(SystemContext __instance)
     {
-        SystemContext.IsModded = true;
-        bundle = EmbeddedResourceEUtil.LoadBundle("srtwoessentials.assetbundle");
+        if(ChangeSystemContextIsModded.HasFlag()) SystemContext.IsModded = true;
+        bundle = EmbeddedResourceEUtil.LoadBundle("Assets.srtwoessentials.assetbundle");
         foreach (string path in bundle.GetAllAssetNames())
         {
             var asset = bundle.LoadAsset(path);
@@ -66,7 +66,7 @@ internal class SystemContextPatch
                 if (obj.name == "AllMightyMenus")
                 { Object.Instantiate(obj); break; }
         
-        var lang = SystemContext.Instance.LocalizationDirector.GetCurrentLocaleCode();
+        var lang = __instance.LocalizationDirector.GetCurrentLocaleCode();
                     
         LoadLanguage(lang);
         

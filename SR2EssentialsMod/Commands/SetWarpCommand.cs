@@ -17,9 +17,9 @@ internal class SetWarpCommand : SR2ECommand
 
         string name = args[0];
 
-        Vector3 pos = SceneContext.Instance.Player.transform.position;
-        Quaternion rotation = SceneContext.Instance.Player.transform.rotation;
-        string sceneGroup = SceneContext.Instance.Player.GetComponent<RegionMember>().SceneGroup.ReferenceId;
+        Vector3 pos = sceneContext.Player.transform.position;
+        Quaternion rotation = sceneContext.Player.transform.rotation;
+        string sceneGroup = sceneContext.RegionRegistry.CurrentSceneGroup.ReferenceId;
 
         SR2EError error = SR2EWarpManager.AddWarp(name, new Warp(sceneGroup, pos, rotation));
         if (error == SR2EError.AlreadyExists) return SendError(translation("cmd.warpstuff.alreadywarpwithname",name));

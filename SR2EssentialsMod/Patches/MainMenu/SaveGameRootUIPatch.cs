@@ -22,7 +22,7 @@ internal static class SaveGameRootUIPatch
     static bool addedAction = false;
     static InputActionReference onPress;
     private static InputEvent inputEvent;
-    private static SaveGamesRootUI ui;
+    internal static SaveGamesRootUI ui;
 
     private static Action<InputEventData> action = (Action<InputEventData>)((data) =>
     {
@@ -49,7 +49,7 @@ internal static class SaveGameRootUIPatch
                     MelonLogger.Msg("Error when importing save: "+error);
                     return;
                 }
-                SystemContext.Instance.SceneLoader.LoadMainMenuSceneGroup();
+                systemContext.SceneLoader.LoadMainMenuSceneGroup();
             }
         }
         else
@@ -76,12 +76,65 @@ internal static class SaveGameRootUIPatch
             addedAction = false;
         }
     }*/
+
+
+    static void ScrollTo(ScrollRect scroll,RectTransform target)
+    {
+        float minus = 0f;
+            
+        foreach (var child in scroll.content.transform.GetChildren())
+        {
+            if (!child.gameObject.activeSelf) continue;
+            minus = child.GetComponent<RectTransform>().offsetMax.y;
+            break;
+        }
+        var siblingBefore = target.parent.GetChild(target.GetSiblingIndex() - 6);
+        float upperBorder = (siblingBefore.gameObject.activeSelf
+            ? Math.Abs(siblingBefore.GetComponent<RectTransform>().offsetMin.y)
+            : 0f)+minus;
+
+        var siblingAfterIndex = target.GetSiblingIndex() + 0;
+        if (target.parent.childCount <= siblingAfterIndex) siblingAfterIndex = target.parent.childCount - 1;
+        var siblingAfter = target.parent.GetChild(siblingAfterIndex);
+        
+        float lowerBorder = Mathf.Abs(siblingAfter.GetComponent<RectTransform>().offsetMax.y)+minus;
+
+        if (upperBorder > scroll.content.anchoredPosition.y)
+            scroll.content.anchoredPosition = new Vector2(scroll.content.anchoredPosition.x,upperBorder);
+        else if (lowerBorder < scroll.content.anchoredPosition.y)
+            scroll.content.anchoredPosition = new Vector2(scroll.content.anchoredPosition.x,lowerBorder);
+    }
+
+    [HarmonyPostfix, HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.OnItemSelect))]
+    internal static void OnItemSelect(SaveGamesRootUI __instance, int index)
+    {
+        try
+        {
+            ScrollRect rect = __instance.gameObject.GetObjectRecursively<ScrollRect>("ButtonsScrollView");
+            if (rect == null) return;
+            int activeIndex = 0;
+            foreach (var child in rect.content.transform.GetChildren())
+            {
+                if (!child.gameObject.activeSelf) continue;
+                if (activeIndex == index)
+                {
+                    ScrollTo(rect,child.GetComponent<RectTransform>());
+                    return;
+                }
+                activeIndex++;
+            }
+        }
+        catch {}
+        
+    }
+
     [HarmonyPostfix,HarmonyPatch(typeof(SaveGamesRootUI), nameof(SaveGamesRootUI.FocusUI))]
     internal static void Postfix(SaveGamesRootUI __instance)
     {
         SR2EEntryPoint.baseUIAddSliders.Add(__instance);
         if (!AllowSaveExport.HasFlag()) return;
         ui = __instance;
+        if (__instance.name.Contains("SRLE")) return;
         ExecuteInTicks((Action)(() =>
         {
             RectTransform actionPanel = ui.gameObject.GetObjectRecursively<RectTransform>("ActionPanel");
@@ -112,7 +165,6 @@ internal static class SaveGameRootUIPatch
         }), 2);
     }
 
-    public static void OnPressAction(InputAction.CallbackContext context) => OnExportButtonPressed();
     [DllImport("comdlg32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern bool GetSaveFileName([In, Out] SAVEFILENAME ofn);
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]

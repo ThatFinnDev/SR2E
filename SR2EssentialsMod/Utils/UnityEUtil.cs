@@ -170,5 +170,25 @@ public static class UnityEUtil
         Object.DontDestroyOnLoad(obj);
         obj.transform.parent = prefabHolder.transform;
     }
+    public static GameObject CreatePrefab(string name, GameObject obj)
+    {
+        var copy = obj.CopyObject();
+        Object.DontDestroyOnLoad(copy);
+        
+        copy.name = name;
+        copy.transform.parent = prefabHolder.transform;
 
+        
+        return copy;
+    }
+    public static GameObject CreatePrefab(GameObject obj)
+    {
+        var copy = obj.CopyObject();
+        Object.DontDestroyOnLoad(copy);
+        
+        copy.transform.parent = prefabHolder.transform;
+
+        
+        return copy;
+    }
 }

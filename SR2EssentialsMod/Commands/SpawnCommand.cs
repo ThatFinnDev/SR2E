@@ -22,7 +22,7 @@ internal class SpawnCommand : SR2ECommand
         IdentifiableType type = LookupEUtil.GetIdentifiableTypeByName(identifierTypeName);
         if (type == null) return SendNotValidIdentType(identifierTypeName);
         //if (type.isGadget()) return SendIsGadgetNotItem(type.GetName());
-        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
+        Camera cam = MiscEUtil.GetActiveCamera(); if (cam == null) return SendNoCamera();
         int amount = 1;
         if (args.Length == 2) if(!TryParseInt(args[1], out amount,1, true)) return false;
 

@@ -31,7 +31,7 @@ internal class KillAllCommand : SR2ECommand
                     if (ident.identType.name != "Player")
                     {
                         Object.Destroy(ident.gameObject);
-                        SceneContext.Instance.GameModel.identifiables.Remove(id);
+                        sceneContext.GameModel.identifiables.Remove(id);
                     }
                 }
             SendMessage(translation("cmd.killall.success"));
@@ -51,7 +51,7 @@ internal class KillAllCommand : SR2ECommand
                     {
                         var id = ident._model.actorId;
                         Object.Destroy(ident.gameObject);
-                        SceneContext.Instance.GameModel.identifiables.Remove(id);
+                        sceneContext.GameModel.identifiables.Remove(id);
                     }
             SendMessage(translation("cmd.killall.successspecific",type.GetName()));
             return true;

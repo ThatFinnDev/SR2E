@@ -20,24 +20,24 @@ internal class RefillInvCommand : SR2ECommand
         if (!args.IsBetween(0, 1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
-        int numberOfSlots = SceneContext.Instance.PlayerState.Ammo.Slots.Length - 1;
+        int numberOfSlots = sceneContext.PlayerState.Ammo.Slots.Length - 1;
         int slotToFill = -1;
 
         if(args!=null)
             if(!TryParseInt(args[0], out slotToFill,0, false,slotToFill)) return false;
-            try
-            {
-                slotToFill = int.Parse(args[0]);
-                if (slotToFill <= 0) return SendError(translation("cmd.error.notintabove", args[0]));
-                if (slotToFill > slotToFill) return SendError(translation("cmd.refillinv.error.slotdoesntexist", numberOfSlots));
-                slotToFill -= 1;
-            }
-            catch { return SendNotValidInt(args[0]); }
+            else try
+                {
+                    slotToFill = int.Parse(args[0]);
+                    if (slotToFill <= 0) return SendError(translation("cmd.error.notintabove", args[0]));
+                    if (slotToFill > slotToFill) return SendError(translation("cmd.refillinv.error.slotdoesntexist", numberOfSlots));
+                    slotToFill -= 1;
+                }
+                catch { return SendNotValidInt(args[0]); }
         if (args==null)
         {
-            for (int i = 0; i < SceneContext.Instance.PlayerState.Ammo.Slots.Count; i++)
+            for (int i = 0; i < sceneContext.PlayerState.Ammo.Slots.Count; i++)
             {
-                AmmoSlot slot = SceneContext.Instance.PlayerState.Ammo.Slots[i];
+                AmmoSlot slot = sceneContext.PlayerState.Ammo.Slots[i];
                 if (slot.IsUnlocked)
                     if (slot.Id != null)
                         slot.Count = slot.MaxCount;
@@ -47,15 +47,15 @@ internal class RefillInvCommand : SR2ECommand
             return true;
         }
 
-        bool isUnlocked = SceneContext.Instance.PlayerState.Ammo.Slots[slotToFill].IsUnlocked;
+        bool isUnlocked = sceneContext.PlayerState.Ammo.Slots[slotToFill].IsUnlocked;
         if (!isUnlocked)
             return SendError(translation("cmd.refillinv.error.slotnotunlocked", slotToFill + 1));
 
 
-        if (SceneContext.Instance.PlayerState.Ammo.Slots[slotToFill].Id == null)
+        if (sceneContext.PlayerState.Ammo.Slots[slotToFill].Id == null)
             return SendError(translation("cmd.refillinv.error.slotempty", slotToFill + 1));
 
-        AmmoSlot invSlot = SceneContext.Instance.PlayerState.Ammo.Slots[slotToFill];
+        AmmoSlot invSlot = sceneContext.PlayerState.Ammo.Slots[slotToFill];
         invSlot.Count = invSlot.MaxCount;
         SendMessage(translation("cmd.refillinv.successsingle", slotToFill + 1));
         return true;

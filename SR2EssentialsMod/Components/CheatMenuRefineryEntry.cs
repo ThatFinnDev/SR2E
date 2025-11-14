@@ -36,8 +36,8 @@ internal class CheatMenuRefineryEntry : MonoBehaviour
             int newValue = (int)valueFloat;
             
             //Adding one updates the new value everywhere. Not doing can cause issues
-            SceneContext.Instance.GadgetDirector._model.SetCount(item,newValue-1);
-            SceneContext.Instance.GadgetDirector.AddItem(item,1);
+            sceneContext.GadgetDirector._model.SetCount(item,newValue-1);
+            sceneContext.GadgetDirector.AddItem(item,1);
             
             handleText.SetText(newValue.ToString());
         }));}
@@ -47,7 +47,7 @@ internal class CheatMenuRefineryEntry : MonoBehaviour
         if(!didStartRan) Start();
 
         dontChange = true;
-        amountSlider.value = SceneContext.Instance.GadgetDirector.GetItemCount(item);
-        handleText.SetText(SceneContext.Instance.GadgetDirector.GetItemCount(item).ToString());
+        amountSlider.value = sceneContext.GadgetDirector.GetItemCount(item);
+        handleText.SetText(sceneContext.GadgetDirector.GetItemCount(item).ToString());
     }
 }

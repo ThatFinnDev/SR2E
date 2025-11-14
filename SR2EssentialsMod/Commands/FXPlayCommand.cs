@@ -36,7 +36,7 @@ internal class FXPlayCommand : SR2ECommand
 
         if (currFX != null && !currFX.isStopped) return SendError(translation("cmd.fxplayer.waitforstop"));
         
-        Camera cam = Camera.main; if (cam == null) return SendNoCamera();
+        Camera cam = MiscEUtil.GetActiveCamera(); if (cam == null) return SendNoCamera();
         
         float playbackSpeed = 0;
         bool playAndPause = false;
@@ -81,7 +81,7 @@ internal class FXPlayPauseFunction : MonoBehaviour
 
     public void Update()
     {
-        if (Key.P.OnKeyPressed())
+        if (LKey.P.OnKeyDown())
         {
             if (sys.isPlaying) sys.Pause();
             else sys.Play();

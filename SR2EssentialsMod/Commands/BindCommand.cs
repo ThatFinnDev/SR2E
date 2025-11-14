@@ -14,7 +14,7 @@ internal class BindCommand : SR2ECommand
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {
         if (argIndex == 0)
-            return LookupEUtil.GetKeyStringListByPartialName(args[0],true,MAX_AUTOCOMPLETE.Get());
+            return LookupEUtil.GetLKeyStringListByPartialName(args[0],true,MAX_AUTOCOMPLETE.Get());
         if (argIndex == 1)
         {
             List<string> list = new List<string>();
@@ -35,8 +35,8 @@ internal class BindCommand : SR2ECommand
     {
         if (!args.IsBetween(2,-1)) return SendUsage();
 
-        Key key;
-        if (!TryParseKeyCode(args[0], out key)) return false;
+        LKey key;
+        if (!TryParseLKey(args[0], out key)) return false;
         
         StringBuilder builder = new StringBuilder();
         for (int i = 1; i < args.Length; i++) builder.Append(args[i] + " ");

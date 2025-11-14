@@ -66,7 +66,7 @@ internal static class MainMenuLandingRootUIInitPatch
                             if (SR2EEntryPoint.updatedSR2E) versionLabel.text = translation("patches.localizedversionpatch.downloadedversion", SR2EEntryPoint.newVersion, versionLabel.text);
                             else versionLabel.text = translation("patches.localizedversionpatch.newversion", SR2EEntryPoint.newVersion, versionLabel.text);
                         }
-                    versionLabel.text = translation("patches.localizedversionpatch.default", SR2EEntryPoint.mlVersion, versionLabel.text);
+                    versionLabel.text = translation("patches.localizedversionpatch.default", mlVersion, versionLabel.text);
                 }
             }
             catch {  }
