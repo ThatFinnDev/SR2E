@@ -31,18 +31,31 @@ jobs:
       - name: 1. Download Dependencies
         shell: bash
         run: |
-          curl -L -u "${{ secrets.USER }}:${{ secrets.PASSWORD }}" \
-              -H "SR2Ver-ManifestID: ${{ github.event.inputs.SR2Ver-ManifestID }}" \
-              -H "SR2Ver-MLVer: ${{ github.event.inputs.SR2Ver-MLVer }}" \
-              "https://api.sr2e.sr2.dev/sr2vers" \
-              -o "${{ env.DEP_ZIP_NAME }}"
+          STATUS=$(curl -w "%{http_code}" -o "${{ env.DEP_ZIP_NAME }}" -L \
+            -H "User: ${{ secrets.USER }}" \
+            -H "Password: ${{ secrets.PASSWORD }}" \
+            -H "SR2Ver-ManifestID: ${{ github.event.inputs.SR2Ver-ManifestID }}" \
+            -H "SR2Ver-MLVer: ${{ github.event.inputs.SR2Ver-MLVer }}" \
+            "https://api.sr2e.sr2.dev/sr2vers")
+
+          if [[ "$STATUS" == "404" ]]; then
+            echo "404 Error"
+            exit 1
+          fi
 
       - name: 2. Downloading script
         shell: bash
         run: |
-          curl -L -u "${{ secrets.USER }}:${{ secrets.PASSWORD }}" \
-              "https://api.sr2e.sr2.dev/workerscript" \
-              -o "workerscript.bash"
+          STATUS=$(curl -w "%{http_code}" -o "workerscript.bash" -L \
+            -H "User: ${{ secrets.USER }}" \
+            -H "Password: ${{ secrets.PASSWORD }}" \
+            "https://api.sr2e.sr2.dev/workerscript")
+
+          if [[ "$STATUS" == "404" ]]; then
+            echo "404 Error"
+            exit 1
+          fi
+
           chmod +x workerscript.bash
 
       - name: 3. Execute script
