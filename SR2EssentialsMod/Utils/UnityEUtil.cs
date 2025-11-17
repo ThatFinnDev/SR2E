@@ -124,7 +124,7 @@ public static class UnityEUtil
         if (obj == null || !obj.scene.IsValid() || !obj.scene.isLoaded) return false;
         return obj.name == name;
     });
-    public static T? GetAnyInScene<T>() where T : Object => GetAllInScene<T>().FirstOrDefault(x =>
+    public static T? GetAnyInScene<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault(x =>
     {
         if (x == null) return false;
         GameObject obj = null;
