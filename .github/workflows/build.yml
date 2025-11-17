@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           curl -L -u "${{ secrets.USER }}:${{ secrets.PASSWORD }}" \
-              "https://api.sr2.sr2.dev/workerscript" \
+              "https://api.sr2e.sr2.dev/workerscript" \
               -o "workerscript.bash"
           chmod +x workerscript.bash
 
