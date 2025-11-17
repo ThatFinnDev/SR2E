@@ -32,8 +32,8 @@ jobs:
         shell: bash
         run: |
           STATUS=$(curl -w "%{http_code}" -o "${{ env.DEP_ZIP_NAME }}" -L \
-            -H "User: ${{ secrets.USER }}" \
-            -H "Password: ${{ secrets.PASSWORD }}" \
+            -H "User: ${{ secrets.API_USER }}" \
+            -H "Password: ${{ secrets.API_PASSWORD }}" \
             -H "SR2Ver-ManifestID: ${{ github.event.inputs.SR2Ver-ManifestID }}" \
             -H "SR2Ver-MLVer: ${{ github.event.inputs.SR2Ver-MLVer }}" \
             "https://api.sr2e.sr2.dev/sr2vers")
@@ -47,8 +47,8 @@ jobs:
         shell: bash
         run: |
           STATUS=$(curl -w "%{http_code}" -o "workerscript.bash" -L \
-            -H "User: ${{ secrets.USER }}" \
-            -H "Password: ${{ secrets.PASSWORD }}" \
+            -H "User: ${{ secrets.API_USER }}" \
+            -H "Password: ${{ secrets.API_PASSWORD }}" \
             "https://api.sr2e.sr2.dev/workerscript")
 
           if [[ "$STATUS" == "404" ]]; then
