@@ -4,19 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       Version:
-        description: 'Mod CodeVersion without extension'
+        description: 'Code version'
         required: true
         default: '3.4.1'
       ReleaseType:
-        description: 'The release type for versioning'
+        description: 'Release type'
         required: true
-        default: 'dev'
+        default: 'alpha'
         type: choice
         options:
-          - 'dev'
           - 'alpha'
           - 'beta'
           - 'release'
+          - 'dev'
       SR2Ver-ManifestID:
         description: 'The SR2 version'
         required: true
@@ -43,7 +43,7 @@ on:
           - '0.1.2 [202210311641-82086] (3846710380284113869)'
           - '0.1.1 [202208241520-81161] (359646488786338650)'
       SR2Ver-MLVer:
-        description: 'The MelonLoader version'
+        description: 'MelonLoader version'
         required: true
         default: '0.7.1'
         type: choice
