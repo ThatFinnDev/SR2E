@@ -3,14 +3,57 @@ name: SR2E Compilation
 on:
   workflow_dispatch:
     inputs:
+      Version:
+        description: 'Mod CodeVersion without extension'
+        required: true
+        default: '3.4.1'
+      ReleaseType:
+        description: 'The release type for versioning'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - 'dev'
+          - 'alpha'
+          - 'beta'
+          - 'release'
       SR2Ver-ManifestID:
-        description: 'The Manifest ID for SR2 version'
+        description: 'The Steam Manifest ID for SR2 version'
         required: true
         default: '856213111485396824'
+        type: choice
+        options:
+          - '856213111485396824'
+          - '1405681876136878957'
+          - '8994333395097985415'
+          - '8022624175545882077'
+          - '8566855247446655920'
+          - '6069982423152242796'
+          - '189273010166514367'
+          - '1414082704721132799'
+          - '6260598103574271172'
+          - '7902724911923988684'
+          - '1628490608113731548'
+          - '4393032796263052690'
+          - '2090386319736778753'
+          - '3315520605090789825'
+          - '7396249326112115908'
+          - '8060903504213851078'
+          - '8575900712105215507'
+          - '3846710380284113869'
+          - '359646488786338650'
       SR2Ver-MLVer:
         description: 'The MelonLoader version'
         required: true
         default: '0.7.1'
+        type: choice
+        options:
+          - '0.7.1'
+          - '0.7.0'
+          - '0.6.4'
+          - '0.6.3'
+          - '0.6.2'
+          - '0.6.1'
 
 env:
   DEP_ZIP_NAME: dependencies.zip
@@ -27,6 +70,38 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.0.x'
+
+      - name: 0. Update Version Constants in EntryPoint.cs ⚙️
+        shell: bash
+        run: |
+          MOD_VERSION="${{ github.event.inputs.Version }}"
+          RELEASE_TYPE="${{ github.event.inputs.ReleaseType }}"
+          FILE_PATH="SR2EssentialsMod/EntryPoint.cs"
+
+          CODE_VERSION="$MOD_VERSION"
+
+          if [[ "$RELEASE_TYPE" == "release" ]]; then
+              DISPLAY_VERSION="$MOD_VERSION"
+          elif [[ "$RELEASE_TYPE" == "dev" ]]; then
+              DISPLAY_VERSION="$MOD_VERSION-dev"
+          elif [[ "$RELEASE_TYPE" == "alpha" ]]; then
+              DISPLAY_VERSION="$MOD_VERSION-alpha.0"
+          elif [[ "$RELEASE_TYPE" == "beta" ]]; then
+              DISPLAY_VERSION="$MOD_VERSION-beta.0"
+          fi
+
+          echo "Updating $FILE_PATH:"
+          echo "  CodeVersion: $CODE_VERSION"
+          echo "  DisplayVersion: $DISPLAY_VERSION"
+
+          sed -i "s|const string CodeVersion.*|const string CodeVersion = \"$CODE_VERSION\";|" "$FILE_PATH"
+
+          ESCAPED_DISPLAY_VERSION=$(echo "$DISPLAY_VERSION" | sed 's/\./\\\./g')
+          sed -i "s|public const string DisplayVersion.*|public const string DisplayVersion = \"$ESCAPED_DISPLAY_VERSION\";|" "$FILE_PATH"
+
+          echo "--- File Content After Update ---"
+          head -n 20 "$FILE_PATH"
+          echo "---------------------------------"
 
       - name: 1. Download Dependencies
         shell: bash
