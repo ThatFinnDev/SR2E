@@ -71,7 +71,7 @@ jobs:
         with:
           dotnet-version: '6.0.x'
 
-    - name: Extract Manifest ID from Choice
+      - name: Extract Manifest ID from Choice
         id: manifest_lookup
         shell: bash
         run: |
