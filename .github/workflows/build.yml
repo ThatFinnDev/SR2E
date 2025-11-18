@@ -73,17 +73,18 @@ jobs:
 
     - name: Extract Manifest ID from Choice
         id: manifest_lookup
-        run: |
-        CHOICE="${{ github.event.inputs.SR2Ver-ManifestID }}"
-
-        MANIFEST_ID=$(echo "$CHOICE" | grep -oP '\((\d+)\)' | grep -oP '\d+')
-
-        if [ -z "$MANIFEST_ID" ]; then
-            echo "::error::Could not extract Manifest ID from '$CHOICE'"
-            exit 1
-        fi
-        echo "manifest_id=$MANIFEST_ID" >> $GITHUB_OUTPUT
         shell: bash
+        run: |
+          CHOICE="${{ github.event.inputs.SR2Ver-ManifestID }}"
+
+          MANIFEST_ID=$(echo "$CHOICE" | grep -oP '\((\d+)\)' | grep -oP '\d+')
+
+          if [ -z "$MANIFEST_ID" ]; then
+              echo "::error::Could not extract Manifest ID from '$CHOICE'"
+              exit 1
+          fi
+          echo "manifest_id=$MANIFEST_ID" >> $GITHUB_OUTPUT
+          shell: bash
 
       - name: 0. Update Version Constants in EntryPoint.cs ⚙️
         shell: bash
