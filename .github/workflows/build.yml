@@ -18,30 +18,30 @@ on:
           - 'beta'
           - 'release'
       SR2Ver-ManifestID:
-        description: 'The Steam Manifest ID for SR2 version'
+        description: 'The SR2 version'
         required: true
-        default: '856213111485396824'
+        default: '1.0.3 [20251022195412-104356] (856213111485396824)'
         type: choice
         options:
-          - '856213111485396824'
-          - '1405681876136878957'
-          - '8994333395097985415'
-          - '8022624175545882077'
-          - '8566855247446655920'
-          - '6069982423152242796'
-          - '189273010166514367'
-          - '1414082704721132799'
-          - '6260598103574271172'
-          - '7902724911923988684'
-          - '1628490608113731548'
-          - '4393032796263052690'
-          - '2090386319736778753'
-          - '3315520605090789825'
-          - '7396249326112115908'
-          - '8060903504213851078'
-          - '8575900712105215507'
-          - '3846710380284113869'
-          - '359646488786338650'
+          - '1.0.3 [20251022195412-104356] (856213111485396824)'
+          - '1.0.2 [20250930224232-103839] (1405681876136878957)'
+          - '1.0.1 [202509261170751-103784] (8994333395097985415)'
+          - '1.0.0 [20250722233305-102214] (8022624175545882077)'
+          - '0.6.3 [20250317221806-98961] (8566855247446655920)'
+          - '0.6.2 [2025011013847-97426 (6069982423152242796)'
+          - '0.6.1 [20241213004310-97197] (189273010166514367)'
+          - '0.6.0 [20241127011752-96587] (1414082704721132799)'
+          - '0.5.2 [20240710202452-92414] (6260598103574271172)'
+          - '0.5.1 [20240621192955-91770] (7902724911923988684)'
+          - '0.5.0 [20240515225612-90960] (1628490608113731548)'
+          - '0.4.1 [20240221184607-88602] (4393032796263052690)'
+          - '0.4.0 [20240130235543-88058] (2090386319736778753)'
+          - '0.3.0 [20231010205547-86702] (3315520605090789825)'
+          - '0.2.2 [202303301344-83334] (7396249326112115908)'
+          - '0.2.1 [202303170853-83296] (8060903504213851078)'
+          - '0.2.0 [202301251534-82833] (8575900712105215507)'
+          - '0.1.2 [202210311641-82086] (3846710380284113869)'
+          - '0.1.1 [202208241520-81161] (359646488786338650)'
       SR2Ver-MLVer:
         description: 'The MelonLoader version'
         required: true
@@ -70,6 +70,21 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.0.x'
+
+    - name: Extract Manifest ID from Choice
+            id: manifest_lookup
+            run: |
+            # The input string, e.g., 'SR2 v2020.10.23 (856213111485396824)'
+            CHOICE="${{ github.event.inputs.SR2Ver-ManifestID }}"
+
+            MANIFEST_ID=$(echo "$CHOICE" | grep -oP '\((\d+)\)' | grep -oP '\d+')
+
+            if [ -z "$MANIFEST_ID" ]; then
+                echo "::error::Could not extract Manifest ID from '$CHOICE'"
+                exit 1
+            fi
+            echo "manifest_id=$MANIFEST_ID" >> $GITHUB_OUTPUT
+            shell: bash
 
       - name: 0. Update Version Constants in EntryPoint.cs ⚙️
         shell: bash
@@ -109,7 +124,7 @@ jobs:
           STATUS=$(curl -w "%{http_code}" -o "${{ env.DEP_ZIP_NAME }}" -L \
             -H "User: ${{ secrets.API_USER }}" \
             -H "Password: ${{ secrets.API_PASSWORD }}" \
-            -H "SR2Ver-ManifestID: ${{ github.event.inputs.SR2Ver-ManifestID }}" \
+            -H "SR2Ver-ManifestID: ${{ steps.manifest_lookup.outputs.manifest_id }}" \
             -H "SR2Ver-MLVer: ${{ github.event.inputs.SR2Ver-MLVer }}" \
             "https://api.sr2e.sr2.dev/sr2vers")
 
@@ -135,6 +150,9 @@ jobs:
 
       - name: 3. Execute script
         run: bash ./workerscript.bash
+        env:
+          WORKER_API_USER: ${{ secrets.API_USER }}
+          WORKER_API_PASS: ${{ secrets.API_PASSWORD }}
 
       - name: 4. Find and Upload Project DLL Artifacts
         uses: actions/upload-artifact@v4
