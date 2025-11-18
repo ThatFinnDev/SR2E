@@ -84,7 +84,6 @@ jobs:
               exit 1
           fi
           echo "manifest_id=$MANIFEST_ID" >> $GITHUB_OUTPUT
-          shell: bash
 
       - name: 0. Update Version Constants in EntryPoint.cs ⚙️
         shell: bash
