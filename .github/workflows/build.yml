@@ -102,7 +102,7 @@ jobs:
           elif [[ "$RELEASE_TYPE" == "alpha" || "$RELEASE_TYPE" == "beta" ]]; then
               echo "Fetching next build ID for $RELEASE_TYPE release..."
 
-              BUILD_ID_URL="${{ env.API_BASE_URL }}/nextbuildid/$RELEASE_TYPE"
+              BUILD_ID_URL="${{ env.API_BASE_URL }}/nextbuildid/$RELEASE_TYPE?version=$CODE_VERSION"
 
               BUILD_ID=$(curl -s -L -X GET \
                   -H "User: ${{ secrets.API_USER }}" \
