@@ -57,6 +57,7 @@ on:
 
 env:
   DEP_ZIP_NAME: dependencies.zip
+  API_BASE_URL: https://api.sr2e.sr2.dev
 
 jobs:
   build:
@@ -98,10 +99,23 @@ jobs:
               DISPLAY_VERSION="$MOD_VERSION"
           elif [[ "$RELEASE_TYPE" == "dev" ]]; then
               DISPLAY_VERSION="$MOD_VERSION-dev"
-          elif [[ "$RELEASE_TYPE" == "alpha" ]]; then
-              DISPLAY_VERSION="$MOD_VERSION-alpha.0"
-          elif [[ "$RELEASE_TYPE" == "beta" ]]; then
-              DISPLAY_VERSION="$MOD_VERSION-beta.0"
+          elif [[ "$RELEASE_TYPE" == "alpha" || "$RELEASE_TYPE" == "beta" ]]; then
+              echo "Fetching next build ID for $RELEASE_TYPE release..."
+
+              BUILD_ID_URL="${{ env.API_BASE_URL }}/nextbuildid/$RELEASE_TYPE"
+
+              BUILD_ID=$(curl -s -L -X GET \
+                  -H "User: ${{ secrets.API_USER }}" \
+                  -H "Password: ${{ secrets.API_PASSWORD }}" \
+                  "$BUILD_ID_URL")
+
+              if [ -z "$BUILD_ID" ]; then
+                  echo "::error::Failed to retrieve next build ID from $BUILD_ID_URL. Build will fail."
+                  exit 1
+              fi
+
+              echo "  - Retrieved Build ID: $BUILD_ID"
+              DISPLAY_VERSION="$MOD_VERSION-$RELEASE_TYPE.$BUILD_ID"
           fi
 
           echo "Updating $FILE_PATH:"
@@ -125,7 +139,7 @@ jobs:
             -H "Password: ${{ secrets.API_PASSWORD }}" \
             -H "SR2Ver-ManifestID: ${{ steps.manifest_lookup.outputs.manifest_id }}" \
             -H "SR2Ver-MLVer: ${{ github.event.inputs.SR2Ver-MLVer }}" \
-            "https://api.sr2e.sr2.dev/sr2vers")
+            "${{ env.API_BASE_URL }}/sr2vers")
 
           if [[ "$STATUS" == "404" ]]; then
             echo "404 Error"
@@ -138,7 +152,7 @@ jobs:
           STATUS=$(curl -w "%{http_code}" -o "workerscript.bash" -L \
             -H "User: ${{ secrets.API_USER }}" \
             -H "Password: ${{ secrets.API_PASSWORD }}" \
-            "https://api.sr2e.sr2.dev/workerscript")
+            "${{ env.API_BASE_URL }}/workerscript")
 
           if [[ "$STATUS" == "404" ]]; then
             echo "404 Error"
@@ -153,10 +167,10 @@ jobs:
           WORKER_API_USER: ${{ secrets.API_USER }}
           WORKER_API_PASS: ${{ secrets.API_PASSWORD }}
           SR2VER_MANIFESTID: ${{ github.event.inputs.SR2Ver-ManifestID }}
-          SR2VER_MLVER: $${{ github.event.inputs.SR2Ver-MLVer }}
+          SR2VER_MLVER: ${{ github.event.inputs.SR2Ver-MLVer }}
 
-      - name: 4. Find and Upload Project DLL Artifacts
+      - name: 4. Upload DLLs
         uses: actions/upload-artifact@v4
         with:
-          name: SR2EssentialsMod_Debug_Artifacts
+          name: Artifacts
           path: FinalArtifacts/*.dll
