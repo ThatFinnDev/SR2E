@@ -4,19 +4,20 @@ on:
   workflow_dispatch:
     inputs:
       Version:
-        description: 'Code version'
+        description: 'Mod CodeVersion without extension'
         required: true
         default: '3.4.1'
+        # The user can input "auto" here
       ReleaseType:
-        description: 'Release type'
+        description: 'The release type for versioning'
         required: true
-        default: 'alpha'
+        default: 'dev'
         type: choice
         options:
+          - 'dev'
           - 'alpha'
           - 'beta'
           - 'release'
-          - 'dev'
       SR2Ver-ManifestID:
         description: 'The SR2 version'
         required: true
@@ -25,7 +26,7 @@ on:
         options:
           - '1.0.3 [20251022195412-104356] (856213111485396824)'
           - '1.0.2 [20250930224232-103839] (1405681876136878957)'
-          - '1.0.1 [202509261170751-103784] (8994333395097985415)'
+          - '1.0.1 [202509261170751-103784] (8994333395097988684)'
           - '1.0.0 [20250722233305-102214] (8022624175545882077)'
           - '0.6.3 [20250317221806-98961] (8566855247446655920)'
           - '0.6.2 [2025011013847-97426 (6069982423152242796)'
@@ -43,7 +44,7 @@ on:
           - '0.1.2 [202210311641-82086] (3846710380284113869)'
           - '0.1.1 [202208241520-81161] (359646488786338650)'
       SR2Ver-MLVer:
-        description: 'MelonLoader version'
+        description: 'The MelonLoader version'
         required: true
         default: '0.7.1'
         type: choice
@@ -57,7 +58,7 @@ on:
 
 env:
   DEP_ZIP_NAME: dependencies.zip
-  API_BASE_URL: https://api.sr2e.sr2.dev
+  API_BASE_URL: https://api.sr2e.sr2.dev # Define base URL once
 
 jobs:
   build:
@@ -92,18 +93,38 @@ jobs:
           MOD_VERSION="${{ github.event.inputs.Version }}"
           RELEASE_TYPE="${{ github.event.inputs.ReleaseType }}"
           FILE_PATH="SR2EssentialsMod/EntryPoint.cs"
+          SKIP_CODE_VERSION_WRITE=false
 
-          CODE_VERSION="$MOD_VERSION"
+          # Determine CODE_VERSION: use input or extract from file if 'auto'
+          if [[ "$MOD_VERSION" == "auto" ]]; then
+              echo "Input 'Version' is 'auto'. Reading existing CodeVersion from file..."
+              # Extract existing CodeVersion from the file
+              CODE_VERSION=$(grep 'const string CodeVersion' "$FILE_PATH" | sed 's/.*"\(.*\)".*/\1/')
 
+              if [ -z "$CODE_VERSION" ]; then
+                  echo "::error::Could not extract existing CodeVersion from $FILE_PATH."
+                  exit 1
+              fi
+
+              echo "  - Extracted CodeVersion: $CODE_VERSION"
+              # Set flag to skip rewriting the CODE_VERSION line later
+              SKIP_CODE_VERSION_WRITE=true
+          else
+              CODE_VERSION="$MOD_VERSION"
+          fi
+
+          # Continue with DisplayVersion calculation based on CODE_VERSION
           if [[ "$RELEASE_TYPE" == "release" ]]; then
-              DISPLAY_VERSION="$MOD_VERSION"
+              DISPLAY_VERSION="$CODE_VERSION"
           elif [[ "$RELEASE_TYPE" == "dev" ]]; then
-              DISPLAY_VERSION="$MOD_VERSION-dev"
+              DISPLAY_VERSION="$CODE_VERSION-dev"
           elif [[ "$RELEASE_TYPE" == "alpha" || "$RELEASE_TYPE" == "beta" ]]; then
               echo "Fetching next build ID for $RELEASE_TYPE release..."
 
+              # Construct the API URL for the build ID endpoint, including the mandatory version parameter
               BUILD_ID_URL="${{ env.API_BASE_URL }}/nextbuildid/$RELEASE_TYPE?version=$CODE_VERSION"
 
+              # Use curl to get the next build ID, passing the required headers
               BUILD_ID=$(curl -s -L -X GET \
                   -H "User: ${{ secrets.API_USER }}" \
                   -H "Password: ${{ secrets.API_PASSWORD }}" \
@@ -115,15 +136,21 @@ jobs:
               fi
 
               echo "  - Retrieved Build ID: $BUILD_ID"
-              DISPLAY_VERSION="$MOD_VERSION-$RELEASE_TYPE.$BUILD_ID"
+              DISPLAY_VERSION="$CODE_VERSION-$RELEASE_TYPE.$BUILD_ID"
           fi
 
           echo "Updating $FILE_PATH:"
-          echo "  CodeVersion: $CODE_VERSION"
+          echo "  CodeVersion (used for API/calc): $CODE_VERSION"
           echo "  DisplayVersion: $DISPLAY_VERSION"
 
-          sed -i "s|const string CodeVersion.*|const string CodeVersion = \"$CODE_VERSION\";|" "$FILE_PATH"
+          # Conditionally write CodeVersion
+          if [ "$SKIP_CODE_VERSION_WRITE" = false ]; then
+              sed -i "s|const string CodeVersion.*|const string CodeVersion = \"$CODE_VERSION\";|" "$FILE_PATH"
+          else
+              echo "  - Keeping existing 'const string CodeVersion' line in file."
+          fi
 
+          # Write DisplayVersion (always written as it contains release type/build number)
           ESCAPED_DISPLAY_VERSION=$(echo "$DISPLAY_VERSION" | sed 's/\./\\\./g')
           sed -i "s|public const string DisplayVersion.*|public const string DisplayVersion = \"$ESCAPED_DISPLAY_VERSION\";|" "$FILE_PATH"
 
