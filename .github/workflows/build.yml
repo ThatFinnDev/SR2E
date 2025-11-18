@@ -152,7 +152,7 @@ jobs:
         env:
           WORKER_API_USER: ${{ secrets.API_USER }}
           WORKER_API_PASS: ${{ secrets.API_PASSWORD }}
-          SR2VER_MANIFESTID: ${{ github.event.inputs.SR2Ver-ManifestID }
+          SR2VER_MANIFESTID: ${{ github.event.inputs.SR2Ver-ManifestID }}
           SR2VER_MLVER: $${{ github.event.inputs.SR2Ver-MLVer }}
 
       - name: 4. Find and Upload Project DLL Artifacts
