@@ -85,7 +85,7 @@ jobs:
           fi
           echo "manifest_id=$MANIFEST_ID" >> $GITHUB_OUTPUT
 
-      - name: 0. Update Version Constants in EntryPoint.cs ⚙️
+      - name: 0. Update Versions in EntryPoint
         shell: bash
         run: |
           MOD_VERSION="${{ github.event.inputs.Version }}"
@@ -152,6 +152,8 @@ jobs:
         env:
           WORKER_API_USER: ${{ secrets.API_USER }}
           WORKER_API_PASS: ${{ secrets.API_PASSWORD }}
+          SR2VER_MANIFESTID: ${{ github.event.inputs.SR2Ver-ManifestID }
+          SR2VER_MLVER: $${{ github.event.inputs.SR2Ver-MLVer }}
 
       - name: 4. Find and Upload Project DLL Artifacts
         uses: actions/upload-artifact@v4
