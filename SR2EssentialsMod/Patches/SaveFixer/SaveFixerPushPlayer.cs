@@ -17,7 +17,7 @@ internal static class SaveFixerPushPlayer
         catch (Exception e) { return true; }
         return false;
     }
-    internal static void Prefix(GameModel gameModel, PlayerV06 player, ILoadReferenceTranslation loadReferenceTranslation)
+    internal static void Prefix(GameModel gameModel, PlayerV09 player, ILoadReferenceTranslation loadReferenceTranslation)
     {
         try
         {

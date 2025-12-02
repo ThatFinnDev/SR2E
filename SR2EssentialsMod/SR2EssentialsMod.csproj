@@ -298,6 +298,12 @@
       <HintPath>Libs\UnityEngine.HotReloadModule.dll</HintPath>
 
     </Reference>
+    <Reference Include="UnityEngine.Il2CppAssetBundleManager">
+      <HintPath>Libs\UnityEngine.Il2CppAssetBundleManager.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Il2CppImageConversionManager">
+      <HintPath>Libs\UnityEngine.Il2CppImageConversionManager.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
       <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
 

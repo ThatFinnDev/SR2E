@@ -13,7 +13,7 @@ internal static class SaveFixerPushGame
         catch (Exception e) { return true; }
         return false;
     }
-    internal static void Prefix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, GameV08 gameState, GameModel gameModel)
+    internal static void Prefix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, GameV09 gameState, GameModel gameModel)
     {
         if (!SR2EEntryPoint.disableFixSaves)
             try {

@@ -1,10 +1,10 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using Newtonsoft.Json;
+using SR2E.Repos;
 
 namespace SR2E.Managers;
 
-using SR2E.Repos;
 public static class SR2ERepoManager
 {
     internal static Dictionary<string,Repo> repos = new Dictionary<string, Repo>();
@@ -18,7 +18,7 @@ public static class SR2ERepoManager
     static void StartSeperate()
     {
         
-        List<RepoSave> repoSaves = new List<RepoSave>(){new RepoSave("official","https://api.sr2e.sr2.dev/repo.json")};
+        List<RepoSave> repoSaves = new List<RepoSave>(){new RepoSave("official","https://api.sr2e.sr2.dev/repo")};
         repoSaves.AddRange(SR2ESaveManager.data.repos);
         foreach (RepoSave repoSave in repoSaves)
         {

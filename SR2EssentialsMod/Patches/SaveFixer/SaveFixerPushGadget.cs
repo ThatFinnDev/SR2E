@@ -14,7 +14,7 @@ internal static class SaveFixerPushGadget
         catch (Exception e) { return true; }
         return false;
     }
-    internal static bool Prefix(GameModel gameModel, ref PlacedGadgetV05 gadget, ILoadReferenceTranslation loadReferenceTranslation)
+    internal static bool Prefix(GameModel gameModel, ref PlacedGadgetV06 gadget, ILoadReferenceTranslation loadReferenceTranslation)
     {
         if (!SR2EEntryPoint.disableFixSaves)
             try
