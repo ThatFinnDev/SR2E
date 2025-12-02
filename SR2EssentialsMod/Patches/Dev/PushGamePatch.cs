@@ -11,10 +11,10 @@ namespace SR2E.Patches.Dev;
 internal static class PushGamePatch
 {
     public static ActorIdProvider tmpActorIdProvider;
-    public static GameV09 tmpGameState;
+    public static GameV08 tmpGameState;
     public static ISaveReferenceTranslation tmpSaveReferenceTranslation;
     public static GameModel tmpGameModel;
-    public static void Postfix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, GameV09 gameState, GameModel gameModel)
+    public static void Postfix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, GameV08 gameState, GameModel gameModel)
     {
         tmpActorIdProvider=actorIdProvider;
         tmpSaveReferenceTranslation=saveReferenceTranslation;
