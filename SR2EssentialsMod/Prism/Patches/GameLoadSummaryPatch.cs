@@ -5,7 +5,7 @@ using SR2E.Storage;
 namespace SR2E.Prism.Patches;
 
 [PrismPatch()]
-[HarmonyPatch(typeof(GameV08), nameof(GameV08.LoadSummaryData))]
+[HarmonyPatch(typeof(GameV09), nameof(GameV09.LoadSummaryData))]
 public static class GameLoadSummaryPatch
 {
     static void Prefix()

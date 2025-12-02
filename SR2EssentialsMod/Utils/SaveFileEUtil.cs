@@ -135,7 +135,7 @@ public static class SaveFileEUtil
             try
             {
                 var stream = new Il2CppSystem.IO.MemoryStream(pair.Value);
-                var gameState = new GameV08();
+                var gameState = new GameV09();
 
                 gameState.Load(stream);
                 if (stream != null && stream.CanRead) stream.Close();
