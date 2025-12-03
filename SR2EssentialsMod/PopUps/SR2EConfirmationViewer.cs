@@ -21,16 +21,12 @@ public class SR2EConfirmationViewer : SR2EPopUp
         comp._text = objects[0].ToString();
         comp.variant= int.Parse(objects[1].ToString());
         
-        if (comp.variant==0)
-        {
-        }
-        
-        
         comp.ReloadFont();
         
     }
     protected override void OnOpen()
     {
+        GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         var okButton = gameObject.GetObjectRecursively<Button>("OKButtonRec");
         var yesButton = gameObject.GetObjectRecursively<Button>("YesButtonRec");
         var noButton = gameObject.GetObjectRecursively<Button>("NoButtonRec");
@@ -71,14 +67,14 @@ public class SR2EConfirmationViewer : SR2EPopUp
     {
         if (!MenuEUtil.isAnyMenuOpen)
         {
-            _Open("ConfirmationViewer",typeof(SR2ETextViewer),SR2EMenuTheme.Default,new List<object>(){text,1,yesAction,noAction,escapeAction});
+            _Open("ConfirmationViewer",typeof(SR2EConfirmationViewer),SR2EMenuTheme.Default,new List<object>(){text,1,yesAction,noAction,escapeAction});
             return;
         }
-        _Open("ConfirmationViewer",typeof(SR2ETextViewer),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){text,1,yesAction,noAction,escapeAction});
+        _Open("ConfirmationViewer",typeof(SR2EConfirmationViewer),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){text,1,yesAction,noAction,escapeAction});
     }
     public static void Open(string text, Action yesAction, Action noAction, Action escapeAction, SR2EMenuTheme theme)
     {
-        _Open("ConfirmationViewer",typeof(SR2ETextViewer),theme,new List<object>(){text,1,yesAction,noAction,escapeAction});
+        _Open("ConfirmationViewer",typeof(SR2EConfirmationViewer),theme,new List<object>(){text,1,yesAction,noAction,escapeAction});
     }
     
     
@@ -86,15 +82,16 @@ public class SR2EConfirmationViewer : SR2EPopUp
     {
         if (!MenuEUtil.isAnyMenuOpen)
         {
-            _Open("ConfirmationViewer",typeof(SR2ETextViewer),SR2EMenuTheme.Default,new List<object>(){text,0,okAction,escapeAction});
+            _Open("ConfirmationViewer",typeof(SR2EConfirmationViewer),SR2EMenuTheme.Default,new List<object>(){text,0,okAction,escapeAction});
             return;
         }
-        _Open("ConfirmationViewer",typeof(SR2ETextViewer),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){text,0,okAction,escapeAction});
+        _Open("ConfirmationViewer",typeof(SR2EConfirmationViewer),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){text,0,okAction,escapeAction});
     }
     public static void Open(string text, Action okAction, Action escapeAction, SR2EMenuTheme theme)
     {
-        _Open("ConfirmationViewer",typeof(SR2ETextViewer),theme,new List<object>(){text,0,okAction,escapeAction});
+        _Open("ConfirmationViewer",typeof(SR2EConfirmationViewer),theme,new List<object>(){text,0,okAction,escapeAction});
     }
+    
     
     
     protected override void OnUpdate()

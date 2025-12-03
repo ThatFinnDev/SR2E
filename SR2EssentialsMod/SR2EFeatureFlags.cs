@@ -19,13 +19,13 @@ public static class SR2EFeatureFlags
         InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectTranslations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
         EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu,
-        ChangeSystemContextIsModded,AllowPrism
+        ChangeSystemContextIsModded,AllowPrism, AllowSaveExport
         
     };
 
     private static FeatureFlag[] extraDevFlags => new[] {
         DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
-        ExperimentalKeyCodes, EnableRepoMenu, AllowSaveExport
+        ExperimentalKeyCodes, EnableRepoMenu
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};
