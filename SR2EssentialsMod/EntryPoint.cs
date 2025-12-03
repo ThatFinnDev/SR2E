@@ -67,9 +67,9 @@ public static class BuildInfo
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
         new TripleDictionary<string, bool, string>()
         {
-            { "release", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/release.json") },
-            { "alpha", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/alpha.json") },
-            { "beta", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/beta.json") },
+            { "release", (false, "https://api.sr2e.sr2.dev/branch/release") },
+            { "alpha", (false, "https://api.sr2e.sr2.dev/branch/alpha") },
+            { "beta", (false, "https://api.sr2e.sr2.dev/branch/beta") },
             { "dev", (true, "") },
         };
 }
