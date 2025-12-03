@@ -61,15 +61,15 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.4.1-dev";
+    public const string DisplayVersion = "3.4.1";
 
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
         new TripleDictionary<string, bool, string>()
         {
-            { "release", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/release.json") },
-            { "alpha", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/alpha.json") },
-            { "beta", (false, "https://api.sr2e.sr2.dev/downloads/sr2e/beta.json") },
+            { "release", (false, "https://api.sr2e.sr2.dev/branch/release") },
+            { "alpha", (false, "https://api.sr2e.sr2.dev/branch/alpha") },
+            { "beta", (false, "https://api.sr2e.sr2.dev/branch/beta") },
             { "dev", (true, "") },
         };
 }

@@ -10,7 +10,7 @@ namespace SR2E.Patches.Context;
 [HarmonyPatch(typeof(SystemContext), nameof(SystemContext.Start))]
 internal class SystemContextPatch
 {
-    internal static AssetBundle bundle = null;
+    internal static Il2CppAssetBundle bundle = null;
     
     static List<Object> assets = new List<Object>(); //Prefabs are destroyed
     const string menuPath = "Assets/Menus/";
@@ -39,7 +39,7 @@ internal class SystemContextPatch
     internal static void Postfix(SystemContext __instance)
     {
         if(ChangeSystemContextIsModded.HasFlag()) SystemContext.IsModded = true;
-        bundle = EmbeddedResourceEUtil.LoadBundle("Assets.srtwoessentials.assetbundle");
+        bundle = EmbeddedResourceEUtil.LoadIl2CppBundle("Assets.srtwoessentials.assetbundle");
         foreach (string path in bundle.GetAllAssetNames())
         {
             var asset = bundle.LoadAsset(path);

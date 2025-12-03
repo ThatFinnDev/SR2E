@@ -55,6 +55,8 @@ modmenu.modconfig.enterdouble,"Please enter a decimal number",Gib bitte eine Dez
 modmenu.modconfig.entertext,"Please enter text",Gib bitte Text ein!
 modmenu.modconfig.keylistening,"Listening...",Warten auf Eingabe...
 repomenu.title,Repo Menu,Repos
+messages.save.import.error,"Error when importing save: $1","Beim Importieren ist ein Fehler aufgetreten: $1"
+messages.save.export.error,"Error when exporting save: $1","Beim Exportieren ist ein Fehler aufgetreten: $1"
 feature.indevelopment,This feature is currently in development!,Diese Funktion wird noch entwickelt!
 cmd.loadasavefirst,"Load a save first!",Du musst zuerst ein Speicherstand laden!
 cmd.usage,"Usage: $1",Benutzung: $1

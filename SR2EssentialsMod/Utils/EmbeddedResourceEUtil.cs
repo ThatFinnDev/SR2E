@@ -111,7 +111,22 @@ public static class EmbeddedResourceEUtil
 
     }
     
-    
+    public static Il2CppAssetBundle LoadIl2CppBundle(string filename)
+    {
+        var method = new StackTrace().GetFrame(1).GetMethod();
+        var assembly = method.ReflectedType.Assembly;
+        return LoadIl2CppBundle(filename, assembly);
+    }
+    public static Il2CppAssetBundle LoadIl2CppBundle(string filename, Assembly assembly)
+    {
+        if(assembly == null) return null;
+        filename=filename.Replace("/",".");
+        System.IO.Stream stream = assembly.GetManifestResourceStream(assembly.GetName().Name + "." + filename);
+        byte[] array = new byte[stream.Length];
+        stream.Read(array, 0, array.Length);
+        
+        return Il2CppAssetBundleManager.LoadFromMemory(array);
+    }
     
     public static AssetBundle LoadBundle(string filename)
     {

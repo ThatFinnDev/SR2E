@@ -23,10 +23,17 @@ public class SR2ETextViewer : SR2EPopUp
     
     public static void Open(string text)
     {
-        if (!MenuEUtil.isAnyMenuOpen) return;
+        if (!MenuEUtil.isAnyMenuOpen)
+        {
+            _Open("TextViewer",typeof(SR2ETextViewer),SR2EMenuTheme.Default,new List<object>(){text});
+            return;
+        }
         _Open("TextViewer",typeof(SR2ETextViewer),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){text});
     }
-
+    public static void Open(string text, SR2EMenuTheme theme)
+    {
+        _Open("TextViewer",typeof(SR2ETextViewer),theme,new List<object>(){text});
+    }
     protected override void OnUpdate()
     {
         if (LKey.Escape.OnKeyDown())

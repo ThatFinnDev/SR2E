@@ -26,6 +26,16 @@ public static class ConvertEUtil
     public static string Texture2DToBase64PNG(Texture2D texture)
     {
         if (texture==null) return null;
-        return System.Convert.ToBase64String(texture.EncodeToPNG());
+        return System.Convert.ToBase64String(Il2CppImageConversionManager.EncodeToPNG(texture));
+    }
+    public static string Texture2DToBase64JPG(Texture2D texture)
+    {
+        if (texture==null) return null;
+        return System.Convert.ToBase64String(Il2CppImageConversionManager.EncodeToJPG(texture));
+    }
+    public static string Texture2DToBase64TGA(Texture2D texture)
+    {
+        if (texture==null) return null;
+        return System.Convert.ToBase64String(Il2CppImageConversionManager.EncodeToTGA(texture));
     }
 }

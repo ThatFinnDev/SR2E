@@ -54,7 +54,10 @@ public class SR2EGridMenuList : SR2EPopUp
         }
         _Open("GridMenuList",typeof(SR2EGridMenuList),MenuEUtil.GetOpenMenu().GetTheme(),new List<object>(){entries,onSelect});
     }
-
+    public static void Open(TripleDictionary<string,string,Sprite> entries,Action<string> onSelect, SR2EMenuTheme theme)
+    {
+        _Open("GridMenuList",typeof(SR2EGridMenuList),theme,new List<object>(){entries,onSelect});
+    }
     protected override void OnUpdate()
     {
         if (LKey.Escape.OnKeyDown())
