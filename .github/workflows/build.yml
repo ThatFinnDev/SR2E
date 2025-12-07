@@ -78,12 +78,16 @@ jobs:
         run: |
           COMMIT_MSG="${{ github.event.head_commit.message }}"
 
-          echo "Commit message:"
-          echo "$COMMIT_MSG"
+          COMMIT_MSG="$(echo -e "$COMMIT_MSG" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
-          if [[ "$COMMIT_MSG" == "!nobuild!"* ]]; then
-            echo "!nobuild! detected — exiting workflow."
+          echo "Commit message:"
+          echo "'$COMMIT_MSG'"
+
+          if [[ "${COMMIT_MSG}" == "!nobuild!"* ]]; then
+            echo "Commit starts with literal !nobuild! — exiting workflow."
             exit 78
+          else
+            echo "Commit does not start with !nobuild!, continuing build."
           fi
 
 
