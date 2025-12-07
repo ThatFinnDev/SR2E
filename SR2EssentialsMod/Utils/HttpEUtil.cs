@@ -10,6 +10,8 @@ namespace SR2E.Utils;
 
 public static class HttpEUtil
 {
+    static Dictionary<Image,string> onGoingImages = new ();
+    static Dictionary<RawImage,string> onGoingRawImages = new ();
     public static void DownloadTexture2DAsync(string url, Action<Texture2D, string> onComplete)
     {
         MelonCoroutines.Start(_DownloadTexture2DCoroutine(url, onComplete));
@@ -17,19 +19,25 @@ public static class HttpEUtil
 
     public static void DownloadTexture2DIntoImageAsync(string url, Image image)
     {
+        onGoingImages[image]=url;
         MelonCoroutines.Start(_DownloadTexture2DCoroutine(url, (Action<Texture2D, string>)((texture, error) =>
         {
             if (error == null && texture != null)
-                image.sprite = texture.Texture2DToSprite();
+                if(onGoingImages[image]==url)
+                    image.sprite = texture.Texture2DToSprite();
         })));
+        if(onGoingImages[image]==url) onGoingImages.Remove(image);
     }
     public static void DownloadTexture2DIntoRawImageAsync(string url, RawImage image)
     {
+        onGoingRawImages[image]=url;
         MelonCoroutines.Start(_DownloadTexture2DCoroutine(url, (Action<Texture2D, string>)((texture, error) =>
         {
             if (error == null && texture != null)
-                image.texture = texture;
+                if(onGoingRawImages[image]==url)
+                    image.texture = texture;
         })));
+        if(onGoingRawImages[image]==url) onGoingRawImages.Remove(image);
     }
     private static IEnumerator _DownloadTexture2DCoroutine(string url, Action<Texture2D, string> onComplete)
     {

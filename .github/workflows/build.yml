@@ -73,6 +73,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check commit message for !nobuild!
+        shell: bash
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+
+          echo "Commit message:"
+          echo "$COMMIT_MSG"
+
+          if [[ "$COMMIT_MSG" == "!nobuild!"* ]]; then
+            echo "!nobuild! detected — exiting workflow."
+            exit 78
+          fi
+
+
       - name: Checkout Repository Code
         uses: actions/checkout@v4
 

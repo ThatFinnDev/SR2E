@@ -2,6 +2,8 @@ namespace SR2E.Enums.Features;
 
 public enum FeatureFlag
 {
+    //Off limits: 70
+    
     None=0,
     //Dev
     /// <summary>
@@ -32,6 +34,10 @@ public enum FeatureFlag
     /// Enable the enable dev key codes
     /// </summary>
     ExperimentalKeyCodes=80,
+    /// <summary>
+    /// Add test repo
+    /// </summary>
+    UseMockRepo=81,
     
     //Commands+Dev
     /// <summary>

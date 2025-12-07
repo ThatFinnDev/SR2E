@@ -94,7 +94,7 @@ public class SR2EModMenu : SR2EMenu
                 bool isSR2EExpansion = sr2EExpansionAttribute != null;
                 GameObject obj = Instantiate(buttonPrefab, modContent);
                 Button b = obj.GetComponent<Button>();
-                if (String.IsNullOrEmpty(rotten.assembly.Assembly.FullName))
+                if (string.IsNullOrEmpty(rotten.assembly.Assembly.FullName))
                     b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = translation("modmenu.modinfo.brokenmodtitle");
                 else b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = rotten.assembly.Assembly.FullName; 
                 obj.SetActive(true);
@@ -110,7 +110,7 @@ public class SR2EModMenu : SR2EMenu
                     AudioEUtil.PlaySound(MenuSound.Click);
                     string name = "";
                     try {name = rotten.assembly.Assembly.FullName; } catch {}
-                    if (String.IsNullOrEmpty(name))
+                    if (string.IsNullOrEmpty(name))
                         if(isSR2EExpansion) name = translation("modmenu.modinfo.brokenmodtitle");
                         else name = translation("modmenu.modinfo.brokenexpansiontitle");
                     
@@ -273,7 +273,7 @@ public class SR2EModMenu : SR2EMenu
         modInfoText = transform.GetObjectRecursively<TextMeshProUGUI>("ModMenuModInfoTextRec");
         modInfoText.AddComponent<ClickableTextLink>();
         foreach (string stringKey in System.Enum.GetNames(typeof(Key)))
-            if (!String.IsNullOrEmpty(stringKey))
+            if (!string.IsNullOrEmpty(stringKey))
                 if (stringKey != "None")
                 {
                     Key key;
@@ -285,7 +285,7 @@ public class SR2EModMenu : SR2EMenu
         allPossibleUnityKeys.Remove(Key.RightCommand);
         
         foreach (string stringKey in System.Enum.GetNames(typeof(KeyCode)))
-            if (!String.IsNullOrEmpty(stringKey))
+            if (!string.IsNullOrEmpty(stringKey))
                 if (stringKey != "None")
                 {
                     KeyCode key;
@@ -297,7 +297,7 @@ public class SR2EModMenu : SR2EMenu
         allPossibleUnityKeyCodes.Remove(KeyCode.RightWindows);
         
         foreach (string stringKey in System.Enum.GetNames(typeof(LKey)))
-            if (!String.IsNullOrEmpty(stringKey))
+            if (!string.IsNullOrEmpty(stringKey))
                 if (stringKey != "None")
                 {
                     LKey key;
@@ -345,19 +345,25 @@ public class SR2EModMenu : SR2EMenu
                 {
                     GameObject obj = Instantiate(entryTemplate, modConfigContent);
                     obj.SetActive(true);
-                    obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
-                    if (!String.IsNullOrEmpty(entry.Description))
-                        obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text +=
-                            $"\n{entry.Description.Replace("\n", " ")}";
-                    obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().autoSizeTextContainer = true;
-                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = entry.GetEditedValueAsString();
-
+                    var entryName = obj.GetObjectRecursively<TextMeshProUGUI>("EntryName");
+                    entryName.text = entry.DisplayName;
+                    if (!string.IsNullOrEmpty(entry.Description))
+                        entryName.text +=
+                            $"\n<size=60%>{entry.Description.Replace("\n", " ")}</size>";
+                    entryName.autoSizeTextContainer = true;
+                    ExecuteInTicks((() =>
+                    {
+                        var rectT = obj.GetComponent<RectTransform>();
+                        if(rectT.sizeDelta.y<entryName.GetRenderedHeight())
+                            rectT.sizeDelta = new Vector2(rectT.sizeDelta.x,entryName.GetRenderedHeight());
+                        obj.GetObjectRecursively<TextMeshProUGUI>("Value").text = entry.GetEditedValueAsString();
+                    }),1);
                     if (entry.BoxedEditedValue is bool)
                     {
-                        obj.transform.GetChild(2).gameObject.SetActive(true);
-                        obj.transform.GetChild(2).GetComponent<Toggle>().isOn =
+                        obj.GetObjectRecursively<GameObject>("EntryToggle").SetActive(true);
+                        obj.GetObjectRecursively<Toggle>("EntryToggle").isOn =
                             bool.Parse(entry.GetEditedValueAsString());
-                        obj.transform.GetChild(2).GetComponent<Toggle>().onValueChanged.AddListener((Action<bool>)(
+                        obj.GetObjectRecursively<Toggle>("EntryToggle").onValueChanged.AddListener((Action<bool>)(
                             (isOn) =>
                             {
                                 if(isOpen) AudioEUtil.PlaySound(MenuSound.Click);
@@ -372,15 +378,15 @@ public class SR2EModMenu : SR2EMenu
                                         action.Invoke();
                                 }
 
-                                obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = isOn.ToString();
+                                obj.GetObjectRecursively<TextMeshProUGUI>("Value").text = isOn.ToString();
                             }));
 
                     }
                     else if (entry.BoxedEditedValue is int)
                     {
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        obj.transform.GetChild(3).gameObject.SetActive(true);
-                        TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                        obj.GetObjectRecursively<GameObject>("Value").SetActive(false);
+                        obj.GetObjectRecursively<GameObject>("EntryInput").SetActive(true);
+                        TMP_InputField inputField = obj.GetObjectRecursively<TMP_InputField>("EntryInput");
                         inputField.restoreOriginalTextOnEscape = false;
                         inputField.text = entry.GetEditedValueAsString();
                         inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
@@ -412,9 +418,9 @@ public class SR2EModMenu : SR2EMenu
                     }
                     else if (entry.BoxedEditedValue is float)
                     {
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        obj.transform.GetChild(3).gameObject.SetActive(true);
-                        TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                        obj.GetObjectRecursively<GameObject>("Value").SetActive(false);
+                        obj.GetObjectRecursively<GameObject>("EntryInput").SetActive(true);
+                        TMP_InputField inputField = obj.GetObjectRecursively<TMP_InputField>("EntryInput");
                         inputField.restoreOriginalTextOnEscape = false;
                         inputField.text = entry.GetEditedValueAsString();
                         inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
@@ -431,7 +437,7 @@ public class SR2EModMenu : SR2EMenu
                                 {
                                     entry.BoxedEditedValue = value;
                                     category.SaveToFile(false);
-                                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
+                                    obj.GetObjectRecursively<TextMeshProUGUI>("Value").text = text;
                                     if (!entriesWithActions.ContainsKey(entry))
                                         warningText.SetActive(true);
                                     else
@@ -442,14 +448,14 @@ public class SR2EModMenu : SR2EMenu
                                     }
                                 }
                                 else
-                                    inputField.text = obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
+                                    inputField.text = obj.GetObjectRecursively<TextMeshProUGUI>("Value").text;
                             }));
                     }
                     else if (entry.BoxedEditedValue is double)
                     {
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        obj.transform.GetChild(3).gameObject.SetActive(true);
-                        TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                        obj.GetObjectRecursively<GameObject>("Value").SetActive(false);
+                        obj.GetObjectRecursively<GameObject>("EntryInput").SetActive(true);
+                        TMP_InputField inputField = obj.GetObjectRecursively<TMP_InputField>("EntryInput");
                         inputField.restoreOriginalTextOnEscape = false;
                         inputField.text = entry.GetEditedValueAsString();
                         inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
@@ -466,7 +472,7 @@ public class SR2EModMenu : SR2EMenu
                                 {
                                     entry.BoxedEditedValue = value;
                                     category.SaveToFile(false);
-                                    obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = text;
+                                    obj.GetObjectRecursively<TextMeshProUGUI>("Value").text = text;
                                     if (!entriesWithActions.ContainsKey(entry))
                                         warningText.SetActive(true);
                                     else
@@ -477,14 +483,14 @@ public class SR2EModMenu : SR2EMenu
                                     }
                                 }
                                 else
-                                    inputField.text = obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
+                                    inputField.text = obj.GetObjectRecursively<TextMeshProUGUI>("Value").text;
                             }));
                     }
                     else if (entry.BoxedEditedValue is string)
                     {
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        obj.transform.GetChild(3).gameObject.SetActive(true);
-                        TMP_InputField inputField = obj.transform.GetChild(3).GetComponent<TMP_InputField>();
+                        obj.GetObjectRecursively<GameObject>("Value").SetActive(false);
+                        obj.GetObjectRecursively<GameObject>("EntryInput").SetActive(true);
+                        TMP_InputField inputField = obj.GetObjectRecursively<TMP_InputField>("EntryInput");
                         inputField.restoreOriginalTextOnEscape = false;
                         inputField.text = entry.GetEditedValueAsString();
                         inputField.contentType = TMP_InputField.ContentType.Standard;
@@ -507,11 +513,10 @@ public class SR2EModMenu : SR2EMenu
                     }
                     else if (entry.BoxedEditedValue is Key)
                     {
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        obj.transform.GetChild(4).gameObject.SetActive(true);
-                        Button button = obj.transform.GetChild(4).GetComponent<Button>();
-                        TextMeshProUGUI textMesh =
-                            obj.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
+                        obj.GetObjectRecursively<GameObject>("Value").SetActive(false);
+                        obj.GetObjectRecursively<GameObject>("Button").SetActive(true);
+                        var button = obj.GetObjectRecursively<Button>("Button");
+                        var textMesh = obj.GetObjectRecursively<Transform>("Button").GetChild(0).GetComponent<TextMeshProUGUI>();
                         textMesh.text = entry.GetEditedValueAsString();
                         button.onClick.AddListener((Action)(() =>
                         {
@@ -549,11 +554,10 @@ public class SR2EModMenu : SR2EMenu
                     }
                     else if (entry.BoxedEditedValue is KeyCode)
                     {
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        obj.transform.GetChild(4).gameObject.SetActive(true);
-                        Button button = obj.transform.GetChild(4).GetComponent<Button>();
-                        TextMeshProUGUI textMesh =
-                            obj.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
+                        obj.GetObjectRecursively<GameObject>("Value").SetActive(false);
+                        obj.GetObjectRecursively<GameObject>("Button").SetActive(true);
+                        var button = obj.GetObjectRecursively<Button>("Button");
+                        var textMesh = obj.GetObjectRecursively<Transform>("Button").GetChild(0).GetComponent<TextMeshProUGUI>();
                         textMesh.text = entry.GetEditedValueAsString();
                         button.onClick.AddListener((Action)(() =>
                         {
@@ -591,11 +595,10 @@ public class SR2EModMenu : SR2EMenu
                     }
                     else if (entry.BoxedEditedValue is LKey)
                     {
-                        obj.transform.GetChild(1).gameObject.SetActive(false);
-                        obj.transform.GetChild(4).gameObject.SetActive(true);
-                        Button button = obj.transform.GetChild(4).GetComponent<Button>();
-                        TextMeshProUGUI textMesh =
-                            obj.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
+                        obj.GetObjectRecursively<GameObject>("Value").SetActive(false);
+                        obj.GetObjectRecursively<GameObject>("Button").SetActive(true);
+                        var button = obj.GetObjectRecursively<Button>("Button");
+                        var textMesh = obj.GetObjectRecursively<Transform>("Button").GetChild(0).GetComponent<TextMeshProUGUI>();
                         textMesh.text = entry.GetEditedValueAsString();
                         button.onClick.AddListener((Action)(() =>
                         {

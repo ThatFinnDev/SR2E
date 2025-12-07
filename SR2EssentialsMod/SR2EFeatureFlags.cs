@@ -25,7 +25,7 @@ public static class SR2EFeatureFlags
 
     private static FeatureFlag[] extraDevFlags => new[] {
         DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
-        ExperimentalKeyCodes, EnableRepoMenu
+        ExperimentalKeyCodes, EnableRepoMenu, UseMockRepo
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};
@@ -91,13 +91,13 @@ public static class SR2EFeatureFlags
                     if (req is FFRString ffrString)
                     {
                         string exist = xmlElement.GetAttribute(name);
-                        if (!String.IsNullOrEmpty(exist)) exist += ",";
+                        if (!string.IsNullOrEmpty(exist)) exist += ",";
                         xmlElement.SetAttribute(name, exist+ffrString.String);
                     }
                     else if (req is FFRFlag ffrFlag)
                     {
                         string exist = xmlElement.GetAttribute(name);
-                        if (!String.IsNullOrEmpty(exist)) exist += ",";
+                        if (!string.IsNullOrEmpty(exist)) exist += ",";
                         xmlElement.SetAttribute(name, exist+ffrFlag.Flag);
                     }
                 }

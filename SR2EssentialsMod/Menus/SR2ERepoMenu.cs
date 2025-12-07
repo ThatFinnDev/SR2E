@@ -34,12 +34,8 @@ public class SR2ERepoMenu : SR2EMenu
     protected override void OnClose()
     {
         gameObject.GetObjectRecursively<Button>("RepoMenuBrowseSelectionButtonRec").onClick.Invoke();
-        Transform modContent = transform.GetObjectRecursively<Transform>("RepoMenuMainContentRec");
-        Transform repoContent = transform.GetObjectRecursively<Transform>("RepoMenuRepoContentRec");
-        for (int i = 0; i < modContent.childCount; i++)
-            Destroy(modContent.GetChild(i).gameObject);
-        for (int i = 0; i < repoContent.childCount; i++)
-            Destroy(repoContent.GetChild(i).gameObject);
+        transform.GetObjectRecursively<Transform>("RepoMenuBrowseContentRec").DestroyAllChildren();
+        transform.GetObjectRecursively<Transform>("RepoMenuRepoContentRec").DestroyAllChildren();
     }
     Transform repoPanel;
     Transform modPanel;
@@ -78,6 +74,7 @@ public class SR2ERepoMenu : SR2EMenu
         modPanel.gameObject.SetActive(false);
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("RepoMenuTemplateButton");
         var repoContent = transform.GetObjectRecursively<Transform>("RepoMenuRepoContentRec");
+        repoContent.DestroyAllChildren();
         foreach (var repo in SR2ERepoManager.repos)
         {
             if (repo.Value == null)
@@ -113,9 +110,10 @@ public class SR2ERepoMenu : SR2EMenu
                         var desc = transform.GetObjectRecursively<TextMeshProUGUI>("RepoViewDescriptionTextRec");
                         
                         if (!string.IsNullOrWhiteSpace(repo.Value.header_url))
-                        { 
-                            HttpEUtil.DownloadTexture2DIntoImageAsync(repo.Value.header_url,
-                                transform.GetObjectRecursively<Image>("RepoViewHeaderImageRec"));
+                        {
+                            var hImage = transform.GetObjectRecursively<Image>("RepoViewHeaderImageRec");
+                            hImage.sprite = null;
+                            HttpEUtil.DownloadTexture2DIntoImageAsync(repo.Value.header_url,hImage);
                         }
                         if(string.IsNullOrWhiteSpace(repo.Value.name)) name.gameObject.SetActive(false);
                         else {name.gameObject.SetActive(true); name.SetText(repo.Value.name);}
@@ -133,8 +131,10 @@ public class SR2ERepoMenu : SR2EMenu
         modPanel.gameObject.SetActive(false);
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("RepoMenuTemplateButton");
         var browseContent = transform.GetObjectRecursively<Transform>("RepoMenuBrowseContentRec");
+        browseContent.DestroyAllChildren();
         foreach (var repo in SR2ERepoManager.repos)
         {
+            if (repo.Value == null) continue;
             foreach (var mod in repo.Value.mods)
             {
                 if (mod == null) return;
@@ -160,12 +160,16 @@ public class SR2ERepoMenu : SR2EMenu
 
                         if (!string.IsNullOrWhiteSpace(mod.header_url))
                         {
-                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.header_url, modPanel.GetObjectRecursively<Image>("ModViewHeaderImageRec"));
+                            var hImage = modPanel.GetObjectRecursively<Image>("ModViewHeaderImageRec");
+                            hImage.sprite = null;
+                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.header_url, hImage);
                         }
 
                         if (!string.IsNullOrWhiteSpace(mod.icon_url))
                         {
-                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.icon_url, modPanel.GetObjectRecursively<Image>("ModViewIconImageRec"));
+                            var iImage = modPanel.GetObjectRecursively<Image>("ModViewIconImageRec");
+                            iImage.sprite = null;
+                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.icon_url, iImage);
                         }
                         
                         if(string.IsNullOrWhiteSpace(mod.name)) name.gameObject.SetActive(false);

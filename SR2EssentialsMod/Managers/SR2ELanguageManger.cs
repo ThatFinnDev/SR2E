@@ -19,13 +19,13 @@ public static class SR2ELanguageManger
     static Dictionary<string, string> defaultLang = null;
     public static string translation(string key)
     {
-        if (String.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
+        if (string.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
         return loadedLanguage[key];
     }
     
     public static string translation(string key, params object[] args)
     {
-        if (String.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
+        if (string.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
         int i = 1;
         string translatedRaw = loadedLanguage[key];
         // somebody optimize this, use for loop. i just couldn't care enough right now.

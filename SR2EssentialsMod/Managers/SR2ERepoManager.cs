@@ -19,6 +19,7 @@ public static class SR2ERepoManager
     {
         
         List<RepoSave> repoSaves = new List<RepoSave>(){new RepoSave("official","https://api.sr2e.sr2.dev/repo")};
+        if(UseMockRepo.HasFlag()) repoSaves.Add(new RepoSave("official_mock","https://api.sr2e.sr2.dev/mockrepo"));
         repoSaves.AddRange(SR2ESaveManager.data.repos);
         foreach (RepoSave repoSave in repoSaves)
         {
