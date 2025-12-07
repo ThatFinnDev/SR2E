@@ -262,6 +262,8 @@ public class SR2EModMenu : SR2EMenu
     {
         return $"<link=\"{url}\"><color=#2C6EC8><u>{url}</u></color></link>";
     }
+
+    private List<Action> configTabActions = new List<Action>();
     protected override void OnLateAwake()
     {
         modContent = transform.GetObjectRecursively<Transform>("ModMenuModMenuContentRec");
@@ -311,6 +313,15 @@ public class SR2EModMenu : SR2EMenu
         var button2 = transform.GetObjectRecursively<Image>("ModMenuConfigurationSelectionButtonRec");
         button2.sprite = whitePillBg;
         button2.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
+        button2.GetComponent<Button>().onClick.AddListener((Action)(() =>
+        {
+            ExecuteInTicks((() =>
+            {
+                
+                foreach (var action in configTabActions)
+                    action.Invoke();
+            }),1);
+        }));
         var button3 = transform.GetObjectRecursively<Image>("ModMenuRepoSelectionButtonRec");
         button3.sprite = whitePillBg;
         button3.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
@@ -350,14 +361,15 @@ public class SR2EModMenu : SR2EMenu
                     if (!string.IsNullOrEmpty(entry.Description))
                         entryName.text +=
                             $"\n<size=60%>{entry.Description.Replace("\n", " ")}</size>";
-                    entryName.autoSizeTextContainer = true;
-                    ExecuteInTicks((() =>
+                    //entryName.autoSizeTextContainer = true;
+                    obj.GetObjectRecursively<TextMeshProUGUI>("Value").text = entry.GetEditedValueAsString();
+                    configTabActions.Add(() =>
                     {
                         var rectT = obj.GetComponent<RectTransform>();
-                        if(rectT.sizeDelta.y<entryName.GetRenderedHeight())
-                            rectT.sizeDelta = new Vector2(rectT.sizeDelta.x,entryName.GetRenderedHeight());
-                        obj.GetObjectRecursively<TextMeshProUGUI>("Value").text = entry.GetEditedValueAsString();
-                    }),1);
+                        var newValue = entryName.GetRenderedHeight() + 5;
+                        if (newValue < rectT.sizeDelta.y) newValue = rectT.sizeDelta.y;
+                        rectT.sizeDelta = new Vector2(rectT.sizeDelta.x, newValue);
+                    });
                     if (entry.BoxedEditedValue is bool)
                     {
                         obj.GetObjectRecursively<GameObject>("EntryToggle").SetActive(true);
