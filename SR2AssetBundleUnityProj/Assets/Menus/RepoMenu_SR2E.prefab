@@ -2616,6 +2616,7 @@ GameObject:
   - component: {fileID: 389987716402671394}
   - component: {fileID: 7455762749976113898}
   - component: {fileID: 5247993806532010952}
+  - component: {fileID: 6799404525868838123}
   m_Layer: 5
   m_Name: ModViewCopyrightTextRec
   m_TagString: Untagged
@@ -2640,8 +2641,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 947.5, y: -605}
-  m_SizeDelta: {x: 1855, y: 50}
+  m_AnchoredPosition: {x: 947.5, y: -551.20996}
+  m_SizeDelta: {x: 1855, y: 40.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7455762749976113898
 CanvasRenderer:
@@ -2680,7 +2681,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -2740,6 +2741,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6799404525868838123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2650566777643242135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &2683084551648666059
 GameObject:
   m_ObjectHideFlags: 0
@@ -2751,6 +2766,7 @@ GameObject:
   - component: {fileID: 4036113091685996943}
   - component: {fileID: 4296117403469978501}
   - component: {fileID: 7109579061099004551}
+  - component: {fileID: 5594584980652030637}
   m_Layer: 5
   m_Name: RepoViewNameTextRec
   m_TagString: Untagged
@@ -2875,6 +2891,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5594584980652030637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2683084551648666059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &2727118564403878688
 GameObject:
   m_ObjectHideFlags: 0
@@ -3045,7 +3075,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000030517578}
-  m_SizeDelta: {x: 0, y: 630}
+  m_SizeDelta: {x: 0, y: 571.31995}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5146573152488397323
 MonoBehaviour:
@@ -3918,6 +3948,7 @@ GameObject:
   - component: {fileID: 9201086223772648627}
   - component: {fileID: 3259299432623494968}
   - component: {fileID: 4285014365825988125}
+  - component: {fileID: 8738149218349038954}
   m_Layer: 5
   m_Name: RepoViewDescriptionTextRec
   m_TagString: Untagged
@@ -4042,6 +4073,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8738149218349038954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4133168092415312613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &4346907230889020791
 GameObject:
   m_ObjectHideFlags: 0
@@ -4474,7 +4519,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sources
+  m_text: Installed
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4630,6 +4675,7 @@ GameObject:
   - component: {fileID: 1689234458989648355}
   - component: {fileID: 587403586038220177}
   - component: {fileID: 1773248259734447956}
+  - component: {fileID: 6965745127347182472}
   m_Layer: 5
   m_Name: ModViewCoAuthorTextRec
   m_TagString: Untagged
@@ -4654,8 +4700,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 947.5, y: -330}
-  m_SizeDelta: {x: 1855, y: 50}
+  m_AnchoredPosition: {x: 947.5, y: -325.11}
+  m_SizeDelta: {x: 1855, y: 40.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &587403586038220177
 CanvasRenderer:
@@ -4685,7 +4731,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Coauthor: coauthor'
+  m_text: 'Coauthor: coauthor
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4694,7 +4742,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -4754,6 +4802,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6965745127347182472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5179772830598141680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &5282764991885518962
 GameObject:
   m_ObjectHideFlags: 0
@@ -6341,6 +6403,7 @@ GameObject:
   - component: {fileID: 2710720527752273018}
   - component: {fileID: 3497750562334204671}
   - component: {fileID: 1359359556115550013}
+  - component: {fileID: 4456071381473171542}
   m_Layer: 5
   m_Name: ModViewCompanyTextRec
   m_TagString: Untagged
@@ -6365,8 +6428,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 947.5, y: -440}
-  m_SizeDelta: {x: 1855, y: 50}
+  m_AnchoredPosition: {x: 947.5, y: -415.55}
+  m_SizeDelta: {x: 1855, y: 40.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3497750562334204671
 CanvasRenderer:
@@ -6405,7 +6468,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -6465,6 +6528,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4456071381473171542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169077734095321509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &7292433248178718017
 GameObject:
   m_ObjectHideFlags: 0
@@ -6681,6 +6758,7 @@ GameObject:
   - component: {fileID: 8472104293984864863}
   - component: {fileID: 6957105794060825768}
   - component: {fileID: 2094697108340211556}
+  - component: {fileID: 5731691632797347547}
   m_Layer: 5
   m_Name: ModViewTrademarkTextRec
   m_TagString: Untagged
@@ -6705,8 +6783,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 947.5, y: -495}
-  m_SizeDelta: {x: 1855, y: 50}
+  m_AnchoredPosition: {x: 947.5, y: -460.77002}
+  m_SizeDelta: {x: 1855, y: 40.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6957105794060825768
 CanvasRenderer:
@@ -6745,7 +6823,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -6805,6 +6883,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5731691632797347547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7821177894107154189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &7908651276383452829
 GameObject:
   m_ObjectHideFlags: 0
@@ -7300,6 +7392,7 @@ GameObject:
   - component: {fileID: 671191698294758723}
   - component: {fileID: 8112805291940829833}
   - component: {fileID: 8880302241531828023}
+  - component: {fileID: 3032808823955341160}
   m_Layer: 5
   m_Name: ModViewDescriptionTextRec
   m_TagString: Untagged
@@ -7324,8 +7417,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 947.5, y: -385}
-  m_SizeDelta: {x: 1855, y: 50}
+  m_AnchoredPosition: {x: 947.5, y: -370.33002}
+  m_SizeDelta: {x: 1855, y: 40.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8112805291940829833
 CanvasRenderer:
@@ -7364,7 +7457,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -7424,6 +7517,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3032808823955341160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8580707370762809297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &8720681968731387692
 GameObject:
   m_ObjectHideFlags: 0
@@ -7720,6 +7827,7 @@ GameObject:
   - component: {fileID: 7189217533249500290}
   - component: {fileID: 1681435098060147512}
   - component: {fileID: 7992451027208091174}
+  - component: {fileID: 2609305666512712126}
   m_Layer: 5
   m_Name: ModViewTeamTextRec
   m_TagString: Untagged
@@ -7744,8 +7852,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 947.5, y: -550}
-  m_SizeDelta: {x: 1855, y: 50}
+  m_AnchoredPosition: {x: 947.5, y: -505.99}
+  m_SizeDelta: {x: 1855, y: 40.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1681435098060147512
 CanvasRenderer:
@@ -7784,7 +7892,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -7844,6 +7952,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2609305666512712126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8825357803823065146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &8855836750841449427
 GameObject:
   m_ObjectHideFlags: 0
@@ -8343,7 +8465,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sources
+  m_text: Settings
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
