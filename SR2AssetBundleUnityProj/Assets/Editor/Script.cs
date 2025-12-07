@@ -17,5 +17,7 @@ public class CreateAssetBundles
         File.Delete(assetBundleDirectory+"srtwoessentials.assetbundle.manifest");
         File.Delete(assetBundleDirectory + "SR2EssentialsMod");
         File.Delete(assetBundleDirectory + "SR2EssentialsMod.manifest");
+        File.Delete(assetBundleDirectory + "Assets");
+        File.Delete(assetBundleDirectory + "Assets.manifest");
     }
 }
