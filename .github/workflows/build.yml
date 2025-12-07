@@ -76,18 +76,16 @@ jobs:
       - name: Check commit message for !nobuild!
         shell: bash
         run: |
-          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          FULL_MSG="${{ github.event.head_commit.message }}"
 
-          COMMIT_MSG="$(echo -e "$COMMIT_MSG" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          COMMIT_DESC="$(echo "$FULL_MSG" | tail -n +2 | sed -e '/^[[:space:]]*$/d')"
 
-          echo "Commit message:"
-          echo "'$COMMIT_MSG'"
+          echo "Commit description:"
+          echo "'$COMMIT_DESC'"
 
-          if [[ "${COMMIT_MSG}" == "!nobuild!"* ]]; then
-            echo "Commit starts with literal !nobuild! — exiting workflow."
+          if [[ "${COMMIT_DESC}" == "!nobuild!"* ]]; then
+            echo "Commit description starts with !nobuild! — exiting workflow."
             exit 78
-          else
-            echo "Commit does not start with !nobuild!, continuing build."
           fi
 
 
