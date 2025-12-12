@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Il2CppInterop.Runtime.Attributes;
 using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppTMPro;
@@ -81,6 +82,155 @@ public class SR2EModMenu : SR2EMenu
             comp._scrollPerFrame = 9f;
         }
     }
+
+    [HideFromIl2Cpp] void ProcessMelon(string melonName, string author, string version,string downloadLink,Assembly assembly,bool isRotten,GameObject buttonPrefab, List<object> rottenInfo)
+    {
+        bool isSR2EExpansion = false;
+        bool usePrism = false;
+        var sr2EExpansionAttribute = assembly.GetCustomAttribute<SR2EExpansionAttribute>();
+        if (sr2EExpansionAttribute != null)
+        {
+            isSR2EExpansion = true;
+            if (sr2EExpansionAttribute.usePrism) usePrism = true;
+        }
+        if (!isSR2EExpansion)
+        {
+            foreach (var meta in assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
+            {
+                if (meta == null) continue;
+                if (meta.Key == SR2EExpansionAttributes.IsExpansion) isSR2EExpansion = meta.Value.ToLower() == "true";
+                if (meta.Key == SR2EExpansionAttributes.UsePrism) usePrism = meta.Value.ToLower() == "true";
+            }
+            if (usePrism && !isSR2EExpansion)
+                usePrism = true;
+        }
+
+        var obj = Instantiate(buttonPrefab, modContent);
+        Button b = obj.GetComponent<Button>();
+        b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = melonName;
+        obj.SetActive(true);
+        if (isSR2EExpansion)
+        {
+            var colorBlock = b.colors;
+            colorBlock.normalColor = new Color(0.149f, 0.7176f, 0.3961f, 1);
+            colorBlock.highlightedColor = new Color(0.1098f, 0.6314f, 0.2157f, 1);
+            colorBlock.pressedColor = new Color(0.1371f, 0.7248f, 0.3792f, 1f);
+            colorBlock.selectedColor = new Color(0.8706f, 0.5298f, 0.4216f, 1f);
+            b.colors = colorBlock;
+        }
+
+        if (isRotten)
+        {
+            var colorBlock = b.colors;colorBlock.normalColor = new Color(0.5f, 0.5f, 0.5f, 1);
+            colorBlock.highlightedColor = new Color(0.7f, 0.7f, 0.7f, 1); 
+            colorBlock.pressedColor = new Color(0.3f, 0.3f, 0.3f, 1); 
+            colorBlock.selectedColor = new Color(0.6f, 0.6f, 0.6f, 1); 
+            b.colors = colorBlock;
+        }
+        bool useIcon = false;
+        try
+        {
+            var sprite = EmbeddedResourceEUtil.LoadSprite("icon.png",assembly);
+            if (sprite == null) throw new Exception();
+            b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+            b.transform.GetChild(1).gameObject.SetActive(true);
+            useIcon = true;
+        }
+        catch
+        {
+        }
+
+        if (!useIcon)
+        {
+            try
+            {
+                var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly);
+                if (sprite == null) throw new Exception();
+                b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                b.transform.GetChild(1).gameObject.SetActive(true);
+                useIcon = true;
+            }
+            catch
+            {
+            }
+        }
+
+        b.onClick.AddListener((Action)(() =>
+        {
+            AudioEUtil.PlaySound(MenuSound.Click);
+            themeButton.gameObject.SetActive(assembly is SR2EEntryPoint);
+            if (isRotten)
+            {
+                modInfoText.text = translation("modmenu.modinfo.brokenmod", melonName);
+                if (isSR2EExpansion)
+                    modInfoText.text = translation("modmenu.modinfo.brokenexpansion", melonName);
+            }
+            else
+            {
+                modInfoText.text = translation("modmenu.modinfo.mod", melonName);
+                if (isSR2EExpansion)
+                    modInfoText.text = translation("modmenu.modinfo.expansion", melonName);
+            }
+            modInfoText.text += "\n" + translation("modmenu.modinfo.author", author);
+
+            if(isSR2EExpansion)
+                modInfoText.text += "\n" + translation("modmenu.modinfo.useprism", usePrism);
+            string versionText = "\n" + translation("modmenu.modinfo.version", version);
+            
+
+            foreach (var meta in assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
+            {
+                if (meta == null) continue;
+                if (string.IsNullOrWhiteSpace(meta.Key)) continue;
+                if (string.IsNullOrWhiteSpace(meta.Value)) continue;
+                if (meta.Key == null) continue;
+                if (meta.Value == null) continue;
+                switch (meta.Key)
+                {
+                    case SR2EExpansionAttributes.DisplayVersion: try { versionText = "\n" + translation("modmenu.modinfo.version", meta.Value); }catch { } break;
+                    case SR2EExpansionAttributes.CoAuthors: try { modInfoText.text += "\n" + translation("modmenu.modinfo.coauthor", meta.Value); }catch { } break;
+                    case SR2EExpansionAttributes.Contributors: try { modInfoText.text += "\n" + translation("modmenu.modinfo.contributors", meta.Value); }catch { } break;
+                    case SR2EExpansionAttributes.IconB64: if (useIcon) break; try { b.transform.GetChild(1).gameObject.SetActive(true); b.transform.GetChild(1).GetComponent<Image>().sprite = ConvertEUtil.Base64ToTexture2D(meta.Value).Texture2DToSprite(); }catch { } break;
+                }
+            }
+
+            modInfoText.text += versionText+"\n";
+            foreach (var meta in assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
+            {
+                if (meta == null) continue;
+                if (string.IsNullOrWhiteSpace(meta.Key)) continue;
+                if (string.IsNullOrWhiteSpace(meta.Value)) continue;
+                switch (meta.Key)
+                {
+                    case SR2EExpansionAttributes.SourceCode: try { modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode", FormatLink(meta.Value)); }catch { } break;
+                    case SR2EExpansionAttributes.Nexus: try { modInfoText.text += "\n" + translation("modmenu.modinfo.nexus", FormatLink(meta.Value)); }catch { } break;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(downloadLink))
+                modInfoText.text += "\n" + translation("modmenu.modinfo.link", FormatLink(downloadLink));
+
+            string universalModName = translation("modmenu.modinfo.unknown");
+            var universalMod = assembly.GetCustomAttribute<MelonGameAttribute>();
+            if (universalMod != null) universalModName = universalMod.Universal.ToString();
+            modInfoText.text += "\n" + translation("modmenu.modinfo.isuniversal", universalModName);
+
+            var desc = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
+            if (desc != null)
+                if (!string.IsNullOrWhiteSpace(desc.Description))
+                    modInfoText.text += "\n" + translation("modmenu.modinfo.description", desc.Description + "\n");
+
+            if (isRotten&&rottenInfo!=null&rottenInfo.Count>=3)
+            {
+                modInfoText.text += "\n";
+                try {modInfoText.text += "\n" + translation("modmenu.modinfo.path", rottenInfo[0]);} catch {}
+                try {modInfoText.text += "\n" + translation("modmenu.modinfo.exception", rottenInfo[1]);} catch {}
+                try {modInfoText.text += "\n" + translation("modmenu.modinfo.errormessage", rottenInfo[2]);} catch {}
+            }
+        }));
+    }
+
+
     protected override void OnOpen()
     {
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("ModMenuModMenuTemplateButtonRec");
@@ -89,172 +239,37 @@ public class SR2EModMenu : SR2EMenu
         {
             try
             {
-                SR2EExpansionAttribute sr2EExpansionAttribute =
-                    rotten.assembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
-                bool isSR2EExpansion = sr2EExpansionAttribute != null;
-                GameObject obj = Instantiate(buttonPrefab, modContent);
-                Button b = obj.GetComponent<Button>();
-                if (string.IsNullOrEmpty(rotten.assembly.Assembly.FullName))
-                    b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = translation("modmenu.modinfo.brokenmodtitle");
-                else b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = rotten.assembly.Assembly.FullName; 
-                obj.SetActive(true);
-                ColorBlock colorBlock = b.colors;colorBlock.normalColor = new Color(0.5f, 0.5f, 0.5f, 1);
-                colorBlock.highlightedColor = new Color(0.7f, 0.7f, 0.7f, 1); 
-                colorBlock.pressedColor = new Color(0.3f, 0.3f, 0.3f, 1); 
-                colorBlock.selectedColor = new Color(0.6f, 0.6f, 0.6f, 1); 
-                b.colors = colorBlock;
-                
+                string melonName = "";
+                try {melonName = rotten.assembly.Assembly.FullName; } catch {}
+                if (string.IsNullOrEmpty(melonName)) melonName = translation("modmenu.modinfo.brokentitle");
+                ProcessMelon(melonName,"<unknown>","<unknown>",null,
+                    rotten.assembly.Assembly, true, buttonPrefab, 
+                    new List<object>() { rotten.assembly.Assembly.Location, rotten.exception, rotten.errorMessage });
 
-                b.onClick.AddListener((Action)(() =>
-                {
-                    AudioEUtil.PlaySound(MenuSound.Click);
-                    string name = "";
-                    try {name = rotten.assembly.Assembly.FullName; } catch {}
-                    if (string.IsNullOrEmpty(name))
-                        if(isSR2EExpansion) name = translation("modmenu.modinfo.brokenmodtitle");
-                        else name = translation("modmenu.modinfo.brokenexpansiontitle");
-                    
-                    modInfoText.text = translation("modmenu.modinfo.brokenmod", name);
-                    if (isSR2EExpansion)
-                        modInfoText.text = translation("modmenu.modinfo.brokenexpansion", name);
-                    try {modInfoText.text = translation("modmenu.modinfo.path", rotten.assembly.Assembly.Location);} catch {}
-                   
-                    try {modInfoText.text += "\n" + translation("modmenu.modinfo.exception", rotten.exception);} catch {}
-                    try {modInfoText.text += "\n" + translation("modmenu.modinfo.errorMessage", rotten.errorMessage);} catch {}
-
-                }));
             }
-            catch {}
-
+            catch (Exception e) { MelonLogger.Error(e); }
         }
-        
         foreach (MelonBase melonBase in MelonBase.RegisteredMelons)
         {
-            SR2EExpansionAttribute sr2EExpansionAttribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
-            bool isSR2EExpansion = sr2EExpansionAttribute != null;
-            GameObject obj = Instantiate(buttonPrefab, modContent);
-            Button b = obj.GetComponent<Button>();
-            b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = melonBase.Info.Name;
-            obj.SetActive(true);
-            if (isSR2EExpansion)
-            {
-                ColorBlock colorBlock = b.colors;
-                colorBlock.normalColor = new Color(0.149f, 0.7176f, 0.3961f, 1);
-                colorBlock.highlightedColor = new Color(0.1098f, 0.6314f, 0.2157f, 1); 
-                colorBlock.pressedColor = new Color(0.1371f, 0.7248f, 0.3792f, 1f);
-                colorBlock.selectedColor = new Color(0.8706f, 0.5298f, 0.4216f, 1f);
-                b.colors = colorBlock;
-            }
-            bool useIcon = false;
             try
             {
-                var sprite = EmbeddedResourceEUtil.LoadSprite("icon.png", melonBase.MelonAssembly.Assembly);
-                if(sprite==null) throw new Exception();
-                b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
-                b.transform.GetChild(1).gameObject.SetActive(true);
-                useIcon=true;
+                ProcessMelon(melonBase.Info.Name,melonBase.Info.Author,melonBase.Info.Version,melonBase.Info.DownloadLink,
+                    melonBase.MelonAssembly.Assembly,false,buttonPrefab,null);
             }
-            catch { }
-
-            if (!useIcon)
-            {
-                try
-                {
-                    var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", melonBase.MelonAssembly.Assembly);
-                    if(sprite==null) throw new Exception();
-                    b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
-                    b.transform.GetChild(1).gameObject.SetActive(true);
-                    useIcon=true;
-                }
-                catch { }
-            }
-            b.onClick.AddListener((Action)(() =>
-            {
-                AudioEUtil.PlaySound(MenuSound.Click);
-                themeButton.gameObject.SetActive(melonBase is SR2EEntryPoint);
-                modInfoText.text = translation("modmenu.modinfo.mod",melonBase.Info.Name);
-                if(isSR2EExpansion) 
-                    modInfoText.text = translation("modmenu.modinfo.expansion",melonBase.Info.Name);
-                modInfoText.text += "\n" + translation("modmenu.modinfo.author",melonBase.Info.Author);
-                
-                string versionText = "\n" + translation("modmenu.modinfo.version",melonBase.Info.Version);
-                ;
-
-                foreach (var meta in melonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
-                {
-                    if (meta == null) continue;
-                    if(string.IsNullOrWhiteSpace(meta.Key)) continue;
-                    if(string.IsNullOrWhiteSpace(meta.Value)) continue;
-                    if (meta.Key == null) continue;
-                    if (meta.Value == null) continue;
-                    switch (meta.Key)
-                    {
-                        case "display_version":
-                            try {
-                                versionText = "\n" + translation("modmenu.modinfo.version",meta.Value);
-                            } catch{ }
-                            break;
-                        case "co_authors":
-                            try {
-                                modInfoText.text += "\n" + translation("modmenu.modinfo.coauthor",meta.Value);
-                            } catch{ }
-                            break;
-                        case "contributors":
-                            try {
-                                modInfoText.text += "\n" + translation("modmenu.modinfo.contributors",meta.Value);
-                            } catch{ }
-                            break;
-                        case "icon_b64":
-                            if (useIcon) break;
-                            try
-                            {
-                                b.transform.GetChild(1).gameObject.SetActive(true);
-                                b.transform.GetChild(1).GetComponent<Image>().sprite = ConvertEUtil.Base64ToTexture2D(meta.Value).Texture2DToSprite(); 
-                            }
-                            catch (Exception e) { MelonLogger.Error("There was an error loading the icon of the mod "+melonBase.Info.Name); }
-                            break;
-                    }
-                }
-                
-                modInfoText.text += versionText;
-                modInfoText.text += "\n";
-                foreach (var meta in melonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
-                {
-                    if (meta == null) continue;
-                    if(string.IsNullOrWhiteSpace(meta.Key)) continue;
-                    if(string.IsNullOrWhiteSpace(meta.Value)) continue;
-                    switch (meta.Key)
-                    {
-                        case "source_code":
-                            try {
-                                modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode",FormatLink(meta.Value));
-                            } catch{ }
-                            break;
-                        case "nexus":
-                            try {
-                                modInfoText.text += "\n" + translation("modmenu.modinfo.nexus",FormatLink(meta.Value));
-                            } catch{ }
-                            break;
-                    }
-                }
-                if (!string.IsNullOrWhiteSpace(melonBase.Info.DownloadLink))
-                    modInfoText.text += "\n" + translation("modmenu.modinfo.link",FormatLink(melonBase.Info.DownloadLink));
-
-                string universalModName = translation("modmenu.modinfo.unknown");
-                MelonGameAttribute universalMod =
-                    melonBase.MelonAssembly.Assembly.GetCustomAttribute<MelonGameAttribute>();
-                if (universalMod != null) universalModName = universalMod.Universal.ToString();
-                modInfoText.text += "\n" + translation("modmenu.modinfo.isuniversal",universalModName);
-
-
-                AssemblyDescriptionAttribute desc =
-                    melonBase.MelonAssembly.Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
-                if (desc != null)
-                    if (!string.IsNullOrWhiteSpace(desc.Description))
-                        modInfoText.text += "\n" + translation("modmenu.modinfo.description",desc.Description + "\n");
-
-            }));
+            catch (Exception e) { MelonLogger.Error(e); }
         }
+
+        foreach (var group in SR2EEntryPoint.brokenExpansions)
+        {
+            
+            try
+            {
+                ProcessMelon(group.Item1,group.Item2,group.Item3,group.Item4, group.Item5,true,buttonPrefab,
+                    new List<object>() { group.Item5.Location, "Error initializing expansion",  group.Item6 });
+            }
+            catch (Exception e) { MelonLogger.Error(e); }
+        }
+        
         modContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
     }
 

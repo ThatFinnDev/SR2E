@@ -5,6 +5,7 @@ namespace SR2E.Expansion;
 public abstract class SR2EExpansionV3
 {
     protected SR2EExpansionV3() {}
+    // Dont change name, it is called via reflection in order to hide it. 
     public MelonBase MelonBase=>_melonBase;
     private MelonBase _melonBase;
     
@@ -106,6 +107,10 @@ public abstract class SR2EExpansionV3
     /// </summary>
     public virtual void OnSceneWasUnloaded(int buildIndex, string sceneName) { }
     #endregion
+    
+    
+    
+    
     #region SR2E Scene Events
     
     /// <summary>
@@ -190,7 +195,6 @@ public abstract class SR2EExpansionV3
     
     
     
-    
     #region SR2E Context & Directors Events
     /// <summary>
     /// Gets executed once SystemContext loads. In Postfix of the Start method
@@ -234,7 +238,6 @@ public abstract class SR2EExpansionV3
     public virtual void LoadCommands() { }
     
     #endregion
-    
     
     
     

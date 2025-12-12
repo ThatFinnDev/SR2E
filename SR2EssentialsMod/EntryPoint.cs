@@ -336,6 +336,12 @@ public class SR2EEntryPoint : MelonMod
         }
     }
 
+    internal static List<(string, string, string, string, Assembly,string)> brokenExpansions = new ();
+    // Dont change name, it is called via reflection in order to hide it. 
+    private static void AddBrokenExpansion(string name, string author, string version, string downloadlink, Assembly assembly,string errorMessage)
+    {
+        brokenExpansions.Add((name, author, version, downloadlink, assembly,errorMessage));
+    }
     /// <summary>
     /// Loads an expansion, don't call manually, please use the standard .cs file
     /// </summary>
@@ -353,7 +359,7 @@ public class SR2EEntryPoint : MelonMod
             if (!metadata.ContainsKey(SR2EExpansionAttributes.IsExpansion) || metadata[SR2EExpansionAttributes.IsExpansion].ToLower() != "true") shouldUnregister = true;
             else
             {
-                var attributeUsePrism = !metadata.ContainsKey(SR2EExpansionAttributes.IsExpansion) ? false : metadata[SR2EExpansionAttributes.IsExpansion].ToLower() == "true";
+                var attributeUsePrism = !metadata.ContainsKey(SR2EExpansionAttributes.UsePrism) ? false : metadata[SR2EExpansionAttributes.UsePrism].ToLower() == "true";
                 if (attributeUsePrism && !AllowPrism.HasFlag()) shouldUnregister = true;
                 else
                 {

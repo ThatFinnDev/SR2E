@@ -22,24 +22,28 @@ public static class HttpEUtil
         onGoingImages[image]=url;
         MelonCoroutines.Start(_DownloadTexture2DCoroutine(url, (Action<Texture2D, string>)((texture, error) =>
         {
-            if (error == null && texture != null)
-                if(onGoingImages.ContainsKey(image))
-                    if(onGoingImages[image]==url)
+            if(onGoingImages.ContainsKey(image))
+                if (onGoingImages[image] == url)
+                {
+                    onGoingImages.Remove(image);
+                    if (error == null && texture != null)
                         image.sprite = texture.Texture2DToSprite();
-        })));
-        if(onGoingImages[image]==url) onGoingImages.Remove(image);
+                }
+        })));;
     }
     public static void DownloadTexture2DIntoRawImageAsync(string url, RawImage image)
     {
         onGoingRawImages[image]=url;
         MelonCoroutines.Start(_DownloadTexture2DCoroutine(url, (Action<Texture2D, string>)((texture, error) =>
         {
-            if (error == null && texture != null)
-                if(onGoingRawImages.ContainsKey(image))
-                    if(onGoingRawImages[image]==url)
+            if(onGoingRawImages.ContainsKey(image))
+                if (onGoingRawImages[image] == url)
+                {
+                    onGoingRawImages.Remove(image);
+                    if (error == null && texture != null) 
                         image.texture = texture;
+                }
         })));
-        if(onGoingRawImages[image]==url) onGoingRawImages.Remove(image);
     }
     private static IEnumerator _DownloadTexture2DCoroutine(string url, Action<Texture2D, string> onComplete)
     {
