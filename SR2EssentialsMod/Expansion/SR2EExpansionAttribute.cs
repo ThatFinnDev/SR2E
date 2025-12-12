@@ -2,6 +2,7 @@ using System;
 
 namespace SR2E.Expansion;
 
+[Obsolete("This is deprecated. Use: `[assembly: AssemblyMetadata(SR2EExpansionAttributes.IsExpansion,true)] [assembly: AssemblyMetadata(SR2EExpansionAttributes.UsePrism,true)]`",false)]
 [AttributeUsage(AttributeTargets.Assembly)]
 public class SR2EExpansionAttribute : Attribute
 {

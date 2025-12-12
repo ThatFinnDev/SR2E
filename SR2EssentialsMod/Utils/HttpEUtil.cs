@@ -23,8 +23,9 @@ public static class HttpEUtil
         MelonCoroutines.Start(_DownloadTexture2DCoroutine(url, (Action<Texture2D, string>)((texture, error) =>
         {
             if (error == null && texture != null)
-                if(onGoingImages[image]==url)
-                    image.sprite = texture.Texture2DToSprite();
+                if(onGoingImages.ContainsKey(image))
+                    if(onGoingImages[image]==url)
+                        image.sprite = texture.Texture2DToSprite();
         })));
         if(onGoingImages[image]==url) onGoingImages.Remove(image);
     }
@@ -34,8 +35,9 @@ public static class HttpEUtil
         MelonCoroutines.Start(_DownloadTexture2DCoroutine(url, (Action<Texture2D, string>)((texture, error) =>
         {
             if (error == null && texture != null)
-                if(onGoingRawImages[image]==url)
-                    image.texture = texture;
+                if(onGoingRawImages.ContainsKey(image))
+                    if(onGoingRawImages[image]==url)
+                        image.texture = texture;
         })));
         if(onGoingRawImages[image]==url) onGoingRawImages.Remove(image);
     }

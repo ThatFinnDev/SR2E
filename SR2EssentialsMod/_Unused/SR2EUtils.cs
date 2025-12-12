@@ -13,7 +13,7 @@ using Unity.Mathematics;
 
 namespace SR2E
 {
-    [Obsolete("Please use the new EUtil classes!")] 
+    [Obsolete("Please use the new EUtil classes!",true)] 
     public static class SR2EUtils
     {
         [Obsolete("Please use "+nameof(SR2ELanguageManger)+"."+nameof(SR2ELanguageManger.AddTranslation),true)] public static LocalizedString AddTranslation(string localized, string key = "l.SR2ETest", string table = "Actor") => SR2ELanguageManger.AddTranslation(key, localized, table);

@@ -3,6 +3,7 @@ using Il2CppMonomiPark.SlimeRancher;
 
 namespace SR2E.Expansion;
 
+[Obsolete("Please use SR2EExpansionV3.")]
 public abstract class SR2EExpansionV2 : SR2EExpansionV1
 {
     public virtual void OnZoneCoreLoaded() { }
@@ -39,7 +40,7 @@ public abstract class SR2EExpansionV2 : SR2EExpansionV1
     public virtual void AfterPrismLargosCreated() { }
 
     /// <summary>
-    /// Gets executed once SceeneContext loads. In Postfix of the Start method
+    /// Gets executed once SceneContext loads. In Postfix of the Start method
     /// </summary>
     public virtual void OnSceneContext(SceneContext sceneContext) { }
     
