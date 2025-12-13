@@ -65,7 +65,7 @@ public class SR2ERepoMenu : SR2EMenu
         button4.GetComponent<Button>().onClick.AddListener(SelectCategorySound);
         repoPanel = transform.GetObjectRecursively<Transform>("RepoViewPanelRec");
         modPanel = transform.GetObjectRecursively<Transform>("ModViewPanelRec");
-        //toTranslate.Add(button1.transform.GetChild(0).GetComponent<TextMeshProUGUI>(),"thememenu.category.selector");
+        //toTranslate.Add(button1.transform.GetObjectRecursively<TextMeshProUGUI>("ModViewNameTextRec"),"thememenu.category.selector");
         //toTranslate.Add(transform.GetObjectRecursively<TextMeshProUGUI>("TitleTextRec"),"repomenu.title");
     }
 
@@ -81,7 +81,8 @@ public class SR2ERepoMenu : SR2EMenu
             {
                 GameObject obj = Instantiate(buttonPrefab, repoContent);
                 Button b = obj.GetComponent<Button>();
-                b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "BROKEN: "+repo.Key;
+                b.transform.GetObjectRecursively<TextMeshProUGUI>("ModViewNameTextRec").text = "BROKEN: "+repo.Key;
+                b.transform.GetObjectRecursively<Image>("ModViewIconImageRec").sprite = null;
                 obj.SetActive(true);
                 ColorBlock colorBlock = b.colors;colorBlock.normalColor = new Color(0.5f, 0.5f, 0.5f, 1);
                 colorBlock.highlightedColor = new Color(0.7f, 0.7f, 0.7f, 1); 
@@ -100,27 +101,29 @@ public class SR2ERepoMenu : SR2EMenu
             {
                 GameObject obj = Instantiate(buttonPrefab, repoContent);
                 Button b = obj.GetComponent<Button>();
-                b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repo.Value.name;
+                b.transform.GetObjectRecursively<TextMeshProUGUI>("ModViewNameTextRec").text = repo.Value.name;
+                var listIcon = b.transform.GetObjectRecursively<Image>("ModViewIconImageRec");
+                listIcon.sprite = null;
+                if (!string.IsNullOrWhiteSpace(repo.Value.icon_url))
+                    HttpEUtil.DownloadTexture2DIntoImageAsync(repo.Value.icon_url, listIcon,true,256,256);
                 obj.SetActive(true);
                     
                 b.onClick.AddListener((Action)(() =>
                 {
                     repoPanel.gameObject.SetActive(true);
-                        var name = transform.GetObjectRecursively<TextMeshProUGUI>("RepoViewNameTextRec");
-                        var desc = transform.GetObjectRecursively<TextMeshProUGUI>("RepoViewDescriptionTextRec");
-                        
-                        if (!string.IsNullOrWhiteSpace(repo.Value.header_url))
-                        {
-                            var hImage = transform.GetObjectRecursively<Image>("RepoViewHeaderImageRec");
-                            hImage.sprite = null;
-                            HttpEUtil.DownloadTexture2DIntoImageAsync(repo.Value.header_url,hImage);
-                        }
-                        if(string.IsNullOrWhiteSpace(repo.Value.name)) name.gameObject.SetActive(false);
-                        else {name.gameObject.SetActive(true); name.SetText(repo.Value.name);}
-                        
-                        
-                        if(string.IsNullOrWhiteSpace(repo.Value.description)) desc.gameObject.SetActive(false);
-                        else {desc.gameObject.SetActive(true); desc.SetText("Description: "+repo.Value.description);}
+                    var name = repoPanel.GetObjectRecursively<TextMeshProUGUI>("RepoViewNameTextRec");
+                    var desc = repoPanel.GetObjectRecursively<TextMeshProUGUI>("RepoViewDescriptionTextRec");
+                    var hImage = repoPanel.GetObjectRecursively<Image>("RepoViewHeaderImageRec");
+                    hImage.sprite = null;
+                    if (!string.IsNullOrWhiteSpace(repo.Value.header_url))
+                        HttpEUtil.DownloadTexture2DIntoImageAsync(repo.Value.header_url,hImage);
+                    
+                    if(string.IsNullOrWhiteSpace(repo.Value.name)) name.gameObject.SetActive(false);
+                    else {name.gameObject.SetActive(true); name.SetText(repo.Value.name);}
+                    
+                    
+                    if(string.IsNullOrWhiteSpace(repo.Value.description)) desc.gameObject.SetActive(false);
+                    else {desc.gameObject.SetActive(true); desc.SetText("Description: "+repo.Value.description);}
                 }));
             }
             catch {}
@@ -142,7 +145,11 @@ public class SR2ERepoMenu : SR2EMenu
                 {
                     GameObject obj = Instantiate(buttonPrefab, browseContent);
                     Button b = obj.GetComponent<Button>();
-                    b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = mod.name;
+                    b.transform.GetObjectRecursively<TextMeshProUGUI>("ModViewNameTextRec").text = mod.name;
+                    var listIcon = b.transform.GetObjectRecursively<Image>("ModViewIconImageRec");
+                    listIcon.sprite = null;
+                    if (!string.IsNullOrWhiteSpace(mod.icon_url))
+                        HttpEUtil.DownloadTexture2DIntoImageAsync(mod.icon_url, listIcon,true,256,256);
                     obj.SetActive(true);
                     
                     b.onClick.AddListener((Action)(() =>
@@ -157,20 +164,15 @@ public class SR2ERepoMenu : SR2EMenu
                         var team = modPanel.GetObjectRecursively<TextMeshProUGUI>("ModViewTeamTextRec");
                         var copyright = modPanel.GetObjectRecursively<TextMeshProUGUI>("ModViewCopyrightTextRec");
 
-
+                        var hImage = modPanel.GetObjectRecursively<Image>("ModViewHeaderImageRec");
+                        hImage.sprite = null;
                         if (!string.IsNullOrWhiteSpace(mod.header_url))
-                        {
-                            var hImage = modPanel.GetObjectRecursively<Image>("ModViewHeaderImageRec");
-                            hImage.sprite = null;
-                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.header_url, hImage);
-                        }
+                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.header_url, hImage,true);
 
+                        var iImage = modPanel.GetObjectRecursively<Image>("ModViewIconImageRec");
+                        iImage.sprite = null;
                         if (!string.IsNullOrWhiteSpace(mod.icon_url))
-                        {
-                            var iImage = modPanel.GetObjectRecursively<Image>("ModViewIconImageRec");
-                            iImage.sprite = null;
-                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.icon_url, iImage);
-                        }
+                            HttpEUtil.DownloadTexture2DIntoImageAsync(mod.icon_url, iImage,true,256,256);
                         
                         if(string.IsNullOrWhiteSpace(mod.name)) name.gameObject.SetActive(false);
                         else {name.gameObject.SetActive(true); name.SetText(mod.name);}

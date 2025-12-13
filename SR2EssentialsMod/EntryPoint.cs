@@ -350,7 +350,7 @@ public class SR2EEntryPoint : MelonMod
     public static bool LoadExpansion(SR2EExpansionV3 expansionV3)
     {
         StaticOnEarlyInitializeMelon();
-        if (AllowExpansions.HasFlag())
+        if (AllowExpansionsV3.HasFlag())
         {
             bool shouldUnregister = false;
             var attributes = expansionV3.MelonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
@@ -383,7 +383,7 @@ public class SR2EEntryPoint : MelonMod
         foreach (MelonBase melonBase in new List<MelonBase>(MelonBase.RegisteredMelons))
         {
             if (melonBase is SR2EExpansionV2)
-                if (AllowExpansions.HasFlag())
+                if (AllowExpansionsV2.HasFlag())
                 {
                     var attribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
                     if (attribute == null) melonBase.Unregister();
@@ -401,7 +401,7 @@ public class SR2EEntryPoint : MelonMod
                 else melonBase.Unregister();
             
             if (melonBase is SR2EExpansionV1)
-                if (AllowExpansions.HasFlag()) expansionsV1V2.Add(melonBase as SR2EExpansionV1);
+                if (AllowExpansionsV1.HasFlag()) expansionsV1V2.Add(melonBase as SR2EExpansionV1);
                 else melonBase.Unregister();
         }
         PatchGame();

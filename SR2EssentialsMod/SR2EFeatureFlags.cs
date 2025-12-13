@@ -15,7 +15,8 @@ public static class SR2EFeatureFlags
     static List<FeatureFlag> defaultFlags = new List<FeatureFlag>() {
         CommandsLoadCommands,CommandsLoadCheat,CommandsLoadBinding,CommandsLoadWarp,
         CommandsLoadCommon,CommandsLoadMenu,CommandsLoadMiscellaneous,CommandsLoadFun, 
-        AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
+        AllowExpansions,AllowExpansionsV1,AllowExpansionsV2,AllowExpansionsV3,
+        EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
         InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectTranslations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
         EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu,
@@ -301,6 +302,9 @@ public static class SR2EFeatureFlags
         {AddCheatMenuButton,new FFR[]{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
         {AddModMenuButton,new FFR[]{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
         {AllowPrism,new FFR[]{new FFRActivated(InjectTranslations)}},
+        {AllowExpansionsV1,new FFR[]{new FFRActivated(AllowExpansions)}},
+        {AllowExpansionsV2,new FFR[]{new FFRActivated(AllowExpansions)}},
+        {AllowExpansionsV3,new FFR[]{new FFRActivated(AllowExpansions)}},
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {

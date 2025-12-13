@@ -4,6 +4,7 @@
 public class Repo
 {
     public string header_url;
+    public string icon_url;
     public string identifier;
     public string name;
     public string description;

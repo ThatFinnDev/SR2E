@@ -111,7 +111,19 @@ public enum FeatureFlag
     /// </summary>
     AllowExpansions=240, //
     /// <summary>
-    /// Modify the version text in the main menu
+    /// Allow loading and integrating SR2E expansions
+    /// </summary>
+    AllowExpansionsV1=241, //
+    /// <summary>
+    /// Allow loading and integrating SR2E expansions of V1
+    /// </summary>
+    AllowExpansionsV2=242, //
+    /// <summary>
+    /// Allow loading and integrating SR2E expansions of V2
+    /// </summary>
+    AllowExpansionsV3=243, //
+    /// <summary>
+    /// Modify the version text in the main menu of V3
     /// </summary>
     EnableLocalizedVersionPatch=250, //
     /// <summary>
