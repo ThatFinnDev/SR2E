@@ -5,7 +5,7 @@ namespace SR2E.Patches.InGame;
 
 
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGame))]
-public static class LoadPatch
+internal static class LoadPatch
 {   
     static Exception Finalizer(Exception __exception)
     {
@@ -20,7 +20,7 @@ public static class LoadPatch
     }
 }
 [HarmonyPatch(typeof(GameModelPullHelpers), nameof(GameModelPullHelpers.PullGame))]
-public static class SavePatch
+internal static class SavePatch
 {
     [HarmonyFinalizer]
     static Exception Finalizer(Exception __exception)

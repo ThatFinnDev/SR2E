@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace SR2E.Patches.MainMenu;
 
 [HarmonyPatch(typeof(ButtonBehaviorViewHolder), nameof(ButtonBehaviorViewHolder.OnEnable))]
-public class ButtonBehaviorViewHolderPatch
+internal class ButtonBehaviorViewHolderPatch
 {
     internal static void Postfix(ButtonBehaviorViewHolder __instance)
     {

@@ -15,7 +15,8 @@ public static class SR2EFeatureFlags
     static List<FeatureFlag> defaultFlags = new List<FeatureFlag>() {
         CommandsLoadCommands,CommandsLoadCheat,CommandsLoadBinding,CommandsLoadWarp,
         CommandsLoadCommon,CommandsLoadMenu,CommandsLoadMiscellaneous,CommandsLoadFun, 
-        AllowExpansions,EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
+        AllowExpansions,AllowExpansionsV1,AllowExpansionsV2,AllowExpansionsV3,
+        EnableModMenu,EnableConsole,EnableIl2CppDetourExceptionReporting,
         InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectTranslations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
         EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu,
@@ -25,7 +26,7 @@ public static class SR2EFeatureFlags
 
     private static FeatureFlag[] extraDevFlags => new[] {
         DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
-        ExperimentalKeyCodes, EnableRepoMenu
+        ExperimentalKeyCodes, EnableRepoMenu, UseMockRepo
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};
@@ -91,13 +92,13 @@ public static class SR2EFeatureFlags
                     if (req is FFRString ffrString)
                     {
                         string exist = xmlElement.GetAttribute(name);
-                        if (!String.IsNullOrEmpty(exist)) exist += ",";
+                        if (!string.IsNullOrEmpty(exist)) exist += ",";
                         xmlElement.SetAttribute(name, exist+ffrString.String);
                     }
                     else if (req is FFRFlag ffrFlag)
                     {
                         string exist = xmlElement.GetAttribute(name);
-                        if (!String.IsNullOrEmpty(exist)) exist += ",";
+                        if (!string.IsNullOrEmpty(exist)) exist += ",";
                         xmlElement.SetAttribute(name, exist+ffrFlag.Flag);
                     }
                 }
@@ -211,7 +212,7 @@ public static class SR2EFeatureFlags
         try //Delete old flag files
         {
             foreach (var pair in MiscEUtil.BRANCHES)
-                File.Delete(Application.persistentDataPath + "/"+pair.Value+".sr2eflags.xml");
+                try { File.Delete(Application.persistentDataPath + "/"+pair.Value+".sr2eflags.xml"); } catch {}
         } catch { }
         try
         {
@@ -301,6 +302,9 @@ public static class SR2EFeatureFlags
         {AddCheatMenuButton,new FFR[]{new FFRActivated(EnableCheatMenu), new FFRActivated(InjectPauseButtons)}},
         {AddModMenuButton,new FFR[]{new FFRActivated(InjectMainMenuButtons), new FFRActivated(InjectPauseButtons)}},
         {AllowPrism,new FFR[]{new FFRActivated(InjectTranslations)}},
+        {AllowExpansionsV1,new FFR[]{new FFRActivated(AllowExpansions)}},
+        {AllowExpansionsV2,new FFR[]{new FFRActivated(AllowExpansions)}},
+        {AllowExpansionsV3,new FFR[]{new FFRActivated(AllowExpansions)}},
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {
@@ -337,7 +341,7 @@ public static class SR2EFeatureFlags
     }
     
     public static List<FeatureFlag> featureFlags => enabledFlags;
-    [Obsolete("Use SR2EFeatureFlags.featureFlags!")] public static bool[] flags => new bool[999999];
+    [Obsolete("OBSOLETE!: Use SR2EFeatureFlags.featureFlags!")] public static bool[] flags => new bool[999999];
 }
 
 internal class FFR //FeatureFlagRequirement

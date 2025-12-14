@@ -41,7 +41,7 @@ public abstract class SR2EPopUp : MonoBehaviour
     {
         var asset = SystemContextPatch.bundle.LoadAsset(SystemContextPatch.getPopUpPath(identifier,theme));
         var Object = GameObject.Instantiate(asset, SR2EEntryPoint.SR2EStuff.transform);
-        ExecuteInTicks((Action)(() =>
+        ExecuteInTicks((() =>
         {
             for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
             {

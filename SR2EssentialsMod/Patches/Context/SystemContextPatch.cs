@@ -10,6 +10,7 @@ namespace SR2E.Patches.Context;
 [HarmonyPatch(typeof(SystemContext), nameof(SystemContext.Start))]
 internal class SystemContextPatch
 {
+    internal static Dictionary<string, Shader> loadedShaders = new ();
     internal static Il2CppAssetBundle bundle = null;
     
     static List<Object> assets = new List<Object>(); //Prefabs are destroyed
@@ -43,6 +44,13 @@ internal class SystemContextPatch
         foreach (string path in bundle.GetAllAssetNames())
         {
             var asset = bundle.LoadAsset(path);
+            if (asset.TryCast<Shader>()!=null)
+            {
+                var shader = asset.Cast<Shader>();
+                shader.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+                loadedShaders[asset.name] = shader;
+
+            }
             assets.Add(asset);
             if (path.StartsWith(menuPath, StringComparison.OrdinalIgnoreCase))
                 if(path.EndsWith(prefabSuffix, StringComparison.OrdinalIgnoreCase))
@@ -70,8 +78,11 @@ internal class SystemContextPatch
                     
         LoadLanguage(lang);
         
-        foreach (var expansion in SR2EEntryPoint.expansionsAll)
+        foreach (var expansion in SR2EEntryPoint.expansionsV1V2)
             try { expansion.OnSystemContext(__instance); } 
+            catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var expansion in SR2EEntryPoint.expansionsV3)
+            try { expansion.AfterSystemContext(__instance); } 
             catch (Exception e) { MelonLogger.Error(e); }
     }
 }

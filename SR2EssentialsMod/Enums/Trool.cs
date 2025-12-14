@@ -8,5 +8,7 @@ namespace SR2E.Enums;
 [Serializable]
 public enum Trool
 {
-    False, True, Toggle
+    False = 0, 
+    True = 1, 
+    Toggle = 2
 }

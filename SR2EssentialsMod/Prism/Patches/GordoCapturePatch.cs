@@ -7,7 +7,7 @@ namespace SR2E.Prism.Patches;
 
 [PrismPatch()]
 [HarmonyPatch(typeof(SnareModel),nameof(SnareModel.GetGordoIdForBait))]
-public class GordoCapturePatch
+internal class GordoCapturePatch
 {
     public static void Postfix(SnareModel __instance, ref IdentifiableType __result)
     {

@@ -143,7 +143,7 @@ internal static class SaveGameRootUIPatch
         if (!AllowSaveExport.HasFlag()) return;
         ui = __instance;
         if (__instance.name.Contains("SRLE")) return;
-        ExecuteInTicks((Action)(() =>
+        ExecuteInTicks((() =>
         {
             RectTransform actionPanel = ui.gameObject.GetObjectRecursively<RectTransform>("ActionPanel");
             if (actionPanel.GetObjectRecursively<Button>("ExportButton") != null) return;

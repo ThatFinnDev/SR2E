@@ -5,7 +5,7 @@ using SR2E.Repos;
 
 namespace SR2E.Managers;
 
-public static class SR2ERepoManager
+internal static class SR2ERepoManager
 {
     internal static Dictionary<string,Repo> repos = new Dictionary<string, Repo>();
     internal static void Start()
@@ -19,6 +19,7 @@ public static class SR2ERepoManager
     {
         
         List<RepoSave> repoSaves = new List<RepoSave>(){new RepoSave("official","https://api.sr2e.sr2.dev/repo")};
+        if(UseMockRepo.HasFlag()) repoSaves.Add(new RepoSave("official_mock","https://api.sr2e.sr2.dev/mockrepo"));
         repoSaves.AddRange(SR2ESaveManager.data.repos);
         foreach (RepoSave repoSave in repoSaves)
         {

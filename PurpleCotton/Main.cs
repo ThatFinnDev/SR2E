@@ -7,22 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace PurpleCotton;
 
-public static class BuildInfo
-{
-    public const string Name = "Purple Cotton Slime"; // Name of the Expansion. 
-    public const string Description = "Adds a purple Cotton slimes"; // Description for the Expansion.
-    public const string Author = "Thatfinn"; // Author of the Expansion.
-    public const string CoAuthors = null; // CoAuthor(s) of the Expansion.  (optional, set as null if none)
-    public const string Contributors = null; // Contributor(s) of the Expansion.  (optional, set as null if none)
-    public const string Company = null; // Company that made the Expansion.  (optional, set as null if none)
-    public const string Version = "1.0.0"; // Version of the Expansion.
-    public const string DownloadLink = null; // Download Link for the Expansion.  (optional, set as null if none)
-    public const string SourceCode = null; // Source Link for the Expansion.  (optional, set as null if none)
-    public const string Nexus = null; // Nexus Link for the Expansion.  (optional, set as null if none)
-    public const bool UsePrism = true; // Enable if you use Prism
-}
-
-public class SlimeMain : SR2EExpansionV2
+public class SlimeMain : SR2EExpansionV3
 {
     public static Color32 vacColor_purplecotton = new Color32(199, 43, 255, 255);
     public static Color32 topColor_purplecotton = new Color32(168, 52, 235, 255);
@@ -33,7 +18,7 @@ public class SlimeMain : SR2EExpansionV2
     public static PrismGordo purplecottonGordo;
     public static PrismIdentifiablePediaEntry purplecottonPedia;
 
-    public override void OnNormalInitializeMelon()
+    public override void OnInitializeMelon()
     {
         AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv"));
     }

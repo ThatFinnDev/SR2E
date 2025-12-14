@@ -243,9 +243,9 @@ public static class SaveFileEUtil
                 }
             }
         }
-        if(loadMenuMenuOnSuccess) ExecuteInTicks((System.Action)(() => {
+        if(loadMenuMenuOnSuccess) ExecuteInTicks(() => {
             systemContext.SceneLoader.LoadMainMenuSceneGroup();
-        }), 1);
+        }, 1);
         if (failedSome) return SomeSaveIDFailed;
         return NoError;
     }

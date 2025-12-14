@@ -8,14 +8,15 @@ internal static class SaveDirectorPatch
 {
     internal static void Prefix(AutoSaveDirector __instance)
     {
+        foreach (var expansion in SR2EEntryPoint.expansionsV3)
+            try { expansion.BeforeSaveDirectorLoaded(__instance); }
+            catch (Exception e) { MelonLogger.Error(e); }
         foreach (var expansion in SR2EEntryPoint.expansionsV2)
-            try
-            {
-                expansion.BeforeSaveDirectorLoaded(__instance);
-            } catch (Exception e) { MelonLogger.Error(e); }
+            try { expansion.BeforeSaveDirectorLoaded(__instance); } 
+            catch (Exception e) { MelonLogger.Error(e); }
         
         //OBSOLETE
-        /**/foreach (var expansion in SR2EEntryPoint.expansionsAll) 
+        /**/foreach (var expansion in SR2EEntryPoint.expansionsV1V2) 
         /**/    try
         /**/    { 
         /**/        expansion.OnSaveDirectorLoading(__instance);
@@ -40,14 +41,15 @@ internal static class SaveDirectorPatch
             catch (Exception e) { MelonLogger.Error(e); }
         
         
+        foreach (var expansion in SR2EEntryPoint.expansionsV3)
+            try { expansion.AfterSaveDirectorLoaded(__instance);
+            } catch (Exception e) { MelonLogger.Error(e); }
         foreach (var expansion in SR2EEntryPoint.expansionsV2)
-            try
-            {
-                expansion.AfterSaveDirectorLoaded(__instance);
+            try { expansion.AfterSaveDirectorLoaded(__instance);
             } catch (Exception e) { MelonLogger.Error(e); }
         
         //OBSOLETE
-        /**/foreach (var expansion in SR2EEntryPoint.expansionsAll)
+        /**/foreach (var expansion in SR2EEntryPoint.expansionsV1V2)
         /**/    try
         /**/    {
         /**/        expansion.SaveDirectorLoaded(__instance);
