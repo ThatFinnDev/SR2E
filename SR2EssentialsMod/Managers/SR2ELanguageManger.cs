@@ -9,23 +9,24 @@ namespace SR2E.Managers;
 
 public static class SR2ELanguageManger
 {
-    public static Dictionary<string, Dictionary<string, string>> addedTranslations = new Dictionary<string, System.Collections.Generic.Dictionary<string, string>>();
-
-    internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new Dictionary<string, LocalizedString>();
-    internal static Dictionary<string, (string, string, LocalizedString)> sr2eReplaceOnLanguageChange = new Dictionary<string, (string, string, LocalizedString)>();
-    internal static Dictionary<string, List<Dictionary<string, string>>> languages = new Dictionary<string, List<Dictionary<string, string>>>();
+    internal static Dictionary<string, Dictionary<string, string>> addedTranslations = new ();
+    internal static Dictionary<string, LocalizedString> sr2etosrlanguage = new ();
+    internal static Dictionary<string, (string, string, LocalizedString)> sr2eReplaceOnLanguageChange = new ();
     
-    static Dictionary<string, string> loadedLanguage = new Dictionary<string, string>();
+    static Dictionary<string, List<Dictionary<string, string>>> languages = new ();
+    static Dictionary<string, string> loadedLanguage = new ();
     static Dictionary<string, string> defaultLang = null;
+    
+    
     public static string translation(string key)
     {
-        if (String.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
+        if (string.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
         return loadedLanguage[key];
     }
     
     public static string translation(string key, params object[] args)
     {
-        if (String.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
+        if (string.IsNullOrEmpty(key) || !loadedLanguage.ContainsKey(key)) return key;
         int i = 1;
         string translatedRaw = loadedLanguage[key];
         // somebody optimize this, use for loop. i just couldn't care enough right now.

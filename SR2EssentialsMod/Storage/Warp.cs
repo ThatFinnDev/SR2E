@@ -40,7 +40,7 @@ public class Warp
                 sceneContext.Camera.RemoveComponent<NoClipComponent>();
                 NativeEUtil.TryHideMenus();
                 NativeEUtil.TryUnPauseGame();
-                ExecuteInTicks((Action)(() =>
+                ExecuteInTicks((() =>
                 {
                     try
                     {

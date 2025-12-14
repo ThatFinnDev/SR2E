@@ -6,7 +6,7 @@ namespace SR2E.Components;
 [RegisterTypeInIl2Cpp(false)]
 internal class FlingMode : MonoBehaviour
 {
-    public void Update()
+    private void Update()
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {

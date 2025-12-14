@@ -2,6 +2,8 @@ namespace SR2E.Enums.Features;
 
 public enum FeatureFlag
 {
+    //Off limits: 70
+    
     None=0,
     //Dev
     /// <summary>
@@ -32,6 +34,10 @@ public enum FeatureFlag
     /// Enable the enable dev key codes
     /// </summary>
     ExperimentalKeyCodes=80,
+    /// <summary>
+    /// Add test repo
+    /// </summary>
+    UseMockRepo=81,
     
     //Commands+Dev
     /// <summary>
@@ -105,7 +111,19 @@ public enum FeatureFlag
     /// </summary>
     AllowExpansions=240, //
     /// <summary>
-    /// Modify the version text in the main menu
+    /// Allow loading and integrating SR2E expansions
+    /// </summary>
+    AllowExpansionsV1=241, //
+    /// <summary>
+    /// Allow loading and integrating SR2E expansions of V1
+    /// </summary>
+    AllowExpansionsV2=242, //
+    /// <summary>
+    /// Allow loading and integrating SR2E expansions of V2
+    /// </summary>
+    AllowExpansionsV3=243, //
+    /// <summary>
+    /// Modify the version text in the main menu of V3
     /// </summary>
     EnableLocalizedVersionPatch=250, //
     /// <summary>

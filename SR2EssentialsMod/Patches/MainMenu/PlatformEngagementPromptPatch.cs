@@ -21,13 +21,13 @@ internal static class PlatformEngagementPromptPatch
             {
                 if(hasRegistered) return;
                 hasRegistered = true;
-                ExecuteInTicks((System.Action)(() =>
+                ExecuteInTicks(() =>
                 {
                     if (SR2EEntryPoint.mainMenuLoaded)
                     {
                         GetAnyInScene<MainMenuLandingRootUI>().Awake();
                     }
-                }), 1);
+                }, 1);
                 
             }));
     }

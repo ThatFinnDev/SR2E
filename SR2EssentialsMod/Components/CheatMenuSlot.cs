@@ -11,12 +11,12 @@ namespace SR2E.Components;
 [RegisterTypeInIl2Cpp(false)]
 internal class CheatMenuSlot : MonoBehaviour
 {
-    public int slotID;
-    public Button applyButton;
-    public Button selectButton;
-    public Slider amountSlider;
-    public TextMeshProUGUI handleText;
-    public TMP_InputField entryInput;
+    private int slotID;
+    private Button applyButton;
+    private Button selectButton;
+    private Slider amountSlider;
+    private TextMeshProUGUI handleText;
+    private TMP_InputField entryInput;
     private bool didStartRan = false;
     private void Start()
     {
@@ -33,7 +33,7 @@ internal class CheatMenuSlot : MonoBehaviour
         amountSlider.onValueChanged.AddListener((Action<float>)((value) => { handleText.SetText(((int)value).ToString()); }));
     }
 
-    public void Apply()
+    private void Apply()
     {
         if (amountSlider.value == 0) { entryInput.text = ""; slot.Clear(); AudioEUtil.PlaySound(MenuSound.Error); return; }
         
@@ -47,7 +47,7 @@ internal class CheatMenuSlot : MonoBehaviour
         sceneContext.PlayerState.Ammo.MaybeAddToSpecificSlot(type, null, slotID, 
             (int)amountSlider.value);
     }
-    public void Select()
+    private void Select()
     {
         AudioEUtil.PlaySound(MenuSound.Click);
         var dict = new TripleDictionary<string, string, Sprite>();
@@ -78,7 +78,7 @@ internal class CheatMenuSlot : MonoBehaviour
             catch { return null; }
         }
     }
-    public void OnOpen()
+    internal void OnOpen()
     {
         if(!didStartRan) Start();
         

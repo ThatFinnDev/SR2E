@@ -102,10 +102,10 @@ internal class LKeyInputAcquirer : MonoBehaviour
     }
 
 
-    public bool OnKey(LKey key) => pressedKeys.Contains(key);
-    public bool OnKeyDown(LKey key) => downThisFrame.Contains(key);
-    public bool OnKeyUp(LKey key) => upThisFrame.Contains(key);
-    public bool OnKey(LMultiKey multiKey)
+    internal bool OnKey(LKey key) => pressedKeys.Contains(key);
+    internal bool OnKeyDown(LKey key) => downThisFrame.Contains(key);
+    internal bool OnKeyUp(LKey key) => upThisFrame.Contains(key);
+    internal bool OnKey(LMultiKey multiKey)
     {
         foreach (var k in multiKey.keys)
             if (!OnKey(k)) return false;
@@ -113,7 +113,7 @@ internal class LKeyInputAcquirer : MonoBehaviour
         return true;
     }
 
-    public bool OnKeyDown(LMultiKey multiKey)
+    internal bool OnKeyDown(LMultiKey multiKey)
     {
         int i = 0;
         bool wasThisFrame = false;
@@ -126,7 +126,7 @@ internal class LKeyInputAcquirer : MonoBehaviour
         if (!wasThisFrame) return false;
         return i == multiKey.keys.Length;
     }
-    public bool OnKeyUp(LMultiKey multiKey)
+    internal bool OnKeyUp(LMultiKey multiKey)
     {
         int i = 0;
         bool wasThisFrame = false;

@@ -14,6 +14,7 @@ public static class SaveFileEUtil
     private static Exception noFloatException = new Exception("The value has to be a float!");
     private static Exception noDoubleException = new Exception("The value has to be a double!");
     public static SR2ESaveFileV01 ExportSaveV01(Summary summary, bool sendErrorLogs = false) => ExportSaveV01(summary.Name, summary.SaveName,sendErrorLogs);
+    public static SR2EError ExportSaveV01(Summary summary, out SR2ESaveFileV01 data) => ExportSaveV01(summary.Name, summary.SaveName,out data);
 
     public static SR2ESaveFileV01 ExportSaveV01(string gameName, string latestSaveName, bool sendErrorLogs = false)
     {
@@ -23,6 +24,7 @@ public static class SaveFileEUtil
         if(sendErrorLogs) MelonLogger.Msg("Error when exporting save: "+error);
         return null;
     }
+    
     public static SR2EError ExportSaveV01(string gameName, string latestSaveName, out SR2ESaveFileV01 data)
     {
         data = null;
@@ -136,7 +138,6 @@ public static class SaveFileEUtil
             {
                 var stream = new Il2CppSystem.IO.MemoryStream(pair.Value);
                 var gameState = new GameV09();
-
                 gameState.Load(stream);
                 if (stream != null && stream.CanRead) stream.Close();
 
@@ -242,9 +243,9 @@ public static class SaveFileEUtil
                 }
             }
         }
-        if(loadMenuMenuOnSuccess) ExecuteInTicks((System.Action)(() => {
+        if(loadMenuMenuOnSuccess) ExecuteInTicks(() => {
             systemContext.SceneLoader.LoadMainMenuSceneGroup();
-        }), 1);
+        }, 1);
         if (failedSome) return SomeSaveIDFailed;
         return NoError;
     }

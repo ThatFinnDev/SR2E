@@ -10,6 +10,12 @@ public static class SR2EVolumeProfileManager
     internal static Dictionary<string,VolumeProfile> presets = new Dictionary<string, VolumeProfile>();
     static Volume volumeHolder = null;
 
+    /// <summary>
+    /// Save a volume profile into an XML to load it later
+    /// Returns the XML as a byte array to be stored in a file
+    /// </summary>
+    /// <param name="profile">The profile to be saved</param>
+    /// <returns>A byte array of the saved profile as xml</returns>
     public static byte[] SaveProfile(VolumeProfile profile)
     {
         var data = new VolumeProfileData();
@@ -29,6 +35,14 @@ public static class SR2EVolumeProfileManager
         serializer.Serialize(ms, data);
         return ms.ToArray();
     }
+    
+    /// <summary>
+    /// Loads a VolumeProfile into a preset, which can be activated later
+    /// Returns true if successful
+    /// </summary>
+    /// <param name="preset">The preset name</param>
+    /// <param name="bytes">The saved VolumeProfile in XML as a byte array</param>
+    /// <returns></returns>
     public static bool LoadProfile(string preset, byte[] bytes)
     {
         try
@@ -66,7 +80,12 @@ public static class SR2EVolumeProfileManager
         catch (Exception e) { MelonLogger.Error("Error loading preset "+preset+"\n"+e); }
         return false;
     }
-
+    /// <summary>
+    /// Unload a currently loaded preset and disables it if active
+    /// Returns true if successful
+    /// </summary>
+    /// <param name="preset">The preset to be unloaded</param>
+    /// <returns>bool</returns>
     public static bool UnloadProfile(string preset)
     {
         if(!presets.ContainsKey(preset)) return false;
@@ -75,6 +94,13 @@ public static class SR2EVolumeProfileManager
         presets.Remove(preset);
         return true;
     }
+    /// <summary>
+    /// Enables a VolumeProfile
+    /// Returns true if successful
+    /// </summary>
+    /// <param name="profile">The profile to be enabled</param>
+    /// <param name="getVolumeHolderIfNull">Search for the Volume Holder if null</param>
+    /// <returns>bool</returns>
     public static bool EnableProfile(VolumeProfile profile, bool getVolumeHolderIfNull = true)
     {
         if (profile==null) return false;
@@ -94,12 +120,24 @@ public static class SR2EVolumeProfileManager
         volumeHolder.enabled = true;
         return true;
     }
+    /// <summary>
+    /// Enables a preset
+    /// Returns true if successful
+    /// </summary>
+    /// <param name="preset">The preset to be loaded</param>
+    /// <param name="getVolumeHolderIfNull">Search for the Volume Holder if null</param>
+    /// <returns>bool</returns>
     public static bool EnableProfile(string preset, bool getVolumeHolderIfNull = true)
     {
         if(!presets.ContainsKey(preset)) return false;
         return EnableProfile(presets[preset],getVolumeHolderIfNull);
     }
 
+    /// <summary>
+    /// Disables a VolumeProfile
+    /// </summary>
+    /// <param name="getVolumeHolderIfNull">Search for the Volume Holder if null</param>
+    /// <returns>bool</returns>
     public static void DisableProfile(bool getVolumeHolderIfNull = true)
     {
         if (volumeHolder==null)

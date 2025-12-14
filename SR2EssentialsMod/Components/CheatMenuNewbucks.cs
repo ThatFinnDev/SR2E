@@ -7,8 +7,8 @@ namespace SR2E.Components;
 [RegisterTypeInIl2Cpp(false)]
 internal class CheatMenuNewbucks : MonoBehaviour
 {
-    public Slider amountSlider;
-    public TextMeshProUGUI handleText;
+    private Slider amountSlider;
+    private TextMeshProUGUI handleText;
     private bool didStartRan = false;
     private int dontChange = 0;
     private void Start()
@@ -28,7 +28,7 @@ internal class CheatMenuNewbucks : MonoBehaviour
     }
 
     
-    public void OnEnable()
+    private void OnEnable()
     {
         if(!didStartRan) Start();
         try

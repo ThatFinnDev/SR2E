@@ -10,7 +10,7 @@ on:
       Version:
         description: 'CodeVersion'
         required: true
-        default: '3.4.1'
+        default: '3.4.2'
       ReleaseType:
         description: 'Release type'
         required: true
@@ -73,6 +73,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check commit message for !nobuild!
+        shell: bash
+        run: |
+          FULL_MSG="${{ github.event.head_commit.message }}"
+
+          COMMIT_DESC="$(echo "$FULL_MSG" | tail -n +2 | sed -e '/^[[:space:]]*$/d')"
+
+          echo "Commit description:"
+          echo "'$COMMIT_DESC'"
+
+          if [[ "${COMMIT_DESC}" == "!nobuild!"* ]]; then
+            echo "Commit description starts with !nobuild! — exiting workflow."
+            exit 78
+          fi
+
+
       - name: Checkout Repository Code
         uses: actions/checkout@v4
 

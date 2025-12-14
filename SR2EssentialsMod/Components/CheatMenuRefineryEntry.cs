@@ -9,12 +9,12 @@ namespace SR2E.Components;
 [RegisterTypeInIl2Cpp(false)]
 internal class CheatMenuRefineryEntry : MonoBehaviour
 {
-    public IdentifiableType item;
-    public Image icon;
+    internal IdentifiableType item;
+    private Image icon;
     private bool dontChange = false;
-    public Slider amountSlider;
-    public TextMeshProUGUI handleText;
-    public TextMeshProUGUI itemName;
+    private Slider amountSlider;
+    private TextMeshProUGUI handleText;
+    private TextMeshProUGUI itemName;
     private bool didStartRan = false;
     private void Start()
     {
@@ -42,7 +42,7 @@ internal class CheatMenuRefineryEntry : MonoBehaviour
             handleText.SetText(newValue.ToString());
         }));}
 
-    public void OnOpen()
+    internal void OnOpen()
     {
         if(!didStartRan) Start();
 

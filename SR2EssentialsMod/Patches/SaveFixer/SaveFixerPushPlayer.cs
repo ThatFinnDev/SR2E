@@ -48,7 +48,7 @@ internal static class SaveFixerPushPlayer
 
                 try
                 {
-                    foreach(var viewedBluePrintID in player.ViewedItems.ViewedBlueprints.ToList())
+                    foreach(var viewedBluePrintID in player.ViewedItems.ViewedBlueprints.ToNetList())
                         if (needsRemoving(viewedBluePrintID,loadReferenceTranslation))
                             player.ViewedItems.ViewedBlueprints.Remove(viewedBluePrintID);
                 }

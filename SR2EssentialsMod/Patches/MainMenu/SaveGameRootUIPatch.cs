@@ -9,6 +9,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.Framework.Layout;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Model;
 using SR2E.Components;
 using SR2E.Enums;
+using SR2E.Popups;
 using SR2E.Storage;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -46,7 +47,8 @@ internal static class SaveGameRootUIPatch
                 var error = SaveFileEUtil.ImportSaveV01(savefile, ui._selectedModelIndex + 1, true);
                 if (error != SR2EError.NoError)
                 {
-                    MelonLogger.Msg("Error when importing save: "+error);
+                    MelonLogger.Msg(translation("messages.save.import.error",error));
+                    SR2EConfirmationViewer.Open(translation("messages.save.import.error",error),null,null);
                     return;
                 }
                 systemContext.SceneLoader.LoadMainMenuSceneGroup();
@@ -59,8 +61,14 @@ internal static class SaveGameRootUIPatch
             {
                 string filePath = sfn.lpstrFile;
                 if (string.IsNullOrEmpty(filePath)) return;
-                var savefile = SaveFileEUtil.ExportSaveV01(loadGameBehaviorModel.GameDataSummary, true);
-                if (savefile == null) return;
+                
+                var error = SaveFileEUtil.ExportSaveV01(loadGameBehaviorModel.GameDataSummary, out SR2ESaveFileV01 savefile);
+                if (error != SR2EError.NoError)
+                {
+                    MelonLogger.Msg(translation("messages.save.export.error",error));
+                    SR2EConfirmationViewer.Open(translation("messages.save.export.error",error),null,null);
+                    return;
+                }
                 if(filePath.EndsWith(".json")) File.WriteAllText(filePath,savefile.Export());  
                 else File.WriteAllBytes(filePath,savefile.ExportCompressed());  
             }
@@ -135,7 +143,7 @@ internal static class SaveGameRootUIPatch
         if (!AllowSaveExport.HasFlag()) return;
         ui = __instance;
         if (__instance.name.Contains("SRLE")) return;
-        ExecuteInTicks((Action)(() =>
+        ExecuteInTicks((() =>
         {
             RectTransform actionPanel = ui.gameObject.GetObjectRecursively<RectTransform>("ActionPanel");
             if (actionPanel.GetObjectRecursively<Button>("ExportButton") != null) return;

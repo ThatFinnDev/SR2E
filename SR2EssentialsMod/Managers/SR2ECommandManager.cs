@@ -81,14 +81,21 @@ public static class SR2ECommandManager
                 }
                 catch (Exception e) { MelonLogger.Error(e); }
         }
-        foreach (var expansion in SR2EEntryPoint.expansionsAll)
+        foreach (var expansion in SR2EEntryPoint.expansionsV1V2)
+            try { expansion.LoadCommands(); }
+            catch (Exception e) { MelonLogger.Error(e); }
+        foreach (var expansion in SR2EEntryPoint.expansionsV3)
             try { expansion.LoadCommands(); }
             catch (Exception e) { MelonLogger.Error(e); }
                 
     }
     /// <summary>
     /// Registers a command to be used in the console
+    /// Returns true if the registration was successful
+    /// BE CAREFUL: Every command automatically gets registered if it doesn't have the CommandType.DontLoad type!
     /// </summary>
+    /// <param name="cmd">The SR2ECommand which should be registered</param>
+    /// <returns>bool</returns>
     public static bool RegisterCommand(SR2ECommand cmd)
     {
         if (commands.ContainsKey(cmd.ID.ToLowerInvariant()))
@@ -109,8 +116,12 @@ public static class SR2ECommandManager
     }
 
     /// <summary>
-    /// Registers multiple commands to be used in the console
+    /// Registers multiple commands
+    /// Returns true if the registration was successful for every command
+    /// BE CAREFUL: Every command automatically gets registered if it doesn't have the CommandType.DontLoad type!
     /// </summary>
+    /// <param name="cmds">The SR2ECommands which should be registered</param>
+    /// <returns>bool</returns>
     public static bool RegisterCommands(params SR2ECommand[] cmds)
     {
         bool successful = true;
@@ -123,8 +134,11 @@ public static class SR2ECommandManager
         return successful;
     }
     /// <summary>
-    /// Unegisters multiple commands
+    /// Unregisters multiple commands
+    /// Returns true if the unregistration was successful for every command
     /// </summary>
+    /// <param name="cmds">The SR2ECommands which should be unregistered</param>
+    /// <returns>bool</returns>
     public static bool UnRegisterCommands(params SR2ECommand[] cmds)
     {
         bool successful = true;
@@ -137,16 +151,22 @@ public static class SR2ECommandManager
         return successful;
     }
     /// <summary>
-    /// Unregisters a command
+    /// Unregisters a command to be used in the console
+    /// Returns true if the unregistration was successful
     /// </summary>
+    /// <param name="cmd">The SR2ECommand which should be unregistered</param>
+    /// <returns>bool</returns>
     public static bool UnRegisterCommand(SR2ECommand cmd)
     {
         return UnRegisterCommand(cmd.ID);
     }
 
     /// <summary>
-    /// Unregisters a command
+    /// Unregisters a command to be used in the console
+    /// Returns true if the unregistration was successful
     /// </summary>
+    /// <param name="cmd">The SR2ECommand's key which should be unregistered</param>
+    /// <returns>bool</returns>
     public static bool UnRegisterCommand(string cmd)
     {
         if (commands.ContainsKey(cmd.ToLowerInvariant()))
@@ -160,6 +180,11 @@ public static class SR2ECommandManager
 
     public static Dictionary<string, List<Action<string[]>>> commandAddons = new Dictionary<string, List<Action<string[]>>>();
 
+    /// <summary>
+    /// Registers a command addon
+    /// </summary>
+    /// <param name="command">The command's key</param>
+    /// <param name="action">The action which should be executed</param>
     public static void RegisterCommandAddon(string command, Action<string[]> action)
     {
         if (commandAddons.TryGetValue(command, out List<Action<string[]>> list))
@@ -168,6 +193,11 @@ public static class SR2ECommandManager
             commandAddons.Add(command, new List<Action<string[]>> { action });
     }
     
+    /// <summary>
+    /// Executes a string as a command
+    /// </summary>
+    /// <param name="input">The string which should be executed</param>
+    /// <param name="silent">Whether it should write messages to the console</param>
     public static void ExecuteByString(string input, bool silent = false)
     {
         ExecuteByString(input, silent, false);

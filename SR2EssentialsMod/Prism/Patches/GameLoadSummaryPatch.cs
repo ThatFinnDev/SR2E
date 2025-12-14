@@ -6,7 +6,7 @@ namespace SR2E.Prism.Patches;
 
 [PrismPatch()]
 [HarmonyPatch(typeof(GameV09), nameof(GameV09.LoadSummaryData))]
-public static class GameLoadSummaryPatch
+internal static class GameLoadSummaryPatch
 {
     static void Prefix()
     {

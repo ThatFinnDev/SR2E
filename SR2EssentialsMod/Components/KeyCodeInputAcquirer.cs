@@ -1,7 +1,7 @@
 namespace SR2E.Components;
 
 [RegisterTypeInIl2Cpp(false)]
-public class KeyCodeInputAcquirer : MonoBehaviour
+internal class KeyCodeInputAcquirer : MonoBehaviour
 {
     internal static KeyCodeInputAcquirer Instance;
     private HashSet<KeyCode> pressedKeys = new HashSet<KeyCode>();
@@ -45,9 +45,9 @@ public class KeyCodeInputAcquirer : MonoBehaviour
         upThisFrame.Clear();
     }
 
-    public bool OnKey(KeyCode key) => pressedKeys.Contains(key);
+    internal bool OnKey(KeyCode key) => pressedKeys.Contains(key);
 
-    public bool OnKeyDown(KeyCode key) => downThisFrame.Contains(key);
+    internal bool OnKeyDown(KeyCode key) => downThisFrame.Contains(key);
 
-    public bool OnKeyUp(KeyCode key) => upThisFrame.Contains(key);
+    internal bool OnKeyUp(KeyCode key) => upThisFrame.Contains(key);
 }

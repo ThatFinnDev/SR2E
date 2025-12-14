@@ -12,6 +12,12 @@ public static class SR2EWarpManager
     internal static Dictionary<string, StaticTeleporterNode> teleporters = new Dictionary<string, StaticTeleporterNode>();
     internal static Warp warpTo = null;
 
+    /// <summary>
+    /// Saves warp to be used in the warp command into a name
+    /// </summary>
+    /// <param name="warpName">The name for the warp</param>
+    /// <param name="warp">The Warp</param>
+    /// <returns>SR2EError: NoError or AlreadyExists</returns>
     public static SR2EError AddWarp(string warpName, Warp warp)
     {
         if (SR2ESaveManager.data.warps.ContainsKey(warpName)) return SR2EError.AlreadyExists;
@@ -20,12 +26,22 @@ public static class SR2EWarpManager
         return SR2EError.NoError;
     }
 
+    /// <summary>
+    /// Gets a saved warp from a name
+    /// </summary>
+    /// <param name="warpName"></param>
+    /// <returns>The saved warp</returns>
     public static Warp GetWarp(string warpName)
     {
         if (!SR2ESaveManager.data.warps.ContainsKey(warpName)) return null;
         return SR2ESaveManager.data.warps[warpName];
     }
 
+    /// <summary>
+    /// Removes a saved warp by its name
+    /// </summary>
+    /// <param name="warpName">The warp to be removed</param>
+    /// <returns>SR2EError: NoError, DoesntExist</returns>
     public static SR2EError RemoveWarp(string warpName)
     {
         if (!SR2ESaveManager.data.warps.ContainsKey(warpName)) return SR2EError.DoesntExist;
@@ -33,6 +49,7 @@ public static class SR2EWarpManager
         SR2ESaveManager.Save();
         return SR2EError.NoError;
     }
+    
     internal static void OnSceneUnloaded()
     {
         if(warpTo==null) return;
