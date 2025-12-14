@@ -158,7 +158,7 @@ public class SR2EModMenu : SR2EMenu
         b.onClick.AddListener((Action)(() =>
         {
             AudioEUtil.PlaySound(MenuSound.Click);
-            themeButton.gameObject.SetActive(assembly is SR2EEntryPoint);
+            themeButton.gameObject.SetActive(melonName=="SR2E");
             if (isRotten)
             {
                 modInfoText.text = translation("modmenu.modinfo.brokenmod", melonName);

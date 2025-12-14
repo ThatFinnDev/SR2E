@@ -212,7 +212,7 @@ public static class SR2EFeatureFlags
         try //Delete old flag files
         {
             foreach (var pair in MiscEUtil.BRANCHES)
-                File.Delete(Application.persistentDataPath + "/"+pair.Value+".sr2eflags.xml");
+                try { File.Delete(Application.persistentDataPath + "/"+pair.Value+".sr2eflags.xml"); } catch {}
         } catch { }
         try
         {

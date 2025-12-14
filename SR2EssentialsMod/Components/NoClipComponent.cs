@@ -22,10 +22,10 @@ internal class NoClipComponent : MonoBehaviour
         }
     }
     bool isSprint => LKey.LeftShift.OnKey();
-    internal static Transform player;
-    internal static SRCharacterController playerController;
-    internal static KinematicCharacterMotor playerMotor;
-    internal static KCCSettings playerSettings;
+    internal static Transform player => sceneContext.player.transform;
+    internal static KCCSettings playerSettings => KinematicCharacterSystem.Settings;
+    internal static SRCharacterController playerController => player.GetComponent<SRCharacterController>();
+    internal static KinematicCharacterMotor playerMotor => player.GetComponent<KinematicCharacterMotor>();
 
     private void OnDestroy()
     {

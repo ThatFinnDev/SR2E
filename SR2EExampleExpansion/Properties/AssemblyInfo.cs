@@ -55,7 +55,7 @@ internal static class BuildInfo
 internal class MLEntrypoint : MelonMod
 {
     private SR2EExpansionV3 expansion;
-    bool isSR2EInstalled = false;
+    bool isCorrectSR2EInstalled = false;
     private string installedSR2Ver = "";
     private System.Collections.IEnumerator CheckForMainMenu(int message)
     {
@@ -154,12 +154,13 @@ internal class MLEntrypoint : MelonMod
     {
         foreach (MelonBase melonBase in MelonBase.RegisteredMelons) if (melonBase.Info.Name == "SR2E")
         {
-            isSR2EInstalled = true;
+            isCorrectSR2EInstalled = true;
             installedSR2Ver = melonBase.Info.Version;
         }
-        if (isSR2EInstalled)
+        if (isCorrectSR2EInstalled)
         {
             if (IsSameOrNewer(BuildInfo.MinSR2EVersion, installedSR2Ver)) { OnSR2EInstalled(); return; }
+            isCorrectSR2EInstalled = false;
             MelonLogger.Msg("SR2E is too old, aborting!");
             MelonCoroutines.Start(CheckForMainMenu(1));
         }
@@ -205,6 +206,6 @@ internal class MLEntrypoint : MelonMod
         SR2EEntryPoint.LoadExpansion(expansion);
     }
     void SR2EDeinit() => expansion.OnDeinitializeMelon();
-    public override void OnDeinitializeMelon() { if(isSR2EInstalled) SR2EDeinit(); }
+    public override void OnDeinitializeMelon() { if(isCorrectSR2EInstalled) SR2EDeinit(); }
 
 }

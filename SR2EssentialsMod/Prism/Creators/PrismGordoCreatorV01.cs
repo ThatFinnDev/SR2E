@@ -66,7 +66,13 @@ public class PrismGordoCreatorV01
             gordo.GetComponent<GordoEat>().TargetCount = customMaxEatCount;
         
         gordo.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        
         var faceComp = gordo.GetComponent<GordoFaceComponents>();
+        
+        var baseAppearance = baseSlime.GetSlimeAppearance();
+        faceComp.BlinkEyes = baseAppearance.Face.GetExpressionFace(SlimeFace.SlimeExpression.BLINK).Eyes;
+        faceComp.StrainEyes = baseAppearance.Face.GetExpressionFace(SlimeFace.SlimeExpression.SCARED).Eyes;
+        
         if (customEyesBlink != null) faceComp.BlinkEyes = customEyesBlink;
         if (customEyesNormal != null) faceComp.StrainEyes = customEyesNormal;
         if (customMouthHappy != null) faceComp.HappyMouth = customMouthHappy;

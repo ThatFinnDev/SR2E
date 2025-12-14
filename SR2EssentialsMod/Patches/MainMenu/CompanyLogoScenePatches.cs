@@ -23,6 +23,7 @@ internal static class CompanyLogoScenePatches
         internal static void Postfix(CompanyLogoScene __instance)
         {
             StartLoadingIndicatorPatch.alreadyStarted = false;
+            __instance.StartLoadingIndicator();
         }
     }
 }

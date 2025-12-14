@@ -31,6 +31,7 @@ using SR2E.Patches.Context;
 using SR2E.Prism;
 using SR2E.Storage;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace SR2E;
 
@@ -83,6 +84,7 @@ public class SR2EEntryPoint : MelonMod
     internal static TMP_FontAsset normalFont;
     internal static TMP_FontAsset regularFont;
     internal static TMP_FontAsset boldFont;
+    internal static TMP_FontAsset notoSansFont;
     internal static string updateBranch = MiscEUtil.BRANCHES[Branch.Release];
     internal static bool menusFinished = false;
     internal static bool mainMenuLoaded = false;
@@ -102,6 +104,7 @@ public class SR2EEntryPoint : MelonMod
     internal static string CustomVolumeProfilesPath => Path.Combine(DataPath, "customVolumeProfiles");
     static bool IsLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
+    private static bool earlyRegistered = false;
     private static bool _usePrism = false;
     internal static bool usePrism => _usePrism;
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
@@ -286,7 +289,6 @@ public class SR2EEntryPoint : MelonMod
         }
     }
 
-    private static bool earlyRegistered = false;
     public override void OnEarlyInitializeMelon()
     {
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
@@ -364,18 +366,24 @@ public class SR2EEntryPoint : MelonMod
                 else
                 {
                     if (attributeUsePrism) _usePrism = true;
-                    expansionsV3.Add(expansionV3);
                 }
             }
-
-            expansionsV3.Add(expansionV3);
-            if (!shouldUnregister) return true;
+            
+            if (!shouldUnregister)
+            {
+                expansionsV3.Add(expansionV3);
+                if(hasInitialized) expansionV3.OnInitializeMelon();
+                return true;
+            }
         }
         expansionV3.MelonBase.Unregister();
         return false;
     }
+
+    private static bool hasInitialized = false;
     public override void OnInitializeMelon()
     {
+        hasInitialized = true;
         prefs = MelonPreferences.CreateCategory("SR2E", "SR2E");
         string path = MelonAssembly.Assembly.Location + ".old";
         if (File.Exists(path)) File.Delete(path);
@@ -410,6 +418,7 @@ public class SR2EEntryPoint : MelonMod
         try { AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv")); } catch (Exception e) { MelonLogger.Error(e); }
 
         foreach (var expansion in expansionsV1V2) try { expansion.OnNormalInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); }
+        
         foreach (var expansion in expansionsV3) try { expansion.OnInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); }
     }
     public override void OnApplicationQuit()
@@ -419,27 +428,26 @@ public class SR2EEntryPoint : MelonMod
         
     }
 
-    private static TMP_FontAsset fallBackFont;
     internal static void CheckFallBackFont()
     {
         try
         {
-            if (fallBackFont == null)
+            if (notoSansFont == null)
             {
                 var settings = Get<TMP_Settings>("TMP Settings");
                 if (settings == null) return;
                 string tempPath = Path.Combine(TmpDataPath, "tmpFallbackFont.ttf");
                 File.WriteAllBytes(tempPath, EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.ttf"));
                 Font tempFont = new Font(tempPath);
-                fallBackFont = TMP_FontAsset.CreateFontAsset(tempFont);
+                notoSansFont = TMP_FontAsset.CreateFontAsset(tempFont);
                 //settings.m_fallbackFontAssets.Add(fallBackFont);, creates issues for some reason :(
                 settings.m_warningsDisabled = true;
             }
             foreach (var fontAsset in GetAll<TMP_FontAsset>())
             {
-                if (fontAsset == fallBackFont) continue;
-                if(!fontAsset.fallbackFontAssetTable.Contains(fallBackFont))
-                    fontAsset.fallbackFontAssetTable.Add(fallBackFont);
+                if (fontAsset == notoSansFont) continue;
+                if(!fontAsset.fallbackFontAssetTable.Contains(notoSansFont))
+                    fontAsset.fallbackFontAssetTable.Add(notoSansFont);
             }
         }
         catch { }
@@ -448,20 +456,13 @@ public class SR2EEntryPoint : MelonMod
     {
         CheckFallBackFont();
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: " + sceneName);
+
+        if(sceneName=="StandaloneStart"||sceneName=="CompanyLogo"||sceneName=="LoadScene")
+            try {
+                if(MenuEUtil.isAnyMenuOpen) MenuEUtil.CloseOpenMenu(); 
+                if (MenuEUtil.isAnyPopUpOpen); MenuEUtil.CloseOpenPopUps();
+            } catch { }
         
-        switch (sceneName)
-        {
-            case "StandaloneStart":
-            case "CompanyLogo":
-            case "LoadScene":
-                try
-                {
-                    if(MenuEUtil.isAnyMenuOpen) MenuEUtil.CloseOpenMenu(); 
-                    if (MenuEUtil.isAnyPopUpOpen); MenuEUtil.CloseOpenPopUps();
-                }
-                catch { }
-                break;
-        }
         switch (sceneName)
         {
             case "MainMenuUI":
@@ -501,19 +502,6 @@ public class SR2EEntryPoint : MelonMod
                     MelonLogger.Error(e);
                     MelonLogger.Error("There was a problem applying styles to the save slider!");
                 }*/
-                break;
-            case "StandaloneEngagementPrompt":
-                var cls = Object.FindObjectOfType<CompanyLogoScene>();
-                cls.StartLoadingIndicator();
-                break;
-            case "PlayerCore":
-                NoClipComponent.playerSettings = Get<KCCSettings>("");
-                NoClipComponent.player = sceneContext.player.transform;
-                NoClipComponent.playerController = NoClipComponent.player.GetComponent<SRCharacterController>();
-                NoClipComponent.playerMotor = NoClipComponent.player.GetComponent<KinematicCharacterMotor>();
-                break;
-            case "UICore":
-                CheckForTime();
                 break;
             case "ZoneCore": foreach (var expansion in expansionsV2) try { expansion.OnZoneCoreLoaded(); } catch (Exception e) { MelonLogger.Error(e); } break;
         }
@@ -556,7 +544,6 @@ public class SR2EEntryPoint : MelonMod
     internal static void SendFontError(string name)
     {
         MelonLogger.Error($"The font '{name}' couldn't be loaded!");
-        MelonLogger.Error("This happens on some platforms and I (the dev) haven't found a fix yet!");
     }
     internal static void SetupFonts()
     {
@@ -576,6 +563,7 @@ public class SR2EEntryPoint : MelonMod
         if (DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: " + sceneName);
         if (usePrism)  try { PrismShortcuts.OnSceneWasInitialized(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
         if (sceneName == "MainMenuUI") mainMenuLoaded = true;
+        
         switch (sceneName)
         {
             case "StandaloneEngagementPrompt": foreach (var expansion in expansionsV1V2) try { expansion.OnStandaloneEngagementPromptInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
@@ -585,7 +573,6 @@ public class SR2EEntryPoint : MelonMod
             case "LoadScene": foreach (var expansion in expansionsV1V2) try { expansion.OnLoadSceneInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
             case "ZoneCore": foreach (var expansion in expansionsV1V2) try { expansion.OnZoneCoreInitialized(); }catch (Exception e) { MelonLogger.Error(e); } break;
         }
-
         switch (sceneName)
         {
             case "StandaloneEngagementPrompt": foreach (var expansion in expansionsV3) try { expansion.OnStandaloneEngagementPromptInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
@@ -595,6 +582,7 @@ public class SR2EEntryPoint : MelonMod
             case "LoadScene": foreach (var expansion in expansionsV3) try { expansion.OnLoadSceneInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
             case "ZoneCore": foreach (var expansion in expansionsV3) try { expansion.OnZoneCoreInitialized(); }catch (Exception e) { MelonLogger.Error(e); } break;
         }
+        
         foreach (var expansion in expansionsV3) try { expansion.OnSceneWasInitialized(buildIndex, sceneName); } catch (Exception e) { MelonLogger.Error(e); }
         SR2ECommandManager.OnSceneWasInitialized(buildIndex, sceneName);
     }
@@ -603,8 +591,8 @@ public class SR2EEntryPoint : MelonMod
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnUnloaded Scene: " + sceneName);
         if (sceneName == "MainMenuUI") mainMenuLoaded = false;
-        try { SR2EWarpManager.OnSceneUnloaded(); }
-        catch (Exception e) { MelonLogger.Error(e); }
+        try { SR2EWarpManager.OnSceneUnloaded(); } catch (Exception e) { MelonLogger.Error(e); }
+        
         switch (sceneName)
         {               
             case "StandaloneEngagementPrompt": foreach (var expansion in expansionsV1V2) try { expansion.OnStandaloneEngagementPromptUnload(); } catch (Exception e) { MelonLogger.Error(e); } break;
@@ -687,11 +675,10 @@ public class SR2EEntryPoint : MelonMod
                     obj.tag = "";
                     obj.SetActive(false);
                     GameObject.DontDestroyOnLoad(obj);
-                    foreach (Type type in MelonAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract))
+                    foreach (var type in MelonAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract))
                     {
                         try
                         {
-
                             var identifier = type.GetMenuIdentifierByType();
                             if (!string.IsNullOrWhiteSpace(identifier.saveKey))
                             {
