@@ -10,9 +10,9 @@ namespace SR2E.Components;
 [RegisterTypeInIl2Cpp(false)]
 internal class NoClipComponent : MonoBehaviour
 {
-    public float baseSpeed = 15f;
-    public static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
-    public float speed
+    private float baseSpeed = 15f;
+    private static float speedAdjust => SR2EEntryPoint.noclipAdjustSpeed;
+    private float speed
     {
         get
         {
@@ -22,12 +22,12 @@ internal class NoClipComponent : MonoBehaviour
         }
     }
     bool isSprint => LKey.LeftShift.OnKey();
-    public static Transform player;
-    public static SRCharacterController playerController;
-    public static KinematicCharacterMotor playerMotor;
-    public static KCCSettings playerSettings;
+    internal static Transform player;
+    internal static SRCharacterController playerController;
+    internal static KinematicCharacterMotor playerMotor;
+    internal static KCCSettings playerSettings;
 
-    public void OnDestroy()
+    private void OnDestroy()
     {
         try
         {
@@ -44,7 +44,7 @@ internal class NoClipComponent : MonoBehaviour
         }
     }
 
-    public void Awake()
+    private void Awake()
     {
         playerMotor.enabled = false;
         playerSettings.AutoSimulation = false;
@@ -52,7 +52,7 @@ internal class NoClipComponent : MonoBehaviour
         playerMotor.Capsule.enabled = false;
     }
 
-    public void Update()
+    private void Update()
     {
         if(NoClipCommand.horizontal!=null)
         {

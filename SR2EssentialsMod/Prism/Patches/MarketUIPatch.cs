@@ -7,7 +7,7 @@ namespace SR2E.Prism.Patches;
 
 [PrismPatch()]
 [HarmonyPatch(typeof(MarketUI))]
-public static class MarketUIPatch
+internal static class MarketUIPatch
 {
     [HarmonyPatch(nameof(MarketUI.Start))]
     [HarmonyPrefix]

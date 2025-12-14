@@ -3,7 +3,7 @@ using System;
 namespace SR2E.Expansion;
  
 [AttributeUsage(AttributeTargets.Assembly)]
-[Obsolete("This is deprecated. Use: `[assembly: AssemblyMetadata(\"display_version\",\"2.0.0-beta.23\")]`",true)]
+[Obsolete("OBSOLETE!: This is deprecated. Use: `[assembly: AssemblyMetadata(\"display_version\",\"2.0.0-beta.23\")]`",true)]
 public class SR2EDisplayVersion : Attribute
 {
     public string Version = "";

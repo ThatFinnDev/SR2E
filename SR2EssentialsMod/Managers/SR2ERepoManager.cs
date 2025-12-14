@@ -5,7 +5,7 @@ using SR2E.Repos;
 
 namespace SR2E.Managers;
 
-public static class SR2ERepoManager
+internal static class SR2ERepoManager
 {
     internal static Dictionary<string,Repo> repos = new Dictionary<string, Repo>();
     internal static void Start()

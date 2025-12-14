@@ -9,17 +9,26 @@ using UnityEngine.UI;
 
 namespace SR2E.Components;
 
+/// <summary>
+/// "ClickableTextLink" is a MonoBehaviour you can add every TextMeshProUGUI
+/// It makes text, that is marked as a link, clickable
+/// By default https:// and http:// is supported
+/// If you want custom actions, use "action:somekey" where somekey is a string of your choice
+/// Add the an action to the dictionary "actions"
+/// </summary>
 [RegisterTypeInIl2Cpp(false)]
-
 public class ClickableTextLink : MonoBehaviour
 {
     private TextMeshProUGUI text;
     private Canvas canvas;
+    /// <summary>
+    /// The Dictionary to specify all custom actions
+    /// </summary>
     public Dictionary<string, System.Action> actions = new Dictionary<string, Action>();
     void Start()
     {
         text = GetComponent<TextMeshProUGUI>();
-        // Safely find any canvas in the hierarchy
+        if(text==null) Destroy(this);
         canvas = Find<Canvas>(transform);
         if(canvas==null) Destroy(this);
     }

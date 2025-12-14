@@ -475,11 +475,11 @@ public class SR2EEntryPoint : MelonMod
                 try
                 {
                     var b = Get<ButtonBehaviorViewHolder>("SaveGameSlotButton");
-                    ExecuteInTicks((System.Action)(() =>
+                    ExecuteInTicks(() =>
                     {
                         var l = b.gameObject.GetObjectRecursively<LayoutElement>("Icon");
                         l.minWidth = l.preferredWidth;
-                    }),3);
+                    },3);
                 }
                 catch (Exception e)
                 {
@@ -551,7 +551,7 @@ public class SR2EEntryPoint : MelonMod
             if(Time.timeScale!=0&&Time.timeScale != NativeEUtil.CustomTimeScale) 
                 Time.timeScale = NativeEUtil.CustomTimeScale; 
         } catch {}
-        ExecuteInSeconds((Action)(() => { CheckForTime();}), 1);
+        ExecuteInSeconds(() => { CheckForTime();}, 1);
     }
     internal static void SendFontError(string name)
     {

@@ -341,7 +341,7 @@ public static class SR2EFeatureFlags
     }
     
     public static List<FeatureFlag> featureFlags => enabledFlags;
-    [Obsolete("Use SR2EFeatureFlags.featureFlags!")] public static bool[] flags => new bool[999999];
+    [Obsolete("OBSOLETE!: Use SR2EFeatureFlags.featureFlags!")] public static bool[] flags => new bool[999999];
 }
 
 internal class FFR //FeatureFlagRequirement

@@ -8,7 +8,7 @@ namespace SR2E.Prism.Patches;
 
 [PrismPatch()]
 [HarmonyPatch(typeof(PediaEntry),nameof(PediaEntry.Highlights))]
-public class PediaHightlightPatch
+internal class PediaHightlightPatch
 {
     public static void Postfix(PediaEntry __instance, ref Il2CppReferenceArray<PediaEntryHighlight> __result)
     {

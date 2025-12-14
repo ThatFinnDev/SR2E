@@ -3,9 +3,9 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Il2CppTMPro;
 using SR2E.Expansion;
-using SR2EExampleExpansion;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+// PLEASE COPY THIS FILE INTO YOUR PROJECT AS IS!
 
 // Leave this as is
 [assembly: AssemblyTitle(BuildInfo.Name)] [assembly: AssemblyDescription(BuildInfo.Description)] [assembly: AssemblyCompany(BuildInfo.Company)] [assembly: AssemblyProduct(BuildInfo.Name)] [assembly: AssemblyCopyright($"Created by {BuildInfo.Author}")] [assembly: AssemblyTrademark(BuildInfo.Company)]
@@ -20,7 +20,7 @@ using UnityEngine.UI;
 [assembly: MelonColor(255, 35, 255, 35)]
 
 //Set your main class inside the typeof argument, it has to be an SR2EExpansion
-internal static class GetEntrypointType { public static System.Type type => typeof(ExpansionEntryPoint); }
+internal static class GetEntrypointType { public static System.Type type => typeof(SR2EExampleExpansion.ExpansionEntryPoint); }
 
 // BuildInfo
 internal static class BuildInfo

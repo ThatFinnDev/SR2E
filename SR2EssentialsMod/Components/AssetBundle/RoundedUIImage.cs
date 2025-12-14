@@ -4,6 +4,11 @@ using UnityEngine.UI;
 
 namespace SR2E.Components.AssetBundle
 {
+	/// <summary>
+	/// "RoundedUIImage" is a MonoBehaviour you can add every UI element
+	/// It adds rounded corners to the UI element
+	/// Use cornerRadius to adjust the corner size
+	/// </summary>
 	[RegisterTypeInIl2Cpp(false)]
 	public class RoundedUIImage : MonoBehaviour
 	{

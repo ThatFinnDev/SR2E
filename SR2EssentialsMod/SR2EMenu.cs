@@ -159,7 +159,7 @@ public abstract class SR2EMenu : MonoBehaviour
 
         _closing = false;
         if (_menuToOpenOnClose != null)
-            ExecuteInTicks((Action)(() =>
+            ExecuteInTicks((() =>
             {
                 _menuToOpenOnClose.TryCast<SR2EMenu>().Open();
                 _menuToOpenOnClose = null;
@@ -207,7 +207,7 @@ public abstract class SR2EMenu : MonoBehaviour
         MenuEUtil.menuBlock.SetActive(true);
         gameObject.SetActive(true);
         changedOpenState = true;
-        ExecuteInTicks((Action)(() => { gameObject.SetActive(true);}), 1);
+        ExecuteInTicks((() => { gameObject.SetActive(true);}), 1);
         MenuEUtil.DoMenuActions(SR2EEntryPoint.menus[this]["openActions"] as List<MenuActions>);
         try { OnOpen(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in toTranslate) pair.Key.SetText(translation(pair.Value));

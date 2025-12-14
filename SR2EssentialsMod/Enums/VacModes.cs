@@ -5,9 +5,9 @@ namespace SR2E.Enums;
 [Serializable]
 internal enum VacModes
 {
-    NONE,
-    AUTO_SHOOT,
-    AUTO_VAC,
+    NONE = 0,
+    AUTO_SHOOT = 1,
+    AUTO_VAC = 2,
     //NORMAL,
     //DRAG,
     //LAUNCH,

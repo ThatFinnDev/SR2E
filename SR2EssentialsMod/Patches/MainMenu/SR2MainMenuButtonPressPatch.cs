@@ -8,7 +8,7 @@ namespace SR2E.Patches.MainMenu;
 
 
 [HarmonyPatch(typeof(LoadGameBehaviorModel), nameof(LoadGameBehaviorModel.InvokeBehavior))]
-public class SR2MainMenuButtonPressPatch
+internal class SR2MainMenuButtonPressPatch
 {
     internal static bool Prefix(LoadGameBehaviorModel __instance)
     {

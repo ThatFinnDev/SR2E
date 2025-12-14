@@ -109,7 +109,7 @@ public class SR2EConsole : SR2EMenu
             Object.Destroy(autoCompleteContent.GetChild(i).gameObject);
         if (string.IsNullOrWhiteSpace(text))
         {
-            ExecuteInTicks((Action)(() =>
+            ExecuteInTicks((() =>
             {
                 autoCompleteScrollView.SetActive(autoCompleteContent.childCount != 0);
             }), 1);
