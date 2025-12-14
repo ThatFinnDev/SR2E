@@ -503,27 +503,27 @@ XMLToMD/*.md
 *.kate-swp
 
 
-PurpleCotton/mono_crash.*
-PurpleCotton/[Dd]ebug/
-PurpleCotton/[Dd]ebugPublic/
-PurpleCotton/[Rr]elease/
-PurpleCotton/[Rr]eleases/
-PurpleCotton/x64/
-PurpleCotton/x86/
-PurpleCotton/[Aa][Rr][Mm]/
-PurpleCotton/[Aa][Rr][Mm]64/
-PurpleCotton/bld/
-PurpleCotton/[Bb]in/
-PurpleCotton/[Ll]og/
-PurpleCotton/[Ll]ogs/
-PurpleCotton/Output
-PurpleCotton/Libs/MelonLoader.dll
-PurpleCotton//packages/LavaGang.MelonLoader.0.6.1
-PurpleCotton/Libs
-PurpleCotton/.idea
-PurpleCotton/.vs
-PurpleCotton/obj
-PurpleCotton/start.bat
+PrismaticSlime/mono_crash.*
+PrismaticSlime/[Dd]ebug/
+PrismaticSlime/[Dd]ebugPublic/
+PrismaticSlime/[Rr]elease/
+PrismaticSlime/[Rr]eleases/
+PrismaticSlime/x64/
+PrismaticSlime/x86/
+PrismaticSlime/[Aa][Rr][Mm]/
+PrismaticSlime/[Aa][Rr][Mm]64/
+PrismaticSlime/bld/
+PrismaticSlime/[Bb]in/
+PrismaticSlime/[Ll]og/
+PrismaticSlime/[Ll]ogs/
+PrismaticSlime/Output
+PrismaticSlime/Libs/MelonLoader.dll
+PrismaticSlime//packages/LavaGang.MelonLoader.0.6.1
+PrismaticSlime/Libs
+PrismaticSlime/.idea
+PrismaticSlime/.vs
+PrismaticSlime/obj
+PrismaticSlime/start.bat
 SR2EExampleExpansion/start.sh
 
 

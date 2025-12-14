@@ -97,7 +97,7 @@ public static class PrismLibSpawning
         if (locations.Contains(PrismSpawnLocations.LabyrinthLavadepths)) names.Add("LabValley");
         if (locations.Contains(PrismSpawnLocations.LabyrinthDreamland)) names.Add("Dreamland");
         if (locations.Contains(PrismSpawnLocations.LabyrinthHub)) names.Add("Hub");
-
+        if (locations.Contains(PrismSpawnLocations.LabyrinthTerrarium)) {} // todo: add this zone
         return names;
     }
 
