@@ -1,4 +1,5 @@
 using System;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 namespace SR2E.Utils;
 
@@ -22,5 +23,14 @@ public static class ActionsEUtil
         yield return new WaitForSeconds(seconds);
         try { action.Invoke(); }catch (Exception e) { MelonLogger.Error(e); }
     }
+    public static void InvokeAll(this List<System.Action> actions) => actions.ForEach(action => action.Invoke());
+    public static void InvokeAll(this List<Il2CppSystem.Action> actions) => actions.ForEach(action => action.Invoke());
+    public static void InvokeAll(this Il2CppSystem.Collections.Generic.List<System.Action> actions) => actions.ToNetList().ForEach(action => action.Invoke());
+    public static void InvokeAll(this Il2CppSystem.Collections.Generic.List<Il2CppSystem.Action> actions) => actions.ToNetList().ForEach(action => action.Invoke());
+    public static void InvokeAll(this System.Action[] actions) => actions.ToNetList().ForEach(action => action.Invoke());
+    public static void InvokeAll(this Il2CppSystem.Action[] actions) => actions.ToNetList().ForEach(action => action.Invoke());
+    public static void InvokeAll(this Il2CppReferenceArray<Il2CppSystem.Action> actions) => actions.ToNetList().ForEach(action => action.Invoke());
+    public static Il2CppSystem.Action ToIl2CppAction(this System.Action action) => action;
+    public static Il2CppSystem.Action ToNetAction(this System.Action action) => action;
 
 }
