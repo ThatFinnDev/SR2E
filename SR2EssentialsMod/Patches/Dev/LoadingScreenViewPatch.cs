@@ -6,7 +6,7 @@ using SR2E.Storage;
 
 namespace SR2E.Patches.Dev;
 
-
+/*
 [DevPatch()]
 [HarmonyPatch(typeof(LoadingScreenView), nameof(LoadingScreenView.Awake))]
 internal static class LoadingScreenViewPatch
@@ -22,4 +22,4 @@ internal static class LoadingScreenViewPatch
         done = true;
     }
 
-}
+}*/
