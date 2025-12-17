@@ -167,6 +167,10 @@ public enum FeatureFlag
     /// </summary>
     InjectMainMenuButtons=330, //
     /// <summary>
+    /// Inject test buttons in the main menu
+    /// </summary>
+    AddTestButtons=331, //
+    /// <summary>
     /// Inject buttons in the ranch house ui
     /// </summary>
     InjectRanchUIButtons=340, //

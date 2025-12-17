@@ -305,6 +305,7 @@ public static class SR2EFeatureFlags
         {AllowExpansionsV1,new FFR[]{new FFRActivated(AllowExpansions)}},
         {AllowExpansionsV2,new FFR[]{new FFRActivated(AllowExpansions)}},
         {AllowExpansionsV3,new FFR[]{new FFRActivated(AllowExpansions)}},
+        {AddTestButtons, new FFR[]{new FFRActivated(InjectMainMenuButtons)}}
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {

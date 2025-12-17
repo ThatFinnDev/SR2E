@@ -7,6 +7,7 @@ using SR2E.Buttons;
 using SR2E.Enums.Sounds;
 using SR2E.Managers;
 using SR2E.Menus;
+using SR2E.Popups;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
 using UnityEngine.UI;
@@ -47,6 +48,25 @@ internal class GameContextPatch
                 LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
                 new CustomMainMenuButton(label, EmbeddedResourceEUtil.LoadSprite("Assets.modsMenuIcon.png"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
+                if (AddTestButtons.HasFlag())
+                {
+                    var con = new CustomMainMenuContainerButton(AddTranslation("SubMenu"), null, 3, null);
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu1"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu1"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu2"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu2"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu3"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu3"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu4"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu4"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu5"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu5"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InBoth"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in both"); })),false);
+                    // Sub Sub menus dont work :(
+                    //var three = new CustomMainMenuButton(AddTranslation("InAllThree"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("InAllThree"); }));
+                    //con.AddSubButton(three,false);
+                    //var subsub = new CustomMainMenuContainerButton(AddTranslation("SubSubMenu"), null, 0, null);
+                    //con.AddSubButton(subsub);
+                    //subsub.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubSubmenu1"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the subsubmenu1"); })));
+                    //subsub.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubSubmenu2"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the subsubmenu2"); })));
+                    //subsub.AddSubButton(three,false);
+
+                }
             }
 
             if (AddCheatMenuButton.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));

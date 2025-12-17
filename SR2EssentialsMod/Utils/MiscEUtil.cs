@@ -7,12 +7,19 @@ using Il2CppInterop.Runtime.InteropTypes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppSystem.Linq;
 using SR2E.Menus;
+using SR2E.Patches.MainMenu;
 using Unity.Mathematics;
 
 namespace SR2E.Utils;
 
 public static class MiscEUtil
 {
+    public static void AddCustomBouncySprite(Sprite sprite)
+    {
+        if (sprite == null) return;
+        if(!CompanyLogoScenePatches.customBouncySprites.Contains(sprite))
+            CompanyLogoScenePatches.customBouncySprites.Add(sprite);
+    }
     public static float4 changeValue(this float4 float4, int index, float value)
     {
         return new float4(index == 0 ? value : float4[0],

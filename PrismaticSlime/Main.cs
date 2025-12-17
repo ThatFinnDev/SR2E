@@ -18,19 +18,21 @@ public class SlimeMain : SR2EExpansionV3
     public static PrismGordo gordo;
     public static PrismIdentifiablePediaEntry pedia;
 
-    public const PrismNativeBaseSlime BASE_SLIME = PrismNativeBaseSlime.Pink;
-    public const PrismNativePlort BASE_PLORT = PrismNativePlort.Pink;
-    
+    public override void AfterSystemContext(SystemContext systemContext)
+    {
+        MiscEUtil.AddCustomBouncySprite(EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortPrismatic.png"));
+    }
+
     public override void OnInitializeMelon()
     {
         AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv"));
     }
     public override void OnPrismCreateAdditions()
     {
-        //Create PurplecottonPlort
+        //Create PrismaticPlort
         var prismaticPlortCreator = new PrismPlortCreatorV01(
             "Prismatic",
-            EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortPurplecotton.png"),
+            EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortPrismatic.png"),
             AddTranslationFromSR2E("prismatic.plort", "l.prismaticPlort"));
         prismaticPlortCreator.moddedMarketData = new PrismMarketData(27f, 85f); //Controls the market values
         prismaticPlortCreator.customBasePrefab = PrismNativePlort.Tabby.GetPrismPlort().GetPrefab();
@@ -54,8 +56,8 @@ public class SlimeMain : SR2EExpansionV3
         prismaticSlimeCreator.canLargofy = true; // Can this slime have largo forms, used for createAllLargos, gets overwritten if you create one manually
         prismaticSlimeCreator.createAllLargos = true; // Automatically create all largos, requires canLargofy on both slimes
         prismaticSlimeCreator.disableAutoModdedLargos = false; // Disables autolargos for combining between 2 non-native slimes. Do this if your slime has custom components that break in auto largo
-        prismaticSlimeCreator.customBaseAppearance = BASE_SLIME.GetPrismBaseSlime().GetSlimeAppearance(); // If not set, Pink is default, it will duplicate it
-        prismaticSlimeCreator.customBasePrefab = BASE_SLIME.GetPrismBaseSlime().GetPrefab();; // If not set, Pink is default, it will duplicate it
+        prismaticSlimeCreator.customBaseAppearance = PrismNativeBaseSlime.Cotton.GetPrismBaseSlime().GetSlimeAppearance(); // If not set, Pink is default, it will duplicate it
+        prismaticSlimeCreator.customBasePrefab = PrismNativeBaseSlime.Cotton.GetPrismBaseSlime().GetPrefab();; // If not set, Pink is default, it will duplicate it
         
         slime = prismaticSlimeCreator.CreateSlime();
         
@@ -67,8 +69,9 @@ public class SlimeMain : SR2EExpansionV3
         
         //Some food management
         slime.AddFoodGroup(PrismLibLookup.fruitFoodGroup); //Adds what the slime can eat
-        slime.AddAdditionalFood(BASE_SLIME.GetPrismBaseSlime());
-        slime.AddFavoriteFood(BASE_SLIME.GetPrismBaseSlime());
+        // Make cotton slimes edible
+        slime.AddAdditionalFood(PrismNativeBaseSlime.Cotton.GetPrismBaseSlime());
+        slime.AddFavoriteFood(PrismNativeBaseSlime.Cotton.GetPrismBaseSlime());
         slime.RefreshEatMap(); //Refreshes everything
 
         //Make it spawn
@@ -106,7 +109,7 @@ public class SlimeMain : SR2EExpansionV3
         //Create gordo
         var prismaticGordoCreator = new PrismGordoCreatorV01(
             slime,
-            EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePurplecotton.png"),
+            EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePrismatic.png"),
             AddTranslationFromSR2E("prismatic.gordo"));
         gordo = prismaticGordoCreator.CreateGordo();
         gordo.SetRequiredBait(LookupEUtil.fruitFoodTypes.GetEntryByRefID("IdentifiableType.PogoFruit"));

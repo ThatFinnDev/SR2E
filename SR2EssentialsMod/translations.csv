@@ -250,7 +250,7 @@ cmd.strike.description,"Summons a lightning strike","Erschafft einen Blitz"
 cmd.unbind.success,"Successfully unbound key $1!","Die Bindung der Taste '$1' wurde erfolgreich entfernt!"
 cmd.unbind.notbound,"Key $1 is not bound to anything!","Die Taste '$1' ist mit nichts gebunden!"
 cmd.unbind.description,"Unbinds a key that was previously bound to a command/multiple commands","Entfernt Bindungen von Tasten, die zuvor zu Befehlen gebunden waren"
-cmd.unbind.extendeddescription,"Unbinds a key that was previously bound to a command/multiple commands. For multiple commands, use 'unbind <key> <command>;<command>;<command>;....'","Entfernt Bindungen von Tasten, die zuvor zu Befehlen gebunden waren. Für mehrere Befehle, benütze 'unbind <Taste> <Befehl>;<Befehl>;<Befehl>;....'"
+cmd.unbind.extendeddescription,"Unbinds a key that was previously bound to a command/multiple commands. For multiple commands, use 'unbind <key> <command>;<command>;<command>;....'","Entfernt Bindungen von Tasten, die zuvor zu Befehlen gebunden waren. Führe mehrere Befehle, benütze 'unbind <Taste> <Befehl>;<Befehl>;<Befehl>;....'"
 cmd.warp.success,"Successfully warped to the warp point $1!",Du wurdest erfolgreich zu dem Warppunkt '$1' teleportiert!
 cmd.warp.description,"Warps you to a saved warp point","Teleportiert dich zu einem gesetzten Warppunkt"
 cmd.warp.extendeddescription,"Warps you to a saved warp point, use <u>setwarp</u> to create more","Teleportiert dich zu einem gesetzten Warppunkt, benutze <u>setwarp</u> um welche zu setzen"

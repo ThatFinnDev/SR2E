@@ -6,7 +6,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Development</Configurations>
     <PackageId>PrismaticSlime</PackageId>
-    <RootNamespace>PurpleCotton</RootNamespace>
+    <RootNamespace>PrismaticSlime</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>embedded</DebugType>
