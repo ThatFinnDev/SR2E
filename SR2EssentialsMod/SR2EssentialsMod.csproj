@@ -25,8 +25,6 @@
   <ItemGroup>
     <None Remove="start.bat" />
     <None Remove="start.sh" />
-    <None Remove=".gitattributes" />
-    <None Remove=".gitignore" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Libs/*.dll">
