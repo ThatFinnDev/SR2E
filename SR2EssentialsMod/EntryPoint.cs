@@ -18,6 +18,7 @@ using SR2E.Components;
 using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Patches.Context;
+using SR2E.Patches.General;
 using SR2E.Prism;
 using SR2E.Storage;
 using UnityEngine.Networking;
@@ -87,7 +88,8 @@ public class SR2EEntryPoint : MelonMod
     static Dictionary<string, Type> menusToInit = new Dictionary<string, Type>();
     static MelonPreferences_Category prefs;
     static string branchJson = "";
-    internal static string DataPath => Path.Combine(MelonEnvironment.UserDataDirectory, "SR2E");
+    private static string SR2EFolderName = "SR2E";
+    internal static string DataPath => Path.Combine(MelonEnvironment.UserDataDirectory, SR2EFolderName);
     internal static string TmpDataPath => Path.Combine(DataPath, ".tmp");
     internal static string FlagDataPath => Path.Combine(DataPath, "flags");
     internal static string CustomVolumeProfilesPath => Path.Combine(DataPath, "customVolumeProfiles");
@@ -196,8 +198,7 @@ public class SR2EEntryPoint : MelonMod
         {
             //SaveComponents.RegisterComponent(typeof(ModdedV01));
         } 
-        foreach (var expansion in expansionsV3) try { expansion.OnLateInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); } 
-        
+        foreach (var expansion in expansionsV3) try { expansion.OnLateInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); }
     }
     IEnumerator GetBranchJson()
     {
@@ -282,12 +283,33 @@ public class SR2EEntryPoint : MelonMod
     {
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
         StaticOnEarlyInitializeMelon();
+        PatchIl2CppDetourMethodPatcher.InstallSecondPart(HarmonyInstance);
     }
 
     static void StaticOnEarlyInitializeMelon()
     {
         if (earlyRegistered) return;
         earlyRegistered = true;
+        string[] launchArgs = Environment.GetCommandLineArgs();
+        var usedArgs = new List<String>();
+        foreach (string arg in launchArgs)
+        {
+            if (arg.StartsWith("-sr2e.") && arg.Contains("="))
+            {
+                var split = arg.Split("=");
+                if (split.Length != 2) continue;
+                if (usedArgs.Contains(split[0])) continue;
+                usedArgs.Add(split[0]);
+                switch (split[0])
+                {
+                    case "-sr2e.id":
+                        int id = 0;
+                        try { id = int.Parse(split[1]); }catch { }
+                        if (id != 0) SR2EFolderName += id;
+                        break;
+                }
+            }
+        }
         if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
         if(!Directory.Exists(TmpDataPath)) Directory.CreateDirectory(TmpDataPath);
         if(!Directory.Exists(FlagDataPath)) Directory.CreateDirectory(FlagDataPath);

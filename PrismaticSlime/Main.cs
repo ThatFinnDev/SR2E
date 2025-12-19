@@ -20,7 +20,7 @@ public class SlimeMain : SR2EExpansionV3
 
     public override void AfterSystemContext(SystemContext systemContext)
     {
-        MiscEUtil.AddCustomBouncySprite(EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortPrismatic.png"));
+        MiscEUtil.AddCustomBouncySprite(EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePrismatic.png"));
     }
 
     public override void OnInitializeMelon()

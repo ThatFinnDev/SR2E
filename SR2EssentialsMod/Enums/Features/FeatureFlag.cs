@@ -192,5 +192,11 @@ public enum FeatureFlag
     /// Make SystemContext.isModded true
     /// </summary>
     ChangeSystemContextIsModded=380, //
+    /// <summary>
+    /// Redirects the StorageProvider to a FileStorgeProvider
+    /// As a result the save path will be changed
+    /// It will be redirected to the SR2E folder
+    /// </summary>
+    RedirectSaveFiles=390
 
 }
