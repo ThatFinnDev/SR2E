@@ -7,6 +7,7 @@ using SR2E.Buttons;
 using SR2E.Enums.Sounds;
 using SR2E.Managers;
 using SR2E.Menus;
+using SR2E.Patches.General;
 using SR2E.Popups;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
@@ -27,7 +28,7 @@ internal class GameContextPatch
         {
             Amount = 99999999, DamageSource = damageSource,
         };
-        
+        OptionsUIRootApplyPatch.Postfix();
         foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
         {
             var pname = particle.gameObject.name.Replace(' ', '_');
@@ -46,7 +47,7 @@ internal class GameContextPatch
             if (AddModMenuButton.HasFlag())
             {
                 LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                new CustomMainMenuButton(label, EmbeddedResourceEUtil.LoadSprite("Assets.modsMenuIcon.png"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
+                new CustomMainMenuButton(label, EmbeddedResourceEUtil.LoadSprite("Assets.modsMenuIcon.png").CopyWithoutMipmaps(), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
                 if (AddTestButtons.HasFlag())
                 {

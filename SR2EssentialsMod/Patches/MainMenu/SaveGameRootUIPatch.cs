@@ -155,7 +155,9 @@ internal static class SaveGameRootUIPatch
             exportRectTransform.anchorMax = new Vector2(1,1);
             exportRectTransform.anchorMin = new Vector2(1,1);
             exportButton.transform.localPosition = new Vector3(566.4542f, 850.0162f, -16.1379f);
-            exportButton.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = EmbeddedResourceEUtil.LoadSprite("Assets.exportImportButton.png");
+            exportButton.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png").CopyWithoutMipmaps();
+            var iconRect = exportButton.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
+            iconRect.sizeDelta *= 0.85f;
             if(onPress==null) onPress = Get<InputActionReference>("MainGame/Open Map");
             if(inputEvent==null) inputEvent = Get<InputEvent>("OpenMap");
             var inputEventDisplay = exportButton.gameObject.GetObjectRecursively<InputEventDisplay>("KeyIcon");

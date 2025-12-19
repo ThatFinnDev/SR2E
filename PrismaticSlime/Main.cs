@@ -20,7 +20,7 @@ public class SlimeMain : SR2EExpansionV3
 
     public override void AfterSystemContext(SystemContext systemContext)
     {
-        MiscEUtil.AddCustomBouncySprite(EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePrismatic.png"));
+        MiscEUtil.AddCustomBouncySprite(EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePrismatic.png").CopyWithoutMipmaps());
     }
 
     public override void OnInitializeMelon()
@@ -32,7 +32,7 @@ public class SlimeMain : SR2EExpansionV3
         //Create PrismaticPlort
         var prismaticPlortCreator = new PrismPlortCreatorV01(
             "Prismatic",
-            EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortPrismatic.png"),
+            EmbeddedResourceEUtil.LoadSprite("Assets.iconPlortPrismatic.png").CopyWithoutMipmaps(),
             AddTranslationFromSR2E("prismatic.plort", "l.prismaticPlort"));
         prismaticPlortCreator.moddedMarketData = new PrismMarketData(27f, 85f); //Controls the market values
         prismaticPlortCreator.customBasePrefab = PrismNativePlort.Tabby.GetPrismPlort().GetPrefab();
@@ -48,7 +48,7 @@ public class SlimeMain : SR2EExpansionV3
         //Create Prismatic Slime
         var prismaticSlimeCreator = new PrismBaseSlimeCreatorV01(
             "Prismatic",
-            EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePrismatic.png"),
+            EmbeddedResourceEUtil.LoadSprite("Assets.iconSlimePrismatic.png").CopyWithoutMipmaps(),
             AddTranslationFromSR2E("prismatic.slime", "l.prismaticSlime"));
         prismaticSlimeCreator.disableVaccable = false; // Controls whether a slime is vaccable
         prismaticSlimeCreator.plort = plort; // The plort of the slime, can either be an IdentifiableType or PrismPlort

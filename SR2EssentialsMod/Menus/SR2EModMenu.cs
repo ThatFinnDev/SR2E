@@ -133,7 +133,7 @@ public class SR2EModMenu : SR2EMenu
         bool useIcon = false;
         try
         {
-            var sprite = EmbeddedResourceEUtil.LoadSprite("icon.png",assembly);
+            var sprite = EmbeddedResourceEUtil.LoadSprite("icon.png",assembly).CopyWithoutMipmaps();
             if (sprite == null) throw new Exception();
             b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
             b.transform.GetChild(1).gameObject.SetActive(true);
@@ -147,7 +147,7 @@ public class SR2EModMenu : SR2EMenu
         {
             try
             {
-                var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly);
+                var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly).CopyWithoutMipmaps();
                 if (sprite == null) throw new Exception();
                 b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
                 b.transform.GetChild(1).gameObject.SetActive(true);
