@@ -1,6 +1,8 @@
+using SR2E.Storage;
+
 namespace SR2E.Components;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class KeyCodeInputAcquirer : MonoBehaviour
 {
     internal static KeyCodeInputAcquirer Instance;

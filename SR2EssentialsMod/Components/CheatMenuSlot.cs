@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace SR2E.Components;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class CheatMenuSlot : MonoBehaviour
 {
     private int slotID;

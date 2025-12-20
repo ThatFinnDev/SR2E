@@ -1,9 +1,11 @@
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Input;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.Framework.Audio;
 using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using SR2E.Buttons;
+using SR2E.Components;
 using SR2E.Enums.Sounds;
 using SR2E.Managers;
 using SR2E.Menus;
@@ -124,7 +126,11 @@ internal class GameContextPatch
             MelonLogger.Error(e);
             MelonLogger.Error("There was a problem loading sounds!");
         }
-        
+
+        if(RestoreDebugFPSViewer.HasFlag()) foreach (var display in GetAllInScene<FPSDisplay>())
+            display.AddComponent<FPSDisplayFixer>();
+        if(RestoreDebugDebugUI.HasFlag())  foreach (var debugUI in GetAllInScene<DebugUI>())
+            debugUI.AddComponent<DebugUIFixer>();
         foreach (var expansion in SR2EEntryPoint.expansionsV1V2)
             try { expansion.OnGameContext(__instance); }
             catch (Exception e) { MelonLogger.Error(e); }

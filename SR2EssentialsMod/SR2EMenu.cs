@@ -14,7 +14,7 @@ namespace SR2E;
 /// <summary>
 /// Abstract menu class
 /// </summary>
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 public abstract class SR2EMenu : MonoBehaviour
 {
     private bool changedOpenState = false;

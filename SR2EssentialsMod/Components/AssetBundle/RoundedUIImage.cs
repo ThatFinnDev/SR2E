@@ -1,4 +1,5 @@
 using SR2E.Patches.Context;
+using SR2E.Storage;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace SR2E.Components.AssetBundle
 	/// It adds rounded corners to the UI element
 	/// Use cornerRadius to adjust the corner size
 	/// </summary>
-	[RegisterTypeInIl2Cpp(false)]
+	[InjectClass]
 	public class RoundedUIImage : MonoBehaviour
 	{
 		public float cornerRadius = 10f;

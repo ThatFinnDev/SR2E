@@ -1,8 +1,9 @@
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Definition;
+using SR2E.Storage;
 
 namespace SR2E.Buttons;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class CustomMainMenuItemDefinition : LoadGameItemDefinition
 {
     internal System.Action customAction;

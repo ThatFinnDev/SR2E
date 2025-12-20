@@ -1,57 +1,98 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+﻿using System;
+using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
+using Il2CppMonomiPark.SlimeRancher.Regions;
 using Il2CppMonomiPark.SlimeRancher.UI.Debug;
 using Il2CppTMPro;
 using SR2E.Enums;
 using SR2E.Managers;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 
 namespace SR2E;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class SR2EDebugUI : MonoBehaviour
 { 
 	static GameObject player;
 	internal static bool isEnabled;
 	internal Font _helpFont;
-	internal class DebugStatsManager
-    {
-	    static bool playerDebugUIEnabled = false;
-        private static SRCharacterController cc;
-        private static PlayerDebugHudUI playerDebugHudUI = null;
 
-        internal static void TogglePlayerDebugUI()
-        {
-            if (playerDebugUIEnabled) DeActivatePlayerDebugUI();
-            else ActivatePlayerDebugUI();
-        }
-        internal static void DeActivatePlayerDebugUI()
-        {
-            if(!playerDebugUIEnabled) return;
-            if(playerDebugHudUI==null) 
-                playerDebugHudUI = Get<PlayerDebugHudUI>("PlayerDebug");
-            if(playerDebugHudUI==null) return;
-            if(playerDebugHudUI.gameObject.activeSelf)
-                playerDebugHudUI.transform.gameObject.SetActive(false);
-            playerDebugUIEnabled = false;
-        }
-        internal static void ActivatePlayerDebugUI()
-        {
-            if(playerDebugUIEnabled) return;
-            if(playerDebugHudUI==null) playerDebugHudUI = Get<PlayerDebugHudUI>("PlayerDebug");
-            if(playerDebugHudUI==null) return;
-            if(!playerDebugHudUI.gameObject.activeSelf)
-                playerDebugHudUI.transform.gameObject.SetActive(true);
-	        player = Get<GameObject>("PlayerControllerKCC");
-            if(player==null) return;
-            cc = player.GetComponent<SRCharacterController>();
-            for (int i = 0; i < playerDebugHudUI.transform.childCount; i++)
-            {
-                TMP_Text tmpText = playerDebugHudUI.transform.GetChild(i).GetComponent<TMP_Text>();
-                if (tmpText != null)
-                    tmpText.color = new Color(1, 1, 1, 1);
-            }
-            playerDebugUIEnabled = true;
-        }
+	internal class DebugStatsManager
+	{
+		static bool playerDebugUIEnabled = false;
+		private static SRCharacterController cc;
+		private static SRCharacterInput ci;
+		private static RegionMember rm;
+		private static PlayerDebugHudUI playerDebugHudUI = null;
+		private static bool accurate = false;
+
+		internal static void TogglePlayerDebugUI()
+		{
+			if (playerDebugUIEnabled) DeActivatePlayerDebugUI();
+			else ActivatePlayerDebugUI();
+		}
+
+		internal static void DeActivatePlayerDebugUI()
+		{
+			if (!playerDebugUIEnabled) return;
+			if (playerDebugHudUI == null)
+				playerDebugHudUI = Get<PlayerDebugHudUI>("PlayerDebug");
+			if (playerDebugHudUI == null) return;
+			if (playerDebugHudUI.gameObject.activeSelf)
+				playerDebugHudUI.transform.gameObject.SetActive(false);
+			playerDebugUIEnabled = false;
+			accurate = RestoreDebugPlayerDebug.HasFlag();
+			if (accurate)
+			{
+				rm.remove_RegionsChanged(OnRegionsChanged);
+			}
+		}
+
+		internal static void ActivatePlayerDebugUI()
+		{
+			if (playerDebugUIEnabled) return;
+			if (playerDebugHudUI == null) playerDebugHudUI = Get<PlayerDebugHudUI>("PlayerDebug");
+			if (playerDebugHudUI == null) return;
+			if (!playerDebugHudUI.gameObject.activeSelf)
+				playerDebugHudUI.transform.gameObject.SetActive(true);
+			player = Get<GameObject>("PlayerControllerKCC");
+			
+			if (player == null) return;
+			cc = player.GetComponent<SRCharacterController>();
+			ci = player.GetComponent<SRCharacterInput>();
+			rm = player.GetComponent<RegionMember>();
+			for (int i = 0; i < playerDebugHudUI.transform.childCount; i++)
+			{
+				TMP_Text tmpText = playerDebugHudUI.transform.GetChild(i).GetComponent<TMP_Text>();
+				if (tmpText != null)
+					tmpText.color = new Color(1, 1, 1, 1);
+			}
+
+			accurate = RestoreDebugPlayerDebug.HasFlag();
+			playerDebugUIEnabled = true;
+			if (accurate)
+			{
+				rm.add_RegionsChanged(OnRegionsChanged);
+			}
+		}
+
+		internal static RegionMember.MembershipChanged OnRegionsChanged = 
+			(RegionMember.MembershipChanged)((sender, args) =>
+			{
+				MelonLogger.Msg("On Change");
+				Il2CppSystem.Collections.Generic.List<Region> regions = sender;
+				foreach (var re in regions)
+				{
+					MelonLogger.Msg("sender: "+re.name);
+				}
+				Il2CppSystem.Collections.Generic.List<Region> regions2 = args;
+				foreach (var re in regions2)
+				{
+					MelonLogger.Msg("args"+re.name);
+				}
+				if(!playerDebugUIEnabled) return;
+				playerDebugHudUI._cell.SetText("Cell: ");
+		});
         internal static void Update()
         {
             if(!playerDebugUIEnabled) return;
@@ -59,14 +100,39 @@ internal class SR2EDebugUI : MonoBehaviour
             { playerDebugUIEnabled = false; return; }
             if(cc==null)
             { playerDebugUIEnabled = false; return; }
-            
-            playerDebugHudUI._velocity.SetText($"FPS: {(int)(1f / Time.unscaledDeltaTime)}");
-            playerDebugHudUI._horizontalVelocity.SetText($"Position: {cc.Position.x} {cc.Position.y} {cc.Position.z}");
-            playerDebugHudUI._slopeText.SetText($"Rotation: {player.transform.eulerAngles.y}");
-            playerDebugHudUI._playerLocation.SetText($"Velocity: {cc.Velocity.x} {cc.Velocity.y} {cc.Velocity.z}");
-            playerDebugHudUI._cell.SetText($"InputVector: {cc.InputVector.x} {cc.InputVector.y}");
-            playerDebugHudUI._lookInput.SetText($"LookInput: {cc.LookVector.x} {cc.LookVector.y} {cc.LookVector.z}");
-            playerDebugHudUI._activeAbilities.SetText($"Slope: {cc.CurrentSlopeAngle}");
+
+            if (accurate)
+            {
+	            //I set the texts with multiple values to max decimal 3, cuz I can't image it being longer
+	            
+	            //I guess its vertical, if the other one is horizontal? 
+	            playerDebugHudUI._velocity.SetText("Vertical Velocity: "+cc.Velocity.y);
+	            //What is horizontal even? X and Z combined?
+	            playerDebugHudUI._horizontalVelocity.SetText($"Horizontal Velocity: {cc.Velocity.x+cc.Velocity.z}");
+	            playerDebugHudUI._slopeText.SetText($"Slope: {cc.CurrentSlopeAngle}");
+	            playerDebugHudUI._playerLocation.SetText($"Location: ({Math.Round(cc.Position.x,3)} {Math.Round(cc.Position.y,3)} {Math.Round(cc.Position.z,3)})");
+	            playerDebugHudUI._cell.SetText($"Cell: {"What the hell is that?"}");
+	            playerDebugHudUI._lookInput.SetText($"Look Input: ({Math.Round(ci.LookInput.x,3)} {Math.Round(ci.LookInput.y,3)})");
+	            //I'm just guessing at this point?
+	            string abilityText = "";
+	            foreach (var ability in cc.AbilityBehaviors)
+	            {
+		            if (!ability.IsActive) continue;
+		            if (!string.IsNullOrWhiteSpace(abilityText)) abilityText += ", ";
+		            abilityText += ability.GetType().Name.Replace("AbilityBehaviour", "");
+	            }
+	            playerDebugHudUI._activeAbilities.SetText($"Active Abilities: "+abilityText);
+            }
+            else
+            {
+	            playerDebugHudUI._velocity.SetText($"FPS: {(int)(1f / Time.unscaledDeltaTime)}");
+	            playerDebugHudUI._horizontalVelocity.SetText($"Position: {cc.Position.x} {cc.Position.y} {cc.Position.z}");
+	            playerDebugHudUI._slopeText.SetText($"Rotation: {player.transform.eulerAngles.y}");
+	            playerDebugHudUI._playerLocation.SetText($"Velocity: {cc.Velocity.x} {cc.Velocity.y} {cc.Velocity.z}");
+	            playerDebugHudUI._cell.SetText($"InputVector: {cc.InputVector.x} {cc.InputVector.y}");
+	            playerDebugHudUI._lookInput.SetText($"LookInput: {cc.LookVector.x} {cc.LookVector.y} {cc.LookVector.z}");
+	            playerDebugHudUI._activeAbilities.SetText($"Slope: {cc.CurrentSlopeAngle}");
+            }
         }
     }
 	private void Awake()

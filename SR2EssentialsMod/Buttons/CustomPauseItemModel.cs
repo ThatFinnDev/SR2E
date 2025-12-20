@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SR2E.Storage;
 
 namespace SR2E.Buttons;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class CustomPauseItemModel : ResumePauseItemModel
 {
     internal System.Action action;

@@ -188,6 +188,8 @@ public class SR2EEntryPoint : MelonMod
             var ia = new GameObject();
             ia.AddComponent<LKeyInputAcquirer>();
             ia.AddComponent<KeyCodeInputAcquirer>();
+            if (RestoreDebugAbilities.HasFlag()) ia.AddComponent<DevelopmentBuildText>();
+            if (RestoreDebugDevConsole.HasFlag()) ia.AddComponent<DevConsoleFixer>();
             ia.name = "SR2EInputAcquirer";
             Object.DontDestroyOnLoad(ia);
         }
@@ -317,7 +319,26 @@ public class SR2EEntryPoint : MelonMod
         InitFlagManager();
     }
 
-    
+    void InjectIl2CppComponents()
+    {
+        var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
+        var devPatches = DevMode.HasFlag();
+        foreach (var type in types)
+        {
+            if (type == null) continue;
+            try
+            {
+                if (type.GetCustomAttribute<InjectClass>() == null) continue;
+                if(!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
+                    ClassInjector.RegisterTypeInIl2Cpp(type, new RegisterTypeOptions() { LogSuccess = false });
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Error(e);
+                MelonLogger.Error($"Failed to inject {type.FullName}: {e.Message}");
+            }
+        }
+    }
     void PatchGame()
     {
         if(!_usePrism) try { _usePrism= prefs.GetEntry<bool>("forceUsePrism").Value; }catch { }
@@ -423,6 +444,8 @@ public class SR2EEntryPoint : MelonMod
                 if (AllowExpansionsV1.HasFlag()) expansionsV1V2.Add(melonBase as SR2EExpansionV1);
                 else melonBase.Unregister();
         }
+
+        InjectIl2CppComponents();
         PatchGame();
 
         Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));

@@ -1,6 +1,8 @@
+using SR2E.Storage;
+
 namespace SR2E.Components;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class ObjectBlocker : MonoBehaviour
 {
     private void Start()

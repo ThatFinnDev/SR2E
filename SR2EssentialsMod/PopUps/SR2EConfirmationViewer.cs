@@ -1,12 +1,13 @@
 using System;
 using Il2CppTMPro;
 using SR2E.Enums;
+using SR2E.Storage;
 using UnityEngine.UI;
 
 namespace SR2E.Popups;
 
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 public class SR2EConfirmationViewer : SR2EPopUp
 {
     private string _text;

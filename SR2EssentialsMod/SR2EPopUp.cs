@@ -13,7 +13,7 @@ namespace SR2E;
 /// <summary>
 /// Abstract menu class
 /// </summary>
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 public abstract class SR2EPopUp : MonoBehaviour
 {
     internal Transform block;

@@ -197,6 +197,36 @@ public enum FeatureFlag
     /// As a result the save path will be changed
     /// It will be redirected to the SR2E folder
     /// </summary>
-    RedirectSaveFiles=390
+    RedirectSaveFiles=390, //
+    /// <summary>
+    /// Tries to restore Debug Abilities.
+    /// This isn't a faithful recreation of the true SR2 Debug tools.
+    /// However there are enough breadcrumbs in the code which.
+    /// help to make sense of the missing code and try to implement it as best as possible.
+    /// You need to enable the individual abilities
+    /// </summary>
+    RestoreDebugAbilities=400, //
+    /// <summary>
+    /// Tries to restore Debug Ability.
+    /// This restore the FPS counter
+    /// </summary>
+    RestoreDebugFPSViewer=401, //
+    /// <summary>
+    /// Tries to restore Debug Ability.
+    /// This restore the PlayerDebug ui
+    /// </summary>
+    RestoreDebugPlayerDebug=402, //
+    /// <summary>
+    /// Tries to restore Debug Ability.
+    /// This restore the unity dev console
+    /// </summary>
+    RestoreDebugDevConsole=403, //
+    /// <summary>
+    /// Tries to restore Debug Ability.
+    /// This restore the DebugUI
+    /// </summary>
+    RestoreDebugDebugUI=403, //
+    
+    
 
 }

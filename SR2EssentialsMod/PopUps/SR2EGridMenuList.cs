@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace SR2E.Popups;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 public class SR2EGridMenuList : SR2EPopUp
 {
     private TripleDictionary<string,string, Sprite> _entries;

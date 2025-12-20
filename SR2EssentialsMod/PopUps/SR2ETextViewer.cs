@@ -1,10 +1,11 @@
 ﻿using Il2CppTMPro;
 using SR2E.Enums;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Popups;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 public class SR2ETextViewer : SR2EPopUp
 {
     private string _text;

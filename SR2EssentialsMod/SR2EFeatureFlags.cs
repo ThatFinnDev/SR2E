@@ -26,7 +26,7 @@ public static class SR2EFeatureFlags
 
     private static FeatureFlag[] extraDevFlags => new[] {
         DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
-        ExperimentalKeyCodes, EnableRepoMenu, UseMockRepo
+        ExperimentalKeyCodes, EnableRepoMenu, UseMockRepo,
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};
@@ -324,7 +324,11 @@ public static class SR2EFeatureFlags
         {AllowExpansionsV1,new FFR[]{new FFRActivated(AllowExpansions)}},
         {AllowExpansionsV2,new FFR[]{new FFRActivated(AllowExpansions)}},
         {AllowExpansionsV3,new FFR[]{new FFRActivated(AllowExpansions)}},
-        {AddTestButtons, new FFR[]{new FFRActivated(InjectMainMenuButtons)}}
+        {AddTestButtons, new FFR[]{new FFRActivated(InjectMainMenuButtons)}},
+        {RestoreDebugFPSViewer, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
+        {RestoreDebugPlayerDebug, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
+        {RestoreDebugDevConsole, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
+        {RestoreDebugDebugUI, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Il2CppTMPro;
 using SR2E.Enums.Sounds;
+using SR2E.Storage;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ namespace SR2E.Components;
 /// If you want custom actions, use "action:somekey" where somekey is a string of your choice
 /// Add the an action to the dictionary "actions"
 /// </summary>
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 public class ClickableTextLink : MonoBehaviour
 {
     private TextMeshProUGUI text;

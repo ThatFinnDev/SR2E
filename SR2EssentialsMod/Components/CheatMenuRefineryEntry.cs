@@ -2,11 +2,12 @@ using System;
 using Il2CppMonomiPark.SlimeRancher.Economy;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppTMPro;
+using SR2E.Storage;
 using UnityEngine.UI;
 
 namespace SR2E.Components;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class CheatMenuRefineryEntry : MonoBehaviour
 {
     internal IdentifiableType item;

@@ -1,5 +1,6 @@
 using SR2E.Enums;
 using SR2E.Managers;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Components;
@@ -9,7 +10,7 @@ namespace SR2E.Components;
 /// 
 /// Currently bugged...
 /// </summary>
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class IdentifiableObjectDragger : MonoBehaviour
 {
     public GameObject draggedObject;

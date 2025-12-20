@@ -47,7 +47,7 @@ public static class HttpEUtil
                 if (onGoingImages[image] == url)
                 {
                     onGoingImages.Remove(image);
-                    if (error == null && texture != null)
+                    if (error == null && texture != null&&image!=null)
                     {
                         image.sprite = texture.Texture2DToSprite();
                         if (useCache)
@@ -69,10 +69,13 @@ public static class HttpEUtil
                 if (onGoingRawImages[image] == url)
                 {
                     onGoingRawImages.Remove(image);
-                    if (error == null && texture != null) 
-                        image.texture = texture;
-                    if (useCache)
-                        File.WriteAllBytes(cachePath,ConvertEUtil.Texture2DToBytesPNG(ResizeTexture(texture,resizeX,resizeY)));
+                    if (image != null)
+                    {
+                        if (error == null && texture != null) 
+                            image.texture = texture;
+                        if (useCache)
+                            File.WriteAllBytes(cachePath,ConvertEUtil.Texture2DToBytesPNG(ResizeTexture(texture,resizeX,resizeY)));
+                    }
                 }
         })));
     }
