@@ -225,7 +225,7 @@ public enum FeatureFlag
     /// Tries to restore Debug Ability.
     /// This restore the DebugUI
     /// </summary>
-    RestoreDebugDebugUI=403, //
+    RestoreDebugDebugUI=404, //
     
     
 

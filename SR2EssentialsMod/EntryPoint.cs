@@ -491,6 +491,7 @@ public class SR2EEntryPoint : MelonMod
         CheckFallBackFont();
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: " + sceneName);
 
+        try { SR2EWarpManager.OnSceneLoaded(); } catch (Exception e) { MelonLogger.Error(e); }
         if(sceneName=="StandaloneStart"||sceneName=="CompanyLogo"||sceneName=="LoadScene")
             try {
                 if(MenuEUtil.isAnyMenuOpen) MenuEUtil.CloseOpenMenu(); 
@@ -625,7 +626,6 @@ public class SR2EEntryPoint : MelonMod
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnUnloaded Scene: " + sceneName);
         if (sceneName == "MainMenuUI") mainMenuLoaded = false;
-        try { SR2EWarpManager.OnSceneUnloaded(); } catch (Exception e) { MelonLogger.Error(e); }
         
         switch (sceneName)
         {               

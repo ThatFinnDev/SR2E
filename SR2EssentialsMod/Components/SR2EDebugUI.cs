@@ -146,7 +146,7 @@ internal class SR2EDebugUI : MonoBehaviour
 		if (!isEnabled) return;
 
 		if (MenuEUtil.isAnyMenuOpen) return;
-		if (!MenuEUtil.isAnyPopUpOpen) return;
+		if (MenuEUtil.isAnyPopUpOpen) return;
 		if (Time.timeScale == 0)  return;
 		if (!inGame) return;
 		if (SR2EWarpManager.warpTo != null) return;
@@ -159,6 +159,8 @@ internal class SR2EDebugUI : MonoBehaviour
 		if (LKey.K.OnKeyDown()) SR2ECommandManager.ExecuteByString("clearinv", true);
 		if (LKey.L.OnKeyDown()) SR2ECommandManager.ExecuteByString("refillinv", true);
 		if (LKey.N.OnKeyDown()) SR2ECommandManager.ExecuteByString("noclip", true);
+		if (LKey.U.OnKeyDown()) GUIUtility.systemCopyBuffer = Warp.CurrentLocation().ToString();
+		if (LKey.J.OnKeyDown()) try { Warp.FromString(GUIUtility.systemCopyBuffer.Trim()).WarpPlayerThere(); } catch {}
 		if (LKey.KeypadPlus.OnKeyDown()) SR2ECommandManager.ExecuteByString("newbucks 1000", true);
 		if (LKey.KeypadMinus.OnKeyDown()) SR2ECommandManager.ExecuteByString("newbucks -1000", true);
 		if (LKey.LeftBracket.OnKeyDown()) SR2ECommandManager.ExecuteByString("fastforward -1", true);
@@ -182,6 +184,8 @@ internal class SR2EDebugUI : MonoBehaviour
 							"\n\nCLEAR INVENTORY     K " +
 							"\nREFILL INVENTORY     L " +
 							"\nTOGGLE NOCLIP     N " +
+							"\n\nSAVE LOCATION     U " +
+							"\nGOTO LOCATION     J " +
 							"\n\nADD 1000 CREDITS     KeyPad+ " +
 							"\nREMOVE 1000 CREDITS     KeyPad- " +
 							"\nDECREMENT TIME OF DAY     [ " +
