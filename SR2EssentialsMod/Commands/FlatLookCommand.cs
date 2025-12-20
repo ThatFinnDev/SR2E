@@ -4,10 +4,10 @@ using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;
 
-internal class FlatCommand : SR2ECommand
+internal class FlatLookCommand : SR2ECommand
 {
-    public override string ID => "flat";
-    public override string Usage => "flat";
+    public override string ID => "flatlook";
+    public override string Usage => "flatlook";
     public override CommandType type => CommandType.Fun;
 
     public override bool Execute(string[] args)
@@ -16,12 +16,12 @@ internal class FlatCommand : SR2ECommand
         if(OptionsUIRootApplyPatch.customMasterTextureLimit==-1)
         {
             OptionsUIRootApplyPatch.customMasterTextureLimit = int.MaxValue;
-            SendMessage(translation("cmd.flat.success"));
+            SendMessage(translation("cmd.flatlook.success"));
         }
         else
         {
             OptionsUIRootApplyPatch.customMasterTextureLimit = -1;
-            SendMessage(translation("cmd.flat.success2"));
+            SendMessage(translation("cmd.flatlook.success2"));
         }
         OptionsUIRootApplyPatch.Apply();
         return true;

@@ -19,7 +19,7 @@
     </ComponentData>
     <ComponentData>
       <typeName>UnityEngine.Rendering.HighDefinition.ColorAdjustments, Unity.RenderPipelines.HighDefinition.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</typeName>
-      <jsonData>{"active":true,"postExposure":{"m_OverrideState":true,"m_Value":0.5},"contrast":{"m_OverrideState":true,"m_Value":-20.0},"colorFilter":{"m_OverrideState":true,"m_Value":{"r":1.0,"g":1.0,"b":1.0,"a":1.0}},"hueShift":{"m_OverrideState":true,"m_Value":0.0},"saturation":{"m_OverrideState":true,"m_Value":10.0}}</jsonData>
+      <jsonData>{"active":true,"postExposure":{"m_OverrideState":true,"m_Value":0.5},"contrast":{"m_OverrideState":true,"m_Value":5.0},"colorFilter":{"m_OverrideState":true,"m_Value":{"r":1.0,"g":1.0,"b":1.0,"a":1.0}},"hueShift":{"m_OverrideState":true,"m_Value":0.0},"saturation":{"m_OverrideState":true,"m_Value":10.0}}</jsonData>
     </ComponentData>
     <ComponentData>
       <typeName>UnityEngine.Rendering.HighDefinition.IndirectLightingController, Unity.RenderPipelines.HighDefinition.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</typeName>
