@@ -45,7 +45,8 @@ sysinfo.txt
 # =========================
 **/bin/
 **/obj/
-**/Debug*/
+**/bin/Debug*/
+**/obj/Debug*/
 **/DebugPublic*/
 **/Release*/
 **/Releases*/
