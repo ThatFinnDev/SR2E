@@ -50,7 +50,7 @@ public static class SR2EWarpManager
         return SR2EError.NoError;
     }
     
-    internal static void OnSceneUnloaded()
+    internal static void OnSceneLoaded()
     {
         if(warpTo==null) return;
         if (sceneContext == null) { warpTo = null; return; }

@@ -26,7 +26,7 @@ public static class SR2EFeatureFlags
 
     private static FeatureFlag[] extraDevFlags => new[] {
         DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
-        ExperimentalKeyCodes, EnableRepoMenu, UseMockRepo
+        ExperimentalKeyCodes, EnableRepoMenu, UseMockRepo,
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};
@@ -222,6 +222,25 @@ public static class SR2EFeatureFlags
         catch { }
         
 
+        string[] launchArgs = Environment.GetCommandLineArgs();
+        var usedArgs = new List<String>();
+        foreach (string arg in launchArgs)
+        {
+            if (arg.StartsWith("-sr2e.") && arg.Contains("="))
+            {
+                var split = arg.Split("=");
+                if (split.Length != 2) continue;
+                if (usedArgs.Contains(split[0])) continue;
+                usedArgs.Add(split[0]);
+                switch (split[0])
+                {
+                    case "-sr2e.forceredirectsaves":
+                        if (split[1] == "true") EnableFlag(RedirectSaveFiles);
+                        break;
+                }
+            }
+        }
+        
         if (CommandsLoadDevOnly.HasFlag()) enabledCMDs |= CommandType.DevOnly;
         if (CommandsLoadExperimental.HasFlag()) enabledCMDs |= CommandType.Experimental;
         if (CommandsLoadCheat.HasFlag()) enabledCMDs |= CommandType.Cheat;
@@ -305,6 +324,11 @@ public static class SR2EFeatureFlags
         {AllowExpansionsV1,new FFR[]{new FFRActivated(AllowExpansions)}},
         {AllowExpansionsV2,new FFR[]{new FFRActivated(AllowExpansions)}},
         {AllowExpansionsV3,new FFR[]{new FFRActivated(AllowExpansions)}},
+        {AddTestButtons, new FFR[]{new FFRActivated(InjectMainMenuButtons)}},
+        {RestoreDebugFPSViewer, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
+        {RestoreDebugPlayerDebug, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
+        {RestoreDebugDevConsole, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
+        {RestoreDebugDebugUI, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {

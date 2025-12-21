@@ -1,9 +1,10 @@
 using SR2E.Enums;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Components;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class LKeyInputAcquirer : MonoBehaviour
 {
     internal static LKeyInputAcquirer Instance;

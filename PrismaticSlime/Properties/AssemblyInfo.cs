@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Il2CppTMPro;
@@ -20,13 +20,13 @@ using UnityEngine.UI;
 [assembly: MelonColor(255, 35, 255, 35)]
 
 //Set your main class inside the typeof argument, it has to be an SR2EExpansion
-internal static class GetEntrypointType { public static System.Type type => typeof(PurpleCotton.SlimeMain); }
+internal static class GetEntrypointType { public static System.Type type => typeof(PrismaticSlime.SlimeMain); }
 
 // BuildInfo
 internal static class BuildInfo
 {
-    internal const string Name = "Purple Cotton"; // Name of the Expansion. 
-    internal const string Description = "Adds a purple variant of the Cotton slime"; // Description for the Expansion.
+    internal const string Name = "Prismatic Slime"; // Name of the Expansion. 
+    internal const string Description = "Adds a slime called the \"Prismatic Slime\""; // Description for the Expansion.
     internal const string Author = "ThatFinn"; // Author of the Expansion.
     internal const string CoAuthors = null; // CoAuthor(s) of the Expansion.  (optional, set as null if none)
     internal const string Contributors = null; // Contributor(s) of the Expansion.  (optional, set as null if none)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Il2CppInterop.Runtime.Attributes;
 using Il2CppMonomiPark.SlimeRancher.Input;
@@ -83,6 +84,7 @@ public class SR2EModMenu : SR2EMenu
         }
     }
 
+    private Dictionary<GameObject, string> modButtons = new ();
     [HideFromIl2Cpp] void ProcessMelon(string melonName, string author, string version,string downloadLink,Assembly assembly,bool isRotten,GameObject buttonPrefab, List<object> rottenInfo)
     {
         bool isSR2EExpansion = false;
@@ -106,6 +108,7 @@ public class SR2EModMenu : SR2EMenu
         }
 
         var obj = Instantiate(buttonPrefab, modContent);
+        modButtons.Add(obj,melonName);
         Button b = obj.GetComponent<Button>();
         b.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = melonName;
         obj.SetActive(true);
@@ -130,7 +133,7 @@ public class SR2EModMenu : SR2EMenu
         bool useIcon = false;
         try
         {
-            var sprite = EmbeddedResourceEUtil.LoadSprite("icon.png",assembly);
+            var sprite = EmbeddedResourceEUtil.LoadSprite("icon.png",assembly).CopyWithoutMipmaps();
             if (sprite == null) throw new Exception();
             b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
             b.transform.GetChild(1).gameObject.SetActive(true);
@@ -144,7 +147,7 @@ public class SR2EModMenu : SR2EMenu
         {
             try
             {
-                var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly);
+                var sprite = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly).CopyWithoutMipmaps();
                 if (sprite == null) throw new Exception();
                 b.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
                 b.transform.GetChild(1).gameObject.SetActive(true);
@@ -229,22 +232,45 @@ public class SR2EModMenu : SR2EMenu
             }
         }));
     }
-
-
     protected override void OnOpen()
     {
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("ModMenuModMenuTemplateButtonRec");
         buttonPrefab.SetActive(false);
-        foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (RottenMelon rotten in loadedAssembly.RottenMelons)
+        modButtons = new();
+        foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (object rotten in loadedAssembly.RottenMelons)
         {
+            // Do it with reflection to support both ML 0.7.1 and newer
             try
             {
+                Assembly assembly = null;
+                string exception = null;
+                string errorMessage = null;
+                try
+                {
+                    assembly = (Assembly)rotten.GetType().GetProperty("assembly").GetValue(rotten);
+                    if (assembly == null) throw new Exception();
+                    exception = rotten.GetType().GetProperty("exception").GetValue(rotten).ToString();
+                    errorMessage = rotten.GetType().GetProperty("errorMessage").GetValue(rotten).ToString();
+                }
+                catch
+                {
+                    try
+                    {
+                        assembly = null;
+                        object mlassembly = rotten.GetType().GetProperty("Assembly").GetValue(rotten);
+                        assembly = (Assembly) mlassembly.GetType().GetProperty("assembly").GetValue(mlassembly);
+                        exception = rotten.GetType().GetProperty("exception").GetValue(rotten).ToString();
+                        errorMessage = rotten.GetType().GetProperty("errorMessage").GetValue(rotten).ToString();
+                    } catch { }
+                }
+                if (assembly == null) break;
+                
                 string melonName = "";
-                try {melonName = rotten.assembly.Assembly.FullName; } catch {}
+                try {melonName = assembly.FullName; } catch {}
                 if (string.IsNullOrEmpty(melonName)) melonName = translation("modmenu.modinfo.brokentitle");
                 ProcessMelon(melonName,"<unknown>","<unknown>",null,
-                    rotten.assembly.Assembly, true, buttonPrefab, 
-                    new List<object>() { rotten.assembly.Assembly.Location, rotten.exception, rotten.errorMessage });
+                    assembly, true, buttonPrefab, 
+                    new List<object>() { assembly.Location, exception, errorMessage });
 
             }
             catch (Exception e) { MelonLogger.Error(e); }
@@ -261,7 +287,6 @@ public class SR2EModMenu : SR2EMenu
 
         foreach (var group in SR2EEntryPoint.brokenExpansions)
         {
-            
             try
             {
                 ProcessMelon(group.Item1,group.Item2,group.Item3,group.Item4, group.Item5,true,buttonPrefab,
@@ -269,6 +294,17 @@ public class SR2EModMenu : SR2EMenu
             }
             catch (Exception e) { MelonLogger.Error(e); }
         }
+        
+        var sortedButtons = modButtons.Keys.ToList().OrderBy(obj =>
+        {
+            var text = modButtons[obj];
+            if (text == "SR2E") return " ";
+            return text;
+        }).ToList();
+
+        for (int i = 0; i < sortedButtons.Count; i++)
+            sortedButtons[i].transform.SetSiblingIndex(i);
+        modButtons = new ();
         
         modContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
     }

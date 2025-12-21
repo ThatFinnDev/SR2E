@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using Il2CppMonomiPark.SlimeRancher.DebugTool;
 using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
 using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
@@ -13,9 +15,17 @@ namespace SR2E.Storage;
 [System.Serializable]
 public class Warp
 {
-    internal SR2EError WarpPlayerThere()
+    public bool IsValid()
+    {
+        foreach (var g in systemContext.SceneLoader.SceneGroupList.items)
+            if (g.ReferenceId == sceneGroup)
+                return g.IsGameplay;
+        return false;
+    }
+    public SR2EError WarpPlayerThere()
     {
         if (!inGame) return SR2EError.NotInGame;
+        if(!IsValid()) return SR2EError.Invalid;
         if (sceneContext.Player == null) return SR2EError.PlayerNull;
         TeleportablePlayer p = sceneContext.Player.GetComponent<TeleportablePlayer>();
         if (p == null) return SR2EError.TeleportablePlayerNull;
@@ -27,37 +37,24 @@ public class Warp
             cc.Position = position;
             cc.Rotation = rotation;
             cc.BaseVelocity = Vector3.zero;
+            cc.ResetVelocity(false);
         }
         else
         {
             try
             {
-                if (!SR2EWarpManager.teleporters.ContainsKey(sceneGroup)) return SR2EError.SceneGroupNotSupported;
-
-                StaticTeleporterNode node = SR2EWarpManager.teleporters[sceneGroup];
+                SceneGroup sc = null;
+                foreach (var g in systemContext.SceneLoader.SceneGroupList.items)
+                    if (g.ReferenceId == sceneGroup)
+                    {
+                        if(!g.IsGameplay) return SR2EError.SceneGroupNotSupported;
+                        sc = g;
+                        break;
+                    }
+                if(sc==null) return SR2EError.SceneGroupNotSupported;
                 SR2EWarpManager.warpTo = this;
-
-                sceneContext.Camera.RemoveComponent<NoClipComponent>();
-                NativeEUtil.TryHideMenus();
-                NativeEUtil.TryUnPauseGame();
-                ExecuteInTicks((() =>
-                {
-                    try
-                    {
-                        
-                        StaticTeleporterNode obj = GameObject.Instantiate(node, sceneContext.Player.transform.position,
-                            Quaternion.identity);
-                        node.enabled = true;
-                        node.Network = sceneContext.TeleportNetwork;
-                        obj.gameObject.SetActive(true);
-                        node.ExternalActivate();
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Error(e); 
-                    }
-                    //Anything lower than 5 ticks breaks it. I guess smth with Timescaling but idk
-                }), 5);
+                TeleportPlayerPatch.isTeleportingPlayer = true;
+                LocationBookmarksUtil.GoToLocationPlayer(sc,position+new Vector3(0,LocationBookmarksUtil.PLAYER_HEIGHT/2,0),rotation.eulerAngles);
 
             }
             catch (Exception e)
@@ -69,8 +66,7 @@ public class Warp
         return SR2EError.NoError;
     }
 
-
-    public string sceneGroup = "Empty";
+    public string sceneGroup = "None";
     public float x;
     public float y;
     public float z;
@@ -84,17 +80,88 @@ public class Warp
 
     internal Quaternion rotation => new Quaternion(rotX, rotY, rotZ, rotW);
 
+    internal LocationBookmarksUtil.LocationBookmark ToNative()
+    {
+        var mark = new LocationBookmarksUtil.LocationBookmark();
+        mark.position = position;
+        mark.rotationEuler = rotation.eulerAngles;
+        mark.sceneGroupName = sceneGroup;
+        if (mark.sceneGroupName.StartsWith("SceneGroup."))
+            mark.sceneGroupName = sceneGroup.Substring("SceneGroup.".Length);
+        return mark;
+    }
+    internal static Warp FromNative(LocationBookmarksUtil.LocationBookmark mark)
+    {
+        if (mark == null) return null;
+        return new Warp("SceneGroup." + mark.sceneGroupName, mark.position, mark.rotationEuler);
+        
+    }
+
+    public static Warp CurrentLocation()
+    {
+        try
+        {
+            return FromNative(LocationBookmarksUtil.GetNewPlayerLocationBookmark());
+        }
+        catch 
+        { }
+        return new Warp();
+    }
+    public static Warp FromString(string stringed)
+    {
+        if (!LocationBookmarksUtil.ValidLocationString(stringed)) return null;
+        string[] parts = stringed.Split('|');
+
+        string[] posParts = parts[1].Split(',');
+        Vector3 position = new Vector3(
+            float.Parse(posParts[0], CultureInfo.InvariantCulture),
+            float.Parse(posParts[1], CultureInfo.InvariantCulture),
+            float.Parse(posParts[2], CultureInfo.InvariantCulture)
+        );
+
+        string[] rotParts = parts[2].Split(',');
+        Vector3 rotation = new Vector3(
+            float.Parse(rotParts[0], CultureInfo.InvariantCulture),
+            float.Parse(rotParts[1], CultureInfo.InvariantCulture),
+            float.Parse(rotParts[2], CultureInfo.InvariantCulture)
+        );
+        return new Warp(parts[0], position, rotation);
+    }
+
+    public override string ToString() => LocationBookmarksUtil.GetLocationStringFromBookmark(ToNative());
+    
+    private Warp() {}
     [JsonConstructor]
-    internal Warp(string sceneGroup, Vector3 position, Quaternion rotation)
+    public Warp(string sceneGroup, Vector3 position, Quaternion rotation)
     {
         this.sceneGroup = sceneGroup;
+        x = position.x; y = position.y; z = position.z;
+
+        rotX = rotation.x; rotY = rotation.y; rotZ = rotation.z; rotW = rotation.w;
+    }
+    public Warp(string sceneGroup, Vector3 position, Vector3 rotationEuler)
+    {
+        this.sceneGroup = sceneGroup;
+        x = position.x; y = position.y; z = position.z;
+
+        var rotation = Quaternion.Euler(rotationEuler);
+        rotX = rotation.x; rotY = rotation.y; rotZ = rotation.z; rotW = rotation.w;
+    }
+    public Warp(SceneGroup sceneGroup, Vector3 position, Quaternion rotation)
+    {
+        this.sceneGroup = sceneGroup.ReferenceId;
         x = position.x;
         y = position.y;
         z = position.z;
 
-        rotX = rotation.x;
-        rotY = rotation.y;
-        rotZ = rotation.z;
-        rotW = rotation.w;
+        rotX = rotation.x; rotY = rotation.y; rotZ = rotation.z; rotW = rotation.w;
+    }
+    public Warp(SceneGroup sceneGroup, Vector3 position, Vector3 rotationEuler)
+    {
+        this.sceneGroup = sceneGroup.ReferenceId;
+        x = position.x; y = position.y; z = position.z;
+
+        var rotation = Quaternion.Euler(rotationEuler);
+        rotX = rotation.x; rotY = rotation.y; rotZ = rotation.z; rotW = rotation.w;
     }
 }

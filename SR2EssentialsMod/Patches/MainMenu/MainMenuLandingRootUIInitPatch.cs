@@ -1,8 +1,13 @@
 ﻿
 using System;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
+
+using System;
+using Il2CppMonomiPark.SlimeRancher;
+using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Definition;
+using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Definition.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Model;
 using Il2CppTMPro;
 using SR2E.Buttons;
@@ -14,40 +19,71 @@ namespace SR2E.Patches.MainMenu;
 [HarmonyPatch(typeof(MainMenuLandingRootUI), nameof(MainMenuLandingRootUI.Init))]
 internal static class MainMenuLandingRootUIInitPatch
 {
-    internal static List<CustomMainMenuButton> buttons = new List<CustomMainMenuButton>();
+    private static CustomMainMenuContainerButton _rootStub = null;
+    internal static CustomMainMenuContainerButton rootStub
+    {
+        get
+        {
+            if (_rootStub != null) return _rootStub;
+            _rootStub = new CustomMainMenuContainerButton(-1);
+            return _rootStub;
+        }
+    }
+    internal static Dictionary<CustomMainMenuButton,List<CustomMainMenuContainerButton>> buttons = new Dictionary<CustomMainMenuButton,List<CustomMainMenuContainerButton>>();
     internal static bool safeLock;
     internal static bool postSafeLock;
     internal static void Prefix(MainMenuLandingRootUI __instance)
     {
         if (!InjectMainMenuButtons.HasFlag()) return;
-        foreach (CustomMainMenuButton button in buttons)
+        foreach (var pair in buttons)
         {
-            if (button.label == null || button.action == null) continue;
-            try
+            if (!pair.Value.Contains(rootStub)) continue;
+            var button = pair.Key;
+            if (button is CustomMainMenuContainerButton containerButton)
             {
-                if (button._definition != null)
+                try
                 {
-                    if (__instance._mainMenuConfig.items.Contains(button._definition))
-                        continue;
-                    int _offset = 0;
-                    foreach (var item in __instance._mainMenuConfig.items) 
-                        if(item is LoadGameItemDefinition) if(!(item is CustomMainMenuItemDefinition)) _offset=1;
-                    __instance._mainMenuConfig.items.Insert(button.insertIndex+_offset, button._definition);
-                    continue;
-                }
+                    if (containerButton._definition2 != null)
+                    {
+                        var list = new List<ButtonBehaviorDefinition>();
+                        foreach (var pair2 in buttons)
+                        {
+                            if(pair2.Value.Contains(containerButton))
+                            {
+                                if (pair2.Key._definition != null) list.Add(pair2.Key._definition);
+                                else if (pair2.Key._definition2!=null) list.Add(pair2.Key._definition2);
+                            }
+                        }
+                        button._definition2._subMenuItems = ScriptableObject.CreateInstance<ButtonBehaviorConfiguration>();
+                        button._definition2._subMenuItems.items = list.ToIl2CppList();
+                        if (__instance._mainMenuConfig.items.Contains(containerButton._definition2))
+                            continue;
+                        int _offset = 0;
+                        foreach (var item in __instance._mainMenuConfig.items) 
+                            if(item is LoadGameItemDefinition) if(!(item is CustomMainMenuItemDefinition)) _offset=1;
+                        __instance._mainMenuConfig.items.Insert(Math.Clamp(containerButton.insertIndex+_offset,0,__instance._mainMenuConfig.items.Count), containerButton._definition2);
+                    }
 
-                button._definition = ScriptableObject.CreateInstance<CustomMainMenuItemDefinition>();
-                button._definition._label = button.label;
-                button._definition.name = button.label.TableEntryReference.Key;
-                button._definition._icon = button.icon;
-                button._definition.hideFlags |= HideFlags.HideAndDontSave;
-                button._definition.customAction = button.action;
-                int offset = 0;
-                foreach (var item in __instance._mainMenuConfig.items) 
-                    if(item is LoadGameItemDefinition) if(!(item is CustomMainMenuItemDefinition)) offset=1;
-                __instance._mainMenuConfig.items.Insert(button.insertIndex+offset, button._definition);
+                }
+                catch (Exception e) { MelonLogger.Error(e); }
             }
-            catch (Exception e) { MelonLogger.Error(e); }
+            else
+            {
+                try
+                {
+                    if (button._definition != null)
+                    {
+                        if (__instance._mainMenuConfig.items.Contains(button._definition))
+                            continue;
+                        int _offset = 0;
+                        foreach (var item in __instance._mainMenuConfig.items) 
+                            if(item is LoadGameItemDefinition) if(!(item is CustomMainMenuItemDefinition)) _offset=1;
+                        __instance._mainMenuConfig.items.Insert(Math.Clamp(button.insertIndex+_offset,0,__instance._mainMenuConfig.items.Count), button._definition);
+                    }
+                }
+                catch (Exception e) { MelonLogger.Error(e); }
+            }
+
         }
     }
 
@@ -76,6 +112,6 @@ internal static class MainMenuLandingRootUIInitPatch
         ChangeVersionLabel();
         ExecuteInTicks((() => { ChangeVersionLabel();}), 1);
         ExecuteInTicks((() => { ChangeVersionLabel();}), 3);
-        ExecuteInTicks((() => { ChangeVersionLabel();}), 10);
+        ExecuteInTicks((() => { ChangeVersionLabel();}), 10);            
     }
 }

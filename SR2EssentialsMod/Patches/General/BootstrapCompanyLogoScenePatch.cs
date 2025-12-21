@@ -15,7 +15,7 @@ internal static class BootstrapCompanyLogoScenePatch
     {
         GameObject obj = new GameObject("MLIcon", typeof(RectTransform).il2cppTypeof(), typeof(Image).il2cppTypeof());
         Image img = obj.GetComponent<Image>();
-        img.sprite = EmbeddedResourceEUtil.LoadSprite("Assets.mlIcon.png");
+        img.sprite = EmbeddedResourceEUtil.LoadSprite("Assets.mlIcon.png").CopyWithoutMipmaps();
         img.preserveAspect = true;
         var rt = obj.GetComponent<RectTransform>();
         rt.SetParent(__instance.transform, false);

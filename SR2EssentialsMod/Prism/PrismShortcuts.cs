@@ -111,7 +111,7 @@ public static class PrismShortcuts
         if (customOrNativeSlime == null) return null;
         if (customOrNativeSlime.IsLargo)
         {
-            if (_prismLargos.ContainsKey(customOrNativeSlime.ReferenceId)) return _prismBaseSlimes[customOrNativeSlime.ReferenceId];
+            if (_prismLargos.ContainsKey(customOrNativeSlime.ReferenceId)) return _prismLargos[customOrNativeSlime.ReferenceId];
             var newLargo = new PrismLargo(customOrNativeSlime, true);
             _prismLargos.Add(customOrNativeSlime.ReferenceId, newLargo);
             return newLargo;

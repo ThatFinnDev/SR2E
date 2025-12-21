@@ -1,4 +1,4 @@
-﻿global using UnityEngine;
+global using UnityEngine;
 global using Il2Cpp;
 global using MelonLoader;
 global using System.Collections.Generic;

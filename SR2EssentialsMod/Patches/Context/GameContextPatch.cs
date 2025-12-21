@@ -1,15 +1,15 @@
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Input;
-using Il2CppMonomiPark.SlimeRancher.UI.Framework.Audio;
-using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
-using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using SR2E.Buttons;
+using SR2E.Components;
 using SR2E.Enums.Sounds;
 using SR2E.Managers;
 using SR2E.Menus;
+using SR2E.Patches.General;
+using SR2E.Popups;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
-using UnityEngine.UI;
 
 namespace SR2E.Patches.Context;
 
@@ -26,7 +26,7 @@ internal class GameContextPatch
         {
             Amount = 99999999, DamageSource = damageSource,
         };
-        
+        OptionsUIRootApplyPatch.Postfix();
         foreach (ParticleSystemRenderer particle in Resources.FindObjectsOfTypeAll<ParticleSystemRenderer>())
         {
             var pname = particle.gameObject.name.Replace(' ', '_');
@@ -35,9 +35,7 @@ internal class GameContextPatch
             if (!LookupEUtil.FXLibraryReversable.ContainsKey(pname))
                 LookupEUtil.FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
         }
-
-        foreach (KeyValuePair<string, string> pair in teleportersToAdd)
-            AddTeleporter(pair.Key, pair.Value);
+;
 
         if (!SR2EEntryPoint.addedButtons)
         {
@@ -45,13 +43,30 @@ internal class GameContextPatch
             if (AddModMenuButton.HasFlag())
             {
                 LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
-                new CustomMainMenuButton(label, EmbeddedResourceEUtil.LoadSprite("Assets.modsMenuIcon.png"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
+                new CustomMainMenuButton(label, EmbeddedResourceEUtil.LoadSprite("Assets.modsMenuIcon.png").CopyWithoutMipmaps(), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
-            }
+                if (AddTestButtons.HasFlag())
+                {
+                    var con = new CustomMainMenuContainerButton(AddTranslation("SubMenu"), null, 3, null);
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu1"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu1"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu2"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu2"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu3"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu3"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu4"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu4"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu5"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu5"); })));
+                    con.AddSubButton(new CustomMainMenuButton(AddTranslation("InBoth"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in both"); })),false);
+                    // Sub Sub menus dont work :(
+                    //var three = new CustomMainMenuButton(AddTranslation("InAllThree"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("InAllThree"); }));
+                    //con.AddSubButton(three,false);
+                    //var subsub = new CustomMainMenuContainerButton(AddTranslation("SubSubMenu"), null, 0, null);
+                    //con.AddSubButton(subsub);
+                    //subsub.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubSubmenu1"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the subsubmenu1"); })));
+                    //subsub.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubSubmenu2"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the subsubmenu2"); })));
+                    //subsub.AddSubButton(three,false);
 
+                }
+            }
             if (AddCheatMenuButton.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
             if (DevMode.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugUI.DebugStatsManager.TogglePlayerDebugUI(); }));
-
         }
 
         Time.timeScale = 1f;
@@ -103,7 +118,11 @@ internal class GameContextPatch
             MelonLogger.Error(e);
             MelonLogger.Error("There was a problem loading sounds!");
         }
-        
+
+        if(RestoreDebugFPSViewer.HasFlag()) foreach (var display in GetAllInScene<FPSDisplay>())
+            display.AddComponent<FPSDisplayFixer>();
+        if(RestoreDebugDebugUI.HasFlag())  foreach (var debugUI in GetAllInScene<DebugUI>())
+            debugUI.AddComponent<DebugUIFixer>();
         foreach (var expansion in SR2EEntryPoint.expansionsV1V2)
             try { expansion.OnGameContext(__instance); }
             catch (Exception e) { MelonLogger.Error(e); }
@@ -118,22 +137,5 @@ internal class GameContextPatch
             catch (Exception e) { MelonLogger.Error(e); }
     }
 
-    internal static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
-    {
-        {"SceneGroup.ConservatoryFields", "TeleporterHomeBlue"},
-        {"SceneGroup.RumblingGorge", "TeleporterZoneGorge"},
-        {"SceneGroup.LuminousStrand", "TeleporterZoneStrand"},
-        {"SceneGroup.PowderfallBluffs", "TeleporterZoneBluffs"},
-        {"SceneGroup.Labyrinth", "TeleporterZoneLabyrinth"},
-    };
-    internal static void AddTeleporter(string sceneGroup, string gadgetName)
-    {
-        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupEUtil.GetGadgetDefinitionByName(gadgetName).prefab.transform.GetObjectRecursively<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>(),prefabHolder.transform);
-        teleporter.gameObject.SetActive(false); 
-        teleporter.name = "TP-"+sceneGroup; 
-        teleporter.gameObject.MakePrefab(); 
-        teleporter._hasDestination = true;
-        SR2EWarpManager.teleporters.TryAdd(sceneGroup, teleporter);
-    }
 
 }

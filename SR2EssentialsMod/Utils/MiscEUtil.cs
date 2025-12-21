@@ -7,12 +7,48 @@ using Il2CppInterop.Runtime.InteropTypes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppSystem.Linq;
 using SR2E.Menus;
+using SR2E.Patches.MainMenu;
 using Unity.Mathematics;
 
 namespace SR2E.Utils;
 
 public static class MiscEUtil
 {
+    
+    public static Texture2D CopyWithoutMipmaps(this Texture2D src)
+    {
+        Texture2D tex = new Texture2D(src.width, src.height, src.format, mipChain: false);
+
+        tex.SetPixels(src.GetPixels());
+        tex.Apply(updateMipmaps: false, makeNoLongerReadable: false);
+        return tex;
+    }
+    public static Sprite CopyWithoutMipmaps(this Sprite srcSprite)
+    {
+        Texture2D src = srcSprite.texture;
+        Rect r = srcSprite.textureRect;
+
+        int width  = (int)r.width;
+        int height = (int)r.height;
+
+        Texture2D tex = new Texture2D(width, height, src.format, mipChain: false);
+
+        Color[] pixels = src.GetPixels((int)r.x, (int)r.y, width, height);
+
+        tex.SetPixels(pixels);
+        tex.Apply(updateMipmaps: false, makeNoLongerReadable: false);
+
+        tex.filterMode = src.filterMode;
+        tex.wrapMode = TextureWrapMode.Clamp;
+        return tex.Texture2DToSprite();
+    }
+
+    public static void AddCustomBouncySprite(Sprite sprite)
+    {
+        if (sprite == null) return;
+        if(!CompanyLogoScenePatches.customBouncySprites.Contains(sprite))
+            CompanyLogoScenePatches.customBouncySprites.Add(sprite);
+    }
     public static float4 changeValue(this float4 float4, int index, float value)
     {
         return new float4(index == 0 ? value : float4[0],

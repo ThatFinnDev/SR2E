@@ -30,6 +30,13 @@ public static class UnityEUtil
         for (int i = 0; i < obj.childCount; i++)
             children.Add(obj.GetChild(i));
         return children;
+    }   
+    public static List<GameObject> GetChildren(this GameObject obj)
+    {
+        List<GameObject> children = new List<GameObject>();
+        for (int i = 0; i < obj.transform.childCount; i++)
+            children.Add(obj.transform.GetChild(i).gameObject);
+        return children;
     }
     public static void DestroyAllChildren(this Transform obj)
     {

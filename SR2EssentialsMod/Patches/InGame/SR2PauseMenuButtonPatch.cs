@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using Il2CppMonomiPark.SlimeRancher.Script.UI.Pause;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppMonomiPark.SlimeRancher.UI.Pause;
@@ -47,7 +47,7 @@ internal static class SR2PauseMenuButtonPatch
                         if (items.Contains(button._model))
                             continue;
                         if (!items.Contains(button._model))
-                            items.Insert(button.insertIndex, button._model);
+                            items.Insert(Math.Clamp(button.insertIndex,0,items.Count), button._model);
                         continue;
                     }
 
@@ -66,7 +66,7 @@ internal static class SR2PauseMenuButtonPatch
                     }
 
                     if (!items.Contains(button._model))
-                        items.Insert(button.insertIndex, button._model);
+                        items.Insert(Math.Clamp(button.insertIndex,0,items.Count), button._model);
 
                 }
                 catch (Exception e)

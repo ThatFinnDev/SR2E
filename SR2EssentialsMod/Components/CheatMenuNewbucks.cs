@@ -1,10 +1,11 @@
 using System;
 using Il2CppTMPro;
+using SR2E.Storage;
 using UnityEngine.UI;
 
 namespace SR2E.Components;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class CheatMenuNewbucks : MonoBehaviour
 {
     private Slider amountSlider;

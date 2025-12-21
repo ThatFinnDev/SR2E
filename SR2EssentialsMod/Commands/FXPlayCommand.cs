@@ -1,5 +1,6 @@
 ﻿using SR2E.Enums;
 using SR2E.Managers;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;
@@ -69,7 +70,7 @@ internal class FXPlayCommand : SR2ECommand
     }
 }
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class FXPlayPauseFunction : MonoBehaviour
 {
     public ParticleSystem sys;

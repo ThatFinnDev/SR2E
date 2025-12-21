@@ -3,11 +3,12 @@ using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using SR2E.Commands;
 using SR2E.Enums;
 using SR2E.Managers;
+using SR2E.Storage;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Components;
 
-[RegisterTypeInIl2Cpp(false)]
+[InjectClass]
 internal class NoClipComponent : MonoBehaviour
 {
     private float baseSpeed = 15f;

@@ -82,4 +82,8 @@ public enum SR2EError
     /// Returns when a FeatureFlag needs to be active
     /// </summary>
     NeedFlag=19,
+    /// <summary>
+    /// Returns when it is invalid
+    /// </summary>
+    Invalid=20,
 }

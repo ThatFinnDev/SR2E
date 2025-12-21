@@ -3,35 +3,25 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using Il2CppInterop.Common;
-using Il2CppInterop.Generator;
-using Il2CppInterop.Runtime;
+using System.Text.RegularExpressions; 
 using Il2CppInterop.Runtime.Injection;
-using Il2CppMonomiPark.SlimeRancher.Player.CharacterController;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using Il2CppTMPro;
 using UnityEngine.UI;
-using Il2CppKinematicCharacterController;
 using Il2CppMonomiPark.ScriptedValue;
 using Il2CppMonomiPark.SlimeRancher;
-using Il2CppMonomiPark.SlimeRancher.Economy;
-using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
-using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
 using MelonLoader.Utils;
 using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
-using SR2E.Buttons;
 using SR2E.Components;
-using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Patches.Context;
+using SR2E.Patches.General;
 using SR2E.Prism;
 using SR2E.Storage;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace SR2E;
 
@@ -50,7 +40,7 @@ public static class BuildInfo
     public const string Description = "Essential stuff for Slime Rancher 2";
     public const string Author = "ThatFinn";
     public const string Contributors = "PinkTarr, shizophrenicgopher, Atmudia";
-    public const string CodeVersion = "3.5.0";
+    public const string CodeVersion = "3.5.1";
     public const string DownloadLink = "https://sr2e.sr2.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
@@ -62,7 +52,7 @@ public static class BuildInfo
     /// For dev versions, use "-dev". Do not add a build number!<br />
     /// Add "+metadata" only in dev builds!
     /// </summary>
-    public const string DisplayVersion = "3.5.0";
+    public const string DisplayVersion = "3.5.1";
 
     //allowmetadata, checkupdatelink,
     internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
@@ -98,7 +88,8 @@ public class SR2EEntryPoint : MelonMod
     static Dictionary<string, Type> menusToInit = new Dictionary<string, Type>();
     static MelonPreferences_Category prefs;
     static string branchJson = "";
-    internal static string DataPath => Path.Combine(MelonEnvironment.UserDataDirectory, "SR2E");
+    private static string SR2EFolderName = "SR2E";
+    internal static string DataPath => Path.Combine(MelonEnvironment.UserDataDirectory, SR2EFolderName);
     internal static string TmpDataPath => Path.Combine(DataPath, ".tmp");
     internal static string FlagDataPath => Path.Combine(DataPath, "flags");
     internal static string CustomVolumeProfilesPath => Path.Combine(DataPath, "customVolumeProfiles");
@@ -197,6 +188,8 @@ public class SR2EEntryPoint : MelonMod
             var ia = new GameObject();
             ia.AddComponent<LKeyInputAcquirer>();
             ia.AddComponent<KeyCodeInputAcquirer>();
+            if (RestoreDebugAbilities.HasFlag()) ia.AddComponent<DevelopmentBuildText>();
+            if (RestoreDebugDevConsole.HasFlag()) ia.AddComponent<DevConsoleFixer>();
             ia.name = "SR2EInputAcquirer";
             Object.DontDestroyOnLoad(ia);
         }
@@ -207,8 +200,7 @@ public class SR2EEntryPoint : MelonMod
         {
             //SaveComponents.RegisterComponent(typeof(ModdedV01));
         } 
-        foreach (var expansion in expansionsV3) try { expansion.OnLateInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); } 
-        
+        foreach (var expansion in expansionsV3) try { expansion.OnLateInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); }
     }
     IEnumerator GetBranchJson()
     {
@@ -293,12 +285,33 @@ public class SR2EEntryPoint : MelonMod
     {
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
         StaticOnEarlyInitializeMelon();
+        PatchIl2CppDetourMethodPatcher.InstallSecondPart(HarmonyInstance);
     }
 
     static void StaticOnEarlyInitializeMelon()
     {
         if (earlyRegistered) return;
         earlyRegistered = true;
+        string[] launchArgs = Environment.GetCommandLineArgs();
+        var usedArgs = new List<String>();
+        foreach (string arg in launchArgs)
+        {
+            if (arg.StartsWith("-sr2e.") && arg.Contains("="))
+            {
+                var split = arg.Split("=");
+                if (split.Length != 2) continue;
+                if (usedArgs.Contains(split[0])) continue;
+                usedArgs.Add(split[0]);
+                switch (split[0])
+                {
+                    case "-sr2e.id":
+                        int id = 0;
+                        try { id = int.Parse(split[1]); }catch { }
+                        if (id != 0) SR2EFolderName += id;
+                        break;
+                }
+            }
+        }
         if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
         if(!Directory.Exists(TmpDataPath)) Directory.CreateDirectory(TmpDataPath);
         if(!Directory.Exists(FlagDataPath)) Directory.CreateDirectory(FlagDataPath);
@@ -306,7 +319,26 @@ public class SR2EEntryPoint : MelonMod
         InitFlagManager();
     }
 
-    
+    void InjectIl2CppComponents()
+    {
+        var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
+        var devPatches = DevMode.HasFlag();
+        foreach (var type in types)
+        {
+            if (type == null) continue;
+            try
+            {
+                if (type.GetCustomAttribute<InjectClass>() == null) continue;
+                if(!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
+                    ClassInjector.RegisterTypeInIl2Cpp(type, new RegisterTypeOptions() { LogSuccess = false });
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Error(e);
+                MelonLogger.Error($"Failed to inject {type.FullName}: {e.Message}");
+            }
+        }
+    }
     void PatchGame()
     {
         if(!_usePrism) try { _usePrism= prefs.GetEntry<bool>("forceUsePrism").Value; }catch { }
@@ -412,6 +444,8 @@ public class SR2EEntryPoint : MelonMod
                 if (AllowExpansionsV1.HasFlag()) expansionsV1V2.Add(melonBase as SR2EExpansionV1);
                 else melonBase.Unregister();
         }
+
+        InjectIl2CppComponents();
         PatchGame();
 
         Application.add_logMessageReceived(new Action<string, string, LogType>(AppLogUnity));
@@ -457,6 +491,7 @@ public class SR2EEntryPoint : MelonMod
         CheckFallBackFont();
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnLoaded Scene: " + sceneName);
 
+        try { SR2EWarpManager.OnSceneLoaded(); } catch (Exception e) { MelonLogger.Error(e); }
         if(sceneName=="StandaloneStart"||sceneName=="CompanyLogo"||sceneName=="LoadScene")
             try {
                 if(MenuEUtil.isAnyMenuOpen) MenuEUtil.CloseOpenMenu(); 
@@ -529,6 +564,7 @@ public class SR2EEntryPoint : MelonMod
         foreach (var expansion in expansionsV3) try { expansion.OnSceneWasLoaded(buildIndex, sceneName); } catch (Exception e) { MelonLogger.Error(e); }
 
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
+        SR2ECounterGateManager.OnSceneWasLoaded(buildIndex, sceneName);
     }
 
     internal static void CheckForTime()
@@ -591,7 +627,6 @@ public class SR2EEntryPoint : MelonMod
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("OnUnloaded Scene: " + sceneName);
         if (sceneName == "MainMenuUI") mainMenuLoaded = false;
-        try { SR2EWarpManager.OnSceneUnloaded(); } catch (Exception e) { MelonLogger.Error(e); }
         
         switch (sceneName)
         {               

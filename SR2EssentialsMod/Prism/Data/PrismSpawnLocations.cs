@@ -10,4 +10,5 @@ public enum PrismSpawnLocations
     LabyrinthLavadepths = 50,
     LabyrinthDreamland = 60,
     LabyrinthHub = 70,
+    LabyrinthTerrarium = 80,
 }

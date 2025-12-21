@@ -14,7 +14,12 @@ internal class SR2MainMenuButtonPressPatch
     {
         if (__instance.Definition is CustomMainMenuItemDefinition definition)
         {
-            definition.customAction.Invoke();
+            if(definition.customAction!=null) definition.customAction.Invoke();
+            return false;
+        }
+        if (__instance.Definition is CustomMainMenuSubItemDefinition definition2)
+        {
+            if(definition2.customAction!=null) definition2.customAction.Invoke();
             return false;
         }
 
