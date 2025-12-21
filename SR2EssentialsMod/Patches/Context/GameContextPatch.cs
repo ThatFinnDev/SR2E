@@ -1,9 +1,6 @@
 using Il2CppMonomiPark.SlimeRancher.Damage;
 using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.UI;
-using Il2CppMonomiPark.SlimeRancher.UI.Framework.Audio;
-using Il2CppMonomiPark.SlimeRancher.UI.UIStyling;
-using Il2CppMonomiPark.SlimeRancher.World.Teleportation;
 using SR2E.Buttons;
 using SR2E.Components;
 using SR2E.Enums.Sounds;
@@ -13,7 +10,6 @@ using SR2E.Patches.General;
 using SR2E.Popups;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
-using UnityEngine.UI;
 
 namespace SR2E.Patches.Context;
 
@@ -39,9 +35,7 @@ internal class GameContextPatch
             if (!LookupEUtil.FXLibraryReversable.ContainsKey(pname))
                 LookupEUtil.FXLibraryReversable.AddItems(pname, particle, particle.gameObject);
         }
-
-        foreach (KeyValuePair<string, string> pair in teleportersToAdd)
-            AddTeleporter(pair.Key, pair.Value);
+;
 
         if (!SR2EEntryPoint.addedButtons)
         {
@@ -71,10 +65,8 @@ internal class GameContextPatch
 
                 }
             }
-
             if (AddCheatMenuButton.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
             if (DevMode.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugUI.DebugStatsManager.TogglePlayerDebugUI(); }));
-
         }
 
         Time.timeScale = 1f;
@@ -145,22 +137,5 @@ internal class GameContextPatch
             catch (Exception e) { MelonLogger.Error(e); }
     }
 
-    internal static Dictionary<string,string> teleportersToAdd = new Dictionary<string, string>()
-    {
-        {"SceneGroup.ConservatoryFields", "TeleporterHomeBlue"},
-        {"SceneGroup.RumblingGorge", "TeleporterZoneGorge"},
-        {"SceneGroup.LuminousStrand", "TeleporterZoneStrand"},
-        {"SceneGroup.PowderfallBluffs", "TeleporterZoneBluffs"},
-        {"SceneGroup.Labyrinth", "TeleporterZoneLabyrinth"},
-    };
-    internal static void AddTeleporter(string sceneGroup, string gadgetName)
-    {
-        StaticTeleporterNode teleporter = GameObject.Instantiate(LookupEUtil.GetGadgetDefinitionByName(gadgetName).prefab.transform.GetObjectRecursively<GadgetTeleporterNode>("Teleport Collider").gameObject.GetComponent<StaticTeleporterNode>(),prefabHolder.transform);
-        teleporter.gameObject.SetActive(false); 
-        teleporter.name = "TP-"+sceneGroup; 
-        teleporter.gameObject.MakePrefab(); 
-        teleporter._hasDestination = true;
-        SR2EWarpManager.teleporters.TryAdd(sceneGroup, teleporter);
-    }
 
 }

@@ -564,6 +564,7 @@ public class SR2EEntryPoint : MelonMod
         foreach (var expansion in expansionsV3) try { expansion.OnSceneWasLoaded(buildIndex, sceneName); } catch (Exception e) { MelonLogger.Error(e); }
 
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
+        SR2ECounterGateManager.OnSceneWasLoaded(buildIndex, sceneName);
     }
 
     internal static void CheckForTime()

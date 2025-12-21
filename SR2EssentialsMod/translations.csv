@@ -205,6 +205,8 @@ cmd.killall.successspecific,"Successfully killed all actors with type $1!","Es w
 cmd.killall.description,"Kills everything or only everything with a specified id","Entfernt alle Charakter oder nur welche mit einer bestimmten ID"
 cmd.kill.success,"Successfully killed the actor!","Es wurde erfolgreich der Charakter entfernt!"
 cmd.kill.description,"Kills what you're looking at","Entfernt, was du gerade anschaust!"
+cmd.destroy.success,"Successfully destroyed the object!","Das Object wurde erfolgreich entfernt!"
+cmd.destroy.description,"Destroys what you're looking at","Entfernt, was du gerade anschaust!"
 cmd.toggleui.success,"Successfully toggled the hud!","Das HUD wurde erfolgreich umgeschaltet!"
 cmd.toggleui.description,"Toggles the hud","Blendet das HUD aus oder ein"
 cmd.mods.success,"<color=blue>List of Mods Loaded:</color>","<color=blue>All geladenen Modifikationen:</color>"
