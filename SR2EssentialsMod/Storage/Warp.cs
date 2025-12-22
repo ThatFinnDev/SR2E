@@ -22,6 +22,18 @@ public class Warp
                 return g.IsGameplay;
         return false;
     }
+
+    bool IsInCorrectSceneGroup(string refIDCurrent, string refIDNext)
+    {
+        if (refIDCurrent == refIDNext) return true;
+        if (refIDCurrent == "SceneGroup.AllZones")
+        {
+            if (refIDNext == "SceneGroup.ConservatoryFields") return true;
+            if (refIDNext == "SceneGroup.PowderfallBluffs") return true;
+            if (refIDNext == "SceneGroup.RumblingGorge") return true;
+        }
+        return false;
+    }
     public SR2EError WarpPlayerThere()
     {
         if (!inGame) return SR2EError.NotInGame;
@@ -32,7 +44,7 @@ public class Warp
         SRCharacterController cc = sceneContext.Player.GetComponent<SRCharacterController>();
         if (cc == null) return SR2EError.SRCharacterControllerNull;
         MenuEUtil.CloseOpenMenu();
-        if (sceneGroup == p.SceneGroup.ReferenceId)
+        if (IsInCorrectSceneGroup(p.SceneGroup.ReferenceId,sceneGroup))
         {
             cc.Position = position;
             cc.Rotation = rotation;
