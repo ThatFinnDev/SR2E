@@ -23,6 +23,14 @@ public enum FeatureFlag
     /// </summary>
     IgnoreSaveErrors=40,
     /// <summary>
+    /// Shows world populator errors
+    /// </summary>
+    ShowWorldPopulatorErrors=41,
+    /// <summary>
+    /// Tries to ignore world populator errors
+    /// </summary>
+    IgnoreWorldPopulatorErrors=42,
+    /// <summary>
     /// Enable experimental features
     /// </summary>
     Experiments=50,

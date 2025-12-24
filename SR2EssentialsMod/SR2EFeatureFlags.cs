@@ -329,6 +329,7 @@ public static class SR2EFeatureFlags
         {RestoreDebugPlayerDebug, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
         {RestoreDebugDevConsole, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
         {RestoreDebugDebugUI, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
+        {IgnoreWorldPopulatorErrors, new FFR[]{new FFRActivated(ShowWorldPopulatorErrors)}}
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {

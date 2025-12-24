@@ -16,7 +16,7 @@ public static class SR2ECounterGateManager
         try
         {
             foreach (var cam in Camera.allCameras)
-                if(cam.name.Contains("Player"))
+                if(cam.name.Contains("Player")||cam.name.Contains("SRLECamera"))
                     cam.useOcclusionCulling = playerCameraUseOcclusionCulling;
         }
         catch 
