@@ -18,7 +18,9 @@ public class ExpansionEntryPoint : SR2EExpansionV3
 
     public override void OnEarlyCustomSaveDataReceived(RootSave saveRoot, LoadingGameSessionData loadingGameSessionData)
     {
-        // Do some stuff as soon as the save data has been received
+        // Optional check if the save data is the correct one.
+        if (!(saveRoot is ExampleSaveData)) return;
+        var data = (ExampleSaveData)saveRoot;
     }
 
     public override RootSave OnSaveCustomSaveData(SavingGameSessionData savingGameSessionData)
