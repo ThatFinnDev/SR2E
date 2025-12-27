@@ -23,12 +23,6 @@ internal static class SaveDirectorPatch
         /**/    } catch (Exception e) { MelonLogger.Error(e); }
         //OBSOLETE
         
-        if(SR2EEntryPoint.usePrism)
-            try
-            {
-                Prism.Patches.SaveDirectorPatch.Prefix(__instance);
-            }
-            catch (Exception e) { MelonLogger.Error(e); }
     }
     internal static void Postfix(AutoSaveDirector __instance)
     {
