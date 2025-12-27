@@ -10,7 +10,7 @@ namespace SR2E.Patches.CustomSaveData;
 [HarmonyPatch(typeof(GameModelPullHelpers), nameof(GameModelPullHelpers.PullGame))]
 internal static class CustomSaveDataSavePatch
 {
-    internal static string prefix = "SR2EData";
+    internal static string prefix = "SR2EDataV01";
     internal static void Postfix(GameModel gameModel,SavedGameInfoProvider savedGameInfoProvider, ISaveReferenceTranslation saveReferenceTranslation, GameMetadata metadata, ref GameV09 __result )
     {
         foreach (var expansion in SR2EEntryPoint.expansionsV3)

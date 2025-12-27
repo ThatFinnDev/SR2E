@@ -10,7 +10,7 @@ namespace SR2E.Patches.CustomSaveData;
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGame))]
 internal static class CustomSaveDataLoadPatch
 {
-    internal static string prefix = "SR2EData";
+    internal static string prefix = "SR2EDataV01";
     internal static void Prefix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, GameV09 gameState, GameModel gameModel)
     {
         foreach (var entry in gameState.ZoneIndex.IndexTable)
