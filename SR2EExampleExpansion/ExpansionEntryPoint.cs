@@ -1,5 +1,8 @@
-﻿using Il2CppMonomiPark.SlimeRancher;
+﻿using System.IO;
+using Il2CppMonomiPark.SlimeRancher;
 using SR2E.Expansion;
+using SR2E.Saving;
+using SR2E.Storage;
 using SR2E.Utils;
 
 namespace SR2EExampleExpansion;
@@ -13,6 +16,26 @@ public class ExpansionEntryPoint : SR2EExpansionV3
     }
 
 
+    public override void OnEarlyCustomSaveDataReceived(RootSave saveRoot, LoadingGameSessionData loadingGameSessionData)
+    {
+        // Do some stuff as soon as the save data has been received
+    }
+
+    public override RootSave OnSaveCustomSaveData(SavingGameSessionData savingGameSessionData)
+    {
+        // You can create a new TestSaveRoot or you can also have a static TestSaveRoot that you use constantly
+        // and return it here
+        var data = new ExampleSaveData();
+
+        data.ilList = new Il2CppSystem.Collections.Generic.List<string>();
+        data.ilList.Add("IL2CPP_Item");
+
+        data.ilDict = new Il2CppSystem.Collections.Generic.Dictionary<int, Vector3>();
+        data.ilDict.Add(1, Vector3.up);
+        return data;
+    }
+
+
     public override void AfterSaveDirectorLoaded(AutoSaveDirector saveDirector)
     {
     }
@@ -21,7 +44,6 @@ public class ExpansionEntryPoint : SR2EExpansionV3
     {
 
     }
-
 
     public override void LoadCommands()
     {

@@ -20,7 +20,7 @@ public static class SR2EFeatureFlags
         InjectMainMenuButtons,InjectRanchUIButtons,InjectPauseButtons,InjectTranslations,
         AddCheatMenuButton,AddModMenuButton,CheckForUpdates,AllowAutoUpdate,EnableInfHealth,
         EnableInfEnergy,EnableCheatMenu,EnableLocalizedVersionPatch,EnableThemeMenu,
-        ChangeSystemContextIsModded,AllowPrism, AllowSaveExport
+        ChangeSystemContextIsModded,AllowPrism, AllowSaveExport, TryFixingInvalidSceneGroups
         
     };
 

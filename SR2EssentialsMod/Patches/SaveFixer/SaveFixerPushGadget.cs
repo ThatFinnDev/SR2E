@@ -5,6 +5,7 @@ using Il2CppMonomiPark.SlimeRancher.Persist;
 
 namespace SR2E.Patches.SaveFixer;
 
+[HarmonyPriority(-99999999)]
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGadget))]
 internal static class SaveFixerPushGadget
 {

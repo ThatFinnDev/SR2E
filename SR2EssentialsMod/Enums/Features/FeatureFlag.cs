@@ -207,33 +207,38 @@ public enum FeatureFlag
     /// </summary>
     RedirectSaveFiles=390, //
     /// <summary>
-    /// Tries to restore Debug Abilities.
-    /// This isn't a faithful recreation of the true SR2 Debug tools.
-    /// However there are enough breadcrumbs in the code which.
-    /// help to make sense of the missing code and try to implement it as best as possible.
+    /// Tries to restore Debug Abilities.<br/>
+    /// This isn't a faithful recreation of the true SR2 Debug tools.<br/>
+    /// However there are enough breadcrumbs in the code which.<br/>
+    /// help to make sense of the missing code and try to implement it as best as possible.<br/>
     /// You need to enable the individual abilities
     /// </summary>
     RestoreDebugAbilities=400, //
     /// <summary>
-    /// Tries to restore Debug Ability.
+    /// Tries to restore Debug Ability.<br/>
     /// This restore the FPS counter
     /// </summary>
     RestoreDebugFPSViewer=401, //
     /// <summary>
-    /// Tries to restore Debug Ability.
+    /// Tries to restore Debug Ability.<br/>
     /// This restore the PlayerDebug ui
     /// </summary>
     RestoreDebugPlayerDebug=402, //
     /// <summary>
-    /// Tries to restore Debug Ability.
+    /// Tries to restore Debug Ability.<br/>
     /// This restore the unity dev console
     /// </summary>
     RestoreDebugDevConsole=403, //
     /// <summary>
-    /// Tries to restore Debug Ability.
+    /// Tries to restore Debug Ability.<br/>
     /// This restore the DebugUI
     /// </summary>
     RestoreDebugDebugUI=404, //
+    /// <summary>
+    /// This fixes loading SceneGroups with invalid scene references<br/>
+    /// If it stumbles across an invalid scene, it will be skipped
+    /// </summary>
+    TryFixingInvalidSceneGroups=410, //
     
     
 

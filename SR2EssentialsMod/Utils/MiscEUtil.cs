@@ -232,6 +232,14 @@ public static class MiscEUtil
     
     
     
+    // To DotNet Dictionary
+    public static Dictionary<TKey, TValue> ToNetDictionary<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dictionary) { if (dictionary == null) return null; var dict = new Dictionary<TKey, TValue>(); foreach (var pair in dictionary) dict.Add(pair.Key,pair.Value); return dict; }
+
+    
+    // To Il2CppSystem Dictionary
+    public static Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> ToIl2CppDictionary<TKey, TValue>(this Dictionary<TKey, TValue> dictionary) { if (dictionary == null) return null; var dict = new Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue>(); foreach (var pair in dictionary) dict.Add(pair.Key,pair.Value); return dict; }
+
+    
     // To System List
     public static List<T> ToNetList<T>(this HashSet<T> hashSet) { if (hashSet == null) return null; var list = new List<T>(); foreach (var item in hashSet) list.Add(item); return list; }
     public static List<T> ToNetList<T>(this Il2CppSystem.Collections.Generic.HashSet<T> hashSet) { if (hashSet == null) return null; var list = new List<T>(); foreach (var item in hashSet) list.Add(item); return list; }

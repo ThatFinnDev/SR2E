@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions; 
 using Il2CppInterop.Runtime.Injection;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -113,7 +114,7 @@ public class SR2EEntryPoint : MelonMod
     internal static float noclipAdjustSpeed => prefs.GetEntry<float>("noclipAdjustSpeed").Value; 
     internal static float noclipSpeedMultiplier => prefs.GetEntry<float>("noclipSpeedMultiplier").Value; 
     internal static bool enableDebugDirector => prefs.GetEntry<bool>("enableDebugDirector").Value;
-    
+
     static bool IsDisplayVersionValid()
     {
         if (!BuildInfo.DisplayVersion.Contains(BuildInfo.CodeVersion)) return false;
@@ -280,7 +281,6 @@ public class SR2EEntryPoint : MelonMod
             case LogType.Warning: unityLog.Warning(toDisplay); break;
         }
     }
-
     public override void OnEarlyInitializeMelon()
     {
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
@@ -556,10 +556,10 @@ public class SR2EEntryPoint : MelonMod
         {
             case "StandaloneEngagementPrompt": foreach (var expansion in expansionsV3) try { expansion.OnStandaloneEngagementPromptLoad(); }catch (Exception e) { MelonLogger.Error(e); } break;
             case "PlayerCore": foreach (var expansion in expansionsV3) try { expansion.OnPlayerCoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "UICore": foreach (var expansion in expansionsV3) try { expansion.OnUICoreLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "MainMenuUI": foreach (var expansion in expansionsV3) try { expansion.OnMainMenuUILoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "LoadScene": foreach (var expansion in expansionsV3) try { expansion.OnLoadSceneLoad(); } catch (Exception e) { MelonLogger.Error(e); } break;
-            case "ZoneCore": foreach (var expansion in expansionsV3) try { expansion.OnZoneCoreLoaded(); } catch (Exception e) { MelonLogger.Error(e); } break;
+            case "UICore": foreach (var expansion in expansionsV3) try { expansion.OnUICoreInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "MainMenuUI": foreach (var expansion in expansionsV3) try { expansion.OnMainMenuUIInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "LoadScene": foreach (var expansion in expansionsV3) try { expansion.OnLoadSceneInitialize(); }catch (Exception e) { MelonLogger.Error(e); } break;
+            case "ZoneCore": foreach (var expansion in expansionsV3) try { expansion.OnZoneCoreInitialized(); }catch (Exception e) { MelonLogger.Error(e); } break;
         }
         foreach (var expansion in expansionsV3) try { expansion.OnSceneWasLoaded(buildIndex, sceneName); } catch (Exception e) { MelonLogger.Error(e); }
 
@@ -755,7 +755,7 @@ public class SR2EEntryPoint : MelonMod
 
 
     //Forwarder for V3 Expansions
-    public override void OnPreSupportModule()
+    public override void OnPreSupportModule() 
     { foreach (var expansion in expansionsV3) try { expansion.OnPreSupportModule(); } catch (Exception e) { MelonLogger.Error(e); } }
     public override void OnFixedUpdate()
     { foreach (var expansion in expansionsV3) try { expansion.OnFixedUpdate(); } catch (Exception e) { MelonLogger.Error(e); } }

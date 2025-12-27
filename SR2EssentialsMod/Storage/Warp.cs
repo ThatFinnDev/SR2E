@@ -65,7 +65,7 @@ public class Warp
                     }
                 if(sc==null) return SR2EError.SceneGroupNotSupported;
                 SR2EWarpManager.warpTo = this;
-                TeleportPlayerPatch.isTeleportingPlayer = true;
+                SceneLoaderLoadSceneGroupPatch.isTeleportingPlayer = true;
                 LocationBookmarksUtil.GoToLocationPlayer(sc,position+new Vector3(0,LocationBookmarksUtil.PLAYER_HEIGHT/2,0),rotation.eulerAngles);
 
             }

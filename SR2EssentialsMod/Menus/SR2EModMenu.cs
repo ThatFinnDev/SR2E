@@ -237,9 +237,9 @@ public class SR2EModMenu : SR2EMenu
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("ModMenuModMenuTemplateButtonRec");
         buttonPrefab.SetActive(false);
         modButtons = new();
-        foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (object rotten in loadedAssembly.RottenMelons)
+        foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (dynamic rotten in loadedAssembly.RottenMelons)
         {
-            // Do it with reflection to support both ML 0.7.1 and newer
+            // Do it this way to support ML 0.7.1 and newer versions
             try
             {
                 Assembly assembly = null;
@@ -247,21 +247,19 @@ public class SR2EModMenu : SR2EMenu
                 string errorMessage = null;
                 try
                 {
-                    assembly = (Assembly)rotten.GetType().GetProperty("assembly").GetValue(rotten);
-                    if (assembly == null) throw new Exception();
-                    exception = rotten.GetType().GetProperty("exception").GetValue(rotten).ToString();
-                    errorMessage = rotten.GetType().GetProperty("errorMessage").GetValue(rotten).ToString();
+                    assembly = rotten.assembly;
+                    exception = rotten.exception?.ToString();
+                    errorMessage = rotten.errorMessage;
                 }
                 catch
                 {
                     try
                     {
-                        assembly = null;
-                        object mlassembly = rotten.GetType().GetProperty("Assembly").GetValue(rotten);
-                        assembly = (Assembly) mlassembly.GetType().GetProperty("assembly").GetValue(mlassembly);
-                        exception = rotten.GetType().GetProperty("exception").GetValue(rotten).ToString();
-                        errorMessage = rotten.GetType().GetProperty("errorMessage").GetValue(rotten).ToString();
-                    } catch { }
+                        assembly = rotten.Assembly.assembly;
+                        exception = rotten.exception?.ToString();
+                        errorMessage = rotten.errorMessage;
+                    }
+                    catch { }
                 }
                 if (assembly == null) break;
                 
