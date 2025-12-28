@@ -239,7 +239,28 @@ public abstract class SR2EExpansionV3
     public virtual void OnEarlyCustomSaveDataReceived(RootSave saveRoot, LoadingGameSessionData loadingGameSessionData) { }
 
     /// <summary>
-    /// Gets executed everytime a save file is being saved<br/><br />
+    /// Same as OnEarlyCustomSaveDataReceived but only gets called if this mod has no custom save data<br />
+    /// This gets executed as soon as the save file has been loaded<br />
+    /// Even before the game has spawned all it's actors etc.
+    /// </summary>
+    public virtual void OnEarlyNoCustomSaveDataReceived(LoadingGameSessionData loadingGameSessionData) { }
+    
+    
+    
+    /// <summary>
+    /// Loads the custom SaveRoot from a save file<br />
+    /// Check the type before proceeding<br />
+    /// </summary>
+    public virtual void OnCustomSaveDataReceived(RootSave saveRoot, LoadingGameSessionData loadingGameSessionData) { }
+
+    /// <summary>
+    /// Same as OnCustomSaveDataReceived but only gets called if this mod has no custom save data
+    /// </summary>
+    public virtual void OnNoCustomSaveDataReceived(LoadingGameSessionData loadingGameSessionData) { }
+    
+    
+    /// <summary>
+    /// Gets executed everytime a save file is being saved<br/>
     /// Return null if you don't use custom save data
     /// </summary>
     /// <returns>RootSave</returns>

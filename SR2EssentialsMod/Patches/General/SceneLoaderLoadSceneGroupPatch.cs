@@ -1,5 +1,6 @@
 
 using Il2CppMonomiPark.SlimeRancher.SceneManagement;
+using SR2E.Patches.CustomSaveData;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
@@ -18,10 +19,25 @@ internal class SceneLoaderLoadSceneGroupPatch
     [HarmonyPrefix,HarmonyPatch(typeof(SceneLoader), nameof(SceneLoader.LoadSceneGroup))]
     public static void LoadSceneGroup_Prefix(SceneLoader __instance, ref SceneGroup sceneGroup, ref SceneLoadingParameters parameters)
     {
+        // Teleporting fixing
         if (isTeleportingPlayer)
         {
             if (parameters != null) parameters.ReloadAllCoreScenes = false;
         }
+        if (parameters == null) parameters = new SceneLoadingParameters();
+        
+        // Custom save data
+        parameters.OnSceneGroupLoadedPhase2 +=
+            new System.Action<Il2CppSystem.Action<SceneLoadErrorData>>(action =>
+            {
+                try
+                {
+                    CustomSaveDataLoadPatch.ExecSaveDataReceived();
+                }
+                catch { }
+            });
+        
+        // Fix invalid SceneGroups
         if (!isTeleportingPlayer && !TryFixingInvalidSceneGroups.HasFlag()) return;
         try
         {
@@ -46,19 +62,18 @@ internal class SceneLoaderLoadSceneGroupPatch
             }
 
             var sG = sceneGroup;
-            if (parameters == null && hasInvalidSceneReferences) parameters = new SceneLoadingParameters();
             if (hasInvalidSceneReferences)
+            {
                 parameters.OnSceneGroupLoadedPhase2 +=
                     new System.Action<Il2CppSystem.Action<SceneLoadErrorData>>(action =>
                     {
                         sG._coreSceneReference = oldCore;
                         sG._sceneReferences = oldReferences.ToArray();
                     });
-            if (DebugLogging.HasFlag())
-            {
-                if (hasInvalidSceneReferences)
+                if (DebugLogging.HasFlag())
                     MelonLogger.Msg("HadInvalidSceneReferences");
             }
+            
         }
         catch (Exception e)
         {
