@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions; 
 using Il2CppInterop.Runtime.Injection;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -13,27 +10,17 @@ using Il2CppMonomiPark.ScriptedValue;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using MelonLoader.Utils;
-using Newtonsoft.Json.Linq;
 using SR2E.Expansion;
 using SR2E.Components;
 using SR2E.Managers;
 using SR2E.Menus;
-using SR2E.Patches.Context;
 using SR2E.Patches.General;
 using SR2E.Prism;
 using SR2E.Storage;
-using UnityEngine.Networking;
 
 namespace SR2E;
 
-public enum Branch
-{
-    Release,
-    Beta,
-    Alpha,
-    Developer
-}
-
+public enum Branch { Release, Beta, Alpha, Developer }
 // SR2E Build information. Please do not edit anything other than version numbers.
 public static class BuildInfo
 {
@@ -45,7 +32,7 @@ public static class BuildInfo
     public const string DownloadLink = "https://sr2e.sr2.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
-
+    
     /// <summary>
     /// Should be the same as CodeVersion unless this is non release build.<br />
     /// For alpha versions, add "-alpha.buildnumber" e.g 3.0.0-alpha.5<br />
@@ -56,8 +43,7 @@ public static class BuildInfo
     public const string DisplayVersion = "3.5.2-dev";
 
     //allowmetadata, checkupdatelink,
-    internal static readonly TripleDictionary<string, bool, string> PRE_INFO =
-        new TripleDictionary<string, bool, string>()
+    internal static readonly TripleDictionary<string, bool, string> PRE_INFO = new ()
         {
             { "release", (false, "https://api.sr2e.sr2.dev/branch/release") },
             { "alpha", (false, "https://api.sr2e.sr2.dev/branch/alpha") },
@@ -65,7 +51,6 @@ public static class BuildInfo
             { "dev", (true, "") },
         };
 }
-
 public class SR2EEntryPoint : MelonMod
 {
     internal static List<SR2EExpansionV1> expansionsV1V2 = new();
@@ -80,28 +65,23 @@ public class SR2EEntryPoint : MelonMod
     internal static bool menusFinished = false;
     internal static bool mainMenuLoaded = false;
     internal static GameObject SR2EStuff;
-    internal static bool updatedSR2E = false;
-    internal static string newVersion = null;
     internal static ScriptedBool saveSkipIntro;
     internal static bool addedButtons = false;
     internal static List<BaseUI> baseUIAddSliders = new List<BaseUI>();
     internal static Dictionary<SR2EMenu, Dictionary<string, object>> menus = new Dictionary<SR2EMenu, Dictionary<string, object>>();
-    static Dictionary<string, Type> menusToInit = new Dictionary<string, Type>();
     static MelonPreferences_Category prefs;
-    static string branchJson = "";
     private static string SR2EFolderName = "SR2E";
     internal static string DataPath => Path.Combine(MelonEnvironment.UserDataDirectory, SR2EFolderName);
     internal static string TmpDataPath => Path.Combine(DataPath, ".tmp");
     internal static string FlagDataPath => Path.Combine(DataPath, "flags");
     internal static string CustomVolumeProfilesPath => Path.Combine(DataPath, "customVolumeProfiles");
-    static bool IsLatestVersion => newVersion == BuildInfo.DisplayVersion;
     
     private static bool earlyRegistered = false;
     private static bool _usePrism = false;
     internal static bool usePrism => _usePrism;
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
     internal static string _mlVersion = "undefined";
-    
+    internal static MelonAssembly MLAssembly;
     
     
     internal static string onSaveLoadCommand => prefs.GetEntry<string>("onSaveLoadCommand").Value; 
@@ -130,12 +110,12 @@ public class SR2EEntryPoint : MelonMod
             if (preReleaseAndBuild != "dev") return false; /*Has no dot to indicate buildnumber*/
         string preRelease = preReleaseAndBuild != "dev" ? preReleaseAndBuild.Substring(0, dotIndex) : "dev";
         /*Check pre and meta*/ bool valid = false;
-        foreach (var pair in BuildInfo.PRE_INFO)
-            if (preRelease == pair.Key&&pair.Key!="release")
+        foreach (var triple in BuildInfo.PRE_INFO)
+            if (preRelease == triple.Key&&triple.Key!="release")
             {
-                if (!pair.Value.Item1 && hasMetadata) return false; //Has meta even though it's not allowed
+                if (!triple.Value.Item1 && hasMetadata) return false; //Has meta even though it's not allowed
                 valid = true;
-                updateBranch = pair.Key;
+                updateBranch = triple.Key;
                 break;
             }
         if (!valid) return false;
@@ -195,74 +175,11 @@ public class SR2EEntryPoint : MelonMod
             Object.DontDestroyOnLoad(ia);
         }
 
-        if (CheckForUpdates.HasFlag()) MelonCoroutines.Start(GetBranchJson());
-
-        if (usePrism)
-        {
-            //SaveComponents.RegisterComponent(typeof(ModdedV01));
-        } 
+        if (CheckForUpdates.HasFlag()) MelonCoroutines.Start(SR2EUpdateManager.GetBranchJson());
+        
         foreach (var expansion in expansionsV3) try { expansion.OnLateInitializeMelon(); } catch (Exception e) { MelonLogger.Error(e); }
     }
-    IEnumerator GetBranchJson()
-    {
-        string checkLink = BuildInfo.PRE_INFO[updateBranch].Item2;
-        if (string.IsNullOrEmpty(checkLink)) yield break;
-        UnityWebRequest uwr = UnityWebRequest.Get(checkLink);
-        yield return uwr.SendWebRequest();
-        if (uwr.isNetworkError || uwr.isHttpError) yield break;
-        string json = uwr.downloadHandler.text;
-        try { JObject.Parse(json); }
-        catch { MelonLogger.Msg("SR2E API either changed or is broken."); yield break; }
-        branchJson = json;
-        MelonCoroutines.Start(CheckForNewVersion());
-    }
-
-    IEnumerator CheckForNewVersion()
-    {
-        if (string.IsNullOrWhiteSpace(branchJson)) yield break;
-        try
-        {
-            var jobject = JObject.Parse(branchJson);
-            string latest = jobject["latest"].ToObject<string>();
-            newVersion = latest;
-            if (!IsLatestVersion) if (AllowAutoUpdate.HasFlag()) if (autoUpdate)
-                MelonCoroutines.Start(UpdateVersion());
-        }
-        catch { MelonLogger.Msg("SR2E API either changed or is broken."); }
-    }
-    IEnumerator UpdateVersion()
-    {
-        if (string.IsNullOrWhiteSpace(branchJson)) yield break;
-        string updateLink = "";
-        try
-        {
-            var jobject = JObject.Parse(branchJson);
-            string latest = jobject["latest"].ToObject<string>();
-            var latestVersion = jobject["versions_info"][latest];
-            updateLink = latestVersion["download_url"].ToObject<string>();
-        }
-        catch { MelonLogger.Msg("SR2E API either changed or is broken."); yield break; }
-        if (string.IsNullOrEmpty(updateLink)) yield break;
-        UnityWebRequest uwr = UnityWebRequest.Get(updateLink);
-        yield return uwr.SendWebRequest();
-        if (!uwr.isNetworkError && !uwr.isHttpError)
-            if (uwr.result == UnityWebRequest.Result.Success)
-            {
-                MelonLogger.Msg("Downloading SR2E complete");
-                string path = MelonAssembly.Assembly.Location;
-                if (File.Exists(path))
-                {
-                    if(File.Exists(path + ".old")) File.Delete(path + ".old");
-                    File.Move(path, path + ".old");
-                }
-                File.WriteAllBytes(Path.Combine(new FileInfo(path).Directory.FullName, "SR2E.dll"), uwr.downloadHandler.data);
-                updatedSR2E = true;
-                MelonLogger.Msg("Restart needed for applying SR2E update");
-            }
-    }
-
-
-
+    
     //Logging code from Atmudia and adapted
     private static void AppLogUnity(string message, string trace, LogType type)
     {
@@ -286,6 +203,7 @@ public class SR2EEntryPoint : MelonMod
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
         StaticOnEarlyInitializeMelon();
         PatchIl2CppDetourMethodPatcher.InstallSecondPart(HarmonyInstance);
+        MLAssembly = MelonAssembly;
     }
 
     static void StaticOnEarlyInitializeMelon()
@@ -422,24 +340,20 @@ public class SR2EEntryPoint : MelonMod
         RefreshPrefs();
         foreach (MelonBase melonBase in new List<MelonBase>(MelonBase.RegisteredMelons))
         {
-            if (melonBase is SR2EExpansionV2)
-                if (AllowExpansionsV2.HasFlag())
+            if (melonBase is SR2EExpansionV2) if (AllowExpansionsV2.HasFlag()) 
+            {
+                var attribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
+                if (attribute == null) melonBase.Unregister();
+                else
                 {
-                    var attribute = melonBase.MelonAssembly.Assembly.GetCustomAttribute<SR2EExpansionAttribute>();
-                    if (attribute == null) melonBase.Unregister();
+                    if(attribute.usePrism&&!AllowPrism.HasFlag()) melonBase.Unregister();
                     else
-                    {
-                        if(attribute.usePrism&&!AllowPrism.HasFlag()) melonBase.Unregister();
-                        else
-                        {
-                            if (attribute.usePrism)
-                                _usePrism = true;
-                            expansionsV2.Add(melonBase as SR2EExpansionV2);
-                        }
+                    { 
+                        if (attribute.usePrism) _usePrism = true; 
+                        expansionsV2.Add(melonBase as SR2EExpansionV2);
                     }
                 }
-                else melonBase.Unregister();
-            
+            } else melonBase.Unregister();
             if (melonBase is SR2EExpansionV1)
                 if (AllowExpansionsV1.HasFlag()) expansionsV1V2.Add(melonBase as SR2EExpansionV1);
                 else melonBase.Unregister();
@@ -459,7 +373,6 @@ public class SR2EEntryPoint : MelonMod
     {
         try { if (systemContext.SceneLoader.IsCurrentSceneGroupGameplay()) autoSaveDirector.SaveGame(); }catch { }
         foreach (var expansion in expansionsV3) try { expansion.OnApplicationQuit(); } catch (Exception e) { MelonLogger.Error(e); }
-        
     }
 
     internal static void CheckFallBackFont()
@@ -590,8 +503,6 @@ public class SR2EEntryPoint : MelonMod
         foreach (var expansion in expansionsV1V2) try { expansion.OnSR2FontLoad(); }catch (Exception e) { MelonLogger.Error(e); }
         foreach (var pair in menus) pair.Key.ReloadFont();
     }
-
-
     
 
     public override void OnSceneWasInitialized(int buildIndex, string sceneName)
@@ -676,63 +587,8 @@ public class SR2EEntryPoint : MelonMod
                 }
                 baseUIAddSliders.Remove(ui);
             }
-
-            if (!menusFinished)
+            if (menusFinished)
             {
-                GameObject obj = GameObject.FindGameObjectWithTag("Respawn");
-                if (SR2EStuff != null)
-                {
-                    SR2EStuff.SetActive(true);
-                    foreach (var pair in new Dictionary<string, Type>(menusToInit))
-                        for (int i = 0; i < SR2EStuff.transform.childCount; i++)
-                        {
-                            Transform child = SR2EStuff.transform.GetChild(i);
-                            if (child.name == pair.Key)
-                            {
-                                try
-                                {
-                                    child.AddComponent(pair.Value);
-                                    child.gameObject.SetActive(true);
-                                    menusToInit.Remove(pair.Key);
-                                }catch (Exception e) { MelonLogger.Error(e); }
-                            }
-                        }
-                    menusFinished = true;
-                }
-                else if (obj != null)
-                {
-                    SR2ELogManager.Start();
-                    SR2ESaveManager.Start();
-                    SR2ECommandManager.Start();
-                    SR2ERepoManager.Start();
-                    SR2EStuff = obj;
-                    obj.name = "SR2EStuff";
-                    obj.tag = "";
-                    obj.SetActive(false);
-                    GameObject.DontDestroyOnLoad(obj);
-                    foreach (var type in MelonAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract))
-                    {
-                        try
-                        {
-                            var identifier = type.GetMenuIdentifierByType();
-                            if (!string.IsNullOrWhiteSpace(identifier.saveKey))
-                            {
-                                var asset = SystemContextPatch.bundle.LoadAsset(SystemContextPatch.getMenuPath(identifier));
-                                var Object = GameObject.Instantiate(asset, obj.transform);
-                                menusToInit.Add(Object.name, type);
-                                if(!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
-                                    ClassInjector.RegisterTypeInIl2Cpp(type, new RegisterTypeOptions() { LogSuccess = false });
-                                
-                            }
-                            else MelonLogger.Error($"The menu under the name {type.Name} couldn't be loaded! It's MenuIdentifier is broken!");
-
-                        }catch (Exception e) { MelonLogger.Error(e); }
-                    }
-                }
-            }
-            else
-            {
-                
                 try { if (SR2EConsole.openKey.OnKeyDown()||SR2EConsole.openKey2.OnKeyDown()) MenuEUtil.GetMenu<SR2EConsole>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }

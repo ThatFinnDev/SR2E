@@ -1,5 +1,6 @@
 using SR2E.Components;
 using SR2E.Patches.General;
+using SR2E.Patches.Options;
 using UnityEngine.InputSystem;
 
 namespace SR2E.Commands;

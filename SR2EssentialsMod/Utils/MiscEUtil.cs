@@ -134,7 +134,24 @@ public static class MiscEUtil
     
     
     
-    
+    public static Il2CppArrayBase<T> RemoveToNew<T>(this Il2CppArrayBase<T> array, T obj) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array) list.Add(item);
+        if(list.Contains(obj)) list.Remove(obj);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
+    public static Il2CppArrayBase<T> AddToNew<T>(this Il2CppArrayBase<T> array, T obj) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array) list.Add(item);
+        list.Add(obj);
+        
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
     
     
     public static Il2CppReferenceArray<T> RemoveToNew<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase

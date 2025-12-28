@@ -8,6 +8,5 @@ public enum NativeOptionsUICategory
     BindingsKeyboardMouse=3,
     BindingsController=4,
     Audio=5,
-    GameplayInMainMenu=6,
-    GameplayInGame=7,
+    Gameplay=6,
 }

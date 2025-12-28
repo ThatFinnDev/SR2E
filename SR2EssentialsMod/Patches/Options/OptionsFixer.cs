@@ -1,7 +1,7 @@
 /*using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 // Not working yet :(
-namespace SR2E.Patches.SaveFixer;
+namespace SR2E.Patches.Options;
 
 [HarmonyPatch(typeof(OptionsDirector), nameof(OptionsDirector.PushSettings))]
 internal static class OptionsFixer

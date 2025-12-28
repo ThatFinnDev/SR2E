@@ -1,6 +1,6 @@
 using Il2CppMonomiPark.SlimeRancher.UI.Options;
 
-namespace SR2E.Patches.General;
+namespace SR2E.Patches.Options;
 
 [HarmonyPatch(typeof(OptionsUIRoot), nameof(OptionsUIRoot.ApplyChanges))]
 internal static class OptionsUIRootApplyPatch

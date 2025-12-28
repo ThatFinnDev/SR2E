@@ -1,19 +1,16 @@
-﻿
-using System;
+﻿using System;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
-
-using System;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.Options;
-using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
+using Il2CppMonomiPark.SlimeRancher.Platform;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Definition;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Definition.ButtonBehavior;
-using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Model;
+using Il2CppSystem.Linq;
 using Il2CppTMPro;
 using SR2E.Buttons;
-using SR2E.Components;
 using SR2E.Enums;
+using SR2E.Managers;
+using SR2E.Storage;
 
 namespace SR2E.Patches.MainMenu;
 
@@ -31,14 +28,14 @@ internal static class MainMenuLandingRootUIInitPatch
             return _rootStub;
         }
     }
-    internal static Dictionary<NativeOptionsUICategory,List<CustomOptionsUIButton>> customOptionsUIButtonsInNative = new();
-    internal static Dictionary<CustomOptionsUICategory,List<CustomOptionsUIButton>> customOptionsUICategories = new();
-    internal static Dictionary<CustomMainMenuButton,List<CustomMainMenuContainerButton>> buttons = new Dictionary<CustomMainMenuButton,List<CustomMainMenuContainerButton>>();
+    
+    internal static Dictionary<CustomMainMenuButton,HashSet<CustomMainMenuContainerButton>> buttons = new ();
+    
     internal static bool safeLock;
     internal static bool postSafeLock;
     internal static void Prefix(MainMenuLandingRootUI __instance)
     {
-        if (!InjectOptionsButtons.HasFlag()) try { LoadOptionsButtons(); }catch (Exception e) { MelonLogger.Error(e); }
+        if (InjectOptionsButtons.HasFlag()) try { SR2EOptionsButtonManager.GenerateMissingButtons(); }catch (Exception e) { MelonLogger.Error(e); }
         if (!InjectMainMenuButtons.HasFlag()) return;
         foreach (var pair in buttons)
         {
@@ -48,27 +45,24 @@ internal static class MainMenuLandingRootUIInitPatch
             {
                 try
                 {
-                    if (containerButton._definition2 != null)
+                    if (containerButton._definition2 == null) continue;
+                    
+                    var list = new List<ButtonBehaviorDefinition>();
+                    foreach (var pair2 in buttons)
                     {
-                        var list = new List<ButtonBehaviorDefinition>();
-                        foreach (var pair2 in buttons)
+                        if(pair2.Value.Contains(containerButton))
                         {
-                            if(pair2.Value.Contains(containerButton))
-                            {
-                                if (pair2.Key._definition != null) list.Add(pair2.Key._definition);
-                                else if (pair2.Key._definition2!=null) list.Add(pair2.Key._definition2);
-                            }
+                            if (pair2.Key._definition != null) list.Add(pair2.Key._definition);
+                            else if (pair2.Key._definition2!=null) list.Add(pair2.Key._definition2);
                         }
-                        button._definition2._subMenuItems = ScriptableObject.CreateInstance<ButtonBehaviorConfiguration>();
-                        button._definition2._subMenuItems.items = list.ToIl2CppList();
-                        if (__instance._mainMenuConfig.items.Contains(containerButton._definition2))
-                            continue;
-                        int _offset = 0;
-                        foreach (var item in __instance._mainMenuConfig.items) 
-                            if(item is LoadGameItemDefinition) if(!(item is CustomMainMenuItemDefinition)) _offset=1;
-                        __instance._mainMenuConfig.items.Insert(Math.Clamp(containerButton.insertIndex+_offset,0,__instance._mainMenuConfig.items.Count), containerButton._definition2);
                     }
-
+                    button._definition2._subMenuItems = ScriptableObject.CreateInstance<ButtonBehaviorConfiguration>();
+                    button._definition2._subMenuItems.items = list.ToIl2CppList();
+                    if (__instance._mainMenuConfig.items.Contains(containerButton._definition2)) continue;
+                    int _offset = 0;
+                    foreach (var item in __instance._mainMenuConfig.items) 
+                        if(item is LoadGameItemDefinition) if(!(item is CustomMainMenuItemDefinition)) _offset=1;
+                    __instance._mainMenuConfig.items.Insert(Math.Clamp(containerButton.insertIndex+_offset,0,__instance._mainMenuConfig.items.Count), containerButton._definition2);
                 }
                 catch (Exception e) { MelonLogger.Error(e); }
             }
@@ -94,18 +88,17 @@ internal static class MainMenuLandingRootUIInitPatch
 
     static void ChangeVersionLabel()
     {
-        
         if (EnableLocalizedVersionPatch.HasFlag()) 
             try
             {
                 var versionLabel = Get<LocalizedVersionText>("Version Label").GetComponent<TextMeshProUGUI>();
                 if(!versionLabel.text.Contains("Mel"))
                 {
-                    if (SR2EEntryPoint.newVersion != null)
-                        if (SR2EEntryPoint.newVersion != BuildInfo.DisplayVersion)
+                    if (SR2EUpdateManager.newVersion != null)
+                        if (SR2EUpdateManager.newVersion != BuildInfo.DisplayVersion)
                         {
-                            if (SR2EEntryPoint.updatedSR2E) versionLabel.text = translation("patches.localizedversionpatch.downloadedversion", SR2EEntryPoint.newVersion, versionLabel.text);
-                            else versionLabel.text = translation("patches.localizedversionpatch.newversion", SR2EEntryPoint.newVersion, versionLabel.text);
+                            if (SR2EUpdateManager.updatedSR2E) versionLabel.text = translation("patches.localizedversionpatch.downloadedversion", SR2EUpdateManager.newVersion, versionLabel.text);
+                            else versionLabel.text = translation("patches.localizedversionpatch.newversion", SR2EUpdateManager.newVersion, versionLabel.text);
                         }
                     versionLabel.text = translation("patches.localizedversionpatch.default", mlVersion, versionLabel.text);
                 }
@@ -121,27 +114,5 @@ internal static class MainMenuLandingRootUIInitPatch
     }
 
     public static bool alreadyLoadedOptions = false;
-    //"OptionsConfiguration_MainMenu"
-    //"OptionsConfiguration_InGame"
-    public static void LoadOptionsButtons()
-    {
-        var configuration = Get<OptionsConfiguration>("OptionsConfiguration_MainMenu");
-        foreach (var categoryObj in configuration.items)
-            foreach (var category in customOptionsUIButtonsInNative)
-            {
-                if (categoryObj.name == "Display" && category.Key != NativeOptionsUICategory.Display) continue;
-                if (categoryObj.name == "Video" && category.Key != NativeOptionsUICategory.Video) continue;
-                if (categoryObj.name == "Input" && category.Key != NativeOptionsUICategory.Input) continue;
-                if (categoryObj.name == "BindingsKbm" && category.Key != NativeOptionsUICategory.BindingsKeyboardMouse) continue;
-                if (categoryObj.name == "BindingsGamepad" && category.Key != NativeOptionsUICategory.BindingsController) continue;
-                if (categoryObj.name == "Audio" && category.Key != NativeOptionsUICategory.Audio) continue;
-                if (categoryObj.name == "GameplayIn_MainMenu" && category.Key != NativeOptionsUICategory.GameplayInMainMenu) continue;
-                
-                // ADD BUTTONS FOR NATIVE
-            }
-        foreach (var category in customOptionsUICategories)
-        {
-            // ADD BUTTONS FOR CUSTOM CATEGORIES
-        }
-    }
+    
 }

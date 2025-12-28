@@ -193,6 +193,10 @@ public enum FeatureFlag
     /// Inject buttons in the options ui
     /// </summary>
     InjectOptionsButtons=355,
+    /// <summary>
+    /// Inject test buttons in the OptionsUI
+    /// </summary>
+    AddMockOptionsUIButtons=356, //
 
     //Updates and Patches
     /// <summary>
