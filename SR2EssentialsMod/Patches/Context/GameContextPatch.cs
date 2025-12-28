@@ -45,7 +45,7 @@ internal class GameContextPatch
                 LocalizedString label = AddTranslationFromSR2E("buttons.mods.label", "b.button_mods_sr2e", "UI");
                 new CustomMainMenuButton(label, EmbeddedResourceEUtil.LoadSprite("Assets.modsMenuIcon.png").CopyWithoutMipmaps(), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
                 new CustomPauseMenuButton(label, 3, (System.Action)(() => { MenuEUtil.GetMenu<SR2EModMenu>().Open(); }));
-                if (AddTestButtons.HasFlag())
+                if (AddMockMainMenuButtons.HasFlag())
                 {
                     var con = new CustomMainMenuContainerButton(AddTranslation("SubMenu"), null, 3, null);
                     con.AddSubButton(new CustomMainMenuButton(AddTranslation("InSubmenu1"), null, 0, (System.Action)(() => { SR2ETextViewer.Open("This is a button in the submenu1"); })));

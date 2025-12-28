@@ -324,12 +324,13 @@ public static class SR2EFeatureFlags
         {AllowExpansionsV1,new FFR[]{new FFRActivated(AllowExpansions)}},
         {AllowExpansionsV2,new FFR[]{new FFRActivated(AllowExpansions)}},
         {AllowExpansionsV3,new FFR[]{new FFRActivated(AllowExpansions)}},
-        {AddTestButtons, new FFR[]{new FFRActivated(InjectMainMenuButtons)}},
+        {AddMockMainMenuButtons, new FFR[]{new FFRActivated(InjectMainMenuButtons)}},
         {RestoreDebugFPSViewer, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
         {RestoreDebugPlayerDebug, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
         {RestoreDebugDevConsole, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
         {RestoreDebugDebugUI, new FFR[]{new FFRActivated(RestoreDebugAbilities)}},
-        {IgnoreWorldPopulatorErrors, new FFR[]{new FFRActivated(ShowWorldPopulatorErrors)}}
+        {IgnoreWorldPopulatorErrors, new FFR[]{new FFRActivated(ShowWorldPopulatorErrors)}},
+        {InjectOptionsButtons, new FFR[]{new FFRActivated(Experiments)}}
     };
     static bool requirementsMet(this FeatureFlag featureFlag)
     {

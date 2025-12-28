@@ -4,6 +4,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 
 using System;
 using Il2CppMonomiPark.SlimeRancher;
+using Il2CppMonomiPark.SlimeRancher.Options;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu;
 using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Definition;
@@ -12,6 +13,7 @@ using Il2CppMonomiPark.SlimeRancher.UI.MainMenu.Model;
 using Il2CppTMPro;
 using SR2E.Buttons;
 using SR2E.Components;
+using SR2E.Enums;
 
 namespace SR2E.Patches.MainMenu;
 
@@ -29,11 +31,14 @@ internal static class MainMenuLandingRootUIInitPatch
             return _rootStub;
         }
     }
+    internal static Dictionary<NativeOptionsUICategory,List<CustomOptionsUIButton>> customOptionsUIButtonsInNative = new();
+    internal static Dictionary<CustomOptionsUICategory,List<CustomOptionsUIButton>> customOptionsUICategories = new();
     internal static Dictionary<CustomMainMenuButton,List<CustomMainMenuContainerButton>> buttons = new Dictionary<CustomMainMenuButton,List<CustomMainMenuContainerButton>>();
     internal static bool safeLock;
     internal static bool postSafeLock;
     internal static void Prefix(MainMenuLandingRootUI __instance)
     {
+        if (!InjectOptionsButtons.HasFlag()) try { LoadOptionsButtons(); }catch (Exception e) { MelonLogger.Error(e); }
         if (!InjectMainMenuButtons.HasFlag()) return;
         foreach (var pair in buttons)
         {
@@ -113,5 +118,30 @@ internal static class MainMenuLandingRootUIInitPatch
         ExecuteInTicks((() => { ChangeVersionLabel();}), 1);
         ExecuteInTicks((() => { ChangeVersionLabel();}), 3);
         ExecuteInTicks((() => { ChangeVersionLabel();}), 10);            
+    }
+
+    public static bool alreadyLoadedOptions = false;
+    //"OptionsConfiguration_MainMenu"
+    //"OptionsConfiguration_InGame"
+    public static void LoadOptionsButtons()
+    {
+        var configuration = Get<OptionsConfiguration>("OptionsConfiguration_MainMenu");
+        foreach (var categoryObj in configuration.items)
+            foreach (var category in customOptionsUIButtonsInNative)
+            {
+                if (categoryObj.name == "Display" && category.Key != NativeOptionsUICategory.Display) continue;
+                if (categoryObj.name == "Video" && category.Key != NativeOptionsUICategory.Video) continue;
+                if (categoryObj.name == "Input" && category.Key != NativeOptionsUICategory.Input) continue;
+                if (categoryObj.name == "BindingsKbm" && category.Key != NativeOptionsUICategory.BindingsKeyboardMouse) continue;
+                if (categoryObj.name == "BindingsGamepad" && category.Key != NativeOptionsUICategory.BindingsController) continue;
+                if (categoryObj.name == "Audio" && category.Key != NativeOptionsUICategory.Audio) continue;
+                if (categoryObj.name == "GameplayIn_MainMenu" && category.Key != NativeOptionsUICategory.GameplayInMainMenu) continue;
+                
+                // ADD BUTTONS FOR NATIVE
+            }
+        foreach (var category in customOptionsUICategories)
+        {
+            // ADD BUTTONS FOR CUSTOM CATEGORIES
+        }
     }
 }

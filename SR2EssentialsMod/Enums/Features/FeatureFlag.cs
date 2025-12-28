@@ -1,3 +1,5 @@
+using System;
+
 namespace SR2E.Enums.Features;
 
 public enum FeatureFlag
@@ -177,7 +179,8 @@ public enum FeatureFlag
     /// <summary>
     /// Inject test buttons in the main menu
     /// </summary>
-    AddTestButtons=331, //
+    AddMockMainMenuButtons=331, //
+    [Obsolete("Please use "+nameof(AddMockMainMenuButtons),true)]AddTestButtons=331, //
     /// <summary>
     /// Inject buttons in the ranch house ui
     /// </summary>
@@ -186,6 +189,10 @@ public enum FeatureFlag
     /// Inject buttons in the pause menu
     /// </summary>
     InjectPauseButtons=350, //
+    /// <summary>
+    /// Inject buttons in the options ui
+    /// </summary>
+    InjectOptionsButtons=355,
 
     //Updates and Patches
     /// <summary>
