@@ -19,4 +19,5 @@ using SR2E.Expansion;
 [assembly: AssemblyMetadata(SR2EExpansionAttributes.Contributors,SR2E.BuildInfo.Contributors)]
 [assembly: AssemblyMetadata(SR2EExpansionAttributes.SourceCode,SR2E.BuildInfo.SourceCode)]
 [assembly: AssemblyMetadata(SR2EExpansionAttributes.Nexus,SR2E.BuildInfo.Nexus)]
+[assembly: AssemblyMetadata(SR2EExpansionAttributes.Discord,SR2E.BuildInfo.Discord)]
 [assembly: HarmonyDontPatchAll()]

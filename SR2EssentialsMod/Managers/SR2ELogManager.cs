@@ -8,7 +8,19 @@ public static class SR2ELogManager
 {
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     internal static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
-
+    
+    /// <summary>
+    /// An event which gets executed everytime a message is sent
+    /// </summary>
+    public static event Action<string> OnSendMessage;
+    /// <summary>
+    /// An event which gets executed everytime a warning is sent
+    /// </summary>
+    public static event Action<string> OnSendWarning;
+    /// <summary>
+    /// An event which gets executed everytime an error is sent
+    /// </summary>
+    public static event Action<string> OnSendError;
     static MelonLogger.Instance mlog;
     const string logName = "SR2E-Console";
     internal static void Start()
@@ -32,8 +44,7 @@ public static class SR2ELogManager
     {
         if (HideMessage(message)) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Msg(message);
-        SR2EConsole console = MenuEUtil.GetMenu<SR2EConsole>();
-        if(console!=null) console.SendMessage(message);
+        OnSendMessage.Invoke(message);
     }
     
     
@@ -48,8 +59,7 @@ public static class SR2ELogManager
     {
         if (HideMessage(message)) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Error(message);
-        var console = MenuEUtil.GetMenu<SR2EConsole>();
-        if(console!=null) console.SendError(message);
+        OnSendError.Invoke(message);
     }
 
     /// <summary>
@@ -63,28 +73,27 @@ public static class SR2ELogManager
     {
         if (HideMessage(message)) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Warning(message);
-        var console = MenuEUtil.GetMenu<SR2EConsole>();
-        if(console!=null) console.SendWarning(message);
+        OnSendWarning.Invoke(message);
     }
     
     
     
     /// <summary>
-    /// Display a message
+    /// Displays a message box
     /// </summary>
     public static void Alert(string message)
     {
         Alert("Alert!", message,SR2EEntryPoint.SR2ELogToMLLog);
     }
     /// <summary>
-    /// Display a message
+    /// Displays a message box
     /// </summary>
     public static void Alert(string title, string message)
     {
         Alert(title,message, SR2EEntryPoint.SR2ELogToMLLog);
     }
     /// <summary>
-    /// Display a message
+    /// Displays a message box
     /// </summary>
     public static void Alert(string title, string message, bool doMLLog, bool internal_logMLForSingleLine = true)
     {

@@ -13,10 +13,10 @@ public class CustomOptionsUICategory
     public int insertIndex;
     internal OptionsItemCategory _category;
     public Sprite icon;
-    public OptionsUIVisibleState visibleState;
+    public OptionsButtonType visibleState;
     public bool enabled = true;
 
-    public CustomOptionsUICategory(LocalizedString label, int insertIndex, Sprite icon, OptionsUIVisibleState visibleState)
+    public CustomOptionsUICategory(LocalizedString label, int insertIndex, Sprite icon, OptionsButtonType visibleState)
     {
         this.label = label; 
         this.insertIndex = insertIndex;

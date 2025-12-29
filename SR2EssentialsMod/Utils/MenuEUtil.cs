@@ -63,7 +63,19 @@ public static class MenuEUtil
 
         if (fontAsset != null) menu.ApplyFont(fontAsset);
     }
-
+    internal static GameObject GetMenuRootObject(this Type type)
+    {
+        try
+        {
+            var methodInfo = type.GetMethod(nameof(SR2EMenu.GetMenuRootObject), BindingFlags.Static | BindingFlags.Public);
+            if (methodInfo == null) return null;
+            dynamic result = methodInfo.Invoke(null, null);
+            if (result == null) return null;
+            if (result is GameObject) return result as GameObject;
+        }
+        catch (Exception e) { MelonLogger.Error(e); }
+        return null;
+    }
     internal static MenuIdentifier GetMenuIdentifierByType(this Type type)
     {
         try
@@ -107,7 +119,7 @@ public static class MenuEUtil
             {
                 SR2ESaveManager.data.themes.TryAdd(identifier.saveKey, identifier.defaultTheme);
                 SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[identifier.saveKey];
-                List<SR2EMenuTheme> validThemes = MenuEUtil.GetValidThemes(identifier.saveKey);
+                List<SR2EMenuTheme> validThemes = GetValidThemes(identifier.saveKey);
                 if (validThemes.Count == 0) return SR2EMenuTheme.Default;
                 if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
                 return currentTheme;

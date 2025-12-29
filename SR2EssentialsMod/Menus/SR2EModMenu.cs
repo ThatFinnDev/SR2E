@@ -207,6 +207,7 @@ public class SR2EModMenu : SR2EMenu
                 {
                     case SR2EExpansionAttributes.SourceCode: try { modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode", FormatLink(meta.Value)); }catch { } break;
                     case SR2EExpansionAttributes.Nexus: try { modInfoText.text += "\n" + translation("modmenu.modinfo.nexus", FormatLink(meta.Value)); }catch { } break;
+                    case SR2EExpansionAttributes.Discord: try { modInfoText.text += "\n" + translation("modmenu.modinfo.discord", FormatLink(meta.Value)); }catch { } break;
                 }
             }
 

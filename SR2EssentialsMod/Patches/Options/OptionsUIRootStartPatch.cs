@@ -10,6 +10,7 @@ internal static class OptionsUIRootStartPatch
     //"OptionsConfiguration_InGame"
     public static void Prefix()
     {
+        if (!InjectOptionsButtons.HasFlag()) return;
         if(SR2EEntryPoint.mainMenuLoaded) SR2EOptionsButtonManager.LoadCustomOptionsButtons("OptionsConfiguration_MainMenu");
         else if(inGame) SR2EOptionsButtonManager.LoadCustomOptionsButtons("OptionsConfiguration_InGame");
     }

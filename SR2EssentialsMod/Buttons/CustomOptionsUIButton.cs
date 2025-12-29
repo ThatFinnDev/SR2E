@@ -1,9 +1,11 @@
 using Il2CppMonomiPark.SlimeRancher.Options;
+using SR2E.Enums;
 
 namespace SR2E.Buttons;
 
 public abstract class CustomOptionsUIButton
 {
+    public OptionsButtonType type = OptionsButtonType.OptionsUI;
     internal static List<string> usedIds = new List<string>();
     public int insertIndex;
     private OptionsItemDefinition _definition;

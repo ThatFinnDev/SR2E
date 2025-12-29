@@ -32,6 +32,7 @@ public static class BuildInfo
     public const string DownloadLink = "https://sr2e.sr2.dev/";
     public const string SourceCode = "https://github.com/ThatFinnDev/SR2E";
     public const string Nexus = "https://www.nexusmods.com/slimerancher2/mods/60";
+    public const string Discord = "https://discord.gg/a7wfBw5feU";
     
     /// <summary>
     /// Should be the same as CodeVersion unless this is non release build.<br />

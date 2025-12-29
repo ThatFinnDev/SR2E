@@ -19,7 +19,7 @@ public abstract class SR2EMenu : MonoBehaviour
 {
     private bool changedOpenState = false;
 
-
+    public static GameObject GetMenuRootObject() => null;
     public static MenuIdentifier GetMenuIdentifier() => new();
 
     //SR2EMenu doesnt work for whatever reason

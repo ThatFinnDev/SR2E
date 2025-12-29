@@ -8,7 +8,7 @@ using UnityEngine.UI;
 // PLEASE COPY THIS FILE INTO YOUR PROJECT AS IS!
 
 // Leave this as is
-[assembly: AssemblyTitle(BuildInfo.Name)] [assembly: AssemblyDescription(BuildInfo.Description)] [assembly: AssemblyCompany(BuildInfo.Company)] [assembly: AssemblyProduct(BuildInfo.Name)] [assembly: AssemblyCopyright($"Created by {BuildInfo.Author}")] [assembly: AssemblyTrademark(BuildInfo.Company)]
+[assembly: AssemblyTitle(BuildInfo.Name)] [assembly: AssemblyDescription(BuildInfo.Description)] [assembly: AssemblyCompany(BuildInfo.Company)] [assembly: AssemblyProduct(BuildInfo.Name)] [assembly: AssemblyCopyright($"Created by {BuildInfo.Author}")] [assembly: AssemblyTrademark(BuildInfo.Company)] [assembly: AssemblyMetadata(SR2EExpansionAttributes.Discord, BuildInfo.Discord)]
 [assembly: AssemblyVersion(BuildInfo.Version)] [assembly: AssemblyFileVersion(BuildInfo.Version)] [assembly: MelonInfo(typeof(MLEntrypoint), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author, BuildInfo.DownloadLink)] [assembly: MelonGame("MonomiPark", "SlimeRancher2")] [assembly: AssemblyMetadata(SR2EExpansionAttributes.CoAuthors, BuildInfo.CoAuthors)] [assembly: AssemblyMetadata(SR2EExpansionAttributes.MinSR2EVersion, BuildInfo.MinSR2EVersion)]
 [assembly: AssemblyMetadata(SR2EExpansionAttributes.Contributors, BuildInfo.Contributors)] [assembly: AssemblyMetadata(SR2EExpansionAttributes.SourceCode, BuildInfo.SourceCode)] [assembly: AssemblyMetadata(SR2EExpansionAttributes.Nexus, BuildInfo.Nexus)] [assembly: AssemblyMetadata(SR2EExpansionAttributes.UsePrism, BuildInfo.UsePrism)]  [assembly: AssemblyMetadata(SR2EExpansionAttributes.IsExpansion, "true")] [assembly: MelonAdditionalDependencies("SR2E")]
 //
@@ -36,6 +36,7 @@ internal static class BuildInfo
     internal const string SourceCode = null; // Source Link for the Expansion.  (optional, set as null if none)
     internal const string Nexus = null; // Nexus Link for the Expansion.  (optional, set as null if none)
     internal const string UsePrism = "true"; // Enable if you use Prism, use "true" or "false"
+    internal const string Discord = null; // Discord Link for th Expansion.  (optional, set as null if none)
     internal const string MinSR2EVersion = SR2E.BuildInfo.CodeVersion; // e.g "3.4.3", the min required SR2 version. No beta or alpha versions
 }
 

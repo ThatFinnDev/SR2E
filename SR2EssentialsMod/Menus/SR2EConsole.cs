@@ -48,6 +48,9 @@ public class SR2EConsole : SR2EMenu
     {
         SendMessage(translation("console.helloworld"));
         SendMessage(translation("console.info"));
+        SR2ELogManager.OnSendMessage += SendMessage;
+        SR2ELogManager.OnSendWarning += SendWarning;
+        SR2ELogManager.OnSendError += SendError;
     }
 
     public void Send(string message, Color32 color)

@@ -19,7 +19,7 @@ internal static class OptionsUIRootSwapCategoryPatch
         foreach (var def in category.items.ToNetList())
         {
             if (def!=null)
-                if (def is CustomOptionsUIValuesDefinition customDef && def.ReferenceId.StartsWith("setting.sr2eexclude"))
+                if (def is CustomOptionsValuesDefinition customDef && def.ReferenceId.StartsWith("setting.sr2eexclude"))
                 {
                     IOptionsItemModel model = null;
                     if (customDef._optionsItemModels.Count > 0 && customDef._optionsItemModels[0] != null)

@@ -17,15 +17,14 @@ public class ExpansionEntryPoint : SR2EExpansionV3
 
     public override void OnNoCustomSaveDataReceived(LoadingGameSessionData loadingGameSessionData)
     {
-        // Loading a save without custom save data from this mod or
-        // save data is broken
+        // Loading a save without custom save data from this mod or save data is broken and has been reset
         // Do whatever you want
         
     }
     public override void OnCustomSaveDataReceived(RootSave saveRoot, LoadingGameSessionData loadingGameSessionData)
     {
         // Optional check if the save data is the correct one.
-        if (!(saveRoot is ExampleSaveData)) return;
+        if (!(saveRoot is ExampleSaveData)) { OnNoCustomSaveDataReceived(loadingGameSessionData); return; }
         var data = (ExampleSaveData)saveRoot;
         // Do whatever you want
     }

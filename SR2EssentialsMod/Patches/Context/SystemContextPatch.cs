@@ -82,7 +82,6 @@ internal class SystemContextPatch
                     SR2ERepoManager.Start();
                     SR2EEntryPoint.SR2EStuff = instance;
                     instance.name = "SR2EStuff";
-                    instance.tag = "";
                     instance.SetActive(false);
                     GameObject.DontDestroyOnLoad(instance);
                     foreach (var type in SR2EEntryPoint.MLAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract))
@@ -92,9 +91,25 @@ internal class SystemContextPatch
                             var identifier = type.GetMenuIdentifierByType();
                             if (!string.IsNullOrWhiteSpace(identifier.saveKey))
                             {
-                                var asset = bundle.LoadAsset(getMenuPath(identifier));
-                                var Object = GameObject.Instantiate(asset, instance.transform);
-                                menusToInit.Add(Object.name, type);
+                                var path = getMenuPath(identifier);
+                                bool assetEmpty = path == null;
+                                if (assetEmpty) assetEmpty = !bundle.Contains(path);
+
+                                UnityEngine.Object rootObject = type.GetMenuRootObject();
+                                
+                                if (!assetEmpty&&rootObject==null)
+                                {
+                                    rootObject = GameObject.Instantiate(bundle.LoadAsset(path), instance.transform);
+                                }
+                                if (rootObject == null)
+                                {
+                                    var message = $"The menu under the name {type.Name} couldn't be loaded! It's root object is null!";
+                                    MelonLogger.Error(message);
+                                    throw new Exception(message);
+                                }
+
+                                rootObject.Cast<GameObject>().transform.SetParent(instance.transform);
+                                menusToInit.Add(rootObject.name, type);
                                 if (!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
                                     ClassInjector.RegisterTypeInIl2Cpp(type,
                                         new RegisterTypeOptions() { LogSuccess = false });

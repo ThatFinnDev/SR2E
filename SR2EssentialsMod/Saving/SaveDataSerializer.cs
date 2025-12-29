@@ -249,38 +249,61 @@ internal static class SaveDataSerializer
             case DataType.Array: {
                 var len = r.ReadInt32();
                 var typeName = r.ReadString();
-                var eType = Type.GetType(typeName) ?? throw new Exception($"Could not find type {typeName}");
-                var arr = Array.CreateInstance(eType, len);
-                for (var i = 0; i < len; i++) arr.SetValue(ReadObject(r, table, onLoadList), i);
+                var eType = Type.GetType(typeName);
+                Array arr = null;
+                if (eType != null) arr = Array.CreateInstance(eType, len);
+                for (var i = 0; i < len; i++) {
+                    var val = ReadObject(r, table, onLoadList);
+                    if (arr != null) arr.SetValue(val, i);
+                }
                 return arr;
             }
             case DataType.List: {
                 var count = r.ReadInt32();
                 var typeName = r.ReadString();
-                var eType = Type.GetType(typeName) ?? throw new Exception($"Could not find type {typeName}");
-                var netType = typeof(List<>).MakeGenericType(eType);
-                var list = (IList)Activator.CreateInstance(netType);
-                for (var i = 0; i < count; i++) list.Add(ReadObject(r, table, onLoadList));
+                var eType = Type.GetType(typeName);
+                IList list = null;
+                if (eType != null) {
+                    var netType = typeof(List<>).MakeGenericType(eType);
+                    list = (IList)Activator.CreateInstance(netType);
+                }
+                for (var i = 0; i < count; i++) {
+                    var val = ReadObject(r, table, onLoadList);
+                    if (list != null) list.Add(val);
+                }
                 return list;
             }
             case DataType.Dictionary: {
                 var count = r.ReadInt32();
                 var kName = r.ReadString();
                 var vName = r.ReadString();
-                var kType = Type.GetType(kName) ?? throw new Exception($"Could not find type {kName}");
-                var vType = Type.GetType(vName) ?? throw new Exception($"Could not find type {vName}");
-                var netType = typeof(Dictionary<,>).MakeGenericType(kType, vType);
-                var dict = (IDictionary)Activator.CreateInstance(netType);
-                for (var i = 0; i < count; i++) dict.Add(ReadObject(r, table, onLoadList), ReadObject(r, table, onLoadList));
+                var kType = Type.GetType(kName);
+                var vType = Type.GetType(vName);
+                IDictionary dict = null;
+                if (kType != null && vType != null) {
+                    var netType = typeof(Dictionary<,>).MakeGenericType(kType, vType);
+                    dict = (IDictionary)Activator.CreateInstance(netType);
+                }
+                for (var i = 0; i < count; i++) {
+                    var key = ReadObject(r, table, onLoadList);
+                    var val = ReadObject(r, table, onLoadList);
+                    if (dict != null) dict.Add(key, val);
+                }
                 return dict;
             }
             case DataType.HashSet: {
                 var count = r.ReadInt32();
                 var typeName = r.ReadString();
-                var eType = Type.GetType(typeName) ?? throw new Exception($"Could not find type {typeName}");
-                var netType = typeof(HashSet<>).MakeGenericType(eType);
-                dynamic set = Activator.CreateInstance(netType);
-                for (var i = 0; i < count; i++) set.Add((dynamic)ReadObject(r, table, onLoadList));
+                var eType = Type.GetType(typeName);
+                dynamic set = null;
+                if (eType != null) {
+                    var netType = typeof(HashSet<>).MakeGenericType(eType);
+                    set = Activator.CreateInstance(netType);
+                }
+                for (var i = 0; i < count; i++) {
+                    var val = ReadObject(r, table, onLoadList);
+                    if (set != null) set.Add((dynamic)val);
+                }
                 return set;
             }
             
@@ -288,38 +311,65 @@ internal static class SaveDataSerializer
             case DataType.Il2CppArray: {
                 var len = r.ReadInt32();
                 var typeName = r.ReadString();
-                var eType = Type.GetType(typeName) ?? throw new Exception($"Could not find type {typeName}");
-                dynamic netArr = Array.CreateInstance(eType, len);
-                for (var i = 0; i < len; i++) netArr.SetValue(ReadObject(r, table, onLoadList), i);
+                var eType = Type.GetType(typeName);
+                dynamic netArr = null;
+                if (eType != null) netArr = Array.CreateInstance(eType, len);
+                for (var i = 0; i < len; i++) {
+                    var val = ReadObject(r, table, onLoadList);
+                    if (netArr != null) netArr.SetValue(val, i);
+                }
+                if (netArr == null) return null;
                 return MiscEUtil.ToIl2CppArray(netArr);
             }
             case DataType.Il2CppList: {
                 var count = r.ReadInt32();
                 var typeName = r.ReadString();
-                var eType = Type.GetType(typeName) ?? throw new Exception($"Could not find type {typeName}");
-                var netType = typeof(List<>).MakeGenericType(eType);
-                dynamic list = Activator.CreateInstance(netType);
-                for (var i = 0; i < count; i++) list.Add((dynamic)ReadObject(r, table, onLoadList));
+                var eType = Type.GetType(typeName);
+                dynamic list = null;
+                if (eType != null) {
+                    var netType = typeof(List<>).MakeGenericType(eType);
+                    list = Activator.CreateInstance(netType);
+                }
+                for (var i = 0; i < count; i++) {
+                    var val = ReadObject(r, table, onLoadList);
+                    if (list != null) list.Add((dynamic)val);
+                }
+                if (list == null) return null;
                 return MiscEUtil.ToIl2CppList(list); 
             }
             case DataType.Il2CppDictionary: {
                 var count = r.ReadInt32();
                 var kName = r.ReadString();
                 var vName = r.ReadString();
-                var kType = Type.GetType(kName) ?? throw new Exception($"Could not find type {kName}");
-                var vType = Type.GetType(vName) ?? throw new Exception($"Could not find type {vName}");
-                var netType = typeof(Dictionary<,>).MakeGenericType(kType, vType);
-                dynamic dict = Activator.CreateInstance(netType);
-                for (var i = 0; i < count; i++) dict.Add((dynamic)ReadObject(r, table, onLoadList), (dynamic)ReadObject(r, table, onLoadList));
+                var kType = Type.GetType(kName);
+                var vType = Type.GetType(vName);
+                dynamic dict = null;
+                if (kType != null && vType != null) {
+                    var netType = typeof(Dictionary<,>).MakeGenericType(kType, vType);
+                    dict = Activator.CreateInstance(netType);
+                }
+                for (var i = 0; i < count; i++) {
+                    var key = ReadObject(r, table, onLoadList);
+                    var val = ReadObject(r, table, onLoadList);
+                    if (dict != null) dict.Add((dynamic)key, (dynamic)val);
+                }
+                if (dict == null) return null;
                 return MiscEUtil.ToIl2CppDictionary(dict);
             }
             case DataType.Il2CppHashSet: {
                 var count = r.ReadInt32();
                 var typeName = r.ReadString();
-                var eType = Type.GetType(typeName) ?? throw new Exception($"Could not find type {typeName}");
-                var netType = typeof(HashSet<>).MakeGenericType(eType);
-                dynamic set = Activator.CreateInstance(netType);
-                for (var i = 0; i < count; i++) set.Add((dynamic)ReadObject(r, table, onLoadList));
+                var eType = Type.GetType(typeName);
+                dynamic set = null;
+                if (eType != null) {
+                    var netType = typeof(HashSet<>).MakeGenericType(eType);
+                    set = Activator.CreateInstance(netType);
+                }
+                for (var i = 0; i < count; i++) {
+                    var val = ReadObject(r, table, onLoadList);
+                    if (set != null) set.Add((dynamic)val);
+                }
+                if (set == null) return null;
                 return MiscEUtil.ToIl2CppHashSet(set);
             }
 
@@ -328,18 +378,19 @@ internal static class SaveDataSerializer
                 var typeName = r.ReadString();
                 var oType = Type.GetType(typeName);
                 
-                if (oType == null) throw new Exception($"Type not found: {typeName}");
+                object instance = null;
+                if (oType != null) instance = Activator.CreateInstance(oType);
 
-                var instance = Activator.CreateInstance(oType);
                 var fCount = r.ReadUInt16();
                 
-                var fieldDict = GetFields(oType).ToDictionary(f => f.Name);
+                Dictionary<string, FieldInfo> fieldDict = null;
+                if (oType != null) fieldDict = GetFields(oType).ToDictionary(f => f.Name);
                 
                 for (var i = 0; i < fCount; i++) {
                     var fName = table[r.ReadUInt16()];
                     var val = ReadObject(r, table, onLoadList);
                     
-                    if (fieldDict.TryGetValue(fName, out var f)) {
+                    if (instance != null && fieldDict != null && fieldDict.TryGetValue(fName, out var f)) {
                         if (val != null) {
                             if (!f.FieldType.IsAssignableFrom(val.GetType())) {
                                 try {

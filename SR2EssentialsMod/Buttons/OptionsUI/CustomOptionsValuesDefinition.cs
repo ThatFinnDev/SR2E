@@ -7,9 +7,9 @@ using SR2E.Storage;
 namespace SR2E.Buttons.OptionsUI;
 
 [InjectClass]
-internal class CustomOptionsUIValuesDefinition : ScriptedValuePresetOptionDefinition
+internal class CustomOptionsValuesDefinition : ScriptedValuePresetOptionDefinition
 {
-    internal CustomOptionsUIButtonValues button;
+    internal CustomOptionsButtonValues button;
     public override void ApplyPresetSelection(int index)
     {
         if(!string.IsNullOrWhiteSpace(button.saveid))
@@ -18,18 +18,6 @@ internal class CustomOptionsUIValuesDefinition : ScriptedValuePresetOptionDefini
         
     }
 
-    public override OptionsItemModel CreateOptionItemModel()
-    {
-        try
-        {
-            return base.CreateOptionItemModel();
-        }
-        catch (Exception e)
-        {
-        }
-        MelonLogger.Msg("Uhmmmmm");
-        return null;
-    }
 
     private int askedForPreset = 0;
     public override int GetDefaultPresetIndex()
@@ -46,11 +34,10 @@ internal class CustomOptionsUIValuesDefinition : ScriptedValuePresetOptionDefini
 
     public override bool ShouldDisplay()
     {
-        switch (button.visibleState)
+        switch (button.type)
         {
-            case OptionsUIVisibleState.All: return true;
-            case OptionsUIVisibleState.InGameOnly: return inGame;
-            case OptionsUIVisibleState.MainMenuOnly: return SR2EEntryPoint.mainMenuLoaded;
+            case OptionsButtonType.OptionsUI: return true;
+            case OptionsButtonType.OptionsUIInGameOnly: return inGame;
         }
         return false;
     }

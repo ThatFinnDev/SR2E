@@ -12,7 +12,7 @@ using QualityLevel = Il2CppMonomiPark.ScriptedValue.QualityLevel;
 
 namespace SR2E.Buttons.OptionsUI;
 
-public class CustomOptionsUIButtonValues : CustomOptionsUIButton
+public class CustomOptionsButtonValues : CustomOptionsUIButton
 {
     public LocalizedString label;
     public LocalizedString detailsText;
@@ -24,14 +24,13 @@ public class CustomOptionsUIButtonValues : CustomOptionsUIButton
     public Action<int> onModify;
     public LocalizedString[] values;
     internal string refID;
-    public OptionsUIVisibleState visibleState = OptionsUIVisibleState.All;
     private static ScriptedValuePresetOptionDefinition info;
     protected override OptionsItemDefinition GenerateOptionsItemDefinition()
     {
         if(!string.IsNullOrWhiteSpace(saveid))
             SR2EOptionsButtonManager.InitializeValuesButton(saveid, defaultValueIndex);
         if(info==null) info = GetAny<ScriptedValuePresetOptionDefinition>();
-        var instance = ScriptableObject.CreateInstance<CustomOptionsUIValuesDefinition>();
+        var instance = ScriptableObject.CreateInstance<CustomOptionsValuesDefinition>();
         
         instance.name = label.GetLocalizedString().Replace(" ", "");
         instance._wrapAround = wrapAround;
@@ -64,7 +63,7 @@ public class CustomOptionsUIButtonValues : CustomOptionsUIButton
         var i = 0;
         foreach (var entry in values)
         {
-            var preset = new CustomOptionsUIValuesPreset();
+            var preset = new CustomOptionsValuesPreset();
             preset._presetLabel = entry;
             preset._referenceId = partID+i;
             preset._scriptedBoolSettings = new Il2CppReferenceArray<ScriptedValuePresetOptionDefinition.ScriptedValueSetting<ScriptedBool, bool>>(0);
@@ -79,21 +78,20 @@ public class CustomOptionsUIButtonValues : CustomOptionsUIButton
         try { instance.CreateOptionItemModel(); }catch { }
         instance._referenceId = refID;
         gameContext.OptionsDirector._optionsModel.optionsById.Add(refID, instance._optionsItemModels[0].TryCast<OptionsItemModel>());
-            
         return instance;
     }
 
     
     
     
-    public CustomOptionsUIButtonValues(LocalizedString label, Action<int> onModify, params LocalizedString[] values)
+    public CustomOptionsButtonValues(LocalizedString label, Action<int> onModify, params LocalizedString[] values)
     {
         this.label = label;
         this.label = label;
         this.onModify = onModify;
         this.values = values;
     }
-    public CustomOptionsUIButtonValues(LocalizedString label, LocalizedString detailsText, Action<int> onModify, params LocalizedString[] values)
+    public CustomOptionsButtonValues(LocalizedString label, LocalizedString detailsText, Action<int> onModify, params LocalizedString[] values)
     {
         this.label = label;
         this.detailsText = detailsText;
@@ -101,7 +99,7 @@ public class CustomOptionsUIButtonValues : CustomOptionsUIButton
         this.onModify = onModify;
         this.values = values;
     }
-    public CustomOptionsUIButtonValues(LocalizedString label, LocalizedString detailsText, string saveid, Action<int> onModify, params LocalizedString[] values)
+    public CustomOptionsButtonValues(LocalizedString label, LocalizedString detailsText, string saveid, Action<int> onModify, params LocalizedString[] values)
     {
         this.saveid = saveid;
         this.label = label;
@@ -110,7 +108,7 @@ public class CustomOptionsUIButtonValues : CustomOptionsUIButton
         this.onModify = onModify;
         this.values = values;
     }
-    public CustomOptionsUIButtonValues(
+    public CustomOptionsButtonValues(
         LocalizedString label, LocalizedString detailsText,
         int defaultValueIndex, bool applyImmediately,
         bool wrapAround, bool requireConfirmation, Action<int> onModify, 
@@ -127,7 +125,7 @@ public class CustomOptionsUIButtonValues : CustomOptionsUIButton
         this.onModify = onModify;
         this.values = values;
     }
-    public CustomOptionsUIButtonValues(
+    public CustomOptionsButtonValues(
         LocalizedString label, LocalizedString detailsText,
         string saveid, int defaultValueIndex, bool applyImmediately,
         bool wrapAround, bool requireConfirmation, Action<int> onModify, 
@@ -144,10 +142,10 @@ public class CustomOptionsUIButtonValues : CustomOptionsUIButton
         this.onModify = onModify;
         this.values = values;
     }
-    public CustomOptionsUIButtonValues(
+    public CustomOptionsButtonValues(
         LocalizedString label, LocalizedString detailsText,
         string saveid, int defaultValueIndex, bool applyImmediately,
-        bool wrapAround, bool requireConfirmation, Action<int> onModify, OptionsUIVisibleState visibleState,
+        bool wrapAround, bool requireConfirmation, Action<int> onModify, OptionsButtonType type,
         params LocalizedString[] values)
     {
         this.saveid = saveid;
@@ -159,7 +157,7 @@ public class CustomOptionsUIButtonValues : CustomOptionsUIButton
         this.wrapAround = wrapAround;
         this.requireConfirmation = requireConfirmation;
         this.onModify = onModify;
-        this.visibleState = visibleState;
+        this.type = type;
         this.values = values;
     }
     

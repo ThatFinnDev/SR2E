@@ -34,15 +34,31 @@ public static class SR2EOptionsButtonManager
     {
         try
         {
-            File.WriteAllBytes(path,_save.ToBytes());
+            File.WriteAllBytes(path,save.ToBytes());
         }
         catch { }
     }
+    
+    /// <summary>
+    /// If you have a OptionsButtonValues and you've set up a saveID for saving,<br />
+    /// you can use this function do set the index of the value<br />
+    /// This function cannot be used with save-specific saveID's
+    /// </summary>
+    /// <param name="saveID">The saveID you've set</param>
+    /// <param name="value">The new index</param>
     public static void SetValuesButton(string saveID, int value)
     {
         save.valueButtons[saveID] = value;
         Save();
     }
+    /// <summary>
+    /// If you have a OptionsButtonValues and you've set up a saveID for saving,<br />
+    /// you can use this function do get the index of the value<br />
+    /// This function cannot be used with save-specific saveID's<br />
+    /// If you've never added the button, defaultValue will be returned
+    /// </summary>
+    /// <param name="saveID">The saveID you want to get</param>
+    /// <param name="defaultValue">The fallback index</param>
     public static int GetValuesButton(string saveID, int defaultValue = -1)
     {
         if (save.valueButtons.ContainsKey(saveID))
@@ -96,8 +112,8 @@ public static class SR2EOptionsButtonManager
         foreach (var category in customOptionsUICategories)
         {
             var categoryObj = category.Key._category;
-            if (category.Key.visibleState != OptionsUIVisibleState.All &&
-                category.Key.visibleState != OptionsUIVisibleState.MainMenuOnly) continue;
+            if (category.Key.visibleState != OptionsButtonType.OptionsUI &&
+                category.Key.visibleState != OptionsButtonType.OptionsUIInGameOnly) continue;
             if(categoryObj==null)
             {
                 categoryObj = ScriptableObject.CreateInstance<OptionsItemCategory>();
