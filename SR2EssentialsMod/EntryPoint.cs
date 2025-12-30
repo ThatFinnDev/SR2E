@@ -510,7 +510,11 @@ public class SR2EEntryPoint : MelonMod
     {
         if (DebugLogging.HasFlag()) MelonLogger.Msg("WasInitialized Scene: " + sceneName);
         if (usePrism)  try { PrismShortcuts.OnSceneWasInitialized(buildIndex,sceneName); } catch (Exception e) { MelonLogger.Error(e); }
-        if (sceneName == "MainMenuUI") mainMenuLoaded = true;
+        if (sceneName == "MainMenuUI")
+        {
+            SR2EOptionsButtonManager.inGameSave = null;
+            mainMenuLoaded = true;
+        }
         
         switch (sceneName)
         {

@@ -9,5 +9,5 @@ public enum OptionsButtonType
     /// <summary>
     /// If you use this, saveID will be used to store the state inside a save file
     /// </summary>
-    OptionsUIInGameOnly=1
+    InGameOptionsUIOnly=1
 }

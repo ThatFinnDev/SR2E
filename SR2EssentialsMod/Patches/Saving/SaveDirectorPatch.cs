@@ -1,7 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
 using Il2CppSystem.Reflection;
 
-namespace SR2E.Patches.General;
+namespace SR2E.Patches.Saving;
 
 [HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
 internal static class SaveDirectorPatch

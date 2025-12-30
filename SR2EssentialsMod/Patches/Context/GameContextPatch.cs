@@ -74,17 +74,46 @@ internal class GameContextPatch
             if (DevMode.HasFlag()||RestoreDebugPlayerDebug.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugUI.DebugStatsManager.TogglePlayerDebugUI(); }));
             if (AddMockOptionsUIButtons.HasFlag())
             {
-                var testCategory1 = new CustomOptionsUICategory(AddTranslation("Category1"), 0,null, OptionsButtonType.OptionsUI);
-                //var testCategory2 = new CustomOptionsUICategory(AddTranslation("MainOnly"), 0,null, OptionsUIVisibleState.MainMenuOnly);
-                //var testCategory3 = new CustomOptionsUICategory(AddTranslation("GameOnly"), 0,null, OptionsUIVisibleState.InGame);
+                var testCategory1 = new CustomOptionsUICategory(AddTranslation("AllTheTime"), 4,null, OptionsCategoryVisibleState.AllTheTime);
+                var testCategory2 = new CustomOptionsUICategory(AddTranslation("MainOnly"), 4,null, OptionsCategoryVisibleState.MainMenuOnly);
+                var testCategory3 = new CustomOptionsUICategory(AddTranslation("InGameOnly"), 4,null, OptionsCategoryVisibleState.InGameOnly);
                 testCategory1.AddButton(new CustomOptionsButtonValues
-                (AddTranslation("TestEntry"),AddTranslation("This is an example description"),
-                    "sr2e.mockdata",1,true,false,false, ((value) =>
+                (AddTranslation("GlobalTest"),AddTranslation("This is an example description"),
+                    "sr2e.mock.global1",1,true,false,false, ((value) =>
                     { 
                         MelonLogger.Msg("It has been changed to "+value);
-                    }),
+                    }), OptionsButtonType.OptionsUI,
                     AddTranslation("Value0"),AddTranslation("Value1"),AddTranslation("Value2"),AddTranslation("Value3")
                     ));
+                testCategory2.AddButton(new CustomOptionsButtonValues
+                (AddTranslation("MainMenuOnlyTest"),AddTranslation("This wraps around!"),
+                    "sr2e.mock.mainmenuonly1",1,true,true,false, ((value) =>
+                    { 
+                        MelonLogger.Msg("It has been changed to "+value);
+                    }), OptionsButtonType.OptionsUI,
+                    AddTranslation("G0"),AddTranslation("G1"),AddTranslation("G2"),AddTranslation("G3")
+                ));
+                testCategory3.AddButton(new CustomOptionsButtonValues
+                (AddTranslation("InGameOnlyTest"),AddTranslation("This doesn't apply immediately!"),
+                    "sr2e.mock.ingameonly1",1,false,false,false, ((value) =>
+                    { 
+                        MelonLogger.Msg("It has been changed to "+value);
+                    }), OptionsButtonType.InGameOptionsUIOnly,
+                    AddTranslation("Value0"),AddTranslation("Value1"),AddTranslation("Value2"),AddTranslation("Value3")
+                ));
+                var coolButton = new CustomOptionsButtonValues
+                (AddTranslation("MultiCategoryTest"), AddTranslation("This is in multiple categories! And shouldnt be 2 times in MainMenuOnly!"),
+                    "sr2e.mock.multitest", 1, true, false, false, ((value) =>
+                    {
+                        MelonLogger.Msg("It has been changed to " + value);
+                    }), OptionsButtonType.OptionsUI,
+                    AddTranslation("Value0"), AddTranslation("Value1"), AddTranslation("Value2"),
+                    AddTranslation("Value3")
+                );
+                testCategory1.AddButton(coolButton);
+                testCategory2.AddButton(coolButton);
+                testCategory2.AddButton(coolButton);
+                testCategory3.AddButton(coolButton);
             }
         }
 

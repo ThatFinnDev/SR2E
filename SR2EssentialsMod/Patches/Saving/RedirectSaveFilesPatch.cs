@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace SR2E.Patches.General;
+namespace SR2E.Patches.Saving;
 
 [HarmonyPatch(typeof(SystemContext), nameof(SystemContext.GetStorageProvider))]
 internal static class RedirectSaveFilesPatch

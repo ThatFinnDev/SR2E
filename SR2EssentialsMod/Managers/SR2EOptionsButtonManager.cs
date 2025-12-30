@@ -9,8 +9,8 @@ namespace SR2E.Storage;
 
 public static class SR2EOptionsButtonManager
 {
-    internal static Dictionary<NativeOptionsUICategory,HashSet<CustomOptionsUIButton>> customOptionsUIButtonsInNative = new();
-    internal static Dictionary<CustomOptionsUICategory,HashSet<CustomOptionsUIButton>> customOptionsUICategories = new();
+    internal static Dictionary<NativeOptionsUICategory,HashSet<CustomOptionsButton>> customOptionsUIButtonsInNative = new();
+    internal static Dictionary<CustomOptionsUICategory,HashSet<CustomOptionsButton>> customOptionsUICategories = new();
     static string path => Path.Combine(SR2EEntryPoint.DataPath, "customsettings.sr2ers");
     static CustomOptionsSave _save;
     internal static CustomOptionsSave save
@@ -29,7 +29,7 @@ public static class SR2EOptionsButtonManager
             return _save;
         }
     }
-
+    internal static CustomOptionsInGameSave inGameSave;
     static void Save()
     {
         try
@@ -38,42 +38,82 @@ public static class SR2EOptionsButtonManager
         }
         catch { }
     }
-    
     /// <summary>
     /// If you have a OptionsButtonValues and you've set up a saveID for saving,<br />
     /// you can use this function do set the index of the value<br />
-    /// This function cannot be used with save-specific saveID's
     /// </summary>
     /// <param name="saveID">The saveID you've set</param>
     /// <param name="value">The new index</param>
-    public static void SetValuesButton(string saveID, int value)
+    /// <returns>bool if successful</returns>
+    public static bool SetValuesButton(OptionsButtonType type,string saveID, int value)
     {
-        save.valueButtons[saveID] = value;
-        Save();
+        switch (type)
+        {
+            case OptionsButtonType.OptionsUI:
+                save.valueButtons[saveID] = value;
+                Save();
+                return true;
+            case OptionsButtonType.InGameOptionsUIOnly:
+                if (inGameSave == null) return false;
+                inGameSave.valueButtons[saveID] = value;
+                Save();
+                return true;
+        }
+        return false;
     }
     /// <summary>
     /// If you have a OptionsButtonValues and you've set up a saveID for saving,<br />
     /// you can use this function do get the index of the value<br />
-    /// This function cannot be used with save-specific saveID's<br />
     /// If you've never added the button, defaultValue will be returned
     /// </summary>
     /// <param name="saveID">The saveID you want to get</param>
     /// <param name="defaultValue">The fallback index</param>
-    public static int GetValuesButton(string saveID, int defaultValue = -1)
+    public static int GetValuesButton(OptionsButtonType type,string saveID, int defaultValue = -1)
     {
-        if (save.valueButtons.ContainsKey(saveID))
-            return save.valueButtons[saveID];
+        switch (type)
+        {
+            case OptionsButtonType.OptionsUI:
+                if (save.valueButtons.ContainsKey(saveID))
+                    return save.valueButtons[saveID];
+                break;
+            case OptionsButtonType.InGameOptionsUIOnly:
+                if (inGameSave!=null&&inGameSave.valueButtons.ContainsKey(saveID))
+                    return inGameSave.valueButtons[saveID];
+                break;
+        }
         return defaultValue;
     }
 
-    internal static void InitializeValuesButton(string saveID, int value)
+    internal static void InitializeValuesButton(OptionsButtonType type,string saveID, int value)
     {
-        if(!save.valueButtons.ContainsKey(saveID))
+        switch (type)
         {
-            save.valueButtons.Add(saveID, value);
-            Save();
+            case OptionsButtonType.OptionsUI:
+                if(!save.valueButtons.ContainsKey(saveID))
+                {
+                    save.valueButtons.Add(saveID, value);
+                    Save();
+                }
+                break;
+            case OptionsButtonType.InGameOptionsUIOnly:
+                if(inGameSave!=null&&!inGameSave.valueButtons.ContainsKey(saveID))
+                {
+                    inGameSave.valueButtons.Add(saveID, value);
+                    Save();
+                }
+                break;
         }
     }
+
+
+
+    internal static void OnInGameLoad(CustomOptionsInGameSave loadedSave, LoadingGameSessionData sessionData)
+    {
+        if (loadedSave == null) loadedSave = new CustomOptionsInGameSave(); 
+        else inGameSave = loadedSave;
+    }
+
+    internal static CustomOptionsInGameSave OnInGameSave(SavingGameSessionData sessionData) => inGameSave;
     internal static void GenerateMissingButtons()
     {
         if (!InjectOptionsButtons.HasFlag()) return;
@@ -88,6 +128,7 @@ public static class SR2EOptionsButtonManager
     }
     internal static void LoadCustomOptionsButtons(string optionsConfigurationName)
     {
+        if (!InjectOptionsButtons.HasFlag()) return;
         var configuration = Get<OptionsConfiguration>(optionsConfigurationName);
         if (configuration == null) return;
         foreach (var categoryObj in configuration.items)
@@ -112,8 +153,11 @@ public static class SR2EOptionsButtonManager
         foreach (var category in customOptionsUICategories)
         {
             var categoryObj = category.Key._category;
-            if (category.Key.visibleState != OptionsButtonType.OptionsUI &&
-                category.Key.visibleState != OptionsButtonType.OptionsUIInGameOnly) continue;
+            if (category.Key.visibleState != OptionsCategoryVisibleState.AllTheTime)
+            {
+                if (!inGame && category.Key.visibleState == OptionsCategoryVisibleState.InGameOnly) continue;
+                if (!SR2EEntryPoint.mainMenuLoaded && category.Key.visibleState == OptionsCategoryVisibleState.MainMenuOnly) continue;
+            }
             if(categoryObj==null)
             {
                 categoryObj = ScriptableObject.CreateInstance<OptionsItemCategory>();
@@ -136,6 +180,10 @@ public static class SR2EOptionsButtonManager
         }
     }
     internal class CustomOptionsSave : RootSave
+    {
+        [StoreInSave] internal Dictionary<string, int> valueButtons = new();
+    }
+    internal class CustomOptionsInGameSave : RootSave
     {
         [StoreInSave] internal Dictionary<string, int> valueButtons = new();
     }

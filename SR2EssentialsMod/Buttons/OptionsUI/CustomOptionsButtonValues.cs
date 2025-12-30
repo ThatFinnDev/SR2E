@@ -12,7 +12,7 @@ using QualityLevel = Il2CppMonomiPark.ScriptedValue.QualityLevel;
 
 namespace SR2E.Buttons.OptionsUI;
 
-public class CustomOptionsButtonValues : CustomOptionsUIButton
+public class CustomOptionsButtonValues : CustomOptionsButton
 {
     public LocalizedString label;
     public LocalizedString detailsText;
@@ -28,7 +28,7 @@ public class CustomOptionsButtonValues : CustomOptionsUIButton
     protected override OptionsItemDefinition GenerateOptionsItemDefinition()
     {
         if(!string.IsNullOrWhiteSpace(saveid))
-            SR2EOptionsButtonManager.InitializeValuesButton(saveid, defaultValueIndex);
+            SR2EOptionsButtonManager.InitializeValuesButton(type,saveid, defaultValueIndex);
         if(info==null) info = GetAny<ScriptedValuePresetOptionDefinition>();
         var instance = ScriptableObject.CreateInstance<CustomOptionsValuesDefinition>();
         
@@ -50,7 +50,7 @@ public class CustomOptionsButtonValues : CustomOptionsUIButton
         instance._requireConfirmation = requireConfirmation;
         instance._defaultValueIndex = defaultValueIndex;
         if(!string.IsNullOrWhiteSpace(saveid))
-            instance.SetTempPresetIndex(SR2EOptionsButtonManager.GetValuesButton(saveid, defaultValueIndex));
+            instance.SetTempPresetIndex(SR2EOptionsButtonManager.GetValuesButton(type,saveid, defaultValueIndex));
         instance._optionsItemModels = new Il2CppSystem.Collections.Generic.List<PresetOptionsItemModel>();
         instance.SupportedInputDeviceAssets = new Il2CppSystem.Collections.Generic.List<InputDeviceAsset>();
         instance.SupportedPlatforms = new Il2CppSystem.Collections.Generic.List<StoreAndPlatform>();

@@ -8,31 +8,31 @@ namespace SR2E.Buttons;
 
 public class CustomOptionsUICategory
 {
-    private HashSet<CustomOptionsUIButton> buttons = new ();
+    private HashSet<CustomOptionsButton> buttons = new ();
     public LocalizedString label;
     public int insertIndex;
     internal OptionsItemCategory _category;
     public Sprite icon;
-    public OptionsButtonType visibleState;
+    public OptionsCategoryVisibleState visibleState;
     public bool enabled = true;
 
-    public CustomOptionsUICategory(LocalizedString label, int insertIndex, Sprite icon, OptionsButtonType visibleState)
+    public CustomOptionsUICategory(LocalizedString label, int insertIndex, Sprite icon, OptionsCategoryVisibleState visibleState)
     {
         this.label = label; 
         this.insertIndex = insertIndex;
         this.icon = icon;
         this.visibleState = visibleState;
 
-        SR2EOptionsButtonManager.customOptionsUICategories.Add(this,new HashSet<CustomOptionsUIButton>());
+        SR2EOptionsButtonManager.customOptionsUICategories.Add(this,new HashSet<CustomOptionsButton>());
     }
     
 
-    public void AddButton(CustomOptionsUIButton button)
+    public void AddButton(CustomOptionsButton button)
     { 
         if(!SR2EOptionsButtonManager.customOptionsUICategories[this].Contains(button))
             SR2EOptionsButtonManager.customOptionsUICategories[this].Add(button);
     }
-    public void RemoveButton(CustomOptionsUIButton button)
+    public void RemoveButton(CustomOptionsButton button)
     { 
         if(SR2EOptionsButtonManager.customOptionsUICategories[this].Contains(button))
             SR2EOptionsButtonManager.customOptionsUICategories[this].Remove(button);

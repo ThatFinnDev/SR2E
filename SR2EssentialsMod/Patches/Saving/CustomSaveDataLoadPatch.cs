@@ -14,7 +14,7 @@ internal static class CustomSaveDataLoadPatch
     static Dictionary<SR2EExpansionV3, (RootSave, LoadingGameSessionData)> rootSaves = new();
     static Dictionary<SR2EExpansionV3, LoadingGameSessionData> noRootSaves = new();
     internal static string prefix = "SR2EDataV01";
-
+    internal static string prefixown = "SR2EOwnDataV01";
     internal static void ExecSaveDataReceived()
     {
         foreach (var expansion in SR2EEntryPoint.expansionsV3)
@@ -29,6 +29,28 @@ internal static class CustomSaveDataLoadPatch
     }
     internal static void Prefix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, GameV09 gameState, GameModel gameModel)
     {
+        bool hasExecutedOwn = false;
+        foreach (var entry in gameState.ZoneIndex.IndexTable)
+            if (entry.StartsWith(prefixown))
+            {
+                try
+                {
+                    string remaining = entry.Substring(prefixown.Length);
+                    var rawBytes = remaining.DecodeFromBase128();
+                    var rootSave = RootSave.FromBytes<SR2EOptionsButtonManager.CustomOptionsInGameSave>(rawBytes);
+                    var sessionData = new LoadingGameSessionData(actorIdProvider, saveReferenceTranslation, saveReferenceTranslation.toNonIVariant(), gameState, gameModel);
+                    hasExecutedOwn = true;
+                    SR2EOptionsButtonManager.OnInGameLoad(rootSave,sessionData);
+                }catch (Exception e) { MelonLogger.Error(e); }
+            }
+        if(!hasExecutedOwn)
+            try
+            {
+                var sessionData = new LoadingGameSessionData(actorIdProvider, saveReferenceTranslation, saveReferenceTranslation.toNonIVariant(), gameState, gameModel);
+                SR2EOptionsButtonManager.OnInGameLoad(null,sessionData);
+            }catch (Exception e) { MelonLogger.Error(e); }
+        
+        
         rootSaves = new Dictionary<SR2EExpansionV3, (RootSave, LoadingGameSessionData)>();
         noRootSaves = new Dictionary<SR2EExpansionV3, LoadingGameSessionData>();
         var executedExpansions = new List<SR2EExpansionV3>();

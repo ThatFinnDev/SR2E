@@ -4,10 +4,10 @@ using SR2E.Buttons.OptionsUI;
 
 namespace SR2E.Patches.Options;
 
-[HarmonyPatch(typeof(ScriptedValuePresetOptionDefinition), nameof(ScriptedValuePresetOptionDefinition.CreateOptionItemModel))]
-internal static class ScriptedValuePresetOptionDefinitionCreateOptionItemModelPatch
+[HarmonyPatch(typeof(PresetOptionsItemDefinition), nameof(PresetOptionsItemDefinition.CreateOptionItemModel))]
+internal static class PresetOptionsItemDefinitionCreateOptionItemModelPatch
 {
-    static Exception Finalizer(ScriptedValuePresetOptionDefinition __instance, Exception __exception)
+    static Exception Finalizer(PresetOptionsItemDefinition __instance, Exception __exception)
     {
         if (!InjectOptionsButtons.HasFlag()) return __exception;
         if (__instance is CustomOptionsValuesDefinition && __instance.ReferenceId.StartsWith("setting.sr2eexclude"))

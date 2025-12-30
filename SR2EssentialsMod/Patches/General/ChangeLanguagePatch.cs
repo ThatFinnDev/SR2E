@@ -2,7 +2,7 @@ using System;
 using Il2CppMonomiPark.SlimeRancher.UI.Localization;
 using Il2CppSystem.Globalization;
 
-namespace SR2E.Patches.Language;
+namespace SR2E.Patches.General;
 
 [HarmonyPatch(typeof(LocalizationDirector), nameof(LocalizationDirector.SetLocale))]
 internal class ChangeLanguagePatch

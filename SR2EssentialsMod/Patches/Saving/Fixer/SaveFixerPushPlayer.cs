@@ -5,7 +5,7 @@ using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 using Il2CppMonomiPark.SlimeRancher.UI.Fabricator;
 
-namespace SR2E.Patches.SaveFixer;
+namespace SR2E.Patches.Saving.Fixer;
 
 
 [HarmonyPriority(-99999999)]

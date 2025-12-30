@@ -3,7 +3,7 @@ using SR2E.Enums;
 
 namespace SR2E.Buttons;
 
-public abstract class CustomOptionsUIButton
+public abstract class CustomOptionsButton
 {
     public OptionsButtonType type = OptionsButtonType.OptionsUI;
     internal static List<string> usedIds = new List<string>();
@@ -14,7 +14,7 @@ public abstract class CustomOptionsUIButton
         return null;
     }
 
-    internal CustomOptionsUIButton()
+    internal CustomOptionsButton()
     {
         
     }

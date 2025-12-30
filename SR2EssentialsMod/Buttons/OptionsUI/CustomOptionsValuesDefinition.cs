@@ -13,9 +13,8 @@ internal class CustomOptionsValuesDefinition : ScriptedValuePresetOptionDefiniti
     public override void ApplyPresetSelection(int index)
     {
         if(!string.IsNullOrWhiteSpace(button.saveid))
-            SR2EOptionsButtonManager.SetValuesButton(button.saveid, index);
+            SR2EOptionsButtonManager.SetValuesButton(button.type,button.saveid, index);
         try { button.onModify.Invoke(index); }catch (Exception e) { MelonLogger.Error(e); }
-        
     }
 
 
@@ -26,7 +25,7 @@ internal class CustomOptionsValuesDefinition : ScriptedValuePresetOptionDefiniti
         if (askedForPreset < 2)
         {
             if (!string.IsNullOrWhiteSpace(button.saveid))
-                return SR2EOptionsButtonManager.GetValuesButton(button.saveid, _defaultValueIndex);
+                return SR2EOptionsButtonManager.GetValuesButton(button.type,button.saveid, _defaultValueIndex);
         }
         else askedForPreset--;
         return _defaultValueIndex;
@@ -37,7 +36,7 @@ internal class CustomOptionsValuesDefinition : ScriptedValuePresetOptionDefiniti
         switch (button.type)
         {
             case OptionsButtonType.OptionsUI: return true;
-            case OptionsButtonType.OptionsUIInGameOnly: return inGame;
+            case OptionsButtonType.InGameOptionsUIOnly: return inGame;
         }
         return false;
     }

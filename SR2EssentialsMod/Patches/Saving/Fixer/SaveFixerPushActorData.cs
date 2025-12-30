@@ -3,11 +3,11 @@ using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
 using Il2CppMonomiPark.SlimeRancher.Persist;
 
-namespace SR2E.Patches.SaveFixer;
+namespace SR2E.Patches.Saving.Fixer;
 
 [HarmonyPriority(-99999999)]
-[HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGadget))]
-internal static class SaveFixerPushGadget
+[HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushActorData))]
+internal static class SaveFixerPushActorData
 {
     static bool needsRemoving(int integer,ILoadReferenceTranslation r)
     {
@@ -15,16 +15,17 @@ internal static class SaveFixerPushGadget
         catch (Exception e) { return true; }
         return false;
     }
-    internal static bool Prefix(GameModel gameModel, ref PlacedGadgetV06 gadget, ILoadReferenceTranslation loadReferenceTranslation)
+    internal static bool Prefix(GameModel gameModel, ActorDataV02 actorData, ILoadReferenceTranslation loadReferenceTranslation)
     {
+        
         if (!SR2EEntryPoint.disableFixSaves)
             try
             { 
-                if(needsRemoving(gadget.TypeId,loadReferenceTranslation)) return false;
+                if(needsRemoving(actorData.TypeId,loadReferenceTranslation)) return false;
             }
             catch (Exception e)
             {
-                if(gadget!=null) MelonLogger.Error(e);
+                if(actorData!=null) MelonLogger.Error(e);
                 return false;
             }
         return true;
