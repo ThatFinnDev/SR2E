@@ -84,41 +84,44 @@ internal class SystemContextPatch
                     instance.name = "SR2EStuff";
                     instance.SetActive(false);
                     GameObject.DontDestroyOnLoad(instance);
-                    foreach (var type in SR2EEntryPoint.MLAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract))
+                    
+                    foreach (var melonBase in MelonBase.RegisteredMelons)
                     {
-                        try
-                        {
-                            var identifier = type.GetMenuIdentifierByType();
-                            if (!string.IsNullOrWhiteSpace(identifier.saveKey))
+                        var exporters = melonBase.MelonAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract);
+                        foreach (Type type in exporters)
+                            try
                             {
-                                var path = getMenuPath(identifier);
-                                bool assetEmpty = path == null;
-                                if (assetEmpty) assetEmpty = !bundle.Contains(path);
-
-                                UnityEngine.Object rootObject = type.GetMenuRootObject();
-                                
-                                if (!assetEmpty&&rootObject==null)
+                                var identifier = type.GetMenuIdentifierByType();
+                                if (!string.IsNullOrWhiteSpace(identifier.saveKey))
                                 {
-                                    rootObject = GameObject.Instantiate(bundle.LoadAsset(path), instance.transform);
-                                }
-                                if (rootObject == null)
-                                {
-                                    var message = $"The menu under the name {type.Name} couldn't be loaded! It's root object is null!";
-                                    MelonLogger.Error(message);
-                                    throw new Exception(message);
-                                }
+                                    var path = getMenuPath(identifier);
+                                    bool assetEmpty = true;
+                                    if (!string.IsNullOrWhiteSpace(path)) assetEmpty = !bundle.Contains(path);
 
-                                rootObject.Cast<GameObject>().transform.SetParent(instance.transform);
-                                menusToInit.Add(rootObject.name, type);
-                                if (!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
-                                    ClassInjector.RegisterTypeInIl2Cpp(type,
-                                        new RegisterTypeOptions() { LogSuccess = false });
+                                    UnityEngine.Object rootObject = type.GetMenuRootObject();
+                                    
+                                    if (!assetEmpty&&rootObject==null)
+                                    {
+                                        rootObject = GameObject.Instantiate(bundle.LoadAsset(path), instance.transform);
+                                    }
+                                    if (rootObject == null)
+                                    {
+                                        var message = $"The menu under the name {type.Name} couldn't be loaded! It's root object is null!";
+                                        MelonLogger.Error(message);
+                                        throw new Exception(message);
+                                    }
+
+                                    rootObject.Cast<GameObject>().transform.SetParent(instance.transform);
+                                    menusToInit.Add(rootObject.name, type);
+                                    if (!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
+                                        ClassInjector.RegisterTypeInIl2Cpp(type,
+                                            new RegisterTypeOptions() { LogSuccess = false });
+
+                                }
+                                else MelonLogger.Error($"The menu under the name {type.Name} couldn't be loaded! It's MenuIdentifier is broken!");
 
                             }
-                            else MelonLogger.Error($"The menu under the name {type.Name} couldn't be loaded! It's MenuIdentifier is broken!");
-
-                        }
-                        catch (Exception e) { MelonLogger.Error(e); }
+                            catch (Exception e) { MelonLogger.Error(e); }
                     }
 
                     ExecuteInTicks(() =>
