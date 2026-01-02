@@ -26,7 +26,7 @@ public static class SR2EFeatureFlags
 
     private static FeatureFlag[] extraDevFlags => new[] {
         DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
-        ExperimentalKeyCodes, EnableRepoMenu, UseMockRepo, InjectOptionsButtons, AddMockOptionsUIButtons
+        ExperimentalKeyCodes, EnableRepoMenu, UseMockRepo, //InjectOptionsButtons, AddMockOptionsUIButtons
     };
     private static FeatureFlag[] extraBetaFlags => new []{None};
     private static FeatureFlag[] extraAlphaFlags => new []{None};

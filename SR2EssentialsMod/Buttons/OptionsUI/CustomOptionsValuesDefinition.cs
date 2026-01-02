@@ -21,13 +21,8 @@ internal class CustomOptionsValuesDefinition : ScriptedValuePresetOptionDefiniti
     private int askedForPreset = 0;
     public override int GetDefaultPresetIndex()
     {
-        askedForPreset++;
-        if (askedForPreset < 2)
-        {
-            if (!string.IsNullOrWhiteSpace(button.saveid))
-                return SR2EOptionsButtonManager.GetValuesButton(button.type,button.saveid, _defaultValueIndex);
-        }
-        else askedForPreset--;
+        if (!string.IsNullOrWhiteSpace(button.saveid))
+            return SR2EOptionsButtonManager.GetValuesButton(button.type,button.saveid, _defaultValueIndex);
         return _defaultValueIndex;
     }
 

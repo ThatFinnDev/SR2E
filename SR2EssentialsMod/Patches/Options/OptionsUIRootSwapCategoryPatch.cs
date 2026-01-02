@@ -27,25 +27,25 @@ internal static class OptionsUIRootSwapCategoryPatch
                 if (def is CustomOptionsValuesDefinition customDef && def.ReferenceId.StartsWith("setting.sr2eexclude"))
                 {
                     IOptionsItemModel model = null;
-                    if (customDef._optionsItemModels.Count > 0 && customDef._optionsItemModels[0] != null)
+                    try
                     {
-                        var modelTMP = customDef._optionsItemModels[0];
+                        dynamic modelTMP = customDef.CreateOptionItemModel();
                         if(modelTMP!=null) model=modelTMP.TryCast<IOptionsItemModel>();
-                    }
-                    else
-                    {
-                        try
-                        {
-                            var modelTMP = customDef.CreateOptionItemModel();
-                            if(modelTMP!=null) model=modelTMP.TryCast<IOptionsItemModel>();
-                        }catch (Exception e) { MelonLogger.Error(e); }
-                    };
+                    }catch (Exception e) { MelonLogger.Error(e); }
+                    
                     if (!string.IsNullOrWhiteSpace(customDef.button.saveid))
                     {
                         var value = SR2EOptionsButtonManager.GetValuesButton(customDef.button.type,customDef.button.saveid, customDef.button.defaultValueIndex);
-                        customDef.SetTempPresetIndex(value);
-                        if (model != null)
-                            model.ApplyTemporaryValue();
+                        MelonLogger.Msg(value);
+                        try
+                        {
+                            customDef.SetTempPresetIndex(value);
+                        } catch {}
+                        try
+                        {
+                            if (model != null)
+                                model.ApplyTemporaryValue();
+                        } catch {}
                     }
                     if(model!=null)
                         if (!__instance.optionsItemModels.Contains(model))

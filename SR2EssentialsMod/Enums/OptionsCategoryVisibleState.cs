@@ -1,6 +1,6 @@
 namespace SR2E.Enums;
-
-public enum OptionsCategoryVisibleState
+// Make it public on release
+internal enum OptionsCategoryVisibleState
 {
     AllTheTime=0, MainMenuOnly=1, InGameOnly=2
 }

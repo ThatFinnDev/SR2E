@@ -2,8 +2,8 @@ using Il2CppMonomiPark.SlimeRancher.Options;
 using SR2E.Enums;
 
 namespace SR2E.Buttons;
-
-public abstract class CustomOptionsButton
+// Make it public on release
+internal abstract class CustomOptionsButton
 {
     public OptionsButtonType type = OptionsButtonType.OptionsUI;
     internal static List<string> usedIds = new List<string>();

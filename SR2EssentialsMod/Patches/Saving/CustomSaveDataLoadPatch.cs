@@ -5,7 +5,7 @@ using SR2E.Expansion;
 using SR2E.Saving;
 using SR2E.Storage;
 
-namespace SR2E.Patches.CustomSaveData;
+namespace SR2E.Patches.Saving;
    
 [HarmonyPriority(99999999)]
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGame))]

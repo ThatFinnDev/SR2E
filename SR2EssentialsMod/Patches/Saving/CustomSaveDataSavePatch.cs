@@ -4,7 +4,7 @@ using Il2CppMonomiPark.SlimeRancher.Persist;
 using SR2E.Saving;
 using SR2E.Storage;
 
-namespace SR2E.Patches.CustomSaveData;
+namespace SR2E.Patches.Saving;
 
 [HarmonyPriority(99999999)]
 [HarmonyPatch(typeof(GameModelPullHelpers), nameof(GameModelPullHelpers.PullGame))]

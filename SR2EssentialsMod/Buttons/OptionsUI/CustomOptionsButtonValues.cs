@@ -12,7 +12,8 @@ using QualityLevel = Il2CppMonomiPark.ScriptedValue.QualityLevel;
 
 namespace SR2E.Buttons.OptionsUI;
 
-public class CustomOptionsButtonValues : CustomOptionsButton
+// Make it public on release
+internal class CustomOptionsButtonValues : CustomOptionsButton
 {
     public LocalizedString label;
     public LocalizedString detailsText;

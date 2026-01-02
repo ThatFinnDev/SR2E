@@ -5,8 +5,8 @@ using SR2E.Storage;
 using UnityEngine.Localization;
 
 namespace SR2E.Buttons;
-
-public class CustomOptionsUICategory
+// Make it public on release
+internal class CustomOptionsUICategory
 {
     private HashSet<CustomOptionsButton> buttons = new ();
     public LocalizedString label;

@@ -6,8 +6,8 @@ using SR2E.Enums;
 using SR2E.Saving;
 
 namespace SR2E.Storage;
-
-public static class SR2EOptionsButtonManager
+// Make it public on release
+internal static class SR2EOptionsButtonManager
 {
     internal static Dictionary<NativeOptionsUICategory,HashSet<CustomOptionsButton>> customOptionsUIButtonsInNative = new();
     internal static Dictionary<CustomOptionsUICategory,HashSet<CustomOptionsButton>> customOptionsUICategories = new();
@@ -109,8 +109,16 @@ public static class SR2EOptionsButtonManager
 
     internal static void OnInGameLoad(CustomOptionsInGameSave loadedSave, LoadingGameSessionData sessionData)
     {
-        if (loadedSave == null) loadedSave = new CustomOptionsInGameSave(); 
+        if (loadedSave == null)
+        {
+            MelonLogger.Msg("Loaded save is none...");
+            inGameSave = new CustomOptionsInGameSave();
+        }
         else inGameSave = loadedSave;
+        foreach (var pair in inGameSave.valueButtons)
+        {
+            MelonLogger.Msg(pair);
+        }
     }
 
     internal static CustomOptionsInGameSave OnInGameSave(SavingGameSessionData sessionData) => inGameSave;
