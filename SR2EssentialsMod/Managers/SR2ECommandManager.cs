@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using SR2E.Commands;
+using SR2E.Enums;
 
 namespace SR2E.Managers;
 
@@ -87,6 +88,7 @@ public static class SR2ECommandManager
         foreach (var expansion in SR2EEntryPoint.expansionsV3)
             try { expansion.LoadCommands(); }
             catch (Exception e) { MelonLogger.Error(e); }
+        SR2ECallEventManager.ExecuteStandard(CallEvent.OnLoadCommands);
                 
     }
     /// <summary>

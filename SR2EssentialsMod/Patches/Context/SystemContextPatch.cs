@@ -154,5 +154,6 @@ internal class SystemContextPatch
         foreach (var expansion in SR2EEntryPoint.expansionsV3)
             try { expansion.AfterSystemContext(__instance); } 
             catch (Exception e) { MelonLogger.Error(e); }
+        SR2ECallEventManager.ExecuteWithArgs(CallEvent.AfterSystemContextLoad, ("systemContext", __instance));
     }
 }

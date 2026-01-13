@@ -178,6 +178,7 @@ internal class GameContextPatch
         foreach (var expansion in SR2EEntryPoint.expansionsV3)
             try { expansion.AfterGameContext(__instance); }
             catch (Exception e) { MelonLogger.Error(e); }
+        SR2ECallEventManager.ExecuteWithArgs(CallEvent.AfterGameContextLoad, ("gameContext", __instance));
         foreach (var pair in SR2EEntryPoint.menus)
             try { pair.Key.OnGameContext(__instance); }
             catch (Exception e) { MelonLogger.Error(e); }

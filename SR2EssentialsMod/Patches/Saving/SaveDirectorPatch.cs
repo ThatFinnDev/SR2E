@@ -1,5 +1,7 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
 using Il2CppSystem.Reflection;
+using SR2E.Enums;
+using SR2E.Managers;
 
 namespace SR2E.Patches.Saving;
 
@@ -14,6 +16,7 @@ internal static class SaveDirectorPatch
         foreach (var expansion in SR2EEntryPoint.expansionsV2)
             try { expansion.BeforeSaveDirectorLoaded(__instance); } 
             catch (Exception e) { MelonLogger.Error(e); }
+        SR2ECallEventManager.ExecuteWithArgs(CallEvent.BeforeSaveDirectorLoad,("saveDirector",__instance));
         
         //OBSOLETE
         /**/foreach (var expansion in SR2EEntryPoint.expansionsV1V2) 
@@ -41,6 +44,7 @@ internal static class SaveDirectorPatch
         foreach (var expansion in SR2EEntryPoint.expansionsV2)
             try { expansion.AfterSaveDirectorLoaded(__instance);
             } catch (Exception e) { MelonLogger.Error(e); }
+        SR2ECallEventManager.ExecuteWithArgs(CallEvent.AfterSaveDirectorLoad,("saveDirector",__instance));
         
         //OBSOLETE
         /**/foreach (var expansion in SR2EEntryPoint.expansionsV1V2)
