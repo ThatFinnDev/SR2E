@@ -9,14 +9,18 @@ public static class ActionsEUtil
     public static void ExecuteInTicks(Action action, int ticks)
     {
         if (action == null) return;
-        actionCounter.Add((Action)(() =>
+        if(ticks<=0)
+            try { action.Invoke(); } catch (Exception e) { MelonLogger.Error(e); }
+        else actionCounter.Add((Action)(() =>
         {
             try { action.Invoke(); } catch (Exception e) { MelonLogger.Error(e); }
         }),ticks);
     }
     public static void ExecuteInSeconds(Action action, float seconds)
     {
-        MelonCoroutines.Start(waitForSeconds(seconds, action));
+        if(seconds<=0)
+            try { action.Invoke(); } catch (Exception e) { MelonLogger.Error(e); }
+        else MelonCoroutines.Start(waitForSeconds(seconds, action));
     }
     static System.Collections.IEnumerator waitForSeconds(float seconds, Action action)
     {

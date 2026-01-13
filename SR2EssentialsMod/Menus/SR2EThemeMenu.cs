@@ -25,12 +25,9 @@ public class SR2EThemeMenu : SR2EMenu
 
     protected override void OnAwake()
     {
-        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
-        {
-            {"requiredFeatures",new List<FeatureFlag>(){EnableThemeMenu}},
-            {"openActions",new List<MenuActions> { MenuActions.PauseGame,MenuActions.HideMenus }},
-            {"closeActions",new List<MenuActions> { MenuActions.UnPauseGame,MenuActions.UnHideMenus,MenuActions.EnableInput }},
-        });
+        requiredFeatures = new List<FeatureFlag>() { EnableThemeMenu }.ToArray();
+        openActions = new List<MenuActions> { MenuActions.PauseGame, MenuActions.HideMenus }.ToArray();
+        closeActions = new List<MenuActions> { MenuActions.UnPauseGame, MenuActions.UnHideMenus, MenuActions.EnableInput }.ToArray();
     }
 
     protected override void OnClose()

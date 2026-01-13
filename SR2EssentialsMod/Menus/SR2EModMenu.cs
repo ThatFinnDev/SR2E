@@ -30,12 +30,9 @@ public class SR2EModMenu : SR2EMenu
     
     protected override void OnAwake()
     {
-        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
-        {
-            {"requiredFeatures",new List<FeatureFlag>(){EnableModMenu}},
-            {"openActions",new List<MenuActions> { MenuActions.PauseGame,MenuActions.HideMenus }},
-            {"closeActions",new List<MenuActions> { MenuActions.UnPauseGame,MenuActions.UnHideMenus,MenuActions.EnableInput }},
-        });
+        requiredFeatures = new List<FeatureFlag>() { EnableModMenu }.ToArray();
+        openActions = new List<MenuActions> { MenuActions.PauseGame, MenuActions.HideMenus }.ToArray();
+        closeActions = new List<MenuActions> { MenuActions.UnPauseGame, MenuActions.UnHideMenus, MenuActions.EnableInput }.ToArray();
     }
     
     
@@ -207,6 +204,7 @@ public class SR2EModMenu : SR2EMenu
                 {
                     case SR2EExpansionAttributes.SourceCode: try { modInfoText.text += "\n" + translation("modmenu.modinfo.sourcecode", FormatLink(meta.Value)); }catch { } break;
                     case SR2EExpansionAttributes.Nexus: try { modInfoText.text += "\n" + translation("modmenu.modinfo.nexus", FormatLink(meta.Value)); }catch { } break;
+                    case SR2EExpansionAttributes.Discord: try { modInfoText.text += "\n" + translation("modmenu.modinfo.discord", FormatLink(meta.Value)); }catch { } break;
                 }
             }
 
@@ -237,9 +235,9 @@ public class SR2EModMenu : SR2EMenu
         GameObject buttonPrefab = transform.GetObjectRecursively<GameObject>("ModMenuModMenuTemplateButtonRec");
         buttonPrefab.SetActive(false);
         modButtons = new();
-        foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (object rotten in loadedAssembly.RottenMelons)
+        foreach (var loadedAssembly in MelonAssembly.LoadedAssemblies) foreach (dynamic rotten in loadedAssembly.RottenMelons)
         {
-            // Do it with reflection to support both ML 0.7.1 and newer
+            // Do it this way to support ML 0.7.1 and newer versions
             try
             {
                 Assembly assembly = null;
@@ -247,21 +245,19 @@ public class SR2EModMenu : SR2EMenu
                 string errorMessage = null;
                 try
                 {
-                    assembly = (Assembly)rotten.GetType().GetProperty("assembly").GetValue(rotten);
-                    if (assembly == null) throw new Exception();
-                    exception = rotten.GetType().GetProperty("exception").GetValue(rotten).ToString();
-                    errorMessage = rotten.GetType().GetProperty("errorMessage").GetValue(rotten).ToString();
+                    assembly = rotten.assembly;
+                    exception = rotten.exception?.ToString();
+                    errorMessage = rotten.errorMessage;
                 }
                 catch
                 {
                     try
                     {
-                        assembly = null;
-                        object mlassembly = rotten.GetType().GetProperty("Assembly").GetValue(rotten);
-                        assembly = (Assembly) mlassembly.GetType().GetProperty("assembly").GetValue(mlassembly);
-                        exception = rotten.GetType().GetProperty("exception").GetValue(rotten).ToString();
-                        errorMessage = rotten.GetType().GetProperty("errorMessage").GetValue(rotten).ToString();
-                    } catch { }
+                        assembly = rotten.Assembly.assembly;
+                        exception = rotten.exception?.ToString();
+                        errorMessage = rotten.errorMessage;
+                    }
+                    catch { }
                 }
                 if (assembly == null) break;
                 

@@ -63,7 +63,19 @@ public static class MenuEUtil
 
         if (fontAsset != null) menu.ApplyFont(fontAsset);
     }
-
+    internal static GameObject GetMenuRootObject(this Type type)
+    {
+        try
+        {
+            var methodInfo = type.GetMethod(nameof(SR2EMenu.GetMenuRootObject), BindingFlags.Static | BindingFlags.Public);
+            if (methodInfo == null) return null;
+            dynamic result = methodInfo.Invoke(null, null);
+            if (result == null) return null;
+            if (result is GameObject) return result as GameObject;
+        }
+        catch (Exception e) { MelonLogger.Error(e); }
+        return null;
+    }
     internal static MenuIdentifier GetMenuIdentifierByType(this Type type)
     {
         try
@@ -107,7 +119,7 @@ public static class MenuEUtil
             {
                 SR2ESaveManager.data.themes.TryAdd(identifier.saveKey, identifier.defaultTheme);
                 SR2EMenuTheme currentTheme = SR2ESaveManager.data.themes[identifier.saveKey];
-                List<SR2EMenuTheme> validThemes = MenuEUtil.GetValidThemes(identifier.saveKey);
+                List<SR2EMenuTheme> validThemes = GetValidThemes(identifier.saveKey);
                 if (validThemes.Count == 0) return SR2EMenuTheme.Default;
                 if(!validThemes.Contains(currentTheme)) currentTheme = validThemes.First();
                 return currentTheme;
@@ -154,9 +166,9 @@ public static class MenuEUtil
         {
             try
             {
-                for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
-                    if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).name.Contains("(Clone)"))
-                        if(SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.activeSelf)
+                foreach (var child in SR2EEntryPoint.SR2EStuff.GetChildren())
+                    if (child.activeSelf)
+                        if (child.HasComponent<SR2EMenu>())
                             return true;
             } catch  { }
             return false;
@@ -185,14 +197,13 @@ public static class MenuEUtil
     }
     public static SR2EMenu GetOpenMenu()
     {
-            for (int i = 0; i < SR2EEntryPoint.SR2EStuff.transform.childCount; i++)
-                if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).name.Contains("(Clone)"))
-                {
-                    if (SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.activeSelf)
-                        return SR2EEntryPoint.SR2EStuff.transform.GetChild(i).gameObject.GetComponent<SR2EMenu>();
-                }
-            return null;
-        
+        foreach (var child in SR2EEntryPoint.SR2EStuff.GetChildren())
+        {
+            if (!child.activeSelf) continue;
+            var menu = child.GetComponent<SR2EMenu>();
+            if (menu != null) return menu;
+        }
+        return null;
     }
     
     

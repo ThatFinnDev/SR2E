@@ -26,7 +26,7 @@ public class CustomMainMenuButton
         this.insertIndex = insertIndex;
         this.action = action;
 
-        MainMenuLandingRootUIInitPatch.buttons.Add(this,new List<CustomMainMenuContainerButton>(){MainMenuLandingRootUIInitPatch.rootStub});
+        MainMenuLandingRootUIInitPatch.buttons.Add(this,new HashSet<CustomMainMenuContainerButton>(){MainMenuLandingRootUIInitPatch.rootStub});
 
         if (this is CustomMainMenuContainerButton)
         {

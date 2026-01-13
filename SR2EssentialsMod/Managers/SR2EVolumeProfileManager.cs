@@ -11,7 +11,7 @@ public static class SR2EVolumeProfileManager
     static Volume volumeHolder = null;
 
     /// <summary>
-    /// Save a volume profile into an XML to load it later
+    /// Save a volume profile into an XML to load it later<br />
     /// Returns the XML as a byte array to be stored in a file
     /// </summary>
     /// <param name="profile">The profile to be saved</param>
@@ -37,7 +37,7 @@ public static class SR2EVolumeProfileManager
     }
     
     /// <summary>
-    /// Loads a VolumeProfile into a preset, which can be activated later
+    /// Loads a VolumeProfile into a preset, which can be activated later<br />
     /// Returns true if successful
     /// </summary>
     /// <param name="preset">The preset name</param>
@@ -81,7 +81,7 @@ public static class SR2EVolumeProfileManager
         return false;
     }
     /// <summary>
-    /// Unload a currently loaded preset and disables it if active
+    /// Unload a currently loaded preset and disables it if active<br />
     /// Returns true if successful
     /// </summary>
     /// <param name="preset">The preset to be unloaded</param>
@@ -95,7 +95,7 @@ public static class SR2EVolumeProfileManager
         return true;
     }
     /// <summary>
-    /// Enables a VolumeProfile
+    /// Enables a VolumeProfile<br />
     /// Returns true if successful
     /// </summary>
     /// <param name="profile">The profile to be enabled</param>
@@ -121,7 +121,7 @@ public static class SR2EVolumeProfileManager
         return true;
     }
     /// <summary>
-    /// Enables a preset
+    /// Enables a preset<br />
     /// Returns true if successful
     /// </summary>
     /// <param name="preset">The preset to be loaded</param>

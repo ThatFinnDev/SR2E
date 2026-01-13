@@ -134,7 +134,24 @@ public static class MiscEUtil
     
     
     
-    
+    public static Il2CppArrayBase<T> RemoveToNew<T>(this Il2CppArrayBase<T> array, T obj) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array) list.Add(item);
+        if(list.Contains(obj)) list.Remove(obj);
+
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
+    public static Il2CppArrayBase<T> AddToNew<T>(this Il2CppArrayBase<T> array, T obj) where T : Il2CppObjectBase
+    {
+        var list = new Il2CppSystem.Collections.Generic.List<T>();
+        foreach (var item in array) list.Add(item);
+        list.Add(obj);
+        
+        array = list.ToArray().Cast<Il2CppReferenceArray<T>>();
+        return array;
+    }
     
     
     public static Il2CppReferenceArray<T> RemoveToNew<T>(this Il2CppReferenceArray<T> array, T obj) where T : Il2CppObjectBase
@@ -231,6 +248,14 @@ public static class MiscEUtil
 
     
     
+    
+    // To DotNet Dictionary
+    public static Dictionary<TKey, TValue> ToNetDictionary<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dictionary) { if (dictionary == null) return null; var dict = new Dictionary<TKey, TValue>(); foreach (var pair in dictionary) dict.Add(pair.Key,pair.Value); return dict; }
+
+    
+    // To Il2CppSystem Dictionary
+    public static Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> ToIl2CppDictionary<TKey, TValue>(this Dictionary<TKey, TValue> dictionary) { if (dictionary == null) return null; var dict = new Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue>(); foreach (var pair in dictionary) dict.Add(pair.Key,pair.Value); return dict; }
+
     
     // To System List
     public static List<T> ToNetList<T>(this HashSet<T> hashSet) { if (hashSet == null) return null; var list = new List<T>(); foreach (var item in hashSet) list.Add(item); return list; }

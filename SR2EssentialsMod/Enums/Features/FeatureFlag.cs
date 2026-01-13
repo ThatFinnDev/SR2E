@@ -1,3 +1,5 @@
+using System;
+
 namespace SR2E.Enums.Features;
 
 public enum FeatureFlag
@@ -22,6 +24,14 @@ public enum FeatureFlag
     /// Show save game related errors and skips them
     /// </summary>
     IgnoreSaveErrors=40,
+    /// <summary>
+    /// Shows world populator errors
+    /// </summary>
+    ShowWorldPopulatorErrors=41,
+    /// <summary>
+    /// Tries to ignore world populator errors
+    /// </summary>
+    IgnoreWorldPopulatorErrors=42,
     /// <summary>
     /// Enable experimental features
     /// </summary>
@@ -169,7 +179,8 @@ public enum FeatureFlag
     /// <summary>
     /// Inject test buttons in the main menu
     /// </summary>
-    AddTestButtons=331, //
+    AddMockMainMenuButtons=331, //
+    [Obsolete("Please use "+nameof(AddMockMainMenuButtons),true)]AddTestButtons=331, //
     /// <summary>
     /// Inject buttons in the ranch house ui
     /// </summary>
@@ -178,6 +189,14 @@ public enum FeatureFlag
     /// Inject buttons in the pause menu
     /// </summary>
     InjectPauseButtons=350, //
+    /// <summary>
+    /// Inject buttons in the options ui
+    /// </summary>
+    InjectOptionsButtons=355,
+    /// <summary>
+    /// Inject test buttons in the OptionsUI
+    /// </summary>
+    AddMockOptionsUIButtons=356, //
 
     //Updates and Patches
     /// <summary>
@@ -199,33 +218,38 @@ public enum FeatureFlag
     /// </summary>
     RedirectSaveFiles=390, //
     /// <summary>
-    /// Tries to restore Debug Abilities.
-    /// This isn't a faithful recreation of the true SR2 Debug tools.
-    /// However there are enough breadcrumbs in the code which.
-    /// help to make sense of the missing code and try to implement it as best as possible.
+    /// Tries to restore Debug Abilities.<br/>
+    /// This isn't a faithful recreation of the true SR2 Debug tools.<br/>
+    /// However there are enough breadcrumbs in the code which.<br/>
+    /// help to make sense of the missing code and try to implement it as best as possible.<br/>
     /// You need to enable the individual abilities
     /// </summary>
     RestoreDebugAbilities=400, //
     /// <summary>
-    /// Tries to restore Debug Ability.
+    /// Tries to restore Debug Ability.<br/>
     /// This restore the FPS counter
     /// </summary>
     RestoreDebugFPSViewer=401, //
     /// <summary>
-    /// Tries to restore Debug Ability.
+    /// Tries to restore Debug Ability.<br/>
     /// This restore the PlayerDebug ui
     /// </summary>
     RestoreDebugPlayerDebug=402, //
     /// <summary>
-    /// Tries to restore Debug Ability.
+    /// Tries to restore Debug Ability.<br/>
     /// This restore the unity dev console
     /// </summary>
     RestoreDebugDevConsole=403, //
     /// <summary>
-    /// Tries to restore Debug Ability.
+    /// Tries to restore Debug Ability.<br/>
     /// This restore the DebugUI
     /// </summary>
     RestoreDebugDebugUI=404, //
+    /// <summary>
+    /// This fixes loading SceneGroups with invalid scene references<br/>
+    /// If it stumbles across an invalid scene, it will be skipped
+    /// </summary>
+    TryFixingInvalidSceneGroups=410, //
     
     
 

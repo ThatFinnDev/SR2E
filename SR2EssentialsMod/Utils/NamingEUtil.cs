@@ -67,6 +67,32 @@ public static class NamingEUtil
     
     
     
+    //LocalizedString
+    public static string GetLocalized(this LocalizedString localizedString, bool addQuotesIfSpaces = true)
+    {
+        try
+        {
+            string itemName = "";
+            string name = localizedString.GetLocalizedString();
+            if (addQuotesIfSpaces && name.Contains(" ")) itemName = "'" + name + "'";
+            else itemName = name;
+            return itemName;
+        }catch { return "<No Translation>"; }
+    }
+    public static string GetCompactLocalized(this LocalizedString localizedString)
+    {
+        try
+        {
+            return localizedString.GetLocalizedString().Replace(" ","").Replace("_","");
+        } catch { return "<NoTranslation>"; }
+    }
+    public static string GetCompactUpperLocalized(this LocalizedString localizedString) {
+        try
+        {
+            return localizedString.GetLocalizedString().Replace(" ","").Replace("_","").ToUpper();
+        } catch { return "<NOTRANSLATION>"; }
+    }
+
     
     
     

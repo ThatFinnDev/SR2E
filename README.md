@@ -14,14 +14,19 @@ Web: [Click Here](https://sr2e.sr2.dev)
 Please let me know on Discord or in GitHub Issues!<br />
 Discord: https://discord.gg/YBghgrSTA9
 
+# Expansions
+If you want to make expansion for SR2E, check out these links.<br />
+Guide: https://sr2e.sr2.dev/dev <br />
+Examples: https://github.com/ThatFinnDev/SR2E-Expansion-Examples
+
 # Special thanks
 Special thanks to SlimeRancherModding for SRML because it gave me good starting point for a bit of stuff when commencing development.<br />
 Link: https://github.com/SlimeRancherModding/SRML
 
-Special thanks to AureumApes for adjusting the weather commands<br />
-Link: https://github.com/AureumApes
+Special thanks to Artur for adjusting the weather commands<br />
+Link: https://gitlab.com/gopherart
  
-Special thanks to LavaGang for MelonLoader because otherwise SR2 Mods wouldn't exist.<br />
+Special thanks to LavaGang for MelonLoader<br />
 Link: https://github.com/LavaGang/MelonLoader
 # Screenshots
 ![Screenshot 1](https://github.com/ThatFinnDev/SR2E/blob/experimental/.readme/Screenshot1.png?raw=true)

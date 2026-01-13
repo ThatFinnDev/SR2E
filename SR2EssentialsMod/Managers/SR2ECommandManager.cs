@@ -90,8 +90,8 @@ public static class SR2ECommandManager
                 
     }
     /// <summary>
-    /// Registers a command to be used in the console
-    /// Returns true if the registration was successful
+    /// Registers a command to be used in the console<br />
+    /// Returns true if the registration was successful<br />
     /// BE CAREFUL: Every command automatically gets registered if it doesn't have the CommandType.DontLoad type!
     /// </summary>
     /// <param name="cmd">The SR2ECommand which should be registered</param>
@@ -116,8 +116,8 @@ public static class SR2ECommandManager
     }
 
     /// <summary>
-    /// Registers multiple commands
-    /// Returns true if the registration was successful for every command
+    /// Registers multiple commands<br />
+    /// Returns true if the registration was successful for every command<br />
     /// BE CAREFUL: Every command automatically gets registered if it doesn't have the CommandType.DontLoad type!
     /// </summary>
     /// <param name="cmds">The SR2ECommands which should be registered</param>
@@ -134,7 +134,7 @@ public static class SR2ECommandManager
         return successful;
     }
     /// <summary>
-    /// Unregisters multiple commands
+    /// Unregisters multiple commands<br />
     /// Returns true if the unregistration was successful for every command
     /// </summary>
     /// <param name="cmds">The SR2ECommands which should be unregistered</param>
@@ -151,7 +151,7 @@ public static class SR2ECommandManager
         return successful;
     }
     /// <summary>
-    /// Unregisters a command to be used in the console
+    /// Unregisters a command to be used in the console<br />
     /// Returns true if the unregistration was successful
     /// </summary>
     /// <param name="cmd">The SR2ECommand which should be unregistered</param>
@@ -162,7 +162,7 @@ public static class SR2ECommandManager
     }
 
     /// <summary>
-    /// Unregisters a command to be used in the console
+    /// Unregisters a command to be used in the console<br />
     /// Returns true if the unregistration was successful
     /// </summary>
     /// <param name="cmd">The SR2ECommand's key which should be unregistered</param>

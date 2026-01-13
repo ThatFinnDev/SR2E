@@ -23,13 +23,11 @@ public class SR2ERepoMenu : SR2EMenu
     
     protected override void OnAwake()
     {
-        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
-        {
-            {"requiredFeatures",new List<FeatureFlag>(){EnableRepoMenu}},
-            {"openActions",new List<MenuActions> { MenuActions.PauseGame,MenuActions.HideMenus }},
-            {"closeActions",new List<MenuActions> { MenuActions.UnPauseGame,MenuActions.UnHideMenus,MenuActions.EnableInput }},
-        });
+        requiredFeatures = new List<FeatureFlag>() { EnableRepoMenu }.ToArray();
+        openActions = new List<MenuActions> { MenuActions.PauseGame, MenuActions.HideMenus }.ToArray();
+        closeActions = new List<MenuActions> { MenuActions.UnPauseGame, MenuActions.UnHideMenus, MenuActions.EnableInput }.ToArray();
     }
+
 
     protected override void OnClose()
     {

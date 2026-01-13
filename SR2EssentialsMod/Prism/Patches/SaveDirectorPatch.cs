@@ -11,27 +11,19 @@ namespace SR2E.Prism.Patches;
 //[HarmonyPatch(typeof(AutoSaveDirector), nameof(AutoSaveDirector.Awake))]
 internal static class SaveDirectorPatch
 {
-    internal static void Prefix(AutoSaveDirector __instance)
-    {
-    }
     internal static void Postfix(AutoSaveDirector __instance)
     {
         PrismShortcuts.emptyTranslation = AddTranslation("");
         PrismShortcuts.unavailableIcon = Get<Sprite>("unavailableIcon");
         PrismLibPedia.PediaDetailTypesInitialize();
         
-        foreach (var category in Resources.FindObjectsOfTypeAll<PediaCategory>())
+        foreach (var category in GetAll<PediaCategory>())
             try
             {
                 category.GetRuntimeCategory();
             }
             catch  {  }
         
-        // 0.6: ffs why
-        //var steamToy = Get<ToyDefinition>("SteamFox");
-        //if (steamToy)
-        //    INTERNAL_SetupLoadForIdent(steamToy.ReferenceId, steamToy);
-        // add more platforms please
         
         foreach (var expansion in SR2EEntryPoint.expansionsV3)
             try { expansion.OnPrismCreateAdditions(); }

@@ -6,10 +6,12 @@ using SR2E.Storage;
 namespace SR2E.Prism.Patches;
 
 [PrismPatch()]
+[HarmonyPriority(-9999999)]
 [HarmonyPatch(typeof(MarketUI))]
 internal static class MarketUIPatch
 {
     [HarmonyPatch(nameof(MarketUI.Start))]
+    [HarmonyPriority(-9999999)]
     [HarmonyPrefix]
     public static void Prefix(MarketUI __instance)
     {
@@ -32,7 +34,7 @@ internal static class MarketUIPatch
         PrismLibMarket.TryRefreshMarketData();
     }   
     
-    [HarmonyPriority(HarmonyLib.Priority.Last)]
+    [HarmonyPriority(-9999999)]
     [HarmonyPatch(nameof(MarketUI.Start))]
     [HarmonyPostfix]
     public static void Postfix(MarketUI __instance)

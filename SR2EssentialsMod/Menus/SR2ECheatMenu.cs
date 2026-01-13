@@ -23,14 +23,12 @@ public class SR2ECheatMenu : SR2EMenu
     public new static MenuIdentifier GetMenuIdentifier() => new MenuIdentifier("cheatmenu",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"CheatMenu");
     public override bool createCommands => true;
     public override bool inGameOnly => true;
+    
     protected override void OnAwake()
     {
-        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
-        {
-            {"requiredFeatures",new List<FeatureFlag>(){EnableCheatMenu}},
-            {"openActions",new List<MenuActions> { MenuActions.PauseGame,MenuActions.HideMenus }},
-            {"closeActions",new List<MenuActions> { MenuActions.UnPauseGame,MenuActions.UnHideMenus,MenuActions.EnableInput }},
-        });
+        requiredFeatures = new List<FeatureFlag>() { EnableCheatMenu }.ToArray();
+        openActions = new List<MenuActions> { MenuActions.PauseGame, MenuActions.HideMenus }.ToArray();
+        closeActions = new List<MenuActions> { MenuActions.UnPauseGame, MenuActions.UnHideMenus, MenuActions.EnableInput }.ToArray();
     }
     
     

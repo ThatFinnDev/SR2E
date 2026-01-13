@@ -11,11 +11,11 @@ namespace SR2E.Buttons;
 
 public class CustomMainMenuContainerButton : CustomMainMenuButton
 {
-    private List<CustomMainMenuButton> customMainMenuButtons = new ();
+    private HashSet<CustomMainMenuButton> customMainMenuButtons = new ();
 
     public void AddSubButton(CustomMainMenuButton button, bool removeFromCurrent = true)
     {
-        if (removeFromCurrent) MainMenuLandingRootUIInitPatch.buttons[button] = new List<CustomMainMenuContainerButton>();
+        if (removeFromCurrent) MainMenuLandingRootUIInitPatch.buttons[button] = new HashSet<CustomMainMenuContainerButton>();
         MainMenuLandingRootUIInitPatch.buttons[button].Add(this);
     }
 

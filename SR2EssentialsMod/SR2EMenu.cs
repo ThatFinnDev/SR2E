@@ -19,7 +19,7 @@ public abstract class SR2EMenu : MonoBehaviour
 {
     private bool changedOpenState = false;
 
-
+    public static GameObject GetMenuRootObject() => null;
     public static MenuIdentifier GetMenuIdentifier() => new();
 
     //SR2EMenu doesnt work for whatever reason
@@ -31,6 +31,37 @@ public abstract class SR2EMenu : MonoBehaviour
     //private List<FeatureFlag> requiredFeatures => SR2EEntryPoint.menus[this][nameof(requiredFeatures)] as List<FeatureFlag>;
     //public List<MenuActions> openActions => SR2EEntryPoint.menus[this][nameof(openActions)] as List<MenuActions>;
     //public List<MenuActions> closeActions => SR2EEntryPoint.menus[this][nameof(closeActions)] as List<MenuActions>;
+
+    public MenuActions[] openActions
+    {
+        get { try { return (SR2EEntryPoint.menus[this][nameof(openActions)] as List<MenuActions>).ToArray(); } catch { return Array.Empty<MenuActions>(); } }
+        set
+        {
+            if (SR2EEntryPoint.menus == null) SR2EEntryPoint.menus = new Dictionary<SR2EMenu, Dictionary<string, object>>();
+            if (!SR2EEntryPoint.menus.ContainsKey(this)) SR2EEntryPoint.menus[this] = new Dictionary<string, object>();
+            SR2EEntryPoint.menus[this][nameof(openActions)] = value.ToNetList();
+        }
+    }
+    public MenuActions[] closeActions
+    {
+        get { try { return (SR2EEntryPoint.menus[this][nameof(closeActions)] as List<MenuActions>).ToArray(); } catch { return Array.Empty<MenuActions>(); } }
+        set
+        {
+            if (SR2EEntryPoint.menus == null) SR2EEntryPoint.menus = new Dictionary<SR2EMenu, Dictionary<string, object>>();
+            if (!SR2EEntryPoint.menus.ContainsKey(this)) SR2EEntryPoint.menus[this] = new Dictionary<string, object>();
+            SR2EEntryPoint.menus[this][nameof(closeActions)] = value.ToNetList();
+        }
+    }
+    public FeatureFlag[] requiredFeatures
+    {
+        get { try { return (SR2EEntryPoint.menus[this][nameof(requiredFeatures)] as List<FeatureFlag>).ToArray(); } catch { return Array.Empty<FeatureFlag>(); } }
+        set
+        {
+            if (SR2EEntryPoint.menus == null) SR2EEntryPoint.menus = new Dictionary<SR2EMenu, Dictionary<string, object>>();
+            if (!SR2EEntryPoint.menus.ContainsKey(this)) SR2EEntryPoint.menus[this] = new Dictionary<string, object>();
+            SR2EEntryPoint.menus[this][nameof(requiredFeatures)] = value.ToNetList();
+        }
+    }
     protected virtual void OnClose()
     {
     }

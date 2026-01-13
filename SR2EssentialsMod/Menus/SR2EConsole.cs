@@ -36,18 +36,18 @@ public class SR2EConsole : SR2EMenu
     
     protected override void OnAwake()
     {
-        SR2EEntryPoint.menus.Add(this, new Dictionary<string, object>()
-        {
-            { "requiredFeatures", new List<FeatureFlag>() { EnableConsole } },
-            { "openActions", new List<MenuActions> { MenuActions.PauseGameFalse, MenuActions.DisableInput } },
-            { "closeActions", new List<MenuActions> { MenuActions.UnPauseGameFalse, MenuActions.EnableInput } },
-        });
+        requiredFeatures = new List<FeatureFlag>() { EnableConsole }.ToArray();
+        openActions = new List<MenuActions> { MenuActions.PauseGameFalse, MenuActions.DisableInput }.ToArray();
+        closeActions = new List<MenuActions> { MenuActions.UnPauseGameFalse, MenuActions.EnableInput }.ToArray();
     }
 
     protected override void OnStart()
     {
         SendMessage(translation("console.helloworld"));
         SendMessage(translation("console.info"));
+        SR2ELogManager.OnSendMessage += SendMessage;
+        SR2ELogManager.OnSendWarning += SendWarning;
+        SR2ELogManager.OnSendError += SendError;
     }
 
     public void Send(string message, Color32 color)
