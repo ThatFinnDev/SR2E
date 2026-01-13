@@ -6,7 +6,7 @@ internal class RotationCommand : SR2ECommand
 {
     public override string ID => "rotation";
     public override string Usage => "rotation <x> <y> <z> [absolute(true/false)]";
-    public override CommandType type => CommandType.Miscellaneous;
+    public override CommandType type => CommandType.Miscellaneous | CommandType.Cheat;
 
     public override bool Execute(string[] args)
     {

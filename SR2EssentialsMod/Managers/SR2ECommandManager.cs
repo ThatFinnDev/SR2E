@@ -228,7 +228,7 @@ public static class SR2ECommandManager
                             canPlay = true;
                     if (!canPlay)
                     {
-                        SR2EMenu openMenu = MenuEUtil.GetOpenMenu();
+                        var openMenu = MenuEUtil.GetOpenMenu();
                         if (openMenu != null)
                         {   
                             Type openMenuType = openMenu.GetType();
@@ -253,36 +253,50 @@ public static class SR2ECommandManager
                         {
                             string[] args = null;
                             if (split.Count != 0) args = split.ToArray();
-                            SR2ECommand command = commands[cmd];
-                            command.silent = silent;
-                            try { successful = command.Execute(args); } catch (Exception e) { MelonLogger.Error($"Error in command execution!\n{e}"); }
-
-                            try
+                            var command = commands[cmd];
+                            if (command.type.HasFlag(CommandType.Cheat) && SR2ECounterGateManager.disableCheats)
                             {
-                                if (commandAddons.TryGetValue(cmd, out List<Action<string[]>> list))
-                                    foreach (var action in list)
-                                        action(args);
+                                try { command.SendCheatsDisabled(); } catch (Exception e) { MelonLogger.Error($"Error in command SendCheatsDisabled!\n{e}"); }
                             }
-                            catch (Exception e) { MelonLogger.Error($"Error in command extension execution!\n{e}"); }
+                            else
+                            {
+                                command.silent = silent;
+                                try { successful = command.Execute(args); } catch (Exception e) { MelonLogger.Error($"Error in command execution!\n{e}"); }
+
+                                try
+                                {
+                                    if (commandAddons.TryGetValue(cmd, out List<Action<string[]>> list))
+                                        foreach (var action in list)
+                                            action(args);
+                                }
+                                catch (Exception e) { MelonLogger.Error($"Error in command extension execution!\n{e}"); }
                             
-                            command.silent = false;
+                                command.silent = false;
+                            }
                         }
                     }
                     else if (canPlay)
                     {
                         SR2ECommand command = commands[cmd];
-                        command.silent = silent;
-                        try { successful = command.Execute(null); } catch (Exception e) { MelonLogger.Error($"Error in command execution!\n{e}"); }
-
-                        try
+                        if (command.type.HasFlag(CommandType.Cheat) && SR2ECounterGateManager.disableCheats)
                         {
-                            if (commandAddons.TryGetValue(cmd, out List<Action<string[]>> list))
-                                foreach (var action in list)
-                                    action(null);
+                            try { command.SendCheatsDisabled(); } catch (Exception e) { MelonLogger.Error($"Error in command SendCheatsDisabled!\n{e}"); }
                         }
-                        catch (Exception e) { MelonLogger.Error($"Error in command extension execution!\n{e}"); }
-                        
-                        command.silent = false;
+                        else
+                        {
+                            command.silent = silent;
+                            try { successful = command.Execute(null); } catch (Exception e) { MelonLogger.Error($"Error in command execution!\n{e}"); }
+
+                            try
+                            {
+                                if (commandAddons.TryGetValue(cmd, out List<Action<string[]>> list))
+                                    foreach (var action in list)
+                                        action(null);
+                            }
+                            catch (Exception e) { MelonLogger.Error($"Error in command extension execution!\n{e}"); }
+                            
+                            command.silent = false;
+                        }
                     }
 
                     if (DebugLogging.HasFlag()) MelonLogger.Msg($"Command success: {successful}");

@@ -83,6 +83,7 @@ public class SR2EEntryPoint : MelonMod
     static MelonLogger.Instance unityLog = new MelonLogger.Instance("Unity");
     internal static string _mlVersion = "undefined";
     internal static MelonAssembly MLAssembly;
+    internal static SR2EEntryPoint instance;
     
     
     internal static string onSaveLoadCommand => prefs.GetEntry<string>("onSaveLoadCommand").Value; 
@@ -202,6 +203,7 @@ public class SR2EEntryPoint : MelonMod
     public override void OnEarlyInitializeMelon()
     {
         if (!IsDisplayVersionValid()) { MelonLogger.Msg("Version Code is broken!"); Unregister(); return; }
+        instance = this;
         StaticOnEarlyInitializeMelon();
         PatchIl2CppDetourMethodPatcher.InstallSecondPart(HarmonyInstance);
         MLAssembly = MelonAssembly;

@@ -6,7 +6,7 @@ internal class PositionCommand: SR2ECommand
 {
     public override string ID => "position";
     public override string Usage => "position <x> <y> <z>";
-    public override CommandType type => CommandType.Miscellaneous;
+    public override CommandType type => CommandType.Miscellaneous | CommandType.Cheat;
 
     public override bool Execute(string[] args)
     {

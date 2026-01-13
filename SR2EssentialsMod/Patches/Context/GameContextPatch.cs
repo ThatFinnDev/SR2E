@@ -20,6 +20,7 @@ namespace SR2E.Patches.Context;
 [HarmonyPatch(typeof(GameContext), nameof(GameContext.Start))]
 internal class GameContextPatch
 {
+    internal static CustomPauseMenuButton cheatMenuButton;
     internal static void Postfix(GameContext __instance)
     {
         var damageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>();
@@ -70,7 +71,7 @@ internal class GameContextPatch
                 //subsub.AddSubButton(three,false);
 
             }
-            if (AddCheatMenuButton.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
+            if (AddCheatMenuButton.HasFlag()) cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
             if (DevMode.HasFlag()||RestoreDebugPlayerDebug.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugUI.DebugStatsManager.TogglePlayerDebugUI(); }));
             if (AddMockOptionsUIButtons.HasFlag())
             {
