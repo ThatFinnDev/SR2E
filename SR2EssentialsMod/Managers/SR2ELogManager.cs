@@ -44,7 +44,7 @@ public static class SR2ELogManager
     {
         if (HideMessage(message)) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Msg(message);
-        OnSendMessage.Invoke(message);
+        OnSendMessage?.Invoke(message);
     }
     
     
@@ -59,7 +59,7 @@ public static class SR2ELogManager
     {
         if (HideMessage(message)) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Error(message);
-        OnSendError.Invoke(message);
+        OnSendError?.Invoke(message);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public static class SR2ELogManager
     {
         if (HideMessage(message)) return;
         if (doMLLog&&(message.Contains("\n") || internal_logMLForSingleLine)) mlog.Warning(message);
-        OnSendWarning.Invoke(message);
+        OnSendWarning?.Invoke(message);
     }
     
     

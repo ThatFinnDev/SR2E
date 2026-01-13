@@ -97,11 +97,11 @@ public static class MiscEUtil
         return active;
     }
 
-    internal static SlimeAppearance.AppearanceSaveSet GetAppearanceSet(this IdentifiableType type)
+    public static SlimeAppearance.AppearanceSaveSet GetAppearanceSet(this IdentifiableType type)
     {
         if (type.TryCast<SlimeDefinition>() != null) return SlimeAppearance.AppearanceSaveSet.CLASSIC;
         return SlimeAppearance.AppearanceSaveSet.NONE;
-;    }
+    }
     public static void AddNullAction(this MelonPreferences_Entry entry) => SR2EModMenu.entriesWithActions.Add(entry, null);
     public static void AddAction(this MelonPreferences_Entry entry, System.Action action) => SR2EModMenu.entriesWithActions.Add(entry, action);
 
