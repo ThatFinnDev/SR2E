@@ -100,6 +100,11 @@ public static class SR2ECommandManager
     /// <returns>bool</returns>
     public static bool RegisterCommand(SR2ECommand cmd)
     {
+        if(cmd.ID.Contains(" "))
+        {
+            SR2ELogManager.SendMessage(translation("cmd.idcontainsspace", cmd.ID.ToLowerInvariant()));
+            return false;
+        }
         if (commands.ContainsKey(cmd.ID.ToLowerInvariant()))
         {
             SR2ELogManager.SendMessage(translation("cmd.alreadyregistered", cmd.ID.ToLowerInvariant()));

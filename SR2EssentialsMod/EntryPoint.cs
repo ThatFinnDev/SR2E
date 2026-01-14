@@ -19,6 +19,7 @@ using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Patches.General;
 using SR2E.Prism;
+using SR2E.Prism.Lib;
 using SR2E.Storage;
 
 namespace SR2E;
@@ -510,6 +511,8 @@ public class SR2EEntryPoint : MelonMod
         
         SR2ECommandManager.OnSceneWasLoaded(buildIndex, sceneName);
         SR2ECounterGateManager.OnSceneWasLoaded(buildIndex, sceneName);
+        if(usePrism)
+            PrismLibLandPlots.OnSceneWasLoaded(buildIndex, sceneName);
     }
 
     internal static void CheckForTime()

@@ -76,7 +76,7 @@ public static class MiscEUtil
     
     private const string AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly int AllowedCharCount = AllowedChars.Length;
-    internal static string GetRandomString(int length)
+    public static string GetRandomString(int length)
     {
         Span<char> chars = stackalloc char[length];
         var random = System.Random.Shared;
