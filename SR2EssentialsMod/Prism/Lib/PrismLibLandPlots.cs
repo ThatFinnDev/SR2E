@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace SR2E.Prism.Lib;
 
-internal static class PrismLibLandPlots
+public static class PrismLibLandPlots
 {
     internal static Dictionary<string, PrismLandPlotLocation> customPlots = new ();
     internal static Dictionary<string, GameObject> rootObjects = new ();
@@ -30,12 +30,8 @@ internal static class PrismLibLandPlots
         if(!foundACell)
         {
             var anyDir = GetAnyInScene<CellDirector>();
-            if(anyDir==null)
-                MelonLogger.Msg("Oh oh... A landplot is outside a CellDirector. Things are about to get sideways");
-            else
-            {
-                gameObj.transform.SetParent(anyDir.transform);
-            }
+            if(anyDir==null) MelonLogger.Msg("Oh oh... A landplot is outside a CellDirector. Things are about to get sideways");
+            else gameObj.transform.SetParent(anyDir.transform);
         }
         rootObjects[sceneName] = gameObj;
         return gameObj;
@@ -46,7 +42,6 @@ internal static class PrismLibLandPlots
         {
             if (sceneName == "MainMenuUI")
             {
-                //isReady = false;
                 landPlotLocations = new();
                 customPlots = new();
                 rootObjects = new();
@@ -121,8 +116,8 @@ internal static class PrismLibLandPlots
             ExecuteInTicks(() =>
             {
                 var landPlot = plotObj.GetComponent<LandPlot>();
-                try { sceneContext.GameModel.RegisterLandPlot(lpl._id,obj); }catch { }
-                //Yes its a different key on purpose
+                //try { sceneContext.GameModel.RegisterLandPlot(lpl._id,obj); }catch { }
+                //Yes, it's a different key on purpose
                 landPlot.InitModel(sceneContext.GameModel.InitializeLandPlotModel(plotKey));
                 
             },2);
