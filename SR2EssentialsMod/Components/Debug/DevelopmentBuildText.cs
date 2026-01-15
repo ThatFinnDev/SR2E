@@ -9,12 +9,6 @@ namespace SR2E.Components;
 [InjectClass]
 internal class DevelopmentBuildText : MonoBehaviour
 {
-    internal static DevelopmentBuildText Instance;
-
-    void Start()
-    {
-        Instance = this;
-    }
 
     private int fontSize = 11;
     void OnGUI()

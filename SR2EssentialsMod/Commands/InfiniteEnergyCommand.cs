@@ -28,7 +28,7 @@ internal class InfiniteEnergyCommand : SR2ECommand
         {
             infEnergy = false;
             if (energyMeter == null) energyMeter = Get<EnergyMeter>("Energy Meter");
-            energyMeter.gameObject.active = true;
+            energyMeter.transform.GetChild(0).gameObject.SetActive(true);
 
             if (jetpackAbilityData == null) jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
             jetpackAbilityData._hoverHeight = normalHoverHeight;
@@ -43,7 +43,7 @@ internal class InfiniteEnergyCommand : SR2ECommand
         {
             infEnergy = true;
             if (energyMeter == null) energyMeter = Get<EnergyMeter>("Energy Meter");
-            energyMeter.gameObject.active = false;
+            energyMeter.transform.GetChild(0).gameObject.SetActive(false);
 
             if (jetpackAbilityData == null) jetpackAbilityData = Get<JetpackAbilityData>("Jetpack");
             normalHoverHeight = jetpackAbilityData._hoverHeight;

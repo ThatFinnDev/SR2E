@@ -7,6 +7,7 @@ namespace SR2E.Patches.Saving;
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGame))]
 internal static class LoadPatch
 {   
+    [HarmonyFinalizer]
     static Exception Finalizer(Exception __exception)
     {
         if (__exception == null) return null;

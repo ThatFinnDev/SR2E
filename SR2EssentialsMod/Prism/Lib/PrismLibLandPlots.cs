@@ -1,13 +1,15 @@
+using System.Collections;
+using Il2CppMonomiPark.SlimeRancher.Regions;
 using SR2E.Prism.Data.LandPlots;
 using UnityEngine.SceneManagement;
 
 namespace SR2E.Prism.Lib;
 
-public static class PrismLibLandPlots
+internal static class PrismLibLandPlots
 {
     internal static Dictionary<string, PrismLandPlotLocation> customPlots = new ();
     internal static Dictionary<string, GameObject> rootObjects = new ();
-
+    internal static List<LandPlotLocation> landPlotLocations = new();
     internal static GameObject GetNewLandPlotRoot(string sceneName)
     {
         if(rootObjects.ContainsKey(sceneName))
@@ -15,6 +17,26 @@ public static class PrismLibLandPlots
                 return rootObjects[sceneName];
         var gameObj = new GameObject("PrismLandPlotRoots-" + sceneName);
         SceneManager.MoveGameObjectToScene(gameObj, SceneManager.GetSceneByName(sceneName));
+        var foundACell = false;
+        foreach (var dir in GetAllInScene<CellDirector>())
+        {
+            if (dir.gameObject.scene.name == sceneName)
+            {
+                gameObj.transform.SetParent(dir.transform);
+                foundACell = true;
+                break;
+            }
+        }
+        if(!foundACell)
+        {
+            var anyDir = GetAnyInScene<CellDirector>();
+            if(anyDir==null)
+                MelonLogger.Msg("Oh oh... A landplot is outside a CellDirector. Things are about to get sideways");
+            else
+            {
+                gameObj.transform.SetParent(anyDir.transform);
+            }
+        }
         rootObjects[sceneName] = gameObj;
         return gameObj;
     }
@@ -24,6 +46,8 @@ public static class PrismLibLandPlots
         {
             if (sceneName == "MainMenuUI")
             {
+                //isReady = false;
+                landPlotLocations = new();
                 customPlots = new();
                 rootObjects = new();
             }
@@ -40,16 +64,23 @@ public static class PrismLibLandPlots
             }
         }),2);
     }
+    /// <summary>
+    /// Note, custom landplots don't support drones yet!
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="loc"></param>
     public static void AddLandPlotLocation(string id,PrismLandPlotLocation loc)
     {
         if (!inGame) return;
         if (loc == null || string.IsNullOrWhiteSpace(id)) return;
         var scene = SceneManager.GetSceneByName(loc.sceneName);
         if (scene == null) return;
+        if (customPlots.ContainsKey(id)) return;
          
         customPlots.Add(id,loc);
         if (scene.isLoaded)
             SpawnLandPlot(id, loc);
+
     }
 
     public static bool HasLandPlotLocation(string id) => customPlots.ContainsKey(id);
@@ -70,10 +101,11 @@ public static class PrismLibLandPlots
     }
 
     static void SpawnLandPlot(string plotKey, PrismLandPlotLocation loc)
-    {
+    { 
         GameObject landplotRoot = GetNewLandPlotRoot(loc.sceneName);
         var obj = new GameObject(plotKey);
         var lpl = obj.AddComponent<LandPlotLocation>();
+        landPlotLocations.Add(lpl);
         lpl._id = "plot" + plotKey;
         obj.transform.SetParent(landplotRoot.transform);
         obj.transform.position = loc.position;
@@ -89,9 +121,10 @@ public static class PrismLibLandPlots
             ExecuteInTicks(() =>
             {
                 var landPlot = plotObj.GetComponent<LandPlot>();
-                sceneContext.GameModel.RegisterLandPlot(lpl._id,obj);
+                try { sceneContext.GameModel.RegisterLandPlot(lpl._id,obj); }catch { }
                 //Yes its a different key on purpose
                 landPlot.InitModel(sceneContext.GameModel.InitializeLandPlotModel(plotKey));
+                
             },2);
         },2);
     }

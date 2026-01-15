@@ -11,11 +11,9 @@ namespace SR2E.Components;
 [InjectClass]
 internal class FPSDisplayFixer : MonoBehaviour
 {
-    internal static FPSDisplayFixer Instance;
     private FPSDisplay display;
     void Start()
     {
-        Instance = this;
         display = GetComponent<FPSDisplay>();
         display.displayText.gameObject.SetActive(true);
         display.versionText.gameObject.SetActive(true);

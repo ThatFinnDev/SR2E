@@ -17,6 +17,7 @@ using SR2E.Components;
 using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Menus;
+using SR2E.Menus.Debug;
 using SR2E.Patches.General;
 using SR2E.Prism;
 using SR2E.Prism.Lib;
@@ -193,14 +194,18 @@ public class SR2EEntryPoint : MelonMod
         if (message.Equals(string.Empty)) return;
         string toDisplay = message;
         if(trace.StartsWith("TMPro.TextMeshProUGUI.Rebuild (UnityEngine.UI.CanvasUpdate update)")) return;
-        if (!trace.Equals(string.Empty)) toDisplay += "\n" + trace;
+        if (!string.IsNullOrWhiteSpace(trace))
+        {
+            toDisplay += "\n" + trace;
+            if(message.StartsWith("Coroutine couldn't be started because the the game object 'EngagementPrompt' is inactive!")&& trace.StartsWith("MonomiPark.SlimeRancher.Platform.StandaloneContext:InitializePlatformForCurrentUser")) return;
+        }
         toDisplay = Regex.Replace(toDisplay, @"\[INFO]\s|\[ERROR]\s|\[WARNING]\s", "");
         switch (type)
         {
             case LogType.Assert: unityLog.Error(toDisplay); break;
-            case LogType.Exception: unityLog.Error(toDisplay + trace); break;
+            case LogType.Exception: unityLog.Error(toDisplay); break;
             case LogType.Log: unityLog.Msg(toDisplay); break;
-            case LogType.Error: unityLog.Error(toDisplay + trace); break;
+            case LogType.Error: unityLog.Error(toDisplay); break;
             case LogType.Warning: unityLog.Warning(toDisplay); break;
         }
     }
@@ -650,6 +655,8 @@ public class SR2EEntryPoint : MelonMod
                 try { SR2ECommandManager.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 try { SR2EBindingManger.Update(); } catch (Exception e) { MelonLogger.Error(e); }
                 if (DevMode.HasFlag()) SR2EDebugUI.DebugStatsManager.Update();
+                if(RestoreDebugDebugUI.HasFlag()) try { if (SR2ENativeDebugUI.openKey.OnKeyDown()) MenuEUtil.GetMenu<SR2ENativeDebugUI>().Toggle(); } catch (Exception e) { MelonLogger.Error(e); }
+
                 foreach (var pair in menus) try { pair.Key.AlwaysUpdate(); } catch (Exception e) { MelonLogger.Error(e); }
             }
 

@@ -85,62 +85,65 @@ internal class SystemContextPatch
                     instance.SetActive(false);
                     GameObject.DontDestroyOnLoad(instance);
                     
-                    foreach (var melonBase in MelonBase.RegisteredMelons)
-                    {
-                        var exporters = melonBase.MelonAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract);
-                        foreach (Type type in exporters)
-                            try
-                            {
-                                var identifier = type.GetMenuIdentifierByType();
-                                if (!string.IsNullOrWhiteSpace(identifier.saveKey))
-                                {
-                                    var path = getMenuPath(identifier);
-                                    bool assetEmpty = true;
-                                    if (!string.IsNullOrWhiteSpace(path)) assetEmpty = !bundle.Contains(path);
-
-                                    UnityEngine.Object rootObject = type.GetMenuRootObject();
-                                    
-                                    if (!assetEmpty&&rootObject==null)
-                                    {
-                                        rootObject = GameObject.Instantiate(bundle.LoadAsset(path), instance.transform);
-                                    }
-                                    if (rootObject == null)
-                                    {
-                                        var message = $"The menu under the name {type.Name} couldn't be loaded! It's root object is null!";
-                                        MelonLogger.Error(message);
-                                        throw new Exception(message);
-                                    }
-
-                                    rootObject.Cast<GameObject>().transform.SetParent(instance.transform);
-                                    menusToInit.Add(rootObject.name, type);
-                                    if (!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
-                                        ClassInjector.RegisterTypeInIl2Cpp(type,
-                                            new RegisterTypeOptions() { LogSuccess = false });
-
-                                }
-                                else MelonLogger.Error($"The menu under the name {type.Name} couldn't be loaded! It's MenuIdentifier is broken!");
-
-                            }
-                            catch (Exception e) { MelonLogger.Error(e); }
-                    }
-
                     ExecuteInTicks(() =>
                     {
-                        instance.SetActive(true);
-                        foreach (var pair in new Dictionary<string, Type>(menusToInit))
-                        foreach (var child in instance.GetChildren())
-                            if (child.name == pair.Key)
-                            {
+                        foreach (var melonBase in MelonBase.RegisteredMelons)
+                        {
+                            var exporters = melonBase.MelonAssembly.Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SR2EMenu)) && !t.IsAbstract);
+                            foreach (Type type in exporters)
                                 try
                                 {
-                                    child.AddComponent(pair.Value);
-                                    child.gameObject.SetActive(true);
-                                    menusToInit.Remove(pair.Key);
+                                    var identifier = type.GetMenuIdentifierByType();
+                                    if (!string.IsNullOrWhiteSpace(identifier.saveKey))
+                                    {
+                                        var path = getMenuPath(identifier);
+                                        bool assetEmpty = true;
+                                        if (!string.IsNullOrWhiteSpace(path)) assetEmpty = !bundle.Contains(path);
+
+                                        UnityEngine.Object rootObject = type.GetMenuRootObject();
+                                        
+                                        if (!assetEmpty&&rootObject==null)
+                                        {
+                                            rootObject = GameObject.Instantiate(bundle.LoadAsset(path), instance.transform);
+                                        }
+                                        if (rootObject == null)
+                                        {
+                                            var message = $"The menu under the name {type.Name} couldn't be loaded! It's root object is null!";
+                                            MelonLogger.Error(message);
+                                            throw new Exception(message);
+                                        }
+
+                                        rootObject.Cast<GameObject>().transform.SetParent(instance.transform);
+                                        menusToInit.Add(rootObject.name, type);
+                                        if (!ClassInjector.IsTypeRegisteredInIl2Cpp(type))
+                                            ClassInjector.RegisterTypeInIl2Cpp(type,
+                                                new RegisterTypeOptions() { LogSuccess = false });
+
+                                    }
+                                    else MelonLogger.Error($"The menu under the name {type.Name} couldn't be loaded! It's MenuIdentifier is broken!");
+
                                 }
                                 catch (Exception e) { MelonLogger.Error(e); }
-                            }
-                        SR2EEntryPoint.menusFinished = true;
-                    }, 1);
+                        }
+
+                        ExecuteInTicks(() =>
+                        {
+                            instance.SetActive(true);
+                            foreach (var pair in new Dictionary<string, Type>(menusToInit))
+                            foreach (var child in instance.GetChildren())
+                                if (child.name == pair.Key)
+                                {
+                                    try
+                                    {
+                                        child.AddComponent(pair.Value);
+                                        child.gameObject.SetActive(true);
+                                        menusToInit.Remove(pair.Key);
+                                    }
+                                    catch (Exception e) { MelonLogger.Error(e); }
+                                }
+                            SR2EEntryPoint.menusFinished = true;
+                        }, 1);
+                    },1);
                     break;
                 }
 

@@ -1,5 +1,6 @@
 using System;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DebugTool;
 using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using SR2E.Buttons;
@@ -170,8 +171,7 @@ internal class GameContextPatch
 
         if(RestoreDebugFPSViewer.HasFlag()) foreach (var display in GetAllInScene<FPSDisplay>())
             display.AddComponent<FPSDisplayFixer>();
-        if(RestoreDebugDebugUI.HasFlag())  foreach (var debugUI in GetAllInScene<DebugUI>())
-            debugUI.AddComponent<DebugUIFixer>();
+        if (RestoreDebugDebugUI.HasFlag()) __instance.AddComponent<DebugDirectorFixer>();
         foreach (var expansion in SR2EEntryPoint.expansionsV1V2)
             try { expansion.OnGameContext(__instance); }
             catch (Exception e) { MelonLogger.Error(e); }

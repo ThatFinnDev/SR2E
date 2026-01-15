@@ -6,6 +6,7 @@ namespace SR2E.Patches.Options;
 [HarmonyPatch(typeof(PresetOptionsItemModel), nameof(PresetOptionsItemModel.RebuildOptions))]
 internal static class PresetOptionsItemModelPatch
 {
+    [HarmonyFinalizer]
     static Exception Finalizer(PresetOptionsItemModel __instance, Exception __exception)
     {
         if (!InjectOptionsButtons.HasFlag()) return __exception;
