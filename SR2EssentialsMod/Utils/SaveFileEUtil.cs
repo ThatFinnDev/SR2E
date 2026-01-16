@@ -174,6 +174,9 @@ public static class SaveFileEUtil
                                             break;
                                         }
                                     break;
+                                case "displayName":
+                                    newDisplayName = modifier.Value.ToString();
+                                    break;
                                 case "gameIcon":
                                     var newGameIcon = modifier.Value.ToString();
                                     var i = 0;

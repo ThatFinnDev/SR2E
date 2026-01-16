@@ -116,10 +116,9 @@ public static class PrismLibLandPlots
             ExecuteInTicks(() =>
             {
                 var landPlot = plotObj.GetComponent<LandPlot>();
-                //try { sceneContext.GameModel.RegisterLandPlot(lpl._id,obj); }catch { }
+                try { sceneContext.GameModel.RegisterLandPlot(lpl._id,obj); }catch { }
                 //Yes, it's a different key on purpose
                 landPlot.InitModel(sceneContext.GameModel.InitializeLandPlotModel(plotKey));
-                
             },2);
         },2);
     }
