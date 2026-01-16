@@ -9,7 +9,6 @@ namespace SR2E.Components;
 [InjectClass]
 internal class DevConsoleFixer : MonoBehaviour
 {
-    internal static DevConsoleFixer Instance;
     private struct Log
     {
         public string message;
@@ -23,7 +22,6 @@ internal class DevConsoleFixer : MonoBehaviour
 
     void Start()
     {
-        Instance = this;
         Application.add_logMessageReceived(new System.Action<string, string, LogType>(HandleLog));
         HandleLog("Hello World","No Trace :)",LogType.Error);
     }

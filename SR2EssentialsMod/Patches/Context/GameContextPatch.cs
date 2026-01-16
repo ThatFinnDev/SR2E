@@ -1,5 +1,6 @@
 using System;
 using Il2CppMonomiPark.SlimeRancher.Damage;
+using Il2CppMonomiPark.SlimeRancher.DebugTool;
 using Il2CppMonomiPark.SlimeRancher.Input;
 using Il2CppMonomiPark.SlimeRancher.UI;
 using SR2E.Buttons;
@@ -20,6 +21,7 @@ namespace SR2E.Patches.Context;
 [HarmonyPatch(typeof(GameContext), nameof(GameContext.Start))]
 internal class GameContextPatch
 {
+    internal static CustomPauseMenuButton cheatMenuButton;
     internal static void Postfix(GameContext __instance)
     {
         var damageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>();
@@ -70,7 +72,7 @@ internal class GameContextPatch
                 //subsub.AddSubButton(three,false);
 
             }
-            if (AddCheatMenuButton.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
+            if (AddCheatMenuButton.HasFlag()) cheatMenuButton = new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.cheatmenu.label", "b.button_cheatmenu_sr2e", "UI"), 4, (System.Action)(() => { MenuEUtil.GetMenu<SR2ECheatMenu>().Open(); }));
             if (DevMode.HasFlag()||RestoreDebugPlayerDebug.HasFlag()) new CustomPauseMenuButton(AddTranslationFromSR2E("buttons.debugplayer.label", "b.debug_player_sr2e", "UI"), 3, (System.Action)(() => { SR2EDebugUI.DebugStatsManager.TogglePlayerDebugUI(); }));
             if (AddMockOptionsUIButtons.HasFlag())
             {
@@ -169,14 +171,14 @@ internal class GameContextPatch
 
         if(RestoreDebugFPSViewer.HasFlag()) foreach (var display in GetAllInScene<FPSDisplay>())
             display.AddComponent<FPSDisplayFixer>();
-        if(RestoreDebugDebugUI.HasFlag())  foreach (var debugUI in GetAllInScene<DebugUI>())
-            debugUI.AddComponent<DebugUIFixer>();
+        if (RestoreDebugDebugUI.HasFlag()) __instance.AddComponent<DebugDirectorFixer>();
         foreach (var expansion in SR2EEntryPoint.expansionsV1V2)
             try { expansion.OnGameContext(__instance); }
             catch (Exception e) { MelonLogger.Error(e); }
         foreach (var expansion in SR2EEntryPoint.expansionsV3)
             try { expansion.AfterGameContext(__instance); }
             catch (Exception e) { MelonLogger.Error(e); }
+        SR2ECallEventManager.ExecuteWithArgs(CallEvent.AfterGameContextLoad, ("gameContext", __instance));
         foreach (var pair in SR2EEntryPoint.menus)
             try { pair.Key.OnGameContext(__instance); }
             catch (Exception e) { MelonLogger.Error(e); }

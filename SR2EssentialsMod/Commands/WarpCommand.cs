@@ -8,7 +8,7 @@ internal class WarpCommand : SR2ECommand
 {
     public override string ID => "warp";
     public override string Usage => "warp <location>";
-    public override CommandType type => CommandType.Warp;
+    public override CommandType type => CommandType.Warp | CommandType.Cheat;
 
     public override List<string> GetAutoComplete(int argIndex, string[] args)
     {

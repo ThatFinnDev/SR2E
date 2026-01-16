@@ -63,6 +63,11 @@ public class SR2ECheatMenu : SR2EMenu
     
     protected override void OnOpen()
     {
+        if(SR2ECounterGateManager.disableCheats)
+        {
+            Close();
+            return;
+        }
         //Refinery
         List<IdentifiableType> refineryItems = sceneContext.GadgetDirector._refineryTypeGroup.GetAllMembers().ToArray().ToList();
         refineryItems.Sort((x, y) => string.Compare(x.GetName(), y.GetName(), StringComparison.OrdinalIgnoreCase));

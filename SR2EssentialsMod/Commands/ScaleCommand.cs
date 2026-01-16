@@ -6,7 +6,7 @@ internal class ScaleCommand: SR2ECommand
 {
     public override string ID => "scale";
     public override string Usage => "scale <x> <y> <z>";
-    public override CommandType type => CommandType.Miscellaneous;
+    public override CommandType type => CommandType.Miscellaneous | CommandType.Cheat;
 
     public override bool Execute(string[] args)
     {

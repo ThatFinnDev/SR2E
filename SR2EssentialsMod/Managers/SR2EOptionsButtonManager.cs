@@ -111,14 +111,9 @@ internal static class SR2EOptionsButtonManager
     {
         if (loadedSave == null)
         {
-            MelonLogger.Msg("Loaded save is none...");
             inGameSave = new CustomOptionsInGameSave();
         }
         else inGameSave = loadedSave;
-        foreach (var pair in inGameSave.valueButtons)
-        {
-            MelonLogger.Msg(pair);
-        }
     }
 
     internal static CustomOptionsInGameSave OnInGameSave(SavingGameSessionData sessionData) => inGameSave;

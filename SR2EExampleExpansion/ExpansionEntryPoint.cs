@@ -1,5 +1,9 @@
 ﻿using Il2CppMonomiPark.SlimeRancher;
+using SR2E.Enums;
 using SR2E.Expansion;
+using SR2E.Prism.Lib;
+using SR2E.Saving;
+using SR2E.Storage;
 
 namespace SR2EExampleExpansion;
 
@@ -10,20 +14,5 @@ public class ExpansionEntryPoint : SR2EExpansionV3
     {
         AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv"));
     }
-
-    public override void AfterSaveDirectorLoaded(AutoSaveDirector saveDirector)
-    {
-    }
-
-    public override void BeforeSaveDirectorLoaded(AutoSaveDirector saveDirector)
-    {
-
-    }
-
-    public override void AfterGameContext(GameContext gameContext)
-    {
-
-    }
-
 }
 

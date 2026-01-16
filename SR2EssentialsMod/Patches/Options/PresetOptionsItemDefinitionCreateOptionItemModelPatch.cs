@@ -7,6 +7,7 @@ namespace SR2E.Patches.Options;
 [HarmonyPatch(typeof(PresetOptionsItemDefinition), nameof(PresetOptionsItemDefinition.CreateOptionItemModel))]
 internal static class PresetOptionsItemDefinitionCreateOptionItemModelPatch
 {
+    [HarmonyFinalizer]
     static Exception Finalizer(PresetOptionsItemDefinition __instance, Exception __exception)
     {
         if (!InjectOptionsButtons.HasFlag()) return __exception;

@@ -88,6 +88,7 @@ public static class UnityEUtil
     public static T? Get<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault((T x) => x.name == name);
     public static T? GetAny<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
     public static List<T> GetAll<T>() where T : Object => Resources.FindObjectsOfTypeAll<T>().ToList();
+    public static List<T> GetAll<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().Where((T x) => x.name == name).ToList();
     
     public static T? GetInScene<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().FirstOrDefault(x =>
     {
@@ -113,6 +114,14 @@ public static class UnityEUtil
         if (x.TryCast<Component>() != null) obj = x.TryCast<Component>().gameObject;
         else if (x.TryCast<GameObject>() != null) obj = x.TryCast<GameObject>();
         return obj != null && obj.scene.IsValid() && obj.scene.isLoaded;
+    }).ToList();
+    public static List<T>? GetAllInScene<T>(string name) where T : Object => Resources.FindObjectsOfTypeAll<T>().Where(x =>
+    {
+        if (x == null) return false;
+        GameObject obj = null;
+        if (x.TryCast<Component>() != null) obj = x.TryCast<Component>().gameObject;
+        else if (x.TryCast<GameObject>() != null) obj = x.TryCast<GameObject>();
+        return obj != null && obj.name == name && obj.scene.IsValid() && obj.scene.isLoaded;
     }).ToList();
     
     

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using SR2E.Enums.Features;
+using SR2E.Managers;
 
 namespace SR2E;
 
@@ -252,8 +253,10 @@ public static class SR2EFeatureFlags
         if (CommandsLoadMiscellaneous.HasFlag()) enabledCMDs |= CommandType.Miscellaneous;
         if(CommandsLoadFun.HasFlag()) enabledCMDs |= CommandType.Fun;
         
+        if(DisableCheats.HasFlag())
+            SR2ECounterGateManager.RegisterFor_DisableCheats(SR2EEntryPoint.instance);
+        
     }
-    
     public static CommandType enabledCommands => enabledCMDs;
     public static bool HasFlag(this FeatureFlag featureFlag) => enabledFlags.Contains(featureFlag);
     public static bool HasFlag(this bool[] array,FeatureFlag featureFlag) => array[Convert.ToInt32(featureFlag)];
