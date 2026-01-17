@@ -12,7 +12,15 @@ namespace SR2E.Menus.Debug;
 
 internal class SR2ENativeDebugUI : SR2EMenu
 {
-    
+    // TODO
+    // DebugUI contains like nothing :/
+    // It gets activated by instantiating
+    // There are 2 variants, one for keyboard, one for gamepad
+    // It has a prefab and some input actions
+    // Maybe some helper like:
+    // GameDebugDirectorHelper
+    // SceneDebugDirectorHelper
+    // Also what are all of those DebugUIHandler <Things>
     internal DebugDirectorFixer ddf => DebugDirectorFixer.Instance;
     public new static MenuIdentifier GetMenuIdentifier() => new ("nativedebugui",SR2EMenuFont.SR2,SR2EMenuTheme.Default,"NativeDebugUI");
     public override bool createCommands => false;

@@ -11,6 +11,7 @@ namespace SR2E.Patches.Context;
 [HarmonyPatch(typeof(SystemContext), nameof(SystemContext.Start))]
 internal class SystemContextPatch
 {
+    internal static bool didStart = false;
     internal static Dictionary<string, Shader> loadedShaders = new ();
     internal static Il2CppAssetBundle bundle = null;
     internal static Dictionary<string, Type> menusToInit = new ();
@@ -38,6 +39,11 @@ internal class SystemContextPatch
         string extraTheme = "";
         if (currentTheme != SR2EMenuTheme.Default) extraTheme = "_"+currentTheme.ToString().Split(".")[0];
         return $"{menuPath}{menuIdentifier.saveKey}{extraTheme}{prefabSuffix}";
+    }
+
+    internal static void Prefix()
+    {
+        didStart = true;
     }
     internal static void Postfix(SystemContext __instance)
     {

@@ -18,6 +18,7 @@ using SR2E.Enums;
 using SR2E.Managers;
 using SR2E.Menus;
 using SR2E.Menus.Debug;
+using SR2E.Patches.Context;
 using SR2E.Patches.General;
 using SR2E.Prism;
 using SR2E.Prism.Lib;
@@ -284,20 +285,25 @@ public class SR2EEntryPoint : MelonMod
             }
         }
     }
-    void PatchGame()
+
+    bool patchedPrism = false;
+    void PatchGame(bool justPrism = false)
     {
         if(!_usePrism) try { _usePrism= prefs.GetEntry<bool>("forceUsePrism").Value; }catch { }
         if (!AllowPrism.HasFlag()) _usePrism = false;
         var types = AccessTools.GetTypesFromAssembly(MelonAssembly.Assembly);
         var devPatches = DevMode.HasFlag();
+        if (_usePrism) patchedPrism = true;
         foreach (var type in types)
         {
             if (type == null) continue;
+            var shouldLog = type.FullName.ToString().Contains("LandPlot");
+            if(shouldLog)MelonLogger.Msg(type.FullName);
             try
             {
-                // Skip entire class if marked as a library patch and library disabled
-                if (!_usePrism && type.GetCustomAttribute<PrismPatch>() != null) continue;
-                // Skip entire class if marked as a dev patch and devmode disabled
+                var isPrismPatch = type.GetCustomAttribute<PrismPatch>() != null;
+                if (!_usePrism && isPrismPatch) continue;
+                if (justPrism && !isPrismPatch) continue;
                 if(!devPatches && type.GetCustomAttribute<DevPatch>() != null) continue;
                 var classPatches = HarmonyMethodExtensions.GetFromType(type);
                 if (classPatches.Count > 0)
@@ -329,7 +335,7 @@ public class SR2EEntryPoint : MelonMod
     public static bool LoadExpansion(SR2EExpansionV3 expansionV3)
     {
         StaticOnEarlyInitializeMelon();
-        if (AllowExpansionsV3.HasFlag())
+        if (AllowExpansionsV3.HasFlag()&&!SystemContextPatch.didStart)
         {
             bool shouldUnregister = false;
             var attributes = expansionV3.MelonBase.MelonAssembly.Assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
@@ -350,10 +356,13 @@ public class SR2EEntryPoint : MelonMod
             {
                 expansionsV3.Add(expansionV3);
                 SR2ECallEventManager.LoadAssemblies(new List<Assembly>(){expansionV3.MelonBase.MelonAssembly.Assembly});
+                if(_usePrism&&!instance.patchedPrism) instance.PatchGame(true);
                 if(hasInitialized) expansionV3.OnInitializeMelon();
                 return true;
             }
         }
+        if (!AllowExpansionsV3.HasFlag()&&SystemContextPatch.didStart)
+            MelonLogger.Error("Expansion is being registered too late!");
         expansionV3.MelonBase.Unregister();
         return false;
     }
