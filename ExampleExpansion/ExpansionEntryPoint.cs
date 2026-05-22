@@ -53,8 +53,4 @@ public class ExpansionEntryPoint : StarlightExpansionV01
         AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv"));
     }
 
-    public override void AfterGameContext(GameContext gameContext)
-    {
-        Log("ThisShouldBeFalse"+ info.GetAssembly()==null);
-    }
 }

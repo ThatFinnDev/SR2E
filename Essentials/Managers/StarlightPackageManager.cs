@@ -176,7 +176,11 @@ public static class StarlightPackageManager
     internal static void LoadAllExpansions()
     {
         if (!AllowExpansions.HasFlag()) return;
+        Log("Start Loading Expansions");
         DiscoverAndLoadExpansions(Directory.GetFiles(MelonEnvironment.ModsDirectory, "*.dll").ToList());
+        Log("");
+        Log("");
+        Log("Continue loading mods...");
     }
     
     public static void UnloadExpansion(string id)
@@ -264,6 +268,8 @@ public static class StarlightPackageManager
     {
         if (!AllowExpansions.HasFlag()) return;
 
+        Log("Loading Expansions from DLLs...");
+        Log("------------------------------");
         var pendingExpansions = new List<PendingExpansion>();
         var baseType = typeof(StarlightExpansionVXX);
 
@@ -285,6 +291,8 @@ public static class StarlightPackageManager
 
                 var types = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && baseType.IsAssignableFrom(t) && t.GetCustomAttributes(typeof(StarlightLoadExpansionAttribute), false).Any()).ToList();
                 if (types.Count == 0) continue;
+                Log("Assembly: "+dllPath);
+                Log("Total Expansion Count: "+types.Count);
 
                 var hInstance = new HarmonyLib.Harmony(dllPath);
                 StarlightEntryPoint.PatchGame(hInstance,assembly);
@@ -356,6 +364,8 @@ public static class StarlightPackageManager
             catch (Exception e) { LogError($"Failed to process DLL: {dllPath}\n{e}"); }
         }
 
+        Log("------------------------------");
+        Log("");
         var allMelonIds = new Lazy<HashSet<string>>(() => [..GetAllMelonInfos().Select(i => i.ID)]);
         int loadedInPass;
         var dependencyGraph = pendingExpansions.ToDictionary(p => p.info.ID, p => new HashSet<string>(p.info.Dependencies ?? Array.Empty<string>()));
@@ -429,6 +439,12 @@ public static class StarlightPackageManager
                         assemblyExpansions.Item1.Add(instance, info);
                         LoadedExpansionIds.Add(info.ID);
                         loadedInPass++;
+                        
+                        Log("-------Expansion-Loaded-------");
+                        Log(info.Name+ " v"+ info.Version);
+                        if(!string.IsNullOrEmpty(info.Author)) Log("by " + info.Author);
+                        Log("Prism, VXX: " + info.UsePrism+", "+info.ExpansionVersion);
+                        Log("------------------------------");
                         
                         if (instance is StarlightExpansionV01 vv01)
                         {
