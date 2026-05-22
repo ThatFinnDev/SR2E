@@ -59,15 +59,26 @@ internal class CheatMenuSlot : MonoBehaviour
         foreach (var identType in slot.Definition.SlotTypeGroup.GetAllMembersHashSet())
         {
             if(!remove.Contains(identType))
-                dict[identType.GetName().Replace("'","").Replace(" ","")] = (identType.GetName(), identType.icon);
+            {
+                if (SlimeDefinition.IsSlimeDefinition(identType))
+                {
+                    var slimeDef = identType.Cast<SlimeDefinition>();
+                    dict[slimeDef.ReferenceId+"|false"] = (slimeDef.GetName(), slimeDef.icon);
+                    if(slimeDef.RadiantBase)
+                        dict[slimeDef.ReferenceId+"|true"] = ("Radiant"+slimeDef.GetName(), slimeDef.RadiantBase.Icon);
+                }
+                dict[identType.ReferenceId+"|false"] = (identType.GetName(), identType.icon);
+            }
         }
         StarlightGridMenuListPopUp.Open(dict, (value) =>
         {
             if (_amountSlider.value == 0)
                 _amountSlider.value = 1;
-            _entryInput.SetText(value);
-            if(_radiant&&!AllowRadiant(value))
-                ChangeType();
+            _entryInput.SetText(slot.Definition.SlotTypeGroup.GetAllMembersHashSet().ToNetArray().GetEntryByRefID(value.Split("|")[0]).GetName());
+            var allowRadiant = AllowRadiant(value.Split("|")[0]);
+            var useRadiant = value.Split("|")[1] == "true";
+            if(_radiant&&(!allowRadiant||!useRadiant)) ChangeType();
+            if(!_radiant&&allowRadiant&&useRadiant) ChangeType();
         });
     }
     private bool AllowRadiant(IdentifiableType type)
@@ -81,7 +92,7 @@ internal class CheatMenuSlot : MonoBehaviour
     }
     private bool AllowRadiant(string input)
     {
-        return AllowRadiant(LookupEUtil.GetIdentifiableTypeByName(input));
+        return AllowRadiant(LookupEUtil.identifiableTypes.GetEntryByRefID(input));
     }
     private void ChangeType()
     {
