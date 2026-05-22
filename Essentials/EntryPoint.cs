@@ -448,7 +448,7 @@ public class StarlightEntryPoint : MelonMod
                     {
                         var processor = harmony.CreateClassProcessor(type);
                         processor.Patch();
-                        if (type.GetCustomAttribute<HarmonyLogOnInject>() != null)
+                        if (type.GetCustomAttribute<HarmonyLogOnPatch>() != null)
                             Log($"Applied Harmony patches from {type.FullName}");
                     }
                 }
