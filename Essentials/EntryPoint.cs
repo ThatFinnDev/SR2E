@@ -404,6 +404,8 @@ public class StarlightEntryPoint : MelonMod
                     var options = new RegisterTypeOptions() { LogSuccess = false, };
                     if (inject.Interfaces != null) options = new RegisterTypeOptions() { LogSuccess = false, Interfaces = inject.Interfaces};
                     ClassInjector.RegisterTypeInIl2Cpp(type, options);
+                    if(inject.LOGOnSuccess)
+                        Log($"Injected {type.FullName} into il2cpp");
                 }
             }
             catch (Exception e)
@@ -446,6 +448,8 @@ public class StarlightEntryPoint : MelonMod
                     {
                         var processor = harmony.CreateClassProcessor(type);
                         processor.Patch();
+                        if (type.GetCustomAttribute<HarmonyLogOnInject>() != null)
+                            Log($"Applied Harmony patches from {type.FullName}");
                     }
                 }
                 catch (Exception e)

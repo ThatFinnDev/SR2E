@@ -295,7 +295,8 @@ public static class StarlightPackageManager
                 Log("Total Expansion Count: "+types.Count);
 
                 var hInstance = new HarmonyLib.Harmony(dllPath);
-                StarlightEntryPoint.PatchGame(hInstance,assembly);
+                if(StarlightEntryPoint.AlreadyInitialized)
+                    StarlightEntryPoint.PatchGame(hInstance,assembly);
                 foreach (var type in types)
                 {
                     var message = "";

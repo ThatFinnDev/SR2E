@@ -21,7 +21,7 @@ public abstract class PackagePref
         this.prefs = prefs;
     }
 
-    public void SetPref(object value) => prefs.SetEntry(key, value);
+    public void SetPref<T>(T value) => prefs.SetEntry<T>(key, value);
     
     
 }
