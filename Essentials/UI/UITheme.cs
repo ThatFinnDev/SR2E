@@ -12,6 +12,7 @@ public class UITheme
             //case StarlightMenuTheme.Starlight: return StarlightTheme();
             case StarlightMenuTheme.Native: return NativeTheme();
             case StarlightMenuTheme.Black: return BlackTheme();
+            case StarlightMenuTheme.Melon: return MelonTheme();
         }
         return StarlightTheme();
     }
@@ -23,6 +24,16 @@ public class UITheme
         return theme;
     }
     
+    static UITheme MelonTheme()
+    {
+        var theme = new UITheme();
+        theme.ThemeName = "Starlight";
+        theme.AccentColor = theme.AccentAlternateColor;
+        theme.TextCategoryColor = theme.TextCategoryAlternateColor;
+        theme.ButtonColors = theme.AlternativeButtonColors;
+        theme.BadgeColor = new(0.149f, 0.7176f, 0.3961f, 1);
+        return theme;
+    }
     static UITheme NativeTheme()
     {
         var theme = new UITheme();
@@ -31,6 +42,7 @@ public class UITheme
         theme.SecondaryColor = Color.white;
         theme.AccentColor = new(0.824f, 0.702f, 0.580f, 1f);
         theme.TextGeneralColor = Color.black;
+        
         return theme;
     }
     
@@ -46,9 +58,11 @@ public class UITheme
     public Color PrimaryColor = new(0.106f, 0.106f, 0.114f, 1f);
     public Color SecondaryColor = new(0.188f, 0.220f, 0.275f, 1f);
     public Color AccentColor = new(0.173f, 0.431f, 0.784f, 1f);
+    public Color AccentAlternateColor = new(0.1098f, 0.5314f, 0.2157f, 1f);
     public Color Space3DBackgroundColor = new(0.12f, 0.12f, 0.12f, 1f);
     public Color BadgeColor = new (0.149f, 0.7176f, 0.7961f, 1f);
     public Color TextCategoryColor = new(0.3506f, 0.4996f, 1f, 1f);
+    public Color TextCategoryAlternateColor = new(0.1098f, 0.5314f, 0.2157f, 1f);
     public Color TextWarningColor = new(1,0,0,1);
     public Color TextGeneralColor = Color.white;
     public Color TextButtonColor = Color.white;
@@ -65,8 +79,8 @@ public class UITheme
     public ColorBlock AlternativeButtonColors = new ()
     {
         fadeDuration = 0.1f, colorMultiplier = 1f, 
-        disabledColor = new (0.8706f, 0.5298f, 0.4216f, 1f),
-        selectedColor = new (0.8706f, 0.5298f, 0.4216f, 1f),
+        disabledColor = new (0.5571f, 0.0548f, 0.1192f, 1f),
+        selectedColor = new (0.5571f, 0.0548f, 0.1192f, 1f),
         pressedColor = new (0.1371f, 0.7248f, 0.3792f, 1f),
         highlightedColor = new (0.1098f, 0.6314f, 0.2157f, 1),
         normalColor = new (0.149f, 0.7176f, 0.3961f, 1)
@@ -87,9 +101,11 @@ public class UITheme
             case UIColor.Primary: return PrimaryColor;
             case UIColor.Secondary: return SecondaryColor;
             case UIColor.Accent: return AccentColor;
+            case UIColor.AccentAlternate: return AccentAlternateColor;
             case UIColor.TextGeneral: return TextGeneralColor;
             case UIColor.TextButton: return TextButtonColor;
             case UIColor.TextCategory: return TextCategoryColor;
+            case UIColor.TextCategoryAlternate: return TextCategoryAlternateColor;
             case UIColor.TextWarning: return TextWarningColor;
             case UIColor.Badge: return BadgeColor;
             case UIColor.Space3DBackground: return Space3DBackgroundColor;
@@ -144,9 +160,11 @@ public enum UIColor
     Primary=20,
     Secondary=30, 
     Accent=40, 
+    AccentAlternate=41,
     TextGeneral=50,
     TextButton=60,
     TextCategory=70,
+    TextCategoryAlternate=71,
     TextWarning=80,
     Badge=90,
     Space3DBackground=100,

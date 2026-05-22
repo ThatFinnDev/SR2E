@@ -100,6 +100,7 @@ public class StarlightEntryPoint : MelonMod
 
     internal static bool EarlyRegistered = false;
     internal static bool AlreadyInitialized = false;
+    internal static bool AlreadyLateInitialized = false;
 
     public static bool isPrismInUse { get; private set; }
     internal static bool ShouldEnablePrism;
@@ -239,8 +240,9 @@ public class StarlightEntryPoint : MelonMod
 
         if (CheckForUpdates.HasFlag()) StartCoroutine(StarlightUpdateManager.GetBranchJson());
 
+        AlreadyLateInitialized = true;
         foreach (var expansion in ExpansionV01S)
-            try { expansion.OnLateInitializeMelon(); }
+            try { expansion.OnLateInitialize(); }
             catch (Exception e) { LogError(e); }
     }
     
@@ -520,8 +522,7 @@ public class StarlightEntryPoint : MelonMod
             try
             {
                 if (MenuEUtil.isAnyMenuOpen) MenuEUtil.CloseOpenMenu();
-                if (MenuEUtil.isAnyPopUpOpen) ;
-                MenuEUtil.CloseOpenPopUps();
+                if (MenuEUtil.isAnyPopUpOpen) MenuEUtil.CloseOpenPopUps();
             } catch { }
 
         switch (sceneName)

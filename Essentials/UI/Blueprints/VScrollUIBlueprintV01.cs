@@ -1,4 +1,6 @@
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Starlight.Components.AssetBundle;
+using Starlight.Patches.Context;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
@@ -18,6 +20,7 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
     public bool UseScrollBar = true;
     public ScrollRect.MovementType MovementType = ScrollRect.MovementType.Clamped;
     public bool ScrollByMenuKeys = true;
+    public float ScrollByMenuKeysPerFrame = 9f;
     public UIColor BackgroundColor = UIColor.Transparent;
     public Color? CustomBackgroundColor = null;
     
@@ -93,12 +96,12 @@ internal class VScrollUIBlueprintV01 : UIBlueprint
         viewPortRect.sizeDelta /= 1.95f;
         contentRect.sizeDelta = Vector2.zero;
         Canvas.ForceUpdateCanvases();
-        if (ScrollByMenuKeys)
+        if (ScrollByMenuKeys&&GameContextPatch.InputDown&&GameContextPatch.InputUp)
         {
-            //var comp = obj.AddComponent<ScrollByMenuKeys>();
-            //comp._scrollDownInput = _inputDown;
-            //comp._scrollUpInput = _inputUp;
-            //comp._scrollPerFrame = 9f;
+            var comp = obj.AddComponent<ScrollByMenuKeys>();
+            comp._scrollDownInput = GameContextPatch.InputDown;
+            comp._scrollUpInput = GameContextPatch.InputUp;
+            comp._scrollPerFrame = ScrollByMenuKeysPerFrame;
         }
     }
 

@@ -445,6 +445,13 @@ public static class StarlightPackageManager
                                 try { if (pair.Key is StarlightExpansionV01 v1) v1.OnInitialize(); }
                                 catch (Exception e) { LogError(e); }
                         }
+
+                        if (StarlightEntryPoint.AlreadyLateInitialized)
+                        {
+                            foreach (var pair in assemblyExpansions.Item1)
+                                try { if (pair.Key is StarlightExpansionV01 v1) v1.OnLateInitialize(); }
+                                catch (Exception e) { LogError(e); }
+                        }
                         
                     }
                     catch (Exception e)

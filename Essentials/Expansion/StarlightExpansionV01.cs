@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher;
@@ -45,7 +46,12 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     /// <summary>
     /// Runs after <see cref="OnInitialize"/>. This waits until Unity has started up.
     /// </summary>
-    public virtual void OnLateInitializeMelon() { }
+    public virtual void OnLateInitialize() => OnLateInitializeMelon();
+
+    /// <summary>
+    /// Runs after <see cref="OnInitialize"/>. This waits until Unity has started up.
+    /// </summary>
+    [Obsolete("Use OnLateInitialize instead")] public virtual void OnLateInitializeMelon() { }
     
     /// <summary>
     /// Runs once per frame. Same as the one in "MonoBehavior".

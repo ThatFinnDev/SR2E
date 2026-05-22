@@ -110,6 +110,7 @@ internal class StarlightModMenu : StarlightMenu
                                 [
                                     new TextUIBlueprintV01()
                                     {
+                                        Color = UIColor.TextButton,
                                         TextContent = "modmenu.openthememenu",
                                         Alignment = TextAlignmentOptions.Center,
                                         FontSize = 30,
@@ -158,6 +159,7 @@ internal class StarlightModMenu : StarlightMenu
                         [
                             new TextUIBlueprintV01()
                             {
+                                Color = UIColor.TextButton,
                                 TextContent = "modmenu.category.repo",
                                 Alignment = TextAlignmentOptions.Center,
                                 FontSize = 40,
@@ -206,7 +208,7 @@ internal class StarlightModMenu : StarlightMenu
                     new TextUIBlueprintV01()
                     {
                         TextContent = displayName, Margins = new Vector4(5,1,5,1), 
-                        Color = UIColor.TextCategory, FontSize = 40, FontAutoSizeMax = 40, EnableAutoSizing = true,
+                        Color = UIColor.TextCategoryAlternate, FontSize = 40, FontAutoSizeMax = 40, EnableAutoSizing = true,
                         Size = new Vector2(0,0), Anchors = new Vector4(0,0,1,1), Alignment = TextAlignmentOptions.Left,
                     }
                 ]
@@ -370,9 +372,10 @@ internal class StarlightModMenu : StarlightMenu
                 }
             ]
         };
-        if (info.Type == PackageType.Expansion||info is { Name: BuildInfo.Name, Author: BuildInfo.Author }) button.ButtonColors = UIColorBlock.Buttons;
+        var isSelf = info is { Name: BuildInfo.Name, Author: BuildInfo.Author, Version: BuildInfo.DisplayVersion };
+        if (info.Type == PackageType.Expansion||isSelf) button.ButtonColors = UIColorBlock.Buttons;
         if (isRotten) button.ButtonColors = UIColorBlock.GrayButtons;
-        if (info.Type == PackageType.MelonMod || info.Type == PackageType.MelonPlugin)
+        if (!isSelf&&(info.Type == PackageType.MelonMod || info.Type == PackageType.MelonPlugin))
         {
             button.Children.Add(new PanelUIBlueprintV01()
             {
@@ -398,7 +401,7 @@ internal class StarlightModMenu : StarlightMenu
         button.OnClick = () =>
         {
             AudioEUtil.PlaySound(MenuSound.Click);
-            _openThing.GetObjectRecursively<GameObject>("ModMenuThemeMenuButtonRec").SetActive(info is { Name: BuildInfo.Name, Author: BuildInfo.Author });
+            _openThing.GetObjectRecursively<GameObject>("ModMenuThemeMenuButtonRec").SetActive(isSelf);
             var finalText = "";
             if (isRotten)
             {
@@ -521,6 +524,9 @@ internal class StarlightModMenu : StarlightMenu
         catch {}
     }
 
+    
+    
+    
     
     private static void ApplyIntFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
     {
@@ -737,6 +743,13 @@ internal class StarlightModMenu : StarlightMenu
             Alignment = TextAlignmentOptions.Center
         });
     }
+    
+    
+    
+    
+    
+    
+    
     // Melon Features
     private static void ApplyIntFeatures(MelonPreferences_Entry entry, UIBlueprint blueprint, MelonPreferences_Category category)
     {
@@ -829,6 +842,7 @@ internal class StarlightModMenu : StarlightMenu
         blueprint.Children.Add(new CheckboxUIBlueprintV01()
         {
             Size = new (45, 45), Position = new (625, 0), DefaultValue = entry.BoxedEditedValue.ToString().ToLower() == "true", CornerRadius = 10,
+            CheckColor = UIColor.AccentAlternate,
             OnValueChanged = (isOn =>
             {
                 AudioEUtil.PlaySound(MenuSound.Click);
@@ -842,6 +856,7 @@ internal class StarlightModMenu : StarlightMenu
         blueprint.Children.Add(new ButtonUIBlueprintV01()
         {
             Size = new (480, 45), Position = new (410, 0), CornerRadius = 10,
+            ButtonColors = UIColorBlock.AlternativeButtons,
             Children =
             [
                 new TextUIBlueprintV01()
@@ -879,6 +894,7 @@ internal class StarlightModMenu : StarlightMenu
         blueprint.Children.Add(new ButtonUIBlueprintV01()
         {
             Size = new (480, 45), Position = new (410, 0), CornerRadius = 10,
+            ButtonColors = UIColorBlock.AlternativeButtons,
             Children =
             [
                 new TextUIBlueprintV01()
@@ -916,6 +932,7 @@ internal class StarlightModMenu : StarlightMenu
         blueprint.Children.Add(new ButtonUIBlueprintV01()
         {
             Size = new (480, 45), Position = new (410, 0), CornerRadius = 10,
+            ButtonColors = UIColorBlock.AlternativeButtons,
             Children =
             [
                 new TextUIBlueprintV01()
