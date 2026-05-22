@@ -12,10 +12,11 @@ using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using MelonLoader;
 using MelonLoader.Utils;
-using Starlight.Expansion;
 using Starlight.Components;
 using Starlight.Components.Debug;
 using Starlight.Enums;
+using Starlight.Expansion;
+using Starlight.Storage.Prefs;
 using Starlight.Managers;
 using Starlight.Menus;
 using Starlight.Menus.Debug;
@@ -84,7 +85,8 @@ public class StarlightEntryPoint : MelonMod
 
     internal static readonly List<BaseUI> BaseUIAddSliders = new();
     internal static Dictionary<StarlightMenu, Dictionary<string, object>> Menus = new();
-    private static MelonPreferences_Category _prefs;
+    private static MelonPreferences_Category _melonPrefs;
+    private static PackagePrefs _prefs;
     
     internal static bool MainMenuLoaded;
     internal static GameObject StarlightStuff;
@@ -97,7 +99,7 @@ public class StarlightEntryPoint : MelonMod
     internal static string customVolumeProfilesPath => Path.Combine(dataPath, "customVolumeProfiles");
 
     internal static bool EarlyRegistered = false;
-    internal static bool IlInjectionReady = false;
+    internal static bool AlreadyInitialized = false;
 
     public static bool isPrismInUse { get; private set; }
     internal static bool ShouldEnablePrism;
@@ -108,18 +110,18 @@ public class StarlightEntryPoint : MelonMod
     
     internal static StarlightEntryPoint Instance;
 
-    internal static string onSaveLoadCommand => _prefs.GetEntry<string>("onSaveLoadCommand").Value;
-    internal static string onMainMenuLoadCommand => _prefs.GetEntry<string>("onMainMenuLoadCommand").Value;
-    internal static bool starlightLogToMlLog => _prefs.GetEntry<bool>("StarlightLogToMLLog").Value;
-    internal static bool mLLogToStarlightLog => _prefs.GetEntry<bool>("mLLogToStarlightLog").Value;
-    internal static bool autoUpdate => _prefs.GetEntry<bool>("autoUpdate").Value;
-    internal static bool disableFixSaves => _prefs.GetEntry<bool>("disableFixSaves").Value;
-    internal static float consoleMaxSpeed => _prefs.GetEntry<float>("consoleMaxSpeed").Value;
-    internal static float noclipAdjustSpeed => _prefs.GetEntry<float>("noclipAdjustSpeed").Value;
-    internal static float noclipSpeedMultiplier => _prefs.GetEntry<float>("noclipSpeedMultiplier").Value;
-    internal static bool enableDebugDirector => _prefs.GetEntry<bool>("enableDebugDirector").Value;
-    internal static bool allowAllDevicesAtOnce => _prefs.GetEntry<bool>("allowAllDevicesAtOnce").Value;
-    internal static bool enableMarketViewer => _prefs.GetEntry<bool>("enableMarketViewer").Value;
+    internal static string onSaveLoadCommand => _prefs.GetEntry<string>("onSaveLoadCommand").value;
+    internal static string onMainMenuLoadCommand => _prefs.GetEntry<string>("onMainMenuLoadCommand").value;
+    internal static bool starlightLogToMlLog => _prefs.GetEntry<bool>("StarlightLogToMLLog").value;
+    internal static bool mLLogToStarlightLog => _prefs.GetEntry<bool>("mLLogToStarlightLog").value;
+    internal static bool autoUpdate => _prefs.GetEntry<bool>("autoUpdate").value;
+    internal static bool disableFixSaves => _prefs.GetEntry<bool>("disableFixSaves").value;
+    internal static float consoleMaxSpeed => _prefs.GetEntry<float>("consoleMaxSpeed").value;
+    internal static float noclipAdjustSpeed => _prefs.GetEntry<float>("noclipAdjustSpeed").value;
+    internal static float noclipSpeedMultiplier => _prefs.GetEntry<float>("noclipSpeedMultiplier").value;
+    internal static bool enableDebugDirector => _prefs.GetEntry<bool>("enableDebugDirector").value;
+    internal static bool allowAllDevicesAtOnce => _prefs.GetEntry<bool>("allowAllDevicesAtOnce").value;
+    internal static bool enableMarketViewer => _prefs.GetEntry<bool>("enableMarketViewer").value;
     public override void OnEarlyInitializeMelon()
     {
         Instance = this;
@@ -176,21 +178,18 @@ public class StarlightEntryPoint : MelonMod
     }
     public override void OnInitializeMelon()
     {
-        var prefName = "melon_" + StarlightPackageManager.TruncateForID(BuildInfo.Author) + "_" +
-                       StarlightPackageManager.TruncateForID(BuildInfo.Name);
-        _prefs = MelonPreferences.CreateCategory(prefName,prefName);
         var path = MelonAssembly.Assembly.Location + ".old";
         if (File.Exists(path)) File.Delete(path);
         RefreshPrefs();
 
-        IlInjectionReady = true;
+        AlreadyInitialized = true;
         InjectIl2CppComponents(MelonAssembly.Assembly);
         foreach (var expansion in ExpansionV01S)
             try { InjectIl2CppComponents(expansion.Assembly); }
             catch (Exception e) { LogError(e); }
         
         if (!ShouldEnablePrism)
-            try { ShouldEnablePrism = _prefs.GetEntry<bool>("forceUsePrism").Value; } catch { }
+            try { ShouldEnablePrism = _prefs.GetEntry<bool>("forceUsePrism").value; } catch { }
 
         if (ShouldEnablePrism) isPrismInUse = true;
         if (!AllowPrism.HasFlag()) isPrismInUse = false;
@@ -286,46 +285,79 @@ public class StarlightEntryPoint : MelonMod
         return false; /*buildnumber is no int*/
     }
     
-    private static void RefreshPrefs()
+    private void RefreshPrefs()
     {
+        var prefPath = Path.Combine(dataPath, "prefs.json");
+        var prefExisted = File.Exists(prefPath);
+        // ReSharper disable once PossibleInvalidOperationException
+        _prefs = new PackagePrefs(StarlightPackageManager.GetPackageInfoFromMelon(this).Value.ID, prefPath);
+        
         if (AllowAutoUpdate.HasFlag())
             if (!_prefs.HasEntry("autoUpdate"))
-                _prefs.CreateEntry("autoUpdate", false, "Update Starlight automatically");
-        if (DevMode.HasFlag())
-            if (AllowPrism.HasFlag())
-                if (!_prefs.HasEntry("forceUsePrism"))
-                    _prefs.CreateEntry("forceUsePrism", false, "Force enable prism",
-                        "It's automatically enabled if expansions need it. This will just force it.");
+                _prefs.AddEntry("autoUpdate", false, "Auto Update","Update Starlight automatically");
+        if (DevMode.HasFlag()&&AllowPrism.HasFlag())
+            if (!_prefs.HasEntry("forceUsePrism"))
+                _prefs.AddEntry("forceUsePrism", false, "Force Prism", "It's automatically enabled if expansions need it. This will just force it.");
+        
         if (!_prefs.HasEntry("disableFixSaves"))
-            _prefs.CreateEntry("disableFixSaves", false, "Disable save fixing", false).AddNullAction();
+            _prefs.AddEntry("disableFixSaves", false, "Disable Save Fixing","This disables the save fixer", false,false);
         if (!_prefs.HasEntry("enableDebugDirector"))
-            _prefs.CreateEntry("enableDebugDirector", false, "Enable debug menu", false).AddAction(() =>
-            {
-                StarlightDebugUI.isEnabled = enableDebugDirector;
-            });
+            _prefs.AddEntry("enableDebugDirector", false, "Debug Menu","Enable a debug menu, usable in-game", false,false, ((_, newValue) => StarlightDebugUI.isEnabled = newValue));
         if (!_prefs.HasEntry("enableMarketViewer"))
-            _prefs.CreateEntry("enableMarketViewer", true, "Show Market Viewer next to Market", false);
+            _prefs.AddEntry("enableMarketViewer", true, "Show Market Viewer next to Market",null);
         if (!_prefs.HasEntry("allowAllDevicesAtOnce"))
-            _prefs.CreateEntry("allowAllDevicesAtOnce", false, "[Experimental] Allow all input devices at once", false).AddNullAction();
+            _prefs.AddEntry("allowAllDevicesAtOnce", false, "[Experimental] Allow all input devices at once",null, false,false);
+        
         if (!_prefs.HasEntry("mLLogToStarlightLog"))
-            _prefs.CreateEntry("mLLogToStarlightLog", false, "Send MLLogs to console", false).AddNullAction();
+            _prefs.AddEntry("mLLogToStarlightLog", false, "Send MLLogs to console",null, false, false);
         if (!_prefs.HasEntry("StarlightLogToMLLog"))
-            _prefs.CreateEntry("StarlightLogToMLLog", false, "Send console messages to MLLogs", false).AddNullAction();
+            _prefs.AddEntry("StarlightLogToMLLog", false, "Send console messages to MLLogs",null, false, false);
+        
         if (!_prefs.HasEntry("onSaveLoadCommand"))
-            _prefs.CreateEntry("onSaveLoadCommand", "", "Command to execute, when save is loaded", false)
-                .AddNullAction();
+            _prefs.AddEntry("onSaveLoadCommand", "", "Command to execute, when save is loaded", null,false, false);
         if (!_prefs.HasEntry("onMainMenuLoadCommand"))
-            _prefs.CreateEntry("onMainMenuLoadCommand", "", "Command to execute, when main menu is loaded",
-                false).AddNullAction();
+            _prefs.AddEntry("onMainMenuLoadCommand", "", "Command to execute, when main menu is loaded",null,false);
+        
         if (!_prefs.HasEntry("noclipSpeedMultiplier"))
-            _prefs.CreateEntry("noclipSpeedMultiplier", 2f, "NoClip sprint speed multiplier", false).AddNullAction();
+            _prefs.AddEntry("noclipSpeedMultiplier", 2f, "NoClip sprint speed multiplier", null,false, false);
         if (!_prefs.HasEntry("noclipAdjustSpeed"))
-            _prefs.CreateEntry("noclipAdjustSpeed", 235f, "NoClip scroll speed", false).AddNullAction();
+            _prefs.AddEntry("noclipAdjustSpeed", 235f, "NoClip scroll speed", null,false, false);
         if (!_prefs.HasEntry("consoleMaxSpeed"))
-            _prefs.CreateEntry("consoleMaxSpeed", 0.75f, "Console scroll speed", false).AddNullAction();
-        //if(DevMode.HasFlag()) if (!prefs.HasEntry("testLKey")) prefs.CreateEntry("testLKey", LKey.None, "Test LKey", false).AddNullAction();
-    }
+            _prefs.AddEntry("consoleMaxSpeed", 0.75f, "Console scroll speed", null,false, false);
+        //if(DevMode.HasFlag()) if (!_prefs.HasEntry("testLKey")) _prefs.AddEntry("testLKey", LKey.None, "Test LKey", null,false, false);
+        
+        if (!prefExisted)
+        {
+            var melonPrefName = "melon_" + StarlightPackageManager.TruncateForID(BuildInfo.Author) + "_" + StarlightPackageManager.TruncateForID(BuildInfo.Name);
+            _melonPrefs = MelonPreferences.CreateCategory(melonPrefName,melonPrefName);
+            ApplyFromMelon<bool>("autoUpdate");
+            ApplyFromMelon<bool>("forceUsePrism");
+            ApplyFromMelon<bool>("disableFixSaves");
+            ApplyFromMelon<bool>("enableDebugDirector");
+            ApplyFromMelon<bool>("enableMarketViewer");
+            ApplyFromMelon<bool>("allowAllDevicesAtOnce");
+            ApplyFromMelon<bool>("mLLogToStarlightLog");
+            ApplyFromMelon<bool>("StarlightLogToMLLog");
+            ApplyFromMelon<string>("onSaveLoadCommand");
+            ApplyFromMelon<string>("onMainMenuLoadCommand");
+            ApplyFromMelon<float>("noclipSpeedMultiplier");
+            ApplyFromMelon<float>("noclipAdjustSpeed");
+            ApplyFromMelon<float>("consoleMaxSpeed");
+            _melonPrefs.IsHidden = true;
+            _melonPrefs.SaveToFile(false);
+        }
 
+        void ApplyFromMelon<T>(string key)
+        {
+            if (_prefs.HasEntry(key))
+            {
+                _melonPrefs.CreateEntry<T>(key, _prefs.GetEntry<T>(key).defaultValue);
+                _prefs.SetEntry(key, _melonPrefs.GetEntry<T>(key).Value);
+                _melonPrefs.DeleteEntry(key);
+            }
+        }
+    }
+    
 
     // Adapted logging code from Atmudia
     private static void AppLogUnity(string message, string trace, LogType type)
@@ -355,7 +387,7 @@ public class StarlightEntryPoint : MelonMod
 
     internal void InjectIl2CppComponents(Assembly assembly)
     {
-        if (!IlInjectionReady) return;
+        if (!AlreadyInitialized) return;
         var types = AccessTools.GetTypesFromAssembly(assembly);
         foreach (var type in types)
         {
@@ -383,7 +415,7 @@ public class StarlightEntryPoint : MelonMod
         }
     }
 
-    private void PatchGame(HarmonyLib.Harmony harmony,Assembly assembly)
+    internal static void PatchGame(HarmonyLib.Harmony harmony,Assembly assembly)
     {
         var originalLogger = HarmonyLib.Tools.Logger.ChannelFilter;
         HarmonyLib.Tools.Logger.ChannelFilter = HarmonyLib.Tools.Logger.LogChannel.None;

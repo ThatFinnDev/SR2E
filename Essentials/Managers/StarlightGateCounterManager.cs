@@ -1,5 +1,6 @@
 using MelonLoader;
 using Starlight.Expansion;
+using Starlight.Storage;
 using Starlight.Patches.Context;
 
 namespace Starlight.Managers;

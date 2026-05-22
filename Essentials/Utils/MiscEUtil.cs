@@ -95,8 +95,8 @@ public static class MiscEUtil
         if (SlimeDefinition.IsSlimeDefinition(type)) return SlimeAppearance.AppearanceSaveSet.CLASSIC;
         return SlimeAppearance.AppearanceSaveSet.NONE;
     }
-    public static void AddNullAction(this MelonPreferences_Entry entry) => StarlightModMenu.EntriesWithActions.Add(entry, null);
-    public static void AddAction(this MelonPreferences_Entry entry, Action action) => StarlightModMenu.EntriesWithActions.Add(entry, action);
+    [Obsolete("Use PackagePrefs instead!",true)] public static void AddNullAction(this MelonPreferences_Entry entry) {}
+    [Obsolete("Use PackagePrefs instead!",true)] public static void AddAction(this MelonPreferences_Entry entry, Action action) {}
 
     public static Il2CppSystem.Type IL2CPPTypeof(this Type type) => Il2CppType.From(type);
     

@@ -24,16 +24,18 @@ public record struct StarlightPackageInfo
 
     public string GetDllName() => DLLName;
     public Assembly GetAssembly() => RunningAssembly;
-    public int GetExpansionVersion() => expansionVersion;
-    public Sprite GetIcon() => icon;
-    public PackageType GetPackageType() => type;
+    public int GetExpansionVersion() => ExpansionVersion;
+    public Sprite GetIcon() => Icon;
+    public PackageType GetPackageType() => Type;
     public dynamic GetEntrypoint() => MainClass;
+    public bool HasOptionalFile() => MainClass;
     internal dynamic MainClass = null;
     internal string DLLName = null;
     internal Assembly RunningAssembly = null;
-    internal int expansionVersion = 0;
-    internal Sprite icon;
-    internal PackageType type = PackageType.Expansion;
+    internal int ExpansionVersion = 0;
+    internal Sprite Icon;
+    internal PackageType Type = PackageType.Expansion;
+    internal bool HasOptionFile = false;
     
     public StarlightPackageInfo()
     {

@@ -4,6 +4,8 @@
 // This is an optional file V1. You can add into your expansion
 // This will show an error message to the user, if Starlight isn't installed!
 // This also allows you to provide a required game or Starlight version
+// This is 100% optional and requires you to reference the MelonLoader.dll,
+// therefore it is recommended to only use this when needed
 
 [assembly: MelonInfo(typeof(OptionFileEntrypoint),  
     //Those infos are only shown by MelonLoader in the console when starting up
@@ -283,7 +285,8 @@ class OptionFileEntrypoint : MelonMod
             MelonCoroutines.Start(CheckForMainMenu(0));
         }
 
-        Unregister();
+        
+        //Unregister();
     }
 
 

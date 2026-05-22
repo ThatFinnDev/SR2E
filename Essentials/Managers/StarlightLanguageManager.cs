@@ -37,12 +37,12 @@ internal static class StarlightLanguageManager
         return translatedRaw;
     }
 
-    internal static void AddLanguages(string cvsText)
+    internal static void AddLanguages(string csvText)
     {
         var newLanguages = new Dictionary<string, Dictionary<string, string>>();
         var codeIndexes = new List<string>(){};
         MemoryStream stream = new MemoryStream();
-        var cvsBytes = System.Text.Encoding.Default.GetBytes(cvsText);
+        var cvsBytes = System.Text.Encoding.Default.GetBytes(csvText);
         stream.Write(cvsBytes,0,cvsBytes.Length);
         stream.Seek(0, SeekOrigin.Begin);
         using (TextFieldParser csvParser = new TextFieldParser(stream))
@@ -127,7 +127,7 @@ internal static class StarlightLanguageManager
         {
             while (true)
             {
-                key = "r."+MiscEUtil.GetRandomString(20);
+                key = "starlighrandom."+MiscEUtil.GetRandomString(20);
                 StringTableEntry curr = null;
                 try
                 {

@@ -12,7 +12,7 @@ public static class LanguageEUtil
     
     public static void LoadLanguage(string code) => StarlightLanguageManager.LoadLanguage(code);
     
-    public static void AddLanguages(string cvsText) => StarlightLanguageManager.AddLanguages(cvsText);
+    public static void AddLanguages(string csvText) => StarlightLanguageManager.AddLanguages(csvText);
     public static LocalizedString AddTranslation(string localized, string key = null, string table = "Actor") => StarlightLanguageManager.AddTranslation(localized, key, table);
     public static LocalizedString AddTranslationFromStarlight(string starlightTranslationID, string key = null, string table = "Actor") => StarlightLanguageManager.AddTranslationFromStarlight(starlightTranslationID, key, table);
     

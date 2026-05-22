@@ -6,6 +6,7 @@ using MelonLoader;
 using Starlight.Components;
 using Starlight.Enums;
 using Starlight.Enums.Sounds;
+using Starlight.Storage.Prefs;
 using Starlight.Managers;
 using Starlight.Popups;
 using Starlight.Storage;
@@ -23,7 +24,7 @@ internal class StarlightModMenu : StarlightMenu
     protected override bool createCommands => true;
     protected override bool inGameOnly => false;
     
-    internal static readonly Dictionary<MelonPreferences_Entry, SystemAction> EntriesWithActions = new ();
+    //internal static readonly Dictionary<MelonPreferences_Entry, SystemAction> EntriesWithActions = new ();
     private readonly List<Key> _allPossibleUnityKeys = new ();
     private readonly List<KeyCode> _allPossibleUnityKeyCodes = new ();
     private readonly List<LKey> _allPossibleLKey = new ();
@@ -250,12 +251,82 @@ internal class StarlightModMenu : StarlightMenu
                 else if (entry.BoxedEditedValue is Key) ApplyKeyFeatures(entry,blueprint,category);
                 else ApplyUnknownFeatures(entry,blueprint,category);
                 
-                //do thing based on idk
                 list.Add(blueprint);
                 
             }
             entries.Add(displayName,list);
         } 
+        
+        foreach (var prefs in PackagePrefs.allPrefs)
+        {
+            if (prefs == null) continue;
+            if (prefs.IsHidden()) continue;
+            var list = new List<UIBlueprint>();
+            var displayName = prefs.expansionID;
+            try
+            {
+                var value = StarlightPackageManager.GetPackageInfoFromID(prefs.expansionID)?.Name;
+                if (value != null)
+                    displayName = value;
+            } catch {}
+            list.Add(new PanelUIBlueprintV01()
+            {
+                Size = new Vector2(800,60), Color = UIColor.Transparent,
+                Children = [
+                    new TextUIBlueprintV01()
+                    {
+                        TextContent = displayName, Margins = new Vector4(5,1,5,1), 
+                        Color = UIColor.TextCategory, FontSize = 40, FontAutoSizeMax = 40, EnableAutoSizing = true,
+                        Size = new Vector2(0,0), Anchors = new Vector4(0,0,1,1), Alignment = TextAlignmentOptions.Left,
+                    }
+                ]
+            });
+            foreach (var entry in prefs.entries)
+            {
+                if (entry == null) continue;
+                if (entry.isHidden) continue;
+                var final = "<NoName>";
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(entry.displayName))
+                        final = entry.displayName;
+                } catch { }
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(entry.description))
+                        final += $"\n<size=75%>{entry.description}</size>";
+                } catch { }
+                var blueprint = new PanelUIBlueprintV01()
+                {
+                    Size = new Vector2(800, 50), Color = UIColor.Transparent,
+                    Components = [typeof(ModConfigSizingFixer).IL2CPPTypeof()],
+                    Children =
+                    [
+                        new TextUIBlueprintV01()
+                        {
+                            mame = "NameAndDescription",
+                            TextContent = final, Margins = new Vector4(5, 1, 500, 1), FontSize = 24, Size = new Vector2(0, 0),
+                            Anchors = new Vector4(0, 0, 1, 1), Alignment = TextAlignmentOptions.Left
+                        }
+                    ]
+                };
+                if (entry.dynamicValue is int) ApplyIntFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is float) ApplyFloatFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is double) ApplyDoubleFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is long) ApplyLongFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is string) ApplyStringFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is bool) ApplyBoolFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is LKey) ApplyLKeyFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is KeyCode) ApplyKeyCodeFeatures(entry,blueprint,prefs);
+                else if (entry.dynamicValue is Key) ApplyKeyFeatures(entry,blueprint,prefs);
+                else ApplyUnknownFeatures(entry,blueprint,prefs);
+                
+                list.Add(blueprint);
+                
+            }
+            entries.Add(displayName,list);
+        } 
+        
         
         var sorted = entries.OrderByDescending(x => x.Key == BuildInfo.Name).
             ThenBy(x => x.Key).Select(x => x.Value).ToList();
@@ -289,6 +360,7 @@ internal class StarlightModMenu : StarlightMenu
         {
             Size = new Vector2(595, 60),
             CornerRadius = 30,
+            ButtonColors = UIColorBlock.AlternativeButtons,
             Children = [
                 new TextUIBlueprintV01
                 {
@@ -298,15 +370,26 @@ internal class StarlightModMenu : StarlightMenu
                 }
             ]
         };
-        if (info.type == PackageType.Expansion) button.ButtonColors = UIColorBlock.AlternativeButtons;
+        if (info.Type == PackageType.Expansion||info is { Name: BuildInfo.Name, Author: BuildInfo.Author }) button.ButtonColors = UIColorBlock.Buttons;
         if (isRotten) button.ButtonColors = UIColorBlock.GrayButtons;
-
-        if (info.icon)
+        if (info.Type == PackageType.MelonMod || info.Type == PackageType.MelonPlugin)
+        {
+            button.Children.Add(new PanelUIBlueprintV01()
+            {
+                Size=new Vector2(50,50), Position = new Vector2(266,0),
+                Color=UIColor.None,Sprite = EmbeddedResourceEUtil.LoadSprite("Assets.mlIcon.png"),
+                CornerRadius = 10
+                //anchors = new Vector4(0,0.5f,0,0.5f),
+            });
+        }
+        
+        
+        if (info.Icon)
         {
             button.Children.Add(new PanelUIBlueprintV01()
             {
                 Size=new Vector2(50,50), Position = new Vector2(-266,0),
-                Color=UIColor.None,Sprite = info.icon,
+                Color=UIColor.None,Sprite = info.Icon,
                 CornerRadius = 10
                 //anchors = new Vector4(0,0.5f,0,0.5f),
             });
@@ -320,17 +403,17 @@ internal class StarlightModMenu : StarlightMenu
             if (isRotten)
             {
                 finalText = Tr("modmenu.modinfo.brokenmod", info.Name);
-                if (info.type==PackageType.Expansion) finalText = Tr("modmenu.modinfo.brokenexpansion", info.Name);
+                if (info.Type==PackageType.Expansion) finalText = Tr("modmenu.modinfo.brokenexpansion", info.Name);
             }
             else
             {
                 finalText = Tr("modmenu.modinfo.mod", info.Name);
-                if (info.type==PackageType.Expansion) finalText = Tr("modmenu.modinfo.expansion", info.Name);
+                if (info.Type==PackageType.Expansion) finalText = Tr("modmenu.modinfo.expansion", info.Name);
             }
             if(!string.IsNullOrWhiteSpace(info.ID)) finalText += "\n" + Tr("modmenu.modinfo.id", info.ID);
             finalText += "\n" + Tr("modmenu.modinfo.author", string.IsNullOrEmpty(info.Author)?"Anonymous":info.Author);
 
-            if(info.type==PackageType.Expansion)
+            if(info.Type==PackageType.Expansion)
                 finalText += "\n" + Tr("modmenu.modinfo.useprism", info.UsePrism);
 
             if (info.CoAuthors is { Length: > 0 }) finalText += "\n" + Tr("modmenu.modinfo.coauthor", string.Join(", ",info.CoAuthors));
@@ -438,6 +521,223 @@ internal class StarlightModMenu : StarlightMenu
         catch {}
     }
 
+    
+    private static void ApplyIntFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new InputUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), DefaultValue = entry.stringifiedValue, RestoreOriginalTextOnEscape = false,
+            ContentType = TMP_InputField.ContentType.IntegerNumber, PlaceHolderContent = "modmenu.modconfig.enterint", CornerRadius = 10,
+            OnValueChanged = (text =>
+            {
+                AudioEUtil.PlaySound(MenuSound.Click);
+                if (string.IsNullOrEmpty(text)) text = "0";
+                if (int.TryParse(text, out var value))
+                {
+                    entry.SetPref(value);
+                    category.Save();
+                    if(entry.showWarningOnEdit) ShowWarningText();
+                }
+            })
+        });
+    }
+    private static void ApplyFloatFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new InputUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), DefaultValue = entry.stringifiedValue, RestoreOriginalTextOnEscape = false,
+            ContentType = TMP_InputField.ContentType.DecimalNumber, PlaceHolderContent = "modmenu.modconfig.enterfloat", CornerRadius = 10,
+            OnValueChanged = (text =>
+            {
+                AudioEUtil.PlaySound(MenuSound.Click);
+                if (string.IsNullOrEmpty(text)) text = "0.0";
+                if (float.TryParse(text, out var value))
+                {
+                    entry.SetPref(value);
+                    category.Save();
+                    if(entry.showWarningOnEdit) ShowWarningText();
+                }
+            })
+        });
+    }
+    private static void ApplyDoubleFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new InputUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), DefaultValue = entry.stringifiedValue, RestoreOriginalTextOnEscape = false,
+            ContentType = TMP_InputField.ContentType.DecimalNumber, PlaceHolderContent = "modmenu.modconfig.enterdouble", CornerRadius = 10,
+            OnValueChanged = (text =>
+            {
+                AudioEUtil.PlaySound(MenuSound.Click);
+                if (string.IsNullOrEmpty(text)) text = "0.0";
+                if (double.TryParse(text, out var value))
+                {
+                    entry.SetPref(value);
+                    category.Save();
+                    if(entry.showWarningOnEdit) ShowWarningText();
+                }
+            })
+        });
+    }
+    private static void ApplyLongFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new InputUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), DefaultValue = entry.stringifiedValue, RestoreOriginalTextOnEscape = false,
+            ContentType = TMP_InputField.ContentType.IntegerNumber, PlaceHolderContent = "modmenu.modconfig.enterlong", CornerRadius = 10,
+            OnValueChanged = (text =>
+            {
+                AudioEUtil.PlaySound(MenuSound.Click);
+                if (string.IsNullOrEmpty(text)) text = "0";
+                if (long.TryParse(text, out var value))
+                {
+                    entry.SetPref(value);
+                    category.Save();
+                    if(entry.showWarningOnEdit) ShowWarningText();
+                }
+            })
+        });
+    }
+    private static void ApplyStringFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new InputUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), DefaultValue = entry.stringifiedValue, RestoreOriginalTextOnEscape = false,
+            ContentType = TMP_InputField.ContentType.Standard, PlaceHolderContent = "modmenu.modconfig.enterstring", CornerRadius = 10,
+            OnValueChanged = (text =>
+            {
+                AudioEUtil.PlaySound(MenuSound.Click);
+                entry.SetPref(text);
+                category.Save();
+                if(entry.showWarningOnEdit) ShowWarningText();
+            })
+        });
+    }
+    private static void ApplyBoolFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new CheckboxUIBlueprintV01()
+        {
+            Size = new (45, 45), Position = new (625, 0), DefaultValue = entry.stringifiedValue.ToLower() == "true", CornerRadius = 10,
+            OnValueChanged = (isOn =>
+            {
+                AudioEUtil.PlaySound(MenuSound.Click);
+                entry.SetPref(isOn);
+                category.Save();
+                if(entry.showWarningOnEdit) ShowWarningText();
+            })
+        });
+    }
+    private static void ApplyLKeyFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new ButtonUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), CornerRadius = 10,
+            Children =
+            [
+                new TextUIBlueprintV01()
+                {
+                    TextContent = entry.stringifiedValue,
+                    DisableAutoTranslation = true,
+                    Alignment = TextAlignmentOptions.Center,
+                    FontSize = 30,
+                    Anchors = new Vector4(0,0,1,1),
+                }
+            ],
+            OnClickButton = (button =>
+            {
+                var textMesh = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textMesh.text = Tr("modmenu.modconfig.keylistening");
+                _listeningType = 1;
+                _listeningAction = (integer) =>
+                {
+                    var inputKey = (LKey) integer;
+                    var key = inputKey == LKey.Escape ? LKey.None : inputKey;
+                    textMesh.text = key.ToString();
+                    entry.SetPref(key);
+                    category.Save();
+                    if(entry.showWarningOnEdit) ShowWarningText();
+                    _listeningAction = null;
+                };
+            })
+        });
+    }
+    private static void ApplyKeyCodeFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new ButtonUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), CornerRadius = 10,
+            Children =
+            [
+                new TextUIBlueprintV01()
+                {
+                    TextContent = entry.stringifiedValue,
+                    DisableAutoTranslation = true,
+                    Alignment = TextAlignmentOptions.Center,
+                    FontSize = 30,
+                    Anchors = new Vector4(0,0,1,1),
+                }
+            ],
+            OnClickButton = (button =>
+            {
+                var textMesh = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textMesh.text = Tr("modmenu.modconfig.keylistening");
+                _listeningType = 2;
+                _listeningAction = (integer) =>
+                {
+                    var inputKey = (KeyCode) integer;
+                    var key = inputKey == KeyCode.Escape ? KeyCode.None : inputKey;
+                    textMesh.text = key.ToString();
+                    entry.SetPref(key);
+                    category.Save();
+                    if(entry.showWarningOnEdit) ShowWarningText();
+                    _listeningAction = null;
+                };
+            })
+        });
+    }
+    private static void ApplyKeyFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new ButtonUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), CornerRadius = 10,
+            Children =
+            [
+                new TextUIBlueprintV01()
+                {
+                    TextContent = entry.stringifiedValue,
+                    DisableAutoTranslation = true,
+                    Alignment = TextAlignmentOptions.Center,
+                    FontSize = 30,
+                    Anchors = new Vector4(0,0,1,1),
+                }
+            ],
+            OnClickButton = (button =>
+            {
+                var textMesh = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textMesh.text = Tr("modmenu.modconfig.keylistening");
+                _listeningType = 3;
+                _listeningAction = (integer) =>
+                {
+                    var inputKey = (Key) integer;
+                    var key = inputKey == Key.Escape ? Key.None : inputKey;
+                    textMesh.text = key.ToString();
+                    entry.SetPref(key);
+                    category.Save();
+                    if(entry.showWarningOnEdit) ShowWarningText();
+                    _listeningAction = null;
+                };
+            })
+        });
+    }
+    private static void ApplyUnknownFeatures(PackagePref entry, UIBlueprint blueprint, PackagePrefs category)
+    {
+        blueprint.Children.Add(new TextUIBlueprintV01()
+        {
+            Size = new (480, 45), Position = new (410, 0), TextContent = entry.stringifiedValue,
+            Alignment = TextAlignmentOptions.Center
+        });
+    }
+    // Melon Features
     private static void ApplyIntFeatures(MelonPreferences_Entry entry, UIBlueprint blueprint, MelonPreferences_Category category)
     {
         blueprint.Children.Add(new InputUIBlueprintV01()
@@ -452,9 +752,6 @@ internal class StarlightModMenu : StarlightMenu
                 {
                     entry.BoxedEditedValue = value;
                     category.SaveToFile(false);
-                    if (EntriesWithActions.TryGetValue(entry, out var action))
-                    { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                    else ShowWarningText();
                 }
             })
         });
@@ -473,9 +770,6 @@ internal class StarlightModMenu : StarlightMenu
                 {
                     entry.BoxedEditedValue = value;
                     category.SaveToFile(false);
-                    if (EntriesWithActions.TryGetValue(entry, out var action))
-                    { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                    else ShowWarningText();
                 }
             })
         });
@@ -494,9 +788,6 @@ internal class StarlightModMenu : StarlightMenu
                 {
                     entry.BoxedEditedValue = value;
                     category.SaveToFile(false);
-                    if (EntriesWithActions.TryGetValue(entry, out var action))
-                    { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                    else ShowWarningText();
                 }
             })
         });
@@ -515,9 +806,6 @@ internal class StarlightModMenu : StarlightMenu
                 {
                     entry.BoxedEditedValue = value;
                     category.SaveToFile(false);
-                    if (EntriesWithActions.TryGetValue(entry, out var action))
-                    { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                    else ShowWarningText();
                 }
             })
         });
@@ -533,9 +821,6 @@ internal class StarlightModMenu : StarlightMenu
                 AudioEUtil.PlaySound(MenuSound.Click);
                 entry.BoxedEditedValue = text;
                 category.SaveToFile(false);
-                if (EntriesWithActions.TryGetValue(entry, out var action))
-                { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                else ShowWarningText();
             })
         });
     }
@@ -549,9 +834,6 @@ internal class StarlightModMenu : StarlightMenu
                 AudioEUtil.PlaySound(MenuSound.Click);
                 entry.BoxedEditedValue = isOn;
                 category.SaveToFile(false);
-                if (EntriesWithActions.TryGetValue(entry, out var action))
-                { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                else ShowWarningText();
             })
         });
     }
@@ -585,9 +867,6 @@ internal class StarlightModMenu : StarlightMenu
                         textMesh.text = key.ToString();
                         entry.BoxedEditedValue = key;
                         category.SaveToFile(false);
-                        if (EntriesWithActions.TryGetValue(entry, out var action))
-                        { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                        else ShowWarningText();
                     }
 
                     _listeningAction = null;
@@ -625,9 +904,6 @@ internal class StarlightModMenu : StarlightMenu
                         textMesh.text = key.ToString();
                         entry.BoxedEditedValue = key;
                         category.SaveToFile(false);
-                        if (EntriesWithActions.TryGetValue(entry, out var action))
-                        { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                        else ShowWarningText();
                     }
 
                     _listeningAction = null;
@@ -665,9 +941,6 @@ internal class StarlightModMenu : StarlightMenu
                         textMesh.text = key.ToString();
                         entry.BoxedEditedValue = key;
                         category.SaveToFile(false);
-                        if (EntriesWithActions.TryGetValue(entry, out var action))
-                        { if (action != null) try { action.Invoke(); }catch (Exception e) { LogError(e); } }
-                        else ShowWarningText();
                     }
 
                     _listeningAction = null;
