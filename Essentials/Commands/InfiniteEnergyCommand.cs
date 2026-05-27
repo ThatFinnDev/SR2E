@@ -82,7 +82,7 @@ internal class InfiniteEnergyCommand : StarlightCommand
         ExecuteInTicks(() =>
         {
             _energyMeter = GetInScene<EnergyMeter>("Energy Meter");
-            if(inGame && !StarlightCounterGateManager.srleActive && StarlightSaveManager.inGameData.InfiniteEnergyActive)
+            if(inGame && !StarlightCounterGateManager.srleActive && StarlightSaveManager.inGameData != null && StarlightSaveManager.inGameData.InfiniteEnergyActive)
                 _energyMeter.gameObject.active = false;
         },1);
     }

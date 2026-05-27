@@ -1,13 +1,18 @@
 using Il2CppMonomiPark.SlimeRancher.Persist;
+using System.Reflection;
 using Starlight.Prism.Lib;
 using Starlight.Storage;
 
 namespace Starlight.Prism.Patches;
 
 [PrismPatch()]
-[HarmonyPatch(typeof(GameV10), nameof(GameV10.LoadSummaryData))]
+[HarmonyPatch()]
 internal static class GameLoadSummaryPatch
 {
+    static System.Reflection.MethodBase TargetMethod()
+    
+        => VersionedEUtil.GetLatestSystemGameVXX().GetMethod("LoadSummaryData", BindingFlags.Instance | BindingFlags.Public);
+    
     private static void Prefix()
     {
         try

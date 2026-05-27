@@ -99,6 +99,17 @@ public static class MiscEUtil
     [Obsolete("Use PackagePrefs instead!",true)] public static void AddAction(this MelonPreferences_Entry entry, Action action) {}
 
     public static Il2CppSystem.Type IL2CPPTypeof(this Type type) => Il2CppType.From(type);
+    public static Type SystemTypeOf(this Il2CppSystem.Type type)
+    {
+        try
+        {
+            var sysType = Type.GetType("Il2Cpp" + type.FullName);
+            if (sysType != null)
+                return sysType;
+        }
+        catch { }
+        return Type.GetType(type.FullName);
+    }
     
     
     public static HashSet<IdentifiableType> GetAllMembersHashSet(this IdentifiableTypeGroup group) => group.GetAllMembers().ToNetHashSet();

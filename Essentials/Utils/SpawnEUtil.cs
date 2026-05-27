@@ -53,14 +53,15 @@ public static class SpawnEUtil
                 _rootObjects = new();
             }
             if(inGame&&!StarlightCounterGateManager.srleActive)
-                foreach (var plot in StarlightSaveManager.inGameData.CustomPlots)
-                    if (plot.Value.SceneName == sceneName)
-                    {
-                        try
+                if(StarlightSaveManager.inGameData!=null)
+                    foreach (var plot in StarlightSaveManager.inGameData.CustomPlots)
+                        if (plot.Value.SceneName == sceneName)
                         {
-                            SpawnLandPlot(plot.Key, plot.Value);
-                        } catch (Exception e) { LogError(e); }
-                    }
+                            try
+                            {
+                                SpawnLandPlot(plot.Key, plot.Value);
+                            } catch (Exception e) { LogError(e); }
+                        }
             
         }),2);
     }

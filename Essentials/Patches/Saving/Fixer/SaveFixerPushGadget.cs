@@ -14,7 +14,7 @@ internal static class SaveFixerPushGadget
         catch (Exception e) { return true; }
         return false;
     }
-    internal static bool Prefix(GameModel gameModel, ref PlacedGadgetV07 gadget, ILoadReferenceTranslation loadReferenceTranslation)
+    internal static bool Prefix(GameModel gameModel, ref dynamic gadget, ILoadReferenceTranslation loadReferenceTranslation)
     {
         if (!StarlightEntryPoint.disableFixSaves)
             try

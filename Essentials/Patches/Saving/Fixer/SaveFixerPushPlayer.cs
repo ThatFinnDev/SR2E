@@ -1,7 +1,6 @@
 using System.Linq;
 using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.DataModel;
-using Il2CppMonomiPark.SlimeRancher.Persist;
 
 namespace Starlight.Patches.Saving.Fixer;
 
@@ -16,13 +15,13 @@ internal static class SaveFixerPushPlayer
         catch (Exception e) { return true; }
         return false;
     }
-    internal static void Prefix(GameModel gameModel, PlayerV09 player, ILoadReferenceTranslation loadReferenceTranslation)
+    internal static void Prefix(GameModel gameModel, dynamic player, ILoadReferenceTranslation loadReferenceTranslation)
     {
         try
         {
             if (!StarlightEntryPoint.disableFixSaves)
             {
-                Dictionary<int, int> copyOfItemCounts = new Dictionary<int, int>();
+                var copyOfItemCounts = new Dictionary<int, int>();
                 var enumerator = player.ItemCounts.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
@@ -33,21 +32,21 @@ internal static class SaveFixerPushPlayer
                     if (NeedsRemoving(itemCountPair.Key,loadReferenceTranslation))
                         player.ItemCounts.Remove(itemCountPair.Key);
                     
-                foreach(var blueprintID in player.Blueprints._items.ToList())
+                foreach(var blueprintID in MiscEUtil.ToNetList(player.Blueprints._items))
                     if (NeedsRemoving(blueprintID,loadReferenceTranslation))
                         player.Blueprints.Remove(blueprintID);
                     
-                foreach(var availBlueprintID in player.AvailBlueprints._items.ToList())
+                foreach(var availBlueprintID in MiscEUtil.ToNetList(player.AvailBlueprints._items))
                     if (NeedsRemoving(availBlueprintID,loadReferenceTranslation))
                         player.AvailBlueprints.Remove(availBlueprintID);
                     
-                foreach(var favouriteGadgetID in player.FavoriteGadgets._items.ToList())
+                foreach(var favouriteGadgetID in MiscEUtil.ToNetList(player.FavoriteGadgets._items))
                     if (NeedsRemoving(favouriteGadgetID,loadReferenceTranslation))
                         player.FavoriteGadgets.Remove(favouriteGadgetID);
 
                 try
                 {
-                    foreach(var viewedBluePrintID in player.ViewedItems.ViewedBlueprints.ToNetList())
+                    foreach(var viewedBluePrintID in MiscEUtil.ToNetList(player.ViewedItems.ViewedBlueprints))
                         if (NeedsRemoving(viewedBluePrintID,loadReferenceTranslation))
                             player.ViewedItems.ViewedBlueprints.Remove(viewedBluePrintID);
                 }

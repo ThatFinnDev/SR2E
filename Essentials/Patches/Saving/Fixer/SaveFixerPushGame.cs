@@ -14,11 +14,11 @@ internal static class SaveFixerPushGame
         catch (Exception e) { return true; }
         return false;
     }
-    static bool needsRemoving2(ActorDataV04 gadget,ILoadReferenceTranslation r)
+    static bool needsRemoving2(int typeID,ILoadReferenceTranslation r)
     {
         try
         {
-            var ident = r.GetIdentifiableType(gadget.TypeId);
+            var ident = r.GetIdentifiableType(typeID);
             if (ident == null) return true;
             
             if(ident.IsGadget())
@@ -28,7 +28,7 @@ internal static class SaveFixerPushGame
 
         return false;
     }
-    internal static void Prefix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, GameV10 gameState, GameModel gameModel)
+    internal static void Prefix(ActorIdProvider actorIdProvider, ISaveReferenceTranslation saveReferenceTranslation, dynamic gameState, GameModel gameModel)
     {
         if (!StarlightEntryPoint.disableFixSaves)
             try {
@@ -45,7 +45,7 @@ internal static class SaveFixerPushGame
                 foreach (var gadget in gameState.Actors.ToArray())
                 {
                     try {
-                        if (needsRemoving2(gadget,loadTranslation))
+                        if (needsRemoving2(gadget.TypeId,loadTranslation))
                             gameState.Actors.Remove(gadget);
                     }
                     catch (Exception e) { LogError(e); }
