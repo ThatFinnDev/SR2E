@@ -9,7 +9,7 @@ public class LoadingGameSessionData
     public readonly ActorIdProvider ActorIdProvider;
     public readonly ISaveReferenceTranslation ISaveReferenceTranslation;
     public readonly SaveReferenceTranslation SaveReferenceTranslation;
-    public readonly GameV10 GameV10;
+    public GameV10 GameV10;
     public readonly dynamic GameState;
     public readonly GameModel GameModel;
 
@@ -20,8 +20,12 @@ public class LoadingGameSessionData
         this.ISaveReferenceTranslation = iSaveReferenceTranslation;
         this.SaveReferenceTranslation = saveReferenceTranslation;
         this.GameState = gameState;
-        if(gameState is GameV10 gameV10)
-            this.GameV10 = gameV10;
         this.GameModel = gameModel;
+        try { ApplyGameV10(); } catch { }
+    }
+    void ApplyGameV10()
+    {
+        if(GameState is GameV10 gameV10)
+            this.GameV10 = gameV10;
     }
 }
