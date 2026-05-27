@@ -304,7 +304,7 @@ public static class PrismShortcuts
             PrismFixedPediaEntries.Add(pedia, newEntry);
             return newEntry;
         }
-        else if (customOrNativePedia.TryCast<IdentifiablePediaEntry>()!=null)
+        if (customOrNativePedia.TryCast<IdentifiablePediaEntry>()!=null)
         {
             var pedia = customOrNativePedia.Cast<IdentifiablePediaEntry>();
             if (PrismIdentifiablePediaEntries.TryGetValue(pedia, out var entry)) return entry;
@@ -312,7 +312,22 @@ public static class PrismShortcuts
             PrismIdentifiablePediaEntries.Add(pedia, newEntry);
             return newEntry;
         }
-        else if (customOrNativePedia.TryCast<RadiantSlimePediaEntry>()!=null)
+        if (SupportRadiant.HasFlag())
+        {
+            var radiantEntry = GetPrismPediaEntry_RadiantStuff(customOrNativePedia);
+            if (radiantEntry != null) return radiantEntry;
+        }
+        
+        if (PrismUnknownPediaEntries.TryGetValue(customOrNativePedia, out var entry2)) return entry2;
+        var newEntry2 = new PrismPediaEntry(customOrNativePedia, true);
+        PrismUnknownPediaEntries.Add(customOrNativePedia, newEntry2);
+        return newEntry2;
+        
+    }
+
+    private static PrismPediaEntry GetPrismPediaEntry_RadiantStuff(PediaEntry customOrNativePedia)
+    {
+        if (customOrNativePedia.TryCast<RadiantSlimePediaEntry>()!=null)
         {
             var pedia = customOrNativePedia.Cast<RadiantSlimePediaEntry>();
             if (PrismRadiantSlimePediaEntries.TryGetValue(pedia, out var entry)) return entry;
@@ -320,14 +335,10 @@ public static class PrismShortcuts
             PrismRadiantSlimePediaEntries.Add(pedia, newEntry);
             return newEntry;
         }
-        else
-        {
-            if (PrismUnknownPediaEntries.TryGetValue(customOrNativePedia, out var entry)) return entry;
-            var newEntry = new PrismPediaEntry(customOrNativePedia, true);
-            PrismUnknownPediaEntries.Add(customOrNativePedia, newEntry);
-            return newEntry;
-        }
+
+        return null;
     }
+    
     public static PrismFixedPediaEntry GetPrismFixedPediaEntry(this FixedPediaEntry customOrNativePedia)
     {
         if (customOrNativePedia == null) return null;
@@ -346,6 +357,7 @@ public static class PrismShortcuts
     }
     public static PrismRadiantSlimePediaEntry GetPrismRadiantSlimePediaEntry(this RadiantSlimePediaEntry customOrNativePedia)
     {
+        if (!SupportRadiant.HasFlag()) return null;
         if (customOrNativePedia == null) return null;
         if (PrismRadiantSlimePediaEntries.TryGetValue(customOrNativePedia, out var entry)) return entry;
         var newPedia = new PrismRadiantSlimePediaEntry(customOrNativePedia, true);

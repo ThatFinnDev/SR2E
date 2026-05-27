@@ -19,7 +19,7 @@ public static class StarlightFeatureFlags
         InjectMainMenuButtons, InjectRanchUIButtons, InjectPauseButtons, InjectTranslations,
         AddCheatMenuButton, AddModMenuButton, CheckForUpdates, AllowAutoUpdate, EnableInfHealth,
         EnableInfEnergy, EnableCheatMenu, EnableLocalizedVersionPatch, EnableThemeMenu,
-        ChangeSystemContextIsModded, AllowPrism, AllowSaveExport, TryFixingInvalidSceneGroups
+        ChangeSystemContextIsModded, AllowPrism, AllowSaveExport, TryFixingInvalidSceneGroups, SupportRadiant
     ];
 
     private static FeatureFlag[] extraDevFlags =>

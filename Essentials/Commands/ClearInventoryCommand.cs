@@ -1,6 +1,4 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Player;
-
-namespace Starlight.Commands;
+﻿namespace Starlight.Commands;
 
 internal class ClearInventoryCommand : StarlightCommand
 {
@@ -18,7 +16,7 @@ internal class ClearInventoryCommand : StarlightCommand
         if (!args.IsBetween(0,1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
-        int numberOfSlots = sceneContext.PlayerState.Ammo.Slots.Length - 1;
+        int numberOfSlots = InventoryEUtil.GetAllSlotCount() - 1;
         int slotToClear = -1;
         if (args!=null)
         {
@@ -31,17 +29,17 @@ internal class ClearInventoryCommand : StarlightCommand
 
         if(slotToClear==-1)
         {
-            foreach (AmmoSlot slot in sceneContext.PlayerState.Ammo.Slots)
-                if(slot.IsUnlocked) slot.Clear();
+            foreach (var slot in InventoryEUtil.GetUnlockedSlots())
+                InventoryEUtil.ClearSlot(slot);
             SendMessage(Tr("cmd.clearinv.success"));
             return true;
         }
 
-        bool isUnlocked = sceneContext.PlayerState.Ammo.Slots[slotToClear].IsUnlocked;
-        if (!isUnlocked) return SendError(Tr("cmd.clearinv.error.slotnotunlocked",slotToClear+1));
+        if (!InventoryEUtil.GetIsSlotUnlocked(slotToClear)) 
+            return SendError(Tr("cmd.clearinv.error.slotnotunlocked",slotToClear+1));
            
         
-        sceneContext.PlayerState.Ammo.Slots[slotToClear].Clear();
+        InventoryEUtil.ClearSlot(slotToClear);
         SendMessage(Tr("cmd.clearinv.successsingle",slotToClear+1));
         return true;
     }

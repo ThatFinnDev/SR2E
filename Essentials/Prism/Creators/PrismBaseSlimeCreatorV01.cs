@@ -1,5 +1,6 @@
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppMonomiPark.SlimeRancher.Slime;
+using Starlight.Enums.Features;
 using Starlight.Prism.Data;
 using Starlight.Prism.Data.Appearance;
 using Starlight.Prism.Data.Native;
@@ -123,14 +124,45 @@ public class PrismBaseSlimeCreatorV01
         if (baseAppearance._wingFlapAnimationOverride != null) appearance._wingFlapAnimationOverride = Object.Instantiate(baseAppearance._wingFlapAnimationOverride);
         if (baseAppearance._biteAnimationOverride != null) appearance._biteAnimationOverride = Object.Instantiate(baseAppearance._biteAnimationOverride);
     }
-    
-    
+
+    private SlimeAppearance RadiantStuff(SlimeDefinition slimeDef)
+    {
+        slimeDef.RadiantBase = null;
+        slimeDef.RadiantLargo0 = null;
+        slimeDef.RadiantLargo1 = null;
+        if (SupportRadiant)
+        {
+            SlimeAppearance radiantAppearance = null;
+            var baseRadiantAppearance = CustomRadiantAppearance;
+            if (baseRadiantAppearance == null)
+                baseRadiantAppearance = PrismNativeBaseSlime.Pink.GetPrismBaseSlime().TryGetSlimeAppearanceRadiant();
+            radiantAppearance = Object.Instantiate(baseRadiantAppearance);
+            radiantAppearance.hideFlags = HideFlags.DontUnloadUnusedAsset;
+            radiantAppearance.name = Name + "Radiant";
+            radiantAppearance._icon = RadiantIcon ?? Icon;
+            radiantAppearance._icon ??= PrismShortcuts.UnavailableIcon;
+            slimeDef.AppearancesDefault = slimeDef.AppearancesDefault.AddToNew(radiantAppearance);
+            if (slimeDef.AppearancesDefault[1] == null)
+                slimeDef.AppearancesDefault[1] = radiantAppearance;
+
+            Duplicate(radiantAppearance, baseRadiantAppearance);
+            slimeDef.RadiantBase = radiantAppearance;
+            radiantAppearance._appearType = SlimeAppearance.AppearanceType.RADIANT_BASE;
+            radiantAppearance._fullArt = null;
+
+            PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(slimeDef, baseRadiantAppearance);
+            PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(slimeDef, baseRadiantAppearance);
+            return radiantAppearance;
+        }
+        return null;
+    }
     
     public PrismBaseSlime CreateSlime()
     {
         if (!IsValid()) return null;
         if (_createdSlime != null) return _createdSlime;
-
+        if (!FeatureFlag.SupportRadiant.HasFlag()) SupportRadiant = false; 
+        
         var slimeDef = Object.Instantiate( PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetSlimeDefinition());
         slimeDef.hideFlags = HideFlags.DontUnloadUnusedAsset;
         slimeDef.Name = Name;
@@ -154,30 +186,8 @@ public class PrismBaseSlimeCreatorV01
         appearance._fullArt = null;
         
         SlimeAppearance radiantAppearance = null;
-        if (SupportRadiant)
-        {
-            var baseRadiantAppearance = CustomRadiantAppearance;
-            if (baseRadiantAppearance == null)
-                baseRadiantAppearance = PrismNativeBaseSlime.Pink.GetPrismBaseSlime().TryGetSlimeAppearanceRadiant();
-            radiantAppearance = Object.Instantiate(baseRadiantAppearance);
-            radiantAppearance.hideFlags = HideFlags.DontUnloadUnusedAsset;
-            radiantAppearance.name = Name + "Radiant";
-            radiantAppearance._icon = RadiantIcon ?? Icon;
-            radiantAppearance._icon ??= PrismShortcuts.UnavailableIcon;
-            slimeDef.AppearancesDefault = slimeDef.AppearancesDefault.AddToNew(radiantAppearance);
-            if (slimeDef.AppearancesDefault[1] == null)
-                slimeDef.AppearancesDefault[1] = appearance;
-
-            Duplicate(radiantAppearance, baseRadiantAppearance);
-            slimeDef.RadiantBase = radiantAppearance;
-            radiantAppearance._appearType = SlimeAppearance.AppearanceType.RADIANT_BASE;
-            radiantAppearance._fullArt = null;
-
-            PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(slimeDef, baseRadiantAppearance);
-            PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(slimeDef, baseRadiantAppearance);
-
-        }
-        else slimeDef.RadiantBase = null;
+        if (FeatureFlag.SupportRadiant.HasFlag())
+            radiantAppearance = RadiantStuff(slimeDef);
         
         var basePrefab = CustomBasePrefab;
         if (basePrefab == null) basePrefab = PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetPrefab();

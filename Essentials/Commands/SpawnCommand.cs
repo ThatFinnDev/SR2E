@@ -48,16 +48,9 @@ internal class SpawnCommand : StarlightCommand
                     spawned.transform.position = hit.point + hit.normal * PhysicsUtil.CalcRad(spawned.GetComponent<Collider>());
                     var delta = -(hit.point - cam.transform.position).normalized;
                     spawned.transform.rotation = Quaternion.LookRotation(delta, hit.normal);
-                    if (makeRadiant)
-                    {
-                        var radiant = spawned.GetComponent<SlimeRadiant>();
-                        if (radiant)
-                        {
-                            radiant.SetRadiant();
-                            radiant.SetRadiantAppearance();
-                        }
-                    }
-                }catch { }
+                    if(SupportRadiant.HasFlag())
+                        SpawnEUtil.SetAnyRadiantSlimeAppearance(spawned.GetComponent<IdentifiableActor>());
+                } catch { }
             }
         }
         SendMessage(Tr("cmd.spawn.success",amount,def.GetName()));

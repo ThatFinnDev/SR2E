@@ -268,6 +268,10 @@ public enum FeatureFlag
     /// This exports all volume presets after loading them
     /// </summary>
     ExportAllVolumePresets=560, //
+    /// <summary>
+    /// Support everything related to radiancy
+    /// </summary>
+    SupportRadiant=570, //
     
     
     

@@ -37,11 +37,16 @@ public static class PrismLibAppearances
 
     #region Structure Management
 
+    static bool IsRadiant(PrismAppearanceIndex index) =>
+        index == PrismAppearanceIndex.BaseSlimeRadiant ? true :
+        index == PrismAppearanceIndex.LargoRadiant1 ? true :
+        index == PrismAppearanceIndex.LargoRadiant2;
     /// <summary>
     /// Gets a structure from a slime by index.
     /// </summary>
     public static SlimeAppearanceStructure GetStructure(this PrismSlime slime, int structureIndex, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return null;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null || structureIndex < 0 || structureIndex >= app.Structures.Count) return null;
         return app.Structures[structureIndex];
@@ -52,6 +57,7 @@ public static class PrismLibAppearances
     /// </summary>
     public static SlimeAppearanceStructure GetStructure(this PrismSlime slime, SlimeAppearanceElement.ElementType type, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return null;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return null;
         foreach (var s in app.Structures)
@@ -64,6 +70,7 @@ public static class PrismLibAppearances
     /// </summary>
     public static void SetStructure(this PrismSlime slime, SlimeAppearanceStructure structure, SlimeAppearanceElement.ElementType type, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         for (int i = 0; i < app.Structures.Count; i++) 
@@ -110,6 +117,7 @@ public static class PrismLibAppearances
     /// </summary>
     public static void AddStructure(this PrismSlime slime, Mesh mesh, SlimeAppearance.SlimeBone rootBone, SlimeAppearance.SlimeBone parentBone, string elementName, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         var baseStruct = app._structures[0];
@@ -174,6 +182,7 @@ public static class PrismLibAppearances
     /// </summary>
     public static void SetColor(this PrismBaseSlime slime, string property, Color color, PrismAppearanceIndex appearanceIndex, int structureIndex = 0, int materialIndex = 0)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var s = slime.GetStructure(structureIndex, appearanceIndex);
         if (s == null || materialIndex < 0 || materialIndex >= s.DefaultMaterials.Count) return;
         s.DefaultMaterials[materialIndex]?.SetColor(property, color);
@@ -184,6 +193,7 @@ public static class PrismLibAppearances
     /// </summary>
     public static void SetColor(this PrismBaseSlime slime, string property, Color color, PrismAppearanceIndex appearanceIndex, SlimeAppearanceElement.ElementType type, int materialIndex = 0)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var s = slime.GetStructure(type, appearanceIndex);
         if (s == null || materialIndex < 0 || materialIndex >= s.DefaultMaterials.Count) return;
         s.DefaultMaterials[materialIndex]?.SetColor(property, color);
@@ -206,6 +216,7 @@ public static class PrismLibAppearances
     
     public static void SetPaletteTopColor(this PrismBaseSlime slime, Color color, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         var colorPalette = app._colorPalette;
@@ -214,6 +225,7 @@ public static class PrismLibAppearances
     }
     public static void SetPaletteMiddleColor(this PrismBaseSlime slime, Color color, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         var colorPalette = app._colorPalette;
@@ -222,6 +234,7 @@ public static class PrismLibAppearances
     }
     public static void SetPaletteBottomColor(this PrismBaseSlime slime, Color color, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         var colorPalette = app._colorPalette;
@@ -230,6 +243,7 @@ public static class PrismLibAppearances
     }
     public static void SetPaletteAmmoColor(this PrismBaseSlime slime, Color color, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         var colorPalette = app._colorPalette;
@@ -239,6 +253,7 @@ public static class PrismLibAppearances
     
     public static void SetRadiantColor(this PrismBaseSlime slime, Color? color, PrismAppearanceIndex appearanceIndex)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         if (color.HasValue) app._radiantColor = color.Value;
@@ -272,6 +287,7 @@ public static class PrismLibAppearances
     
     public static void SetPaletteColors(this PrismBaseSlime slime, PrismAppearanceIndex appearanceIndex, Color top, Color middle, Color bottom, Color ammo)
     {
+        if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         app._colorPalette = new SlimeAppearance.Palette() { Top = top, Middle = middle,Bottom = bottom, Ammo=ammo };

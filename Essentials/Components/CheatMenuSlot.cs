@@ -24,51 +24,43 @@ internal class CheatMenuSlot : MonoBehaviour
 
     private void Apply()
     {
-        var slot = sceneContext.PlayerState.Ammo.Slots[_slotID];
-        if (_amountSlider.value == 0) { _entryInput.text = ""; slot.Clear(); AudioEUtil.PlaySound(MenuSound.Error); return; }
+        if (_amountSlider.value == 0) { _entryInput.text = ""; InventoryEUtil.ClearSlot(_slotID); AudioEUtil.PlaySound(MenuSound.Error); return; }
         
         var type = LookupEUtil.GetIdentifiableTypeByName(_entryInput.text);
-        if (!type) { _entryInput.text = ""; slot.Clear(); _amountSlider.value = 0; AudioEUtil.PlaySound(MenuSound.Error); return; }
+        if (!type) { _entryInput.text = ""; InventoryEUtil.ClearSlot(_slotID); _amountSlider.value = 0; AudioEUtil.PlaySound(MenuSound.Error); return; }
         if(_radiant&&!AllowRadiant(type))
             ChangeType();
         AudioEUtil.PlaySound(MenuSound.Apply);
         string itemName = type.GetName().Replace("'","").Replace(" ","");
         _entryInput.text = itemName;
-        slot.Clear();
-        sceneContext.PlayerState.Ammo.MaybeAddResource(type, _slotID, (int)_amountSlider.value, true);
-        slot.Radiant = _radiant;
-        if (SlimeDefinition.IsSlimeDefinition(type) && _radiant)
+        InventoryEUtil.SetStarlightSlotInfo(_slotID,new StarlightSlotItemInfo()
         {
-            //Refresh the appearance in the slot
-            var count = slot.Count;
-            slot._count++;
-            slot.Count = count;
-            ExecuteInTicks(() =>
-            {
-                var execGetter = slot.Count;
-            },1);
-        }
-        slot.Metadata.Radiant = _radiant;
+            Count = (int)_amountSlider.value,
+            IdentifiableType = type,
+            IsRadiant = _radiant
+        });
+    }
+
+    void Select_RadiantStuff(Dictionary<string, (string, Sprite)> dict, SlimeDefinition slimeDef)
+    {
+        dict[slimeDef.ReferenceId+"|true"] = ("Radiant"+slimeDef.GetName(), slimeDef.RadiantBase.Icon);
     }
     private void Select()
     {
         var slot = sceneContext.PlayerState.Ammo.Slots[_slotID];
         AudioEUtil.PlaySound(MenuSound.Click);
         var dict = new Dictionary<string, (string, Sprite)>();
-        var remove = slot.Definition.SlotBlockList;
-        foreach (var identType in slot.Definition.SlotTypeGroup.GetAllMembersHashSet())
+        foreach (var identType in InventoryEUtil.GetSlotAllowedIdentifiableTypes(_slotID))
         {
-            if(!remove.Contains(identType))
+            if (SlimeDefinition.IsSlimeDefinition(identType))
             {
-                if (SlimeDefinition.IsSlimeDefinition(identType))
-                {
-                    var slimeDef = identType.Cast<SlimeDefinition>();
-                    dict[slimeDef.ReferenceId+"|false"] = (slimeDef.GetName(), slimeDef.icon);
-                    if(slimeDef.RadiantBase)
-                        dict[slimeDef.ReferenceId+"|true"] = ("Radiant"+slimeDef.GetName(), slimeDef.RadiantBase.Icon);
-                }
-                dict[identType.ReferenceId+"|false"] = (identType.GetName(), identType.icon);
+                var slimeDef = identType.Cast<SlimeDefinition>();
+                dict[slimeDef.ReferenceId+"|false"] = (slimeDef.GetName(), slimeDef.icon);
+                if (AllowRadiant(slimeDef))
+                    Select_RadiantStuff(dict, slimeDef);
             }
+            dict[identType.ReferenceId+"|false"] = (identType.GetName(), identType.icon);
+            
         }
         StarlightGridMenuListPopUp.Open(dict, (value) =>
         {
@@ -83,6 +75,7 @@ internal class CheatMenuSlot : MonoBehaviour
     }
     private bool AllowRadiant(IdentifiableType type)
     {
+        if (!SupportRadiant.HasFlag()) return false;
         if(type)
             if (SlimeDefinition.IsSlimeDefinition(type))
                 foreach (var appearance in type.Cast<SlimeDefinition>().AppearancesDefault)
@@ -92,12 +85,21 @@ internal class CheatMenuSlot : MonoBehaviour
     }
     private bool AllowRadiant(string input)
     {
+        if (!SupportRadiant.HasFlag()) return false;
         return AllowRadiant(LookupEUtil.identifiableTypes.GetEntryByRefID(input));
     }
     private void ChangeType()
     {
-        _radiant = !_radiant;
-        _typeButtonText.SetText(_radiant?"Radiant":"Default");
+        if (SupportRadiant.HasFlag())
+        {
+            _radiant = !_radiant;
+            _typeButtonText.SetText(_radiant?"Radiant":"Default");
+        }
+        else
+        {
+            _radiant = false;
+            _typeButtonText.SetText("Default");
+        }
     }
     internal void OnOpen(int id)
     {
