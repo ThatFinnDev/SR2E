@@ -74,7 +74,7 @@ public class StarlightSlimeRenderer : MonoBehaviour
         }
         var app = instance.GetComponent<SlimeAppearanceApplicator>();
         app.SlimeDefinition = definition;
-        app.Appearance = definition.GetDefaultAppearance();
+        app.Appearance = definition.AppearancesDefault[0];
         return prefab;
     }
     void SetLayerRecursive(GameObject obj, int newLayer)

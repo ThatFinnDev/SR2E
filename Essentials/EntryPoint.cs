@@ -475,7 +475,6 @@ public class StarlightEntryPoint : MelonMod
             {
                 types = e.Types.Where(t => t != null);
             }
-            var devPatches = DevMode.HasFlag();
             foreach (var type in types)
             {
                 if (type == null) continue;
@@ -483,7 +482,10 @@ public class StarlightEntryPoint : MelonMod
                 {
                     var isPrismPatch = type.GetCustomAttribute<PrismPatch>() != null;
                     if (!isPrismInUse && isPrismPatch) continue;
-                    if (!devPatches && type.GetCustomAttribute<DevPatch>() != null) continue;
+                    var ffPatch = type.GetCustomAttribute<FeatureFlagDependentPatch>();
+                    if(ffPatch!=null&&ffPatch.Flags!=null)
+                        foreach (var flag in ffPatch.Flags)
+                            if (!flag.HasFlag()) continue;
                     var classPatches = HarmonyMethodExtensions.GetFromType(type);
                     if (classPatches.Count > 0)
                     {

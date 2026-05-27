@@ -125,8 +125,10 @@ public class PrismBaseSlimeCreatorV01
         if (baseAppearance._biteAnimationOverride != null) appearance._biteAnimationOverride = Object.Instantiate(baseAppearance._biteAnimationOverride);
     }
 
-    private SlimeAppearance RadiantStuff(SlimeDefinition slimeDef)
+    private SlimeAppearance RadiantStuff(SlimeAppearance appearance, SlimeDefinition slimeDef)
     {
+        appearance._appearType = SlimeAppearance.AppearanceType.DEFAULT;
+        appearance._fullArt = null;
         slimeDef.RadiantBase = null;
         slimeDef.RadiantLargo0 = null;
         slimeDef.RadiantLargo1 = null;
@@ -156,7 +158,7 @@ public class PrismBaseSlimeCreatorV01
         }
         return null;
     }
-    
+
     public PrismBaseSlime CreateSlime()
     {
         if (!IsValid()) return null;
@@ -168,8 +170,13 @@ public class PrismBaseSlimeCreatorV01
         slimeDef.Name = Name;
         slimeDef.name = Name;
         slimeDef.AppearancesDefault = new Il2CppReferenceArray<SlimeAppearance>(0);
-        slimeDef._fullArt = null;
-        slimeDef._requiresFullArt = false;
+        try
+        {
+            dynamic dynamicIdent = slimeDef;
+            dynamicIdent._requiresFullArt = false;
+            dynamicIdent._fullArt = null;
+        }
+        catch { }
 
         var baseAppearance = CustomBaseAppearance;
         if (baseAppearance == null) baseAppearance = PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetSlimeAppearance();
@@ -182,12 +189,10 @@ public class PrismBaseSlimeCreatorV01
             slimeDef.AppearancesDefault[0] = appearance;
 
         Duplicate(appearance, baseAppearance);
-        appearance._appearType = SlimeAppearance.AppearanceType.DEFAULT;
-        appearance._fullArt = null;
         
         SlimeAppearance radiantAppearance = null;
         if (FeatureFlag.SupportRadiant.HasFlag())
-            radiantAppearance = RadiantStuff(slimeDef);
+            radiantAppearance = RadiantStuff(appearance,slimeDef);
         
         var basePrefab = CustomBasePrefab;
         if (basePrefab == null) basePrefab = PrismNativeBaseSlime.Pink.GetPrismBaseSlime().GetPrefab();

@@ -254,13 +254,17 @@ public static class PrismLibAppearances
     public static void SetRadiantColor(this PrismBaseSlime slime, Color? color, PrismAppearanceIndex appearanceIndex)
     {
         if (!SupportRadiant.HasFlag()&&IsRadiant(appearanceIndex)) return;
+        SetRadiantColor_Radiant(slime, color, appearanceIndex);
+    }
+
+    static void SetRadiantColor_Radiant(PrismBaseSlime slime, Color? color, PrismAppearanceIndex appearanceIndex)
+    {
         var app = slime.GetSlimeDefinition().AppearancesDefault[(int)appearanceIndex];
         if (app == null) return;
         if (color.HasValue) app._radiantColor = color.Value;
         else app._radiantColor = new Color(0, 0, 0, 1);
         app.SetRadiantColor();
     }
-    
     // Group Color setters
     public static void SetBaseColors(this PrismBaseSlime slime, PrismAppearanceIndex appearanceIndex, Color top, Color middle, Color bottom, Color? specular = null, int structureIndex = 0, int materialIndex = 0)
     {

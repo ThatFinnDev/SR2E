@@ -34,7 +34,7 @@ public class StarlightGridMenuListPopUp : StarlightPopUp
             var value = entry.Value;
             var instance = GameObject.Instantiate(prefab, content.transform);
             instance.gameObject.SetActive(true);
-            instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText(value.Item1);
+            instance.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (value.Item1);
             instance.transform.GetChild(1).GetComponent<Image>().sprite = value.Item2;
             instance.onClick.AddListener((Action)(() =>
             {

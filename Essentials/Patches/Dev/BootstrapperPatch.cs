@@ -6,7 +6,7 @@ using Starlight.Storage;
 namespace Starlight.Patches.Dev;
 
 
-[DevPatch()]
+[FeatureFlagDependentPatch(DevMode)]
 [HarmonyPatch(typeof(Bootstrapper), nameof(Bootstrapper.Start))]
 internal static class BootstrapperPatch
 {

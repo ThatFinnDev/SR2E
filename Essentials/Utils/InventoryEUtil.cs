@@ -50,7 +50,7 @@ public static class InventoryEUtil
     public static void ClearSlot(int slotIndex) => sceneContext.PlayerState.Ammo.Slots[slotIndex].Clear();
     public static int GetSlotItemCount(int slotIndex) => sceneContext.PlayerState.Ammo.GetSlotCount(slotIndex);
     public static int GetSlotMaxItemCount(int slotIndex) => sceneContext.PlayerState.Ammo.GetSlotMaxCount(slotIndex);
-    public static int GetSlotItemSpaceLeft(int slotIndex) => sceneContext.PlayerState.Ammo.GetSlotSpaceLeft(slotIndex);
+    public static int GetSlotItemSpaceLeft(int slotIndex) => sceneContext.PlayerState.Ammo.GetSlotMaxCount(slotIndex)-sceneContext.PlayerState.Ammo.GetSlotCount(slotIndex);
 
     public static bool GetIsSlotUnlocked(int slotIndex) => sceneContext.PlayerState.Ammo.Slots[slotIndex].IsUnlocked;
     public static bool GetIsSlotEmpty(int slotIndex) => !sceneContext.PlayerState.Ammo.Slots[slotIndex].Id;
@@ -74,8 +74,12 @@ public static class InventoryEUtil
             Emotions = slot.Emotions,
             IdentifiableType = slot.Id,
             //SaveSet = slot.Appearance,
-            IsRadiant = slot.Radiant
         };
+        if (SupportRadiant.HasFlag())
+        {
+            dynamic dynamicSlot = slot;
+            info.IsRadiant = dynamicSlot.Radiant;
+        }
         return info;
     }
     public static void SetStarlightSlotInfo(int slotIndex, StarlightSlotItemInfo info)
@@ -92,8 +96,10 @@ public static class InventoryEUtil
         slot.Count = info.Count;
         slot.Emotions = info.Emotions;
 
-        slot.Radiant = info.IsRadiant;
-        if(slot.Radiant && info.IsRadiant)
+        if (!SupportRadiant.HasFlag()) return;
+        dynamic dynamicSlot = slot;
+        dynamicSlot.Radiant = info.IsRadiant;
+        if(dynamicSlot.Radiant && info.IsRadiant)
         {
             //Refresh the appearance in the slot
             var count = slot.Count;
@@ -104,7 +110,7 @@ public static class InventoryEUtil
                 var execGetter = slot.Count;
             },1);
         }
-        slot.Metadata.Radiant = info.IsRadiant;
+        dynamicSlot.Metadata.Radiant = info.IsRadiant;
         
     }
     
@@ -122,7 +128,9 @@ public static class InventoryEUtil
             if (!slot.IsUnlocked) continue;
             if (!slot.Id) continue;
             if (slot.Id.ReferenceId != info.IdentifiableType.ReferenceId) continue;
-            if (isSlime) if (slot.Radiant != info.IsRadiant) continue;
+            dynamic dynamicSlot = slot;
+            if(SupportRadiant.HasFlag()&&isSlime)
+                if (dynamicSlot.Radiant != info.IsRadiant) continue;
             slotID = i;
             break;
         }

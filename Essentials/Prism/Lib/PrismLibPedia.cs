@@ -112,7 +112,6 @@ public static class PrismLibPedia
 
     private static void RadiantStuff()
     {
-        
         RadiantSlimePediaEntryPrefab = Get<RadiantSlimePediaEntry>("RadiantPink");
         if (RadiantSlimePediaEntryPrefab == null) RadiantSlimePediaEntryPrefab = GetAny<RadiantSlimePediaEntry>();
         if (RadiantSlimePediaEntryPrefab != null) RadiantSlimePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset; 

@@ -16,7 +16,7 @@ internal static class RefineryUIStartPatch
         var title = __instance.gameObject.GetObjectRecursively<TextMeshProUGUI>("Title");
         title.gameObject.RemoveComponent<LocalizeStringEvent>();
         title.gameObject.RemoveComponent<LocalizeFontEvent>();
-        title.SetText("Market");
+        title.text = ("Market");
         UIDisplayInteractableOnInteractPatch.takeOverNextUI = false;
     }
     

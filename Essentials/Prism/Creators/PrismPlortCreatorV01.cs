@@ -54,8 +54,13 @@ public class PrismPlortCreatorV01
         plort.color = VacColor;
         plort.icon = Icon ?? PrismShortcuts.UnavailableIcon;
         plort.IsPlort = true;
-        plort._requiresFullArt = false;
-        plort._fullArt = null;
+        try
+        {
+            dynamic dynamicIdent = plort;
+            dynamicIdent._requiresFullArt = false;
+            dynamicIdent._fullArt = null;
+        }
+        catch { }
         
         
         plort.localizedName = Localized;

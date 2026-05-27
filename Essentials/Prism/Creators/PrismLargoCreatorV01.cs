@@ -116,8 +116,9 @@ public class PrismLargoCreatorV01
         };
     }
 
-    private void RadiantStuff(SlimeDefinition baseLargo, SlimeDefinition largoDef)
+    private void RadiantStuff(SlimeAppearance appearance, SlimeDefinition baseLargo, SlimeDefinition largoDef)
     {
+        appearance._appearType = SlimeAppearance.AppearanceType.DEFAULT;
         var appearance2 = Object.Instantiate(baseLargo.AppearancesDefault[1]);
         appearance2.hideFlags = HideFlags.DontUnloadUnusedAsset;
         appearance2.name = FirstSlime.GetSlimeAppearance().name + SecondSlime.TryGetSlimeAppearanceRadiant().name;
@@ -136,7 +137,7 @@ public class PrismLargoCreatorV01
         largoDef.RadiantLargo0 = appearance2;
         largoDef.RadiantLargo1 = appearance3;
     }
-    
+
     public PrismLargo CreateLargo()
     {
         if (!IsValid()) return null;
@@ -258,10 +259,9 @@ public class PrismLargoCreatorV01
         appearance.name = FirstSlime.GetSlimeAppearance().name + SecondSlime.GetSlimeAppearance().name;
         largoDef.AppearancesDefault = largoDef.AppearancesDefault.AddToNew(appearance);
         Duplicate(appearance,largoDef,FirstSlime.GetSlimeAppearance(),SecondSlime.GetSlimeAppearance());
-        appearance._appearType = SlimeAppearance.AppearanceType.DEFAULT;
 
         if(SupportRadiant.HasFlag())
-            RadiantStuff(baseLargo, largoDef);
+            RadiantStuff(appearance,baseLargo, largoDef);
         try
         {
             largoDef.Diet = PrismLibMerging.MergeDiet(firstSlimeDef.Diet, secondSlimeDef.Diet);

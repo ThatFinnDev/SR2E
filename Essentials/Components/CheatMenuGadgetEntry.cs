@@ -40,7 +40,7 @@ internal class CheatMenuGadgetEntry : MonoBehaviour
             //Adding one updates the new value everywhere. Not doing can cause issues
             sceneContext.GadgetDirector._model.SetCount(item,newValue-1);
             sceneContext.GadgetDirector.AddItem(item,1);
-            handleText.SetText(newValue.ToString());
+            handleText.text = (newValue.ToString());
         }));}
 
     internal void OnOpen()
@@ -49,6 +49,6 @@ internal class CheatMenuGadgetEntry : MonoBehaviour
 
         dontChange = true;
         amountSlider.value = sceneContext.GadgetDirector.GetItemCount(item);
-        handleText.SetText(sceneContext.GadgetDirector.GetItemCount(item).ToString());
+        handleText.text = (sceneContext.GadgetDirector.GetItemCount(item).ToString());
     }
 }

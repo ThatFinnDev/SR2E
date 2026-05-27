@@ -24,7 +24,7 @@ public class PrismSlime
     public LocalizedString GetLocalized() => SlimeDefinition.LocalizedName;
     public Color32 GetColor() => SlimeDefinition.color;
     public GameObject GetPrefab() => SlimeDefinition.prefab;
-    public SlimeAppearance GetSlimeAppearance() => SlimeDefinition.GetDefaultAppearance();
+    public SlimeAppearance GetSlimeAppearance() => SlimeDefinition.AppearancesDefault[0];
     
     public SlimeAppearance GetSlimeAppearanceRadiant() => SlimeDefinition.GetRadiantAppearance();
 

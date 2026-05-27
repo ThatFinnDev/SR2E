@@ -20,8 +20,10 @@ internal static class SR2PauseMenuButtonPatch
         SafeLock = true;
         try
         {
-            var pauseMenuRoot = __instance;
-            var pauseItemModelList = pauseMenuRoot._pauseItemModelList;
+            dynamic pauseMenuRoot = __instance;
+            PauseItemModelList pauseItemModelList = null;
+            try { pauseItemModelList=pauseMenuRoot._pauseItemModelList; } catch { }
+            try { pauseItemModelList=pauseMenuRoot.pauseItemModelList; } catch { }
             var items = pauseItemModelList.items;
             foreach (var button in buttons)
             {
@@ -67,8 +69,8 @@ internal static class SR2PauseMenuButtonPatch
             }
             
             pauseItemModelList.items = items;
-            pauseMenuRoot._pauseItemModelList = pauseItemModelList;
-            
+            try { pauseMenuRoot._pauseItemModelList=pauseItemModelList; } catch { }
+            try { pauseMenuRoot.pauseItemModelList=pauseItemModelList; } catch { }
         }
         catch (Exception e) { LogError(e);}
         SafeLock = false;

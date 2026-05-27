@@ -6,7 +6,7 @@ using Starlight.Storage;
 namespace Starlight.Patches.Dev;
 
 
-[DevPatch()]
+[FeatureFlagDependentPatch(DevMode)]
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushGame))]
 internal static class PushGamePatch
 {

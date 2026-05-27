@@ -56,8 +56,13 @@ public class PrismLiquidCreatorV01
         liquid.color = VacColor;
         liquid.icon = Icon ?? PrismShortcuts.UnavailableIcon;
         liquid._isWater = IsWater;
-        liquid._requiresFullArt = false;
-        liquid._fullArt = null;
+        try
+        {
+            dynamic dynamicIdent = liquid;
+            dynamicIdent._requiresFullArt = false;
+            dynamicIdent._fullArt = null;
+        }
+        catch { }
 
         try
         {

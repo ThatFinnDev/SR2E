@@ -240,7 +240,7 @@ public abstract class StarlightMenu : MonoBehaviour
         ExecuteInTicks((() => { gameObject.SetActive(true);}), 1);
         (StarlightEntryPoint.Menus[this]["openActions"] as List<MenuActions>).DoMenuActions();
         try { OnOpen(); }catch (Exception e) { LogError(e); }
-        foreach (var pair in ToTranslate) pair.Key.SetText(Tr(pair.Value));
+        foreach (var pair in ToTranslate) pair.Key.text = (Tr(pair.Value));
         AudioEUtil.PlaySound(MenuSound.OpenMenu);
     }
     

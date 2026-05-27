@@ -113,11 +113,11 @@ internal class StarlightRepoMenu : StarlightMenu
                         HttpEUtil.DownloadTexture2DIntoImageAsync(repo.Value.header_url,hImage);
                     
                     if(string.IsNullOrWhiteSpace(repo.Value.name)) repoName.gameObject.SetActive(false);
-                    else {repoName.gameObject.SetActive(true); repoName.SetText(repo.Value.name);}
+                    else {repoName.gameObject.SetActive(true); repoName.text = (repo.Value.name);}
                     
                     
                     if(string.IsNullOrWhiteSpace(repo.Value.description)) desc.gameObject.SetActive(false);
-                    else {desc.gameObject.SetActive(true); desc.SetText("Description: "+repo.Value.description);}
+                    else {desc.gameObject.SetActive(true); desc.text = ("Description: "+repo.Value.description);}
                 }));
             } catch { }
         }
@@ -168,28 +168,28 @@ internal class StarlightRepoMenu : StarlightMenu
                             HttpEUtil.DownloadTexture2DIntoImageAsync(mod.icon_url, iImage,true,256,256);
                         
                         if(string.IsNullOrWhiteSpace(mod.name)) repoName.gameObject.SetActive(false);
-                        else {repoName.gameObject.SetActive(true); repoName.SetText(mod.name);}
+                        else {repoName.gameObject.SetActive(true); repoName.text = (mod.name);}
                         
                         if(string.IsNullOrWhiteSpace(mod.author)) author.gameObject.SetActive(false);
-                        else {author.gameObject.SetActive(true); author.SetText("Author: "+mod.author);}
+                        else {author.gameObject.SetActive(true); author.text = ("Author: "+mod.author);}
                         
                         if(string.IsNullOrWhiteSpace(mod.coauthors)) coauthors.gameObject.SetActive(false);
-                        else {coauthors.gameObject.SetActive(true); coauthors.SetText("Co-Authors: "+mod.coauthors);}
+                        else {coauthors.gameObject.SetActive(true); coauthors.text = ("Co-Authors: "+mod.coauthors);}
                         
                         if(string.IsNullOrWhiteSpace(mod.description)) desc.gameObject.SetActive(false);
-                        else {desc.gameObject.SetActive(true); desc.SetText("Description: "+mod.description);}
+                        else {desc.gameObject.SetActive(true); desc.text = ("Description: "+mod.description);}
                         
                         if(string.IsNullOrWhiteSpace(mod.company)) company.gameObject.SetActive(false);
-                        else {company.gameObject.SetActive(true); company.SetText("Company: "+mod.company);}
+                        else {company.gameObject.SetActive(true); company.text = ("Company: "+mod.company);}
                         
                         if(string.IsNullOrWhiteSpace(mod.trademark)) trademark.gameObject.SetActive(false);
-                        else {trademark.gameObject.SetActive(true); trademark.SetText("Trademark: "+mod.trademark);}
+                        else {trademark.gameObject.SetActive(true); trademark.text = ("Trademark: "+mod.trademark);}
                         
                         if(string.IsNullOrWhiteSpace(mod.team)) team.gameObject.SetActive(false);
-                        else {team.gameObject.SetActive(true); team.SetText("Team: "+mod.team);}
+                        else {team.gameObject.SetActive(true); team.text = ("Team: "+mod.team);}
                         
                         if(string.IsNullOrWhiteSpace(mod.copyright)) copyright.gameObject.SetActive(false);
-                        else {copyright.gameObject.SetActive(true); copyright.SetText("Copyright: "+mod.copyright);}
+                        else {copyright.gameObject.SetActive(true); copyright.text = ("Copyright: "+mod.copyright);}
                             
                             
                     }));

@@ -65,7 +65,7 @@ internal class GameContextPatch
             }
             var app = instance.GetComponent<SlimeAppearanceApplicator>();
             app.SlimeDefinition = pink;
-            app.Appearance = pink.GetDefaultAppearance();
+            app.Appearance = pink.AppearancesDefault[0];
         }
         catch (Exception e) { LogError(e); }
 

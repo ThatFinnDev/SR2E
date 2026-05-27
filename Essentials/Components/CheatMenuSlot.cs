@@ -1,4 +1,5 @@
 using System;
+using Il2CppInterop.Runtime.Attributes;
 using Il2CppMonomiPark.SlimeRancher.Player;
 using Il2CppTMPro;
 using Starlight.Enums.Sounds;
@@ -41,7 +42,7 @@ internal class CheatMenuSlot : MonoBehaviour
         });
     }
 
-    void Select_RadiantStuff(Dictionary<string, (string, Sprite)> dict, SlimeDefinition slimeDef)
+    [HideFromIl2Cpp] void Select_RadiantStuff(Dictionary<string, (string, Sprite)> dict, SlimeDefinition slimeDef)
     {
         dict[slimeDef.ReferenceId+"|true"] = ("Radiant"+slimeDef.GetName(), slimeDef.RadiantBase.Icon);
     }
@@ -66,7 +67,7 @@ internal class CheatMenuSlot : MonoBehaviour
         {
             if (_amountSlider.value == 0)
                 _amountSlider.value = 1;
-            _entryInput.SetText(slot.Definition.SlotTypeGroup.GetAllMembersHashSet().ToNetArray().GetEntryByRefID(value.Split("|")[0]).GetName());
+            _entryInput.text = (slot.Definition.SlotTypeGroup.GetAllMembersHashSet().ToNetArray().GetEntryByRefID(value.Split("|")[0]).GetName());
             var allowRadiant = AllowRadiant(value.Split("|")[0]);
             var useRadiant = value.Split("|")[1] == "true";
             if(_radiant&&(!allowRadiant||!useRadiant)) ChangeType();
@@ -93,18 +94,18 @@ internal class CheatMenuSlot : MonoBehaviour
         if (SupportRadiant.HasFlag())
         {
             _radiant = !_radiant;
-            _typeButtonText.SetText(_radiant?"Radiant":"Default");
+            _typeButtonText.text = (_radiant?"Radiant":"Default");
         }
         else
         {
             _radiant = false;
-            _typeButtonText.SetText("Default");
+            _typeButtonText.text = ("Default");
         }
     }
     internal void OnOpen(int id)
     {
         _slotID = id;
-        gameObject.GetObjectRecursively<TextMeshProUGUI>("Text").SetText(" Slot "+(id+1)+":");
+        gameObject.GetObjectRecursively<TextMeshProUGUI>("Text").text = (" Slot "+(id+1)+":");
         _applyButton = gameObject.GetObjectRecursively<Button>("Apply");
         _selectButton = gameObject.GetObjectRecursively<Button>("Select");
         _typeButton = gameObject.GetObjectRecursively<Button>("Type");
@@ -115,7 +116,7 @@ internal class CheatMenuSlot : MonoBehaviour
         _applyButton.onClick.AddListener((SystemAction)(Apply));
         _typeButton.onClick.AddListener((SystemAction)(ChangeType));
         _selectButton.onClick.AddListener((SystemAction)(Select));
-        _amountSlider.onValueChanged.AddListener((Action<float>)((value) => { _handleText.SetText(((int)value).ToString()); }));
+        _amountSlider.onValueChanged.AddListener((Action<float>)((value) => { _handleText.text = (((int)value).ToString()); }));
         
         var slot = sceneContext.PlayerState.Ammo.Slots[_slotID];
         if (slot == null) return;
