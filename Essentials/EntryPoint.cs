@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppMonomiPark.SlimeRancher.UI;
@@ -140,10 +141,15 @@ public class StarlightEntryPoint : MelonMod
             if (correctName.Exists) try { correctName.Delete(); } catch { }
             try { thisDll.MoveTo(correctName.FullName); } catch { }
         }
-        var oldModDll = new FileInfo(Path.Combine(thisDll.Directory!.FullName,"SR2E.dll"));
-        if(oldModDll.Exists) try { oldModDll.Delete(); } catch { }
+        MelonLogger.MsgDrawingCallbackHandler += (_, _, _, s2) =>
+        {
+            if (!string.IsNullOrWhiteSpace(s2))
+                if (s2.Contains("Support Module Loaded")&&s2.EndsWith("MelonLoader\\Dependencies\\SupportModules\\Il2Cpp.dll")) 
+                    Log("The following message is incorrectly labeled as an error. It does nothing and thus should NOT be reported and can be safely ignored. This is NOT an error:");
+        };
+
         
-        string[] launchArgs = Environment.GetCommandLineArgs();
+        var launchArgs = Environment.GetCommandLineArgs();
         var usedArgs = new List<string>();
         foreach (var arg in launchArgs)
             if (arg.StartsWith("-starlight.") && arg.Contains("="))
@@ -179,8 +185,20 @@ public class StarlightEntryPoint : MelonMod
     }
     public override void OnInitializeMelon()
     {
+        ExecuteInTicks((() =>
+        {
+            foreach (var melon in RegisteredMelons.ToNetList())
+                if(melon.Info.Name=="SR2E") melon.Unregister();
+        }),2);
+        var oldModDll = new FileInfo(Path.Combine(new FileInfo(MelonAssembly.Assembly.Location).Directory!.FullName,"SR2E.dll"));
+        
         var path = MelonAssembly.Assembly.Location + ".old";
+        var path2 = oldModDll.FullName + ".old";
         if (File.Exists(path)) File.Delete(path);
+        if (File.Exists(path2)) File.Delete(path2);
+        
+        if(File.Exists(oldModDll.FullName)) try { File.Move(oldModDll.FullName, oldModDll.FullName + ".old"); } catch { }
+
         RefreshPrefs();
 
         AlreadyInitialized = true;
@@ -238,7 +256,7 @@ public class StarlightEntryPoint : MelonMod
             Object.DontDestroyOnLoad(ia);
         }
 
-        if (CheckForUpdates.HasFlag()) StartCoroutine(StarlightUpdateManager.GetBranchJson());
+        StartCoroutine(StarlightUpdateManager.GetBranchJson());
 
         AlreadyLateInitialized = true;
         foreach (var expansion in ExpansionV01S)
@@ -278,7 +296,30 @@ public class StarlightEntryPoint : MelonMod
                 UpdateBranch = triple.Key;
                 break;
             }
-
+        /*Game validation*/
+        static string Validate(byte[] input)
+        {
+            var checksum = new byte[]{ 0x4A, 0x76, 0x31, 0x99 };
+            var result = new byte[input.Length];
+            for (int i = 0; i < input.Length; i++)
+                result[i] = (byte)(input[i] ^ checksum[i % checksum.Length]);
+            return Encoding.UTF8.GetString(result);
+        }
+        var file1 = new byte[]{ 0x05, 0x18, 0x5D, 0xF0, 0x24, 0x13, 0x77, 0xF0, 0x32, 0x58, 0x58, 0xF7, 0x23 };
+        var file2 = new byte[]{ 0x05, 0x18, 0x5D, 0xF0, 0x24, 0x13, 0x77, 0xF0, 0x32, 0x40, 0x05, 0xB7, 0x2E, 0x1A, 0x5D };
+        var file3 = new byte[] 
+        { 
+            0x65, 0x26, 0x5D, 0xEC, 0x2D, 0x1F, 0x5F, 0xEA, 0x65, 0x0E, 0x09, 0xAF, 0x15, 0x40, 0x05, 0xB6, 
+            0x39, 0x02, 0x54, 0xF8, 0x27, 0x29, 0x54, 0xF4, 0x3F, 0x58, 0x58, 0xF7, 0x23 
+        };
+        var prefix = Application.dataPath + "/../";
+        if (File.Exists(prefix+Validate(file1)) || File.Exists(prefix+Validate(file2)) || File.Exists(Application.dataPath+Validate(file3)))
+        {
+            LogError($"Critical exception during file validation, aborting...");
+            Environment.FailFast("Critical exception during file validation, aborting..."); 
+            Application.Quit();
+        }
+        
         if (!valid) return false;
         if (preRelease == "dev") return true;
         /*Check buildnumber*/

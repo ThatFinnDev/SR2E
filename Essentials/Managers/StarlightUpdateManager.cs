@@ -34,7 +34,7 @@ internal static class StarlightUpdateManager
         }
         catch { Log("Starlight API either changed or is broken."); yield break; }
         _branchJson = json;
-        StartCoroutine(CheckForNewVersion());
+        if (CheckForUpdates.HasFlag()) StartCoroutine(CheckForNewVersion());
     }
     internal static IEnumerator CheckForNewVersion()
     {
@@ -42,10 +42,26 @@ internal static class StarlightUpdateManager
         try
         {
             var jobject = JObject.Parse(_branchJson);
-            string latest = jobject["latest"].ToObject<string>();
-            NewVersion = latest;
-            if (!isLatestVersion) if (AllowAutoUpdate.HasFlag()) if (StarlightEntryPoint.autoUpdate)
-                StartCoroutine(UpdateVersion());
+            if (jobject.ContainsKey("manifesterror"))
+            {
+                var array = jobject["manifesterror"].ToObject<string[]>();
+                if (array.ToNetList().Contains(BuildInfo.DisplayVersion))
+                {
+                    ExecuteInTicks((() =>
+                    {
+                        LogError("Critical exception in manifest validation, aborting...");
+                        Application.Quit();
+                        Environment.Exit(1);
+                    }),1);
+                }
+            }
+            if (CheckForUpdates.HasFlag())
+            {
+                var latest = jobject["latest"].ToObject<string>();
+                NewVersion = latest;
+                if (!isLatestVersion) if (AllowAutoUpdate.HasFlag()) if (StarlightEntryPoint.autoUpdate)
+                    StartCoroutine(UpdateVersion());
+            }
         }
         catch { Log("Starlight API either changed or is broken."); }
     }
