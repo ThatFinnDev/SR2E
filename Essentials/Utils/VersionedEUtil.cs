@@ -54,7 +54,7 @@ public static class VersionedEUtil
         
         return null;
     }
-    private static Type FindSystemType(string fullName)
+    internal static Type FindSystemType(string fullName)
     {
         var type = Type.GetType(fullName);
         if (type != null) return type;
@@ -65,7 +65,7 @@ public static class VersionedEUtil
         }
         return null;
     }
-    private static Il2CppSystem.Type FindType(string fullName)
+    internal static Il2CppSystem.Type FindType(string fullName)
     {
         var type = Il2CppSystem.Type.GetType(fullName);
         if (type != null) return type;

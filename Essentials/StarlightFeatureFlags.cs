@@ -211,7 +211,7 @@ public static class StarlightFeatureFlags
         } catch { }
         
 
-        string[] launchArgs = Environment.GetCommandLineArgs();
+        var launchArgs = Environment.GetCommandLineArgs();
         var usedArgs = new List<string>();
         foreach (var arg in launchArgs)
         {
@@ -232,6 +232,9 @@ public static class StarlightFeatureFlags
                 }
             }
         }
+
+        if (VersionedEUtil.FindType("MonomiPark.SlimeRancher.Slime.SlimeRadiant") == null)
+            SupportRadiant.DisableFlag();
         
         if (CommandsLoadDevOnly.HasFlag()) _enabledCmDs |= CommandType.DevOnly;
         if (CommandsLoadExperimental.HasFlag()) _enabledCmDs |= CommandType.Experimental;
