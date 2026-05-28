@@ -144,7 +144,7 @@ class OptionFileEntrypoint : MelonMod
         if (message == 0 || message == 1)
         {
             AddButton(pill, pr, new Vector2(0.005f, 0.105f), new Vector2(0.3333f, 0.2f),
-                () => Application.OpenURL("https://github.com/ThatFinnDev/Starlight/releases"), "GitHub");
+                () => Application.OpenURL("https://github.com/ThatFinn/Starlight/releases"), "GitHub");
             AddButton(pill, pr, new Vector2(0.34f, 0.105f), new Vector2(0.6596f, 0.2f),
                 () => Application.OpenURL("https://www.nexusmods.com/slimerancher2/mods/60"), "Nexusmods");
             AddButton(pill, pr, new Vector2(0.6666f, 0.105f), new Vector2(0.995f, 0.2f),
