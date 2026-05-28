@@ -50,6 +50,7 @@ public class ExpansionEntryPoint : StarlightExpansionV01
 
     public override void OnInitialize()
     {
-        AddLanguages(EmbeddedResourceEUtil.LoadString("translations.csv"));
+        AddLanguages(EmbeddedResourceEUtil.LoadString("Assets.translations.csv"));
     }
+
 }

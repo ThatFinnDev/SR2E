@@ -112,6 +112,11 @@ public class StarlightThemeMenu : StarlightMenu
                             if(ColorUtility.TryParseHtmlString("#000000", out var pixel1)) texture.SetPixel(1,0,pixel1);
                             if(ColorUtility.TryParseHtmlString("#000000", out var pixel2)) texture.SetPixel(2,0,pixel2);
                     } break;
+                    case StarlightMenuTheme.Melon: if (true) {
+                        if(ColorUtility.TryParseHtmlString("#303846FF", out var pixel0)) texture.SetPixel(0,0,pixel0);
+                        texture.SetPixel(1,0,new Color(0.1098f, 0.5314f, 0.2157f, 1f));
+                        if(ColorUtility.TryParseHtmlString("#1B1B1DFF", out var pixel2)) texture.SetPixel(2,0,pixel2);
+                    } break;
                     default: if (true) {
                         if(ColorUtility.TryParseHtmlString("#F0E1C8FF", out var pixel0)) texture.SetPixel(0,0,pixel0);
                         if(ColorUtility.TryParseHtmlString("#D2B394FF", out var pixel1)) texture.SetPixel(1,0,pixel1);

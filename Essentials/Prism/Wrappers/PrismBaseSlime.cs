@@ -6,7 +6,7 @@ namespace Starlight.Prism.Wrappers;
 public class PrismBaseSlime : PrismSlime
 {
     public Sprite GetIcon() => GetSlimeAppearance()._icon;
-    public Sprite GetRadiantIcon() => GetSlimeAppearanceRadiant()._icon;
+    public Sprite GetRadiantIcon() => TryGetSlimeAppearanceRadiant()._icon;
     internal bool AllowLargos;
     internal bool DisableAutoModdedLargos;
     internal int NonNativeBagSize = 1500;

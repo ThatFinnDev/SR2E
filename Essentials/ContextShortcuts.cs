@@ -39,8 +39,8 @@ public static class ContextShortcuts
         {
             try
             {
-                if (sceneContext == null) return false;
-                if (sceneContext.PlayerState == null) return false;
+                if (!sceneContext) return false;
+                if (!sceneContext.PlayerState) return false;
             }
             catch
             { return false; }

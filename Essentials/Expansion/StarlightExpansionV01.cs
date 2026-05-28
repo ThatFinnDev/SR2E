@@ -1,12 +1,33 @@
+using System;
+using System.IO;
 using System.Reflection;
 using Il2CppMonomiPark.SlimeRancher;
+using MelonLoader.Utils;
+using Starlight.Managers;
 using Starlight.Saving;
 using Starlight.Storage;
+using Starlight.Storage.Prefs;
 
 namespace Starlight.Expansion;
 
 public abstract class StarlightExpansionV01 : StarlightExpansionVXX
 {
+    public string modDataPath {
+        get
+        {
+            // This should error if it fails on purpose
+            // ReSharper disable once PossibleInvalidOperationException
+            if (_modDataPath == null)
+                _modDataPath = Path.Combine(MelonEnvironment.UserDataDirectory, this.GetPackageInfoFromExpansion().Value!.ID);
+            return _modDataPath;
+        }
+    }
+    private string _modDataPath = null;
+    
+    
+    public PackagePrefs prefs => _prefs;
+    internal PackagePrefs _prefs = null;
+    
     protected StarlightExpansionV01() {}
     
     
@@ -25,7 +46,12 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     /// <summary>
     /// Runs after <see cref="OnInitialize"/>. This waits until Unity has started up.
     /// </summary>
-    public virtual void OnLateInitializeMelon() { }
+    public virtual void OnLateInitialize() => OnLateInitializeMelon();
+
+    /// <summary>
+    /// Runs after <see cref="OnInitialize"/>. This waits until Unity has started up.
+    /// </summary>
+    [Obsolete("Use OnLateInitialize instead")] public virtual void OnLateInitializeMelon() { }
     
     /// <summary>
     /// Runs once per frame. Same as the one in "MonoBehavior".
@@ -73,6 +99,11 @@ public abstract class StarlightExpansionV01 : StarlightExpansionVXX
     /// </summary>
     public virtual void OnUnload() { }
     
+    
+    /// <summary>
+    /// Runs when the PackagePrefs are created.
+    /// </summary>
+    public virtual void OnCreatePrefs() {}
     #endregion
     
     

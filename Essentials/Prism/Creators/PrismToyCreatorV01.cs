@@ -56,8 +56,13 @@ internal class PrismToyCreatorV01
         toy.name = Name + "Toy";
         toy.color = VacColor;
         toy.icon = Icon ?? PrismShortcuts.UnavailableIcon;
-        toy._requiresFullArt = false;
-        toy._fullArt = null;
+        try
+        {
+            dynamic dynamicIdent = toy;
+            dynamicIdent._requiresFullArt = false;
+            dynamicIdent._fullArt = null;
+        }
+        catch { }
         
         toy.BaseAgitationReductionFactor = BaseAgitationReductionFactor;
         toy.FavoriteAgitationReductionFactor = FavoriteAgitationReductionFactor;

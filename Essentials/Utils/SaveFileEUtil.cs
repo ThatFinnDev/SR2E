@@ -9,7 +9,6 @@ namespace Starlight.Utils;
 
 public static class SaveFileEUtil
 {
-    private static List<GameV10> test = new();
     private static readonly Exception NoBoolException = new Exception("The value has to be a bool!");
     //private static readonly Exception NoIntException = new Exception("The value has to be an int!");
     //private static readonly Exception NoFloatException = new Exception("The value has to be a float!");
@@ -137,7 +136,8 @@ public static class SaveFileEUtil
             try
             {
                 var stream = new Il2CppSystem.IO.MemoryStream(pair.Value);
-                var gameState = new GameV10();
+                //var gameState = new GameV10; 
+                dynamic gameState = Il2CppSystem.Activator.CreateInstance(VersionedEUtil.GetLatestGameVXX());
                 gameState.Load(stream);
                 if (stream is { CanRead: true }) stream.Close();
 
@@ -213,7 +213,6 @@ public static class SaveFileEUtil
                 gameState.GameName = newGameName;
                 gameState.SaveSlotIndex = slotThatStartWithOne-1;
                 
-                test.Add(gameState);
                 gameState.Write(stream);
                 var gameBytes = stream.ToArray();
                 if (stream != null && stream.CanRead) stream.Close();

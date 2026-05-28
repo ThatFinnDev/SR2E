@@ -25,8 +25,12 @@ internal class GameContextPatch
     internal static CustomPauseMenuButton CheatMenuButton;
     internal static GameObject SlimeRendererPrefab;
     internal static ISlimeAppearanceObjectProvider RendererPool;
+    internal static InputEvent InputDown;
+    internal static InputEvent InputUp;
     internal static void Postfix(GameContext __instance)
     {
+        InputDown = Get<InputEvent>("ItemDown");
+        InputUp = Get<InputEvent>("ItemUp");
         StarlightEntryPoint.GameContextStarted = true;
         var damageSource = ScriptableObject.CreateInstance<DamageSourceDefinition>();
         damageSource._logMessage = "Modded.StarlightKill";
@@ -61,7 +65,7 @@ internal class GameContextPatch
             }
             var app = instance.GetComponent<SlimeAppearanceApplicator>();
             app.SlimeDefinition = pink;
-            app.Appearance = pink.GetDefaultAppearance();
+            app.Appearance = pink.AppearancesDefault[0];
         }
         catch (Exception e) { LogError(e); }
 

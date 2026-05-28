@@ -1,4 +1,6 @@
 using Il2CppMonomiPark.SlimeRancher.DataModel;
+using Il2CppMonomiPark.SlimeRancher.Slime;
+using Il2CppMonomiPark.SlimeRancher.UI;
 using Starlight.Managers;
 using Starlight.Storage;
 using UnityEngine.SceneManagement;
@@ -53,14 +55,15 @@ public static class SpawnEUtil
                 _rootObjects = new();
             }
             if(inGame&&!StarlightCounterGateManager.srleActive)
-                foreach (var plot in StarlightSaveManager.inGameData.CustomPlots)
-                    if (plot.Value.SceneName == sceneName)
-                    {
-                        try
+                if(StarlightSaveManager.inGameData!=null)
+                    foreach (var plot in StarlightSaveManager.inGameData.CustomPlots)
+                        if (plot.Value.SceneName == sceneName)
                         {
-                            SpawnLandPlot(plot.Key, plot.Value);
-                        } catch (Exception e) { LogError(e); }
-                    }
+                            try
+                            {
+                                SpawnLandPlot(plot.Key, plot.Value);
+                            } catch (Exception e) { LogError(e); }
+                        }
             
         }),2);
     }
@@ -153,5 +156,80 @@ public static class SpawnEUtil
         }
         _rootObjects[sceneName] = gameObj;
         return gameObj;
+    }
+
+    public static bool SetAnyRadiantSlimeAppearance(IdentifiableActor actor)
+    {
+        if (!SupportRadiant.HasFlag()) return false;
+        var applicator = actor.transform.GetComponent<SlimeAppearanceApplicator>();
+        if (applicator && actor && SlimeDefinition.IsSlimeDefinition(actor.identType))
+        {
+            var def = actor.identType.Cast<SlimeDefinition>();
+            var newAppearance = def.GetRadiantAppearance();
+            RotateSlimeActorAppearance_Radiant(actor, newAppearance);
+            applicator.Appearance = newAppearance;
+            applicator.ApplyAppearance();
+            applicator.HandleChosenAppearanceChanged(def,newAppearance);
+            return true;
+        }
+
+        return false;
+    }
+    public static bool RotateSlimeActorAppearance(IdentifiableActor actor)
+    {
+        var applicator = actor.transform.GetComponent<SlimeAppearanceApplicator>();
+        if (applicator && actor && SlimeDefinition.IsSlimeDefinition(actor.identType))
+        {
+            var currentIndex = 0;
+            var def = actor.identType.Cast<SlimeDefinition>();
+            for (int i = 0; i < def.AppearancesDefault.Count; i++)
+                if (def.AppearancesDefault[i] == applicator.Appearance)
+                {
+                    currentIndex = i; break;
+                }
+
+            currentIndex++;
+            if (currentIndex >= def.AppearancesDefault.Count) currentIndex = 0;
+            var newAppearance = def.AppearancesDefault[currentIndex];
+            if(SupportRadiant.HasFlag()) RotateSlimeActorAppearance_Radiant(actor, newAppearance);
+            applicator.Appearance = newAppearance;
+            applicator.ApplyAppearance();
+            applicator.HandleChosenAppearanceChanged(def,newAppearance);
+            var animator = actor.transform.GetObjectRecursively<Animator>("Appearance");
+            if (animator)
+            {
+                animator.enabled = false;
+                animator.enabled = true;
+            }
+
+            foreach (var ui in GetAllInScene<TargetingUI>())
+            {
+                try
+                {
+                    ui._currentTarget = null;
+                    ui.Update();
+                } catch {}
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    private static void RotateSlimeActorAppearance_Radiant(IdentifiableActor actor, SlimeAppearance newAppearance)
+    {
+        var slimeRadiant = actor.transform.GetComponent<SlimeRadiant>();
+        if(slimeRadiant)
+        {
+            if (newAppearance.name.Contains("Radiant"))
+            {
+                slimeRadiant.SetRadiant(); 
+                slimeRadiant.SetRadiantAppearance();
+            }
+            else
+            { 
+                slimeRadiant._slimeModel.RadiantBaseType = null;
+            }
+        }
     }
 }

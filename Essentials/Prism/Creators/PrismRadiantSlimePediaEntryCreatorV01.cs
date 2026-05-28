@@ -36,6 +36,7 @@ public class PrismRadiantSlimePediaEntryCreatorV01
     public PrismRadiantSlimePediaEntry CreateRadiantSlimePediaEntry()
     {
         if (!IsValid()) return null;
+        if (!SupportRadiant.HasFlag()) return null; 
         if (_createdPediaEntry != null) return _createdPediaEntry;
         
         var entry = Object.Instantiate(PrismLibPedia.RadiantSlimePediaEntryPrefab);

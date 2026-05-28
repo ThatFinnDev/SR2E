@@ -4,7 +4,7 @@ using Starlight.Storage;
 namespace Starlight.Patches.Dev;
 
 
-[DevPatch()]
+[FeatureFlagDependentPatch(DevMode)]
 [HarmonyPatch(typeof(LoadingScreenView), nameof(LoadingScreenView.Awake))]
 internal static class LoadingScreenViewPatch
 {

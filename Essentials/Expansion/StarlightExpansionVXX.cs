@@ -15,7 +15,9 @@ public abstract class StarlightExpansionVXX
     
     public Assembly Assembly => _assembly;
     private Assembly _assembly;
+    public bool IsLoaded => _isLoaded;
+    internal bool _isLoaded = false;
     public HarmonyLib.Harmony HarmonyInstance => _harmonyInstance;
     private HarmonyLib.Harmony _harmonyInstance;
-    
+
 }

@@ -115,8 +115,29 @@ public class PrismLargoCreatorV01
             FirstSlime.GetSlimeAppearance(), SecondSlime.GetSlimeAppearance()
         };
     }
-    
-    
+
+    private void RadiantStuff(SlimeAppearance appearance, SlimeDefinition baseLargo, SlimeDefinition largoDef)
+    {
+        appearance._appearType = SlimeAppearance.AppearanceType.DEFAULT;
+        var appearance2 = Object.Instantiate(baseLargo.AppearancesDefault[1]);
+        appearance2.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        appearance2.name = FirstSlime.GetSlimeAppearance().name + SecondSlime.TryGetSlimeAppearanceRadiant().name;
+        largoDef.AppearancesDefault = largoDef.AppearancesDefault.AddToNew(appearance2);
+        Duplicate(appearance2,largoDef,FirstSlime.GetSlimeAppearance(),SecondSlime.TryGetSlimeAppearanceRadiant());
+        appearance2._appearType = SlimeAppearance.AppearanceType.RADIANT_LARGO_0;
+        
+        var appearance3 = Object.Instantiate(baseLargo.AppearancesDefault[2]);
+        appearance3.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        appearance3.name = FirstSlime.TryGetSlimeAppearanceRadiant().name + SecondSlime.GetSlimeAppearance().name;
+        largoDef.AppearancesDefault = largoDef.AppearancesDefault.AddToNew(appearance3);
+        Duplicate(appearance3,largoDef,FirstSlime.TryGetSlimeAppearanceRadiant(),SecondSlime.GetSlimeAppearance());
+        appearance3._appearType = SlimeAppearance.AppearanceType.RADIANT_LARGO_1;
+        
+        largoDef.RadiantBase = null;
+        largoDef.RadiantLargo0 = appearance2;
+        largoDef.RadiantLargo1 = appearance3;
+    }
+
     public PrismLargo CreateLargo()
     {
         if (!IsValid()) return null;
@@ -238,25 +259,9 @@ public class PrismLargoCreatorV01
         appearance.name = FirstSlime.GetSlimeAppearance().name + SecondSlime.GetSlimeAppearance().name;
         largoDef.AppearancesDefault = largoDef.AppearancesDefault.AddToNew(appearance);
         Duplicate(appearance,largoDef,FirstSlime.GetSlimeAppearance(),SecondSlime.GetSlimeAppearance());
-        appearance._appearType = SlimeAppearance.AppearanceType.DEFAULT;
 
-        
-        var appearance2 = Object.Instantiate(baseLargo.AppearancesDefault[1]);
-        appearance2.hideFlags = HideFlags.DontUnloadUnusedAsset;
-        appearance2.name = FirstSlime.GetSlimeAppearance().name + SecondSlime.TryGetSlimeAppearanceRadiant().name;
-        largoDef.AppearancesDefault = largoDef.AppearancesDefault.AddToNew(appearance2);
-        Duplicate(appearance2,largoDef,FirstSlime.GetSlimeAppearance(),SecondSlime.TryGetSlimeAppearanceRadiant());
-        appearance2._appearType = SlimeAppearance.AppearanceType.RADIANT_LARGO_0;
-        
-        var appearance3 = Object.Instantiate(baseLargo.AppearancesDefault[2]);
-        appearance3.hideFlags = HideFlags.DontUnloadUnusedAsset;
-        appearance3.name = FirstSlime.TryGetSlimeAppearanceRadiant().name + SecondSlime.GetSlimeAppearance().name;
-        largoDef.AppearancesDefault = largoDef.AppearancesDefault.AddToNew(appearance3);
-        Duplicate(appearance3,largoDef,FirstSlime.TryGetSlimeAppearanceRadiant(),SecondSlime.GetSlimeAppearance());
-        appearance3._appearType = SlimeAppearance.AppearanceType.RADIANT_LARGO_1;
-
-        largoDef.RadiantLargo0 = appearance2;
-        largoDef.RadiantLargo1 = appearance3;
+        if(SupportRadiant.HasFlag())
+            RadiantStuff(appearance,baseLargo, largoDef);
         try
         {
             largoDef.Diet = PrismLibMerging.MergeDiet(firstSlimeDef.Diet, secondSlimeDef.Diet);
@@ -277,11 +282,14 @@ public class PrismLargoCreatorV01
                     break;
             }
         }
-        
-        PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[2]);
-        PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[2]);
-        PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[1]);
-        PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[1]);
+
+        if (SupportRadiant.HasFlag())
+        {
+            PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[2]);
+            PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[2]);
+            PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[1]);
+            PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[1]);
+        }
         PrismShortcuts.mainAppearanceDirector.RegisterDependentAppearances(largoDef, largoDef.AppearancesDefault[0]);
         PrismShortcuts.mainAppearanceDirector.UpdateChosenSlimeAppearance(largoDef, largoDef.AppearancesDefault[0]);
 

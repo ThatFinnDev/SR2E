@@ -113,14 +113,14 @@ public class SliderUIBlueprintV01 : UIBlueprint
         txt.fontSizeMin = 1f;
         txt.alignment = TextAlignmentOptions.Center;
         txt.color = CustomHandleTextColor ?? theme.GetColor(HandleTextColor);
-        txt.SetText(slider.value.ToString());
+        txt.text = (slider.value.ToString());
         var call = (System.Action<float>)((output) =>
         {
             var newValue = Mathf.Clamp((float)Math.Pow(output, OutputPow), MinValue, OutputMaxValue);
             if (WholeNumbers) newValue = Mathf.FloorToInt(newValue);
             var newText = newValue.ToString();
             if (newText.EndsWith(".0")||!AllowDisplayingDecimalNumbers) newText = Mathf.FloorToInt(newValue).ToString();
-            txt.SetText(newText);
+            txt.text = (newText);
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if(onValueChanged!=null&&_oldValue!=newValue)
             {

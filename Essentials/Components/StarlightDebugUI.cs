@@ -92,7 +92,7 @@ internal class StarlightDebugUI : MonoBehaviour
 					Log("args"+re.name);
 				}
 				if(!playerDebugUIEnabled) return;
-				playerDebugHudUI._cell.SetText("Cell: ");
+				playerDebugHudUI._cell.text = ("Cell: ");
 		});
         internal static void Update()
         {
@@ -107,13 +107,13 @@ internal class StarlightDebugUI : MonoBehaviour
 	            //I set the texts with multiple values to max decimal 3, cuz I can't image it being longer
 	            
 	            //I guess its vertical, if the other one is horizontal? 
-	            playerDebugHudUI._velocity.SetText("Vertical Velocity: "+cc.Velocity.y);
+	            playerDebugHudUI._velocity.text = ("Vertical Velocity: "+cc.Velocity.y);
 	            //What is horizontal even? X and Z combined?
-	            playerDebugHudUI._horizontalVelocity.SetText($"Horizontal Velocity: {cc.Velocity.x+cc.Velocity.z}");
-	            playerDebugHudUI._slopeText.SetText($"Slope: {cc.CurrentSlopeAngle}");
-	            playerDebugHudUI._playerLocation.SetText($"Location: ({Math.Round(cc.Position.x,3)} {Math.Round(cc.Position.y,3)} {Math.Round(cc.Position.z,3)})");
-	            playerDebugHudUI._cell.SetText($"Cell: {"What the hell is that?"}");
-	            playerDebugHudUI._lookInput.SetText($"Look Input: ({Math.Round(ci.LookInput.x,3)} {Math.Round(ci.LookInput.y,3)})");
+	            playerDebugHudUI._horizontalVelocity.text = ($"Horizontal Velocity: {cc.Velocity.x+cc.Velocity.z}");
+	            playerDebugHudUI._slopeText.text = ($"Slope: {cc.CurrentSlopeAngle}");
+	            playerDebugHudUI._playerLocation.text = ($"Location: ({Math.Round(cc.Position.x,3)} {Math.Round(cc.Position.y,3)} {Math.Round(cc.Position.z,3)})");
+	            playerDebugHudUI._cell.text = ($"Cell: {"What the hell is that?"}");
+	            playerDebugHudUI._lookInput.text = ($"Look Input: ({Math.Round(ci.LookInput.x,3)} {Math.Round(ci.LookInput.y,3)})");
 	            //I'm just guessing at this point?
 	            string abilityText = "";
 	            foreach (var ability in cc.AbilityBehaviors)
@@ -122,17 +122,17 @@ internal class StarlightDebugUI : MonoBehaviour
 		            if (!string.IsNullOrWhiteSpace(abilityText)) abilityText += ", ";
 		            abilityText += ability.GetType().Name.Replace("AbilityBehaviour", "");
 	            }
-	            playerDebugHudUI._activeAbilities.SetText($"Active Abilities: "+abilityText);
+	            playerDebugHudUI._activeAbilities.text = ($"Active Abilities: "+abilityText);
             }
             else
             {
-	            playerDebugHudUI._velocity.SetText($"FPS: {(int)(1f / Time.unscaledDeltaTime)}");
-	            playerDebugHudUI._horizontalVelocity.SetText($"Position: {cc.Position.x} {cc.Position.y} {cc.Position.z}");
-	            playerDebugHudUI._slopeText.SetText($"Rotation: {player.transform.eulerAngles.y}");
-	            playerDebugHudUI._playerLocation.SetText($"Velocity: {cc.Velocity.x} {cc.Velocity.y} {cc.Velocity.z}");
-	            playerDebugHudUI._cell.SetText($"InputVector: {cc.InputVector.x} {cc.InputVector.y}");
-	            playerDebugHudUI._lookInput.SetText($"LookInput: {cc.LookVector.x} {cc.LookVector.y} {cc.LookVector.z}");
-	            playerDebugHudUI._activeAbilities.SetText($"Slope: {cc.CurrentSlopeAngle}");
+	            playerDebugHudUI._velocity.text = ($"FPS: {(int)(1f / Time.unscaledDeltaTime)}");
+	            playerDebugHudUI._horizontalVelocity.text = ($"Position: {cc.Position.x} {cc.Position.y} {cc.Position.z}");
+	            playerDebugHudUI._slopeText.text = ($"Rotation: {player.transform.eulerAngles.y}");
+	            playerDebugHudUI._playerLocation.text = ($"Velocity: {cc.Velocity.x} {cc.Velocity.y} {cc.Velocity.z}");
+	            playerDebugHudUI._cell.text = ($"InputVector: {cc.InputVector.x} {cc.InputVector.y}");
+	            playerDebugHudUI._lookInput.text = ($"LookInput: {cc.LookVector.x} {cc.LookVector.y} {cc.LookVector.z}");
+	            playerDebugHudUI._activeAbilities.text = ($"Slope: {cc.CurrentSlopeAngle}");
             }
         }
     }

@@ -19,7 +19,7 @@ public static class StarlightFeatureFlags
         InjectMainMenuButtons, InjectRanchUIButtons, InjectPauseButtons, InjectTranslations,
         AddCheatMenuButton, AddModMenuButton, CheckForUpdates, AllowAutoUpdate, EnableInfHealth,
         EnableInfEnergy, EnableCheatMenu, EnableLocalizedVersionPatch, EnableThemeMenu,
-        ChangeSystemContextIsModded, AllowPrism, AllowSaveExport, TryFixingInvalidSceneGroups
+        ChangeSystemContextIsModded, AllowPrism, AllowSaveExport, TryFixingInvalidSceneGroups, SupportRadiant
     ];
 
     private static FeatureFlag[] extraDevFlags =>
@@ -210,29 +210,49 @@ public static class StarlightFeatureFlags
             SaveToFlagFile();
         } catch { }
         
-
-        string[] launchArgs = Environment.GetCommandLineArgs();
+        var launchArgs = Environment.GetCommandLineArgs();
         var usedArgs = new List<string>();
         foreach (var arg in launchArgs)
         {
             if (arg.StartsWith("-starlight.") && arg.Contains("="))
             {
-                var split = arg.Split("=");
+                var split = arg.Split('=');
                 if (split.Length != 2) continue;
-                if (usedArgs.Contains(split[0])) continue;
-                usedArgs.Add(split[0]);
-                switch (split[0])
+
+                var argKey = split[0]; 
+                var argValue = split[1];
+
+                if (usedArgs.Contains(argKey)) continue;
+                usedArgs.Add(argKey);
+                var flagName = argKey.Replace("-starlight.", "");
+
+                if (Enum.TryParse<FeatureFlag>(flagName, ignoreCase: true, out var matchedFlag))
                 {
-                    case "-starlight.forceredirectsaves":
-                        if (split[1] == "true") RedirectSaveFiles.EnableFlag();
-                        break;
-                    case "-starlight.forceloadmainmenu":
-                        if (split[1] == "true") ForceLoadMainMenu.EnableFlag();
-                        break;
+                    if (argValue == "true")
+                        matchedFlag.EnableFlag();
+                    else if (argValue == "false")
+                        matchedFlag.DisableFlag(); 
+                    
                 }
             }
         }
-        
+
+        var changedAFlag = true;
+        while (changedAFlag)
+        {
+            changedAFlag = false;
+            foreach (FeatureFlag flag in Enum.GetValues(typeof(FeatureFlag)))
+            {
+                if(flag.RequirementsMet()) continue;
+                flag.DisableFlag();
+                if(!_flagsToForceOff.Contains(flag))
+                {
+                    _flagsToForceOff.Add(flag);
+                    changedAFlag = true;
+                }
+            }
+
+        }
         if (CommandsLoadDevOnly.HasFlag()) _enabledCmDs |= CommandType.DevOnly;
         if (CommandsLoadExperimental.HasFlag()) _enabledCmDs |= CommandType.Experimental;
         if (CommandsLoadCheat.HasFlag()) _enabledCmDs |= CommandType.Cheat;
@@ -288,7 +308,7 @@ public static class StarlightFeatureFlags
 
     public static bool GetDefault(this FeatureFlag featureFlag) => DefaultFlags.HasFlag(featureFlag);
     
-    static readonly Dictionary<FeatureFlag,FFR[]> RequirementsMap = new Dictionary<FeatureFlag, FFR[]>()
+    static readonly Dictionary<FeatureFlag,FFR[]> RequirementsMap = new ()
     {
         {CheckForUpdates, [new FFRDeactivated(DevMode)] },
         {AllowAutoUpdate, [new FFRDeactivated(DevMode)] },
@@ -321,6 +341,7 @@ public static class StarlightFeatureFlags
         {UseMockRepo, [new FFRActivated(EnableRepoManagement)] },
         {EnableRepoMenu, [new FFRActivated(EnableRepoManagement)] },
         {EnableStudioMenu, [new FFRActivated(DevMode)] },
+        {SupportRadiant, [new FFRIl2CppTypeExists("MonomiPark.SlimeRancher.Slime.SlimeRadiant")] },
         
     };
 
@@ -354,6 +375,11 @@ public static class StarlightFeatureFlags
             {
                 foreach (var melonBase in MelonBase.RegisteredMelons)
                     if(melonBase.Info.Name==melonUninstalled.String) return false;
+            }
+            else if (req is FFRIl2CppTypeExists il2CppTypeExists)
+            {
+                var type = VersionedEUtil.FindType(il2CppTypeExists.String);
+                return type != null;
             }
         }
         return true;
@@ -399,6 +425,9 @@ internal class FFRMelonUnInstalled : FFRString //FeatureFlagRequirementMelonInst
     public FFRMelonUnInstalled(string melonName)
     { this.String = melonName; }
 }
-
-
-
+// ReSharper disable once InconsistentNaming
+internal class FFRIl2CppTypeExists : FFRString //FeatureFlagRequirementIl2CppTypeExists
+{
+    public FFRIl2CppTypeExists(string fullName)
+    { this.String = fullName; }
+}

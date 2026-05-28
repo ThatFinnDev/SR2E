@@ -1,4 +1,6 @@
-﻿namespace Starlight.Commands;
+﻿using Starlight.Storage;
+
+namespace Starlight.Commands;
 
 internal class GiveCommand : StarlightCommand
 {
@@ -31,63 +33,29 @@ internal class GiveCommand : StarlightCommand
         string itemName = ident.GetName();
         if (ident.IsGadget()) return SendIsGadgetNotItem(itemName);
         
-        bool allowOverflow = false;
-        bool makeRadiant = false;
-        int amount = 1;
+        var allowOverflow = false;
+        var makeRadiant = false;
+        var amount = 1;
         if (args.Length >= 2) if(!TryParseInt(args[1], out amount,1, true)) return false;
         if (args.Length >= 3) if (!TryParseBool(args[2], out makeRadiant)) return false;
         if (args.Length >= 4) if (!TryParseBool(args[3], out allowOverflow)) return false;
 
-        var isSlime = SlimeDefinition.IsSlimeDefinition(ident);
-
-        var slotID = -1;
-        var i = -1;
-        foreach (var slot in sceneContext.PlayerState.Ammo.Slots)
+        var requestInfo = new StarlightSlotItemInfo()
         {
-            i++;
-            if (!slot.IsUnlocked) continue;
-            if (!slot.Id) continue;
-            if (slot.Id.ReferenceId != ident.ReferenceId) continue;
-            if (isSlime)
-                if (slot.Radiant != makeRadiant) continue;
-            slotID = i;
-            break;
-        }
-        if (slotID == -1)
-        {
-            i = -1;
-            foreach (var slot in sceneContext.PlayerState.Ammo.Slots)
-            {
-                i++;
-                if (!slot.IsUnlocked) continue;
-                if (slot.Id) continue;
-                if (!slot.Definition.IsAllowed(ident)) continue;
-                slotID = i;
-                break;
-            }
-        }
-        if (slotID == -1)
+            IdentifiableType = ident,
+            IsRadiant = SupportRadiant.HasFlag() && makeRadiant
+        };
+        var optimalSlot = InventoryEUtil.GetStarlightSlotItemPossibleSlot(requestInfo);
+        if (optimalSlot == -1)
             return SendError(Tr("cmd.give.nospace"));
         
-        var success = sceneContext.PlayerState.Ammo.MaybeAddResource(ident, slotID, amount, allowOverflow);
-        var invSlot = sceneContext.PlayerState.Ammo.Slots[slotID];
-        if (!success && !allowOverflow)
-        {
-            invSlot.Count = invSlot.MaxCount;
-        }
-        invSlot.Radiant = makeRadiant;
-        if(makeRadiant && isSlime)
-        {
-            //Refresh the appearance in the slot
-            var count = invSlot.Count;
-            invSlot._count++;
-            invSlot.Count = count;
-            ExecuteInTicks(() =>
-            {
-                var execGetter = invSlot.Count;
-            },1);
-        }
-        invSlot.Metadata.Radiant = makeRadiant;
+        var finalInfo = InventoryEUtil.GetStarlightSlotInfo(optimalSlot);
+        finalInfo.IsRadiant = makeRadiant;
+        finalInfo.IdentifiableType = ident;
+        finalInfo.Count += amount;
+        InventoryEUtil.SetStarlightSlotInfo(optimalSlot,finalInfo);
+        
+        InventoryEUtil.AddSlotItemCount(optimalSlot, 0, allowOverflow);
 
         SendMessage(Tr("cmd.give.success",amount,itemName));
         return true;

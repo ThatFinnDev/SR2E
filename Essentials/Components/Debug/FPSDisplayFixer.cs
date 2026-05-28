@@ -13,7 +13,7 @@ internal class FPSDisplayFixer : MonoBehaviour
         display = GetComponent<FPSDisplay>();
         display.displayText.gameObject.SetActive(true);
         display.versionText.gameObject.SetActive(true);
-        display.versionText.SetText(Application.version);
+        display.versionText.text = (Application.version);
     }
 
     void Update()
@@ -45,7 +45,7 @@ internal class FPSDisplayFixer : MonoBehaviour
             textColor = display.minorDropsColor;
 
         display.displayText.color = textColor;
-        display.displayText.SetText(
+        display.displayText.text = (
             "FPS / Ms\n" +
             (int)targetFps+" / "+(float)Math.Round(targetMs, 1)+"\n" +
             (int)bestFps+" / "+(float)Math.Round(bestMs, 1)+"\n" +

@@ -14,9 +14,8 @@ internal static class SaveFixerPushActorData
         catch (Exception e) { return true; }
         return false;
     }
-    internal static bool Prefix(GameModel gameModel, ActorDataV03 actorData, ILoadReferenceTranslation loadReferenceTranslation)
+    internal static bool Prefix(GameModel gameModel, dynamic actorData, ILoadReferenceTranslation loadReferenceTranslation)
     {
-        
         if (!StarlightEntryPoint.disableFixSaves)
             try
             { 

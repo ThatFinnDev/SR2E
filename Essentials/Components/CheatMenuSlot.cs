@@ -1,4 +1,5 @@
 using System;
+using Il2CppInterop.Runtime.Attributes;
 using Il2CppMonomiPark.SlimeRancher.Player;
 using Il2CppTMPro;
 using Starlight.Enums.Sounds;
@@ -24,54 +25,58 @@ internal class CheatMenuSlot : MonoBehaviour
 
     private void Apply()
     {
-        var slot = sceneContext.PlayerState.Ammo.Slots[_slotID];
-        if (_amountSlider.value == 0) { _entryInput.text = ""; slot.Clear(); AudioEUtil.PlaySound(MenuSound.Error); return; }
+        if (_amountSlider.value == 0) { _entryInput.text = ""; InventoryEUtil.ClearSlot(_slotID); AudioEUtil.PlaySound(MenuSound.Error); return; }
         
         var type = LookupEUtil.GetIdentifiableTypeByName(_entryInput.text);
-        if (!type) { _entryInput.text = ""; slot.Clear(); _amountSlider.value = 0; AudioEUtil.PlaySound(MenuSound.Error); return; }
+        if (!type) { _entryInput.text = ""; InventoryEUtil.ClearSlot(_slotID); _amountSlider.value = 0; AudioEUtil.PlaySound(MenuSound.Error); return; }
         if(_radiant&&!AllowRadiant(type))
             ChangeType();
         AudioEUtil.PlaySound(MenuSound.Apply);
         string itemName = type.GetName().Replace("'","").Replace(" ","");
         _entryInput.text = itemName;
-        slot.Clear();
-        sceneContext.PlayerState.Ammo.MaybeAddResource(type, _slotID, (int)_amountSlider.value, true);
-        slot.Radiant = _radiant;
-        if (SlimeDefinition.IsSlimeDefinition(type) && _radiant)
+        InventoryEUtil.SetStarlightSlotInfo(_slotID,new StarlightSlotItemInfo()
         {
-            //Refresh the appearance in the slot
-            var count = slot.Count;
-            slot._count++;
-            slot.Count = count;
-            ExecuteInTicks(() =>
-            {
-                var execGetter = slot.Count;
-            },1);
-        }
-        slot.Metadata.Radiant = _radiant;
+            Count = (int)_amountSlider.value,
+            IdentifiableType = type,
+            IsRadiant = _radiant
+        });
+    }
+
+    [HideFromIl2Cpp] void Select_RadiantStuff(Dictionary<string, (string, Sprite)> dict, SlimeDefinition slimeDef)
+    {
+        dict[slimeDef.ReferenceId+"|true"] = ("Radiant"+slimeDef.GetName(), slimeDef.RadiantBase.Icon);
     }
     private void Select()
     {
         var slot = sceneContext.PlayerState.Ammo.Slots[_slotID];
         AudioEUtil.PlaySound(MenuSound.Click);
         var dict = new Dictionary<string, (string, Sprite)>();
-        var remove = slot.Definition.SlotBlockList;
-        foreach (var identType in slot.Definition.SlotTypeGroup.GetAllMembersHashSet())
+        foreach (var identType in InventoryEUtil.GetSlotAllowedIdentifiableTypes(_slotID))
         {
-            if(!remove.Contains(identType))
-                dict[identType.GetName().Replace("'","").Replace(" ","")] = (identType.GetName(), identType.icon);
+            if (SlimeDefinition.IsSlimeDefinition(identType))
+            {
+                var slimeDef = identType.Cast<SlimeDefinition>();
+                dict[slimeDef.ReferenceId+"|false"] = (slimeDef.GetName(), slimeDef.icon);
+                if (AllowRadiant(slimeDef))
+                    Select_RadiantStuff(dict, slimeDef);
+            }
+            dict[identType.ReferenceId+"|false"] = (identType.GetName(), identType.icon);
+            
         }
         StarlightGridMenuListPopUp.Open(dict, (value) =>
         {
             if (_amountSlider.value == 0)
                 _amountSlider.value = 1;
-            _entryInput.SetText(value);
-            if(_radiant&&!AllowRadiant(value))
-                ChangeType();
+            _entryInput.text = (slot.Definition.SlotTypeGroup.GetAllMembersHashSet().ToNetArray().GetEntryByRefID(value.Split("|")[0]).GetName());
+            var allowRadiant = AllowRadiant(value.Split("|")[0]);
+            var useRadiant = value.Split("|")[1] == "true";
+            if(_radiant&&(!allowRadiant||!useRadiant)) ChangeType();
+            if(!_radiant&&allowRadiant&&useRadiant) ChangeType();
         });
     }
     private bool AllowRadiant(IdentifiableType type)
     {
+        if (!SupportRadiant.HasFlag()) return false;
         if(type)
             if (SlimeDefinition.IsSlimeDefinition(type))
                 foreach (var appearance in type.Cast<SlimeDefinition>().AppearancesDefault)
@@ -81,17 +86,26 @@ internal class CheatMenuSlot : MonoBehaviour
     }
     private bool AllowRadiant(string input)
     {
-        return AllowRadiant(LookupEUtil.GetIdentifiableTypeByName(input));
+        if (!SupportRadiant.HasFlag()) return false;
+        return AllowRadiant(LookupEUtil.identifiableTypes.GetEntryByRefID(input));
     }
     private void ChangeType()
     {
-        _radiant = !_radiant;
-        _typeButtonText.SetText(_radiant?"Radiant":"Default");
+        if (SupportRadiant.HasFlag())
+        {
+            _radiant = !_radiant;
+            _typeButtonText.text = (_radiant?"Radiant":"Default");
+        }
+        else
+        {
+            _radiant = false;
+            _typeButtonText.text = ("Default");
+        }
     }
     internal void OnOpen(int id)
     {
         _slotID = id;
-        gameObject.GetObjectRecursively<TextMeshProUGUI>("Text").SetText(" Slot "+(id+1)+":");
+        gameObject.GetObjectRecursively<TextMeshProUGUI>("Text").text = (" Slot "+(id+1)+":");
         _applyButton = gameObject.GetObjectRecursively<Button>("Apply");
         _selectButton = gameObject.GetObjectRecursively<Button>("Select");
         _typeButton = gameObject.GetObjectRecursively<Button>("Type");
@@ -102,7 +116,7 @@ internal class CheatMenuSlot : MonoBehaviour
         _applyButton.onClick.AddListener((SystemAction)(Apply));
         _typeButton.onClick.AddListener((SystemAction)(ChangeType));
         _selectButton.onClick.AddListener((SystemAction)(Select));
-        _amountSlider.onValueChanged.AddListener((Action<float>)((value) => { _handleText.SetText(((int)value).ToString()); }));
+        _amountSlider.onValueChanged.AddListener((Action<float>)((value) => { _handleText.text = (((int)value).ToString()); }));
         
         var slot = sceneContext.PlayerState.Ammo.Slots[_slotID];
         if (slot == null) return;

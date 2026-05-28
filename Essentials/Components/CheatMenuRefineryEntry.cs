@@ -40,7 +40,7 @@ internal class CheatMenuRefineryEntry : MonoBehaviour
             sceneContext.GadgetDirector._model.SetCount(item,newValue-1);
             sceneContext.GadgetDirector.AddItem(item,1);
             
-            handleText.SetText(newValue.ToString());
+            handleText.text = (newValue.ToString());
         }));}
 
     internal void OnOpen()
@@ -49,6 +49,6 @@ internal class CheatMenuRefineryEntry : MonoBehaviour
 
         dontChange = true;
         amountSlider.value = sceneContext.GadgetDirector.GetItemCount(item);
-        handleText.SetText(sceneContext.GadgetDirector.GetItemCount(item).ToString());
+        handleText.text = (sceneContext.GadgetDirector.GetItemCount(item).ToString());
     }
 }

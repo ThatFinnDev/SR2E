@@ -12,7 +12,8 @@ internal static class CustomSaveDataSavePatch
 {
     internal const string DataPrefix = "StarlightDataV01";
     internal const string DataPrefixOwn = "StarlightCoreDataV01";
-    internal static void Postfix(GameModel gameModel,SavedGameInfoProvider savedGameInfoProvider, ISaveReferenceTranslation saveReferenceTranslation, GameMetadata metadata, ref GameV10 __result )
+    internal static void Postfix(GameModel gameModel,SavedGameInfoProvider savedGameInfoProvider,
+        ISaveReferenceTranslation saveReferenceTranslation, GameMetadata metadata, ref dynamic __result )
     {
         try
         {
@@ -21,7 +22,7 @@ internal static class CustomSaveDataSavePatch
             {
                 var base128 = rootSave.ToBytes().EncodeToBase128();
                 var finalEntry = $"{DataPrefixOwn}{base128}";
-                __result.ZoneIndex.IndexTable = __result.ZoneIndex.IndexTable.AddToNew(finalEntry);
+                __result.ZoneIndex.IndexTable = MiscEUtil.AddToNew(__result.ZoneIndex.IndexTable,finalEntry);
             }
         }
         catch (Exception e) { LogError(e); }
@@ -37,7 +38,7 @@ internal static class CustomSaveDataSavePatch
                 var base128 = rootSave.ToBytes().EncodeToBase128();
                 var md5Hash = expansion.GetPackageInfoFromExpansion()?.ID.CreateMD5();
                 var finalEntry = $"{DataPrefix}{md5Hash}{base128}";
-                __result.ZoneIndex.IndexTable = __result.ZoneIndex.IndexTable.AddToNew(finalEntry);
+                __result.ZoneIndex.IndexTable = MiscEUtil.AddToNew(__result.ZoneIndex.IndexTable,finalEntry);
             }
             catch (Exception e)
             {

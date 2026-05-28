@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Starlight.Prism.Patches;
 
-[PrismPatch()]
+[PrismPatch,FeatureFlagDependentPatch(SupportRadiant)]
 [HarmonyPatch(typeof(PediaRadiantSlimeScreen),nameof(PediaRadiantSlimeScreen.SetCategory))]
 internal static class PediaRadiantSlimeScreenPatch
 {

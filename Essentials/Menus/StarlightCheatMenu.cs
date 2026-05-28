@@ -136,19 +136,15 @@ public class StarlightCheatMenu : StarlightMenu
         }
 
         //Cheat Slots
-        int i = -1;
         var cheatSlots = transform.GetObjectRecursively<Transform>("CheatMenuSlotsContentRec");
         cheatSlots.DestroyAllChildren();
         var cheatSlotPrefab = transform.GetObjectRecursively<Transform>("CheatMenuStatsSlotTemplateEntry");
-        foreach (var slot in sceneContext.PlayerState.Ammo.Slots)
+        foreach (var slot in InventoryEUtil.GetUnlockedSlots())
         {
-            i += 1;
-            if (slot == null) continue;
-            if (!slot.IsUnlocked) continue;
             var instance = Instantiate(cheatSlotPrefab, cheatSlots);
             instance.gameObject.SetActive(true);
             var cSlot = instance.AddComponent<CheatMenuSlot>();
-            cSlot.OnOpen(i);
+            cSlot.OnOpen(slot);
         }
         var currencyPrefab = transform.GetObjectRecursively<Transform>("CheatMenuStatsCurrencyRec");
         foreach (var curr in gameContext.LookupDirector.CurrencyList._currencies)
@@ -159,8 +155,6 @@ public class StarlightCheatMenu : StarlightMenu
             var cSlot = instance.AddComponent<CheatMenuCurrency>();
             cSlot.OnOpen(curr.ReferenceId);
         }
-
-        i = 0;
     }
     public override void OnCloseUIPressed()
     {

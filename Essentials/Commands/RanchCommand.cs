@@ -6,7 +6,7 @@ namespace Starlight.Commands;
 
 internal class RanchCommand : StarlightCommand
 {
-    internal static RanchV03 ranch = null;
+    internal static dynamic ranch = null;
     public override string ID => "ranch";
     public override string Usage => "ranch <lock/unlock> <door>";
     List<string> arg0List = new List<string> { "unlock", "lock"};
@@ -24,11 +24,11 @@ internal class RanchCommand : StarlightCommand
         doors = new List<string>();
     }
 
-    internal static void LoadAutoComplete(RanchV03 ranchV03)
+    internal static void LoadAutoComplete(dynamic ranchDyn)
     { 
-        ranch = ranchV03;
+        ranch = ranchDyn;
         doors = new List<string>();
-        foreach (var door in ranch.AccessDoorStates) doors.Add(door.Key);
+        foreach (var door in MiscEUtil.ToNetDictionary(ranch.AccessDoorStates)) doors.Add(door.Key);
         doors.Add("*");
     }
     public static List<string> doors = new List<string>();

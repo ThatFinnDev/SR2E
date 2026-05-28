@@ -16,16 +16,11 @@
     <ProjectReference Include="..\Essentials\Essentials.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="start.bat" />
-    <None Remove="start.sh" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="../Libs/*.dll">
       <Private>false</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="*.csv" />
     <EmbeddedResource Include="Assets\**">
       <LogicalName>$([System.String]::Copy('$(RootNamespace).Assets.%(RecursiveDir)%(FileName)%(Extension)').Replace('\', '.').Replace('/', '.'))</LogicalName>
     </EmbeddedResource>

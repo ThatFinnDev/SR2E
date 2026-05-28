@@ -18,7 +18,7 @@ public class StarlightTextViewerPopUp : StarlightPopUp
     protected override void OnOpen()
     {
         var textMesh = gameObject.GetObjectRecursively<TextMeshProUGUI>("TextViewerText");
-        textMesh.SetText(_text);
+        textMesh.text = (_text);
     }
     
     public static void Open(string text)

@@ -4,6 +4,8 @@
 // This is an optional file V1. You can add into your expansion
 // This will show an error message to the user, if Starlight isn't installed!
 // This also allows you to provide a required game or Starlight version
+// This is 100% optional and requires you to reference the MelonLoader.dll,
+// therefore it is recommended to only use this when you want to specify required versions
 
 [assembly: MelonInfo(typeof(OptionFileEntrypoint),  
     //Those infos are only shown by MelonLoader in the console when starting up
@@ -142,7 +144,7 @@ class OptionFileEntrypoint : MelonMod
         if (message == 0 || message == 1)
         {
             AddButton(pill, pr, new Vector2(0.005f, 0.105f), new Vector2(0.3333f, 0.2f),
-                () => Application.OpenURL("https://github.com/ThatFinnDev/Starlight/releases"), "GitHub");
+                () => Application.OpenURL("https://github.com/ThatFinn/Starlight/releases"), "GitHub");
             AddButton(pill, pr, new Vector2(0.34f, 0.105f), new Vector2(0.6596f, 0.2f),
                 () => Application.OpenURL("https://www.nexusmods.com/slimerancher2/mods/60"), "Nexusmods");
             AddButton(pill, pr, new Vector2(0.6666f, 0.105f), new Vector2(0.995f, 0.2f),
@@ -283,7 +285,8 @@ class OptionFileEntrypoint : MelonMod
             MelonCoroutines.Start(CheckForMainMenu(0));
         }
 
-        Unregister();
+        
+        //Unregister();
     }
 
 

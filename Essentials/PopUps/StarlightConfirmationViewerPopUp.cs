@@ -59,7 +59,7 @@ public class StarlightConfirmationViewerPopUp : StarlightPopUp
             }));
         }
         var textMesh = gameObject.GetObjectRecursively<TextMeshProUGUI>("TextViewerText");
-        textMesh.SetText(_text);
+        textMesh.text = (_text);
     }
     
     

@@ -1,6 +1,4 @@
-﻿using Il2CppMonomiPark.SlimeRancher.Player;
-
-namespace Starlight.Commands;
+﻿namespace Starlight.Commands;
 
 internal class RefillInvCommand : StarlightCommand
 {
@@ -20,7 +18,7 @@ internal class RefillInvCommand : StarlightCommand
         if (!args.IsBetween(0, 1)) return SendUsage();
         if (!inGame) return SendLoadASaveFirst();
 
-        int numberOfSlots = sceneContext.PlayerState.Ammo.Slots.Length - 1;
+        int numberOfSlots = InventoryEUtil.GetAllSlotCount() - 1;
         int slotToFill = -1;
 
         if(args!=null)
@@ -35,28 +33,21 @@ internal class RefillInvCommand : StarlightCommand
                 catch { return SendNotValidInt(args[0]); }
         if (args==null)
         {
-            for (int i = 0; i < sceneContext.PlayerState.Ammo.Slots.Count; i++)
-            {
-                AmmoSlot slot = sceneContext.PlayerState.Ammo.Slots[i];
-                if (slot.IsUnlocked)
-                    if (slot.Id != null)
-                        slot.Count = slot.MaxCount;
-            }
+            foreach (var slotIndex in InventoryEUtil.GetUnlockedSlots())
+                InventoryEUtil.SetSlotItemCount(slotIndex,InventoryEUtil.GetSlotMaxItemCount(slotIndex));
 
             SendMessage(Tr("cmd.refillinv.success"));
             return true;
         }
 
-        bool isUnlocked = sceneContext.PlayerState.Ammo.Slots[slotToFill].IsUnlocked;
-        if (!isUnlocked)
+        if (!InventoryEUtil.GetIsSlotUnlocked(slotToFill))
             return SendError(Tr("cmd.refillinv.error.slotnotunlocked", slotToFill + 1));
 
 
-        if (sceneContext.PlayerState.Ammo.Slots[slotToFill].Id == null)
+        if (InventoryEUtil.GetIsSlotEmpty(slotToFill))
             return SendError(Tr("cmd.refillinv.error.slotempty", slotToFill + 1));
 
-        AmmoSlot invSlot = sceneContext.PlayerState.Ammo.Slots[slotToFill];
-        invSlot.Count = invSlot.MaxCount;
+        InventoryEUtil.SetSlotItemCount(slotToFill,InventoryEUtil.GetSlotMaxItemCount(slotToFill));
         SendMessage(Tr("cmd.refillinv.successsingle", slotToFill + 1));
         return true;
     }

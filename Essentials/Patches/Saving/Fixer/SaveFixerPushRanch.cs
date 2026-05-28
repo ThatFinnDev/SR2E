@@ -10,7 +10,7 @@ namespace Starlight.Patches.Saving.Fixer;
 [HarmonyPatch(typeof(GameModelPushHelpers), nameof(GameModelPushHelpers.PushRanch))]
 internal static class SaveFixerPushRanch
 {
-    internal static void Prefix(GameModel gameModel, RanchV03 ranch, ILoadReferenceTranslation loadReferenceTranslation)
+    internal static void Prefix(GameModel gameModel, dynamic ranch, ILoadReferenceTranslation loadReferenceTranslation)
     {
         try
         {
@@ -25,7 +25,7 @@ internal static class SaveFixerPushRanch
                     if (!Enum.IsDefined<LandPlot.Id>(plot.TypeId))
                         ranch.Plots.Remove(plot);
                     else
-                        foreach (LandPlot.Upgrade upgrade in plot.Upgrades)
+                        foreach (LandPlot.Upgrade upgrade in plot.Upgrades.ToArray())
                             if (!Enum.IsDefined<LandPlot.Upgrade>(upgrade))
                                 //Remove invalid upgrade
                                 plot.Upgrades.Remove(upgrade);

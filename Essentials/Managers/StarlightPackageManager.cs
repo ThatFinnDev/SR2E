@@ -8,6 +8,7 @@ using MelonLoader;
 using MelonLoader.Utils;
 using Starlight.Enums;
 using Starlight.Expansion;
+using Starlight.Storage.Prefs;
 using Starlight.Storage;
 
 namespace Starlight.Managers;
@@ -42,10 +43,10 @@ public static class StarlightPackageManager
             Version = melonBase.Info.Version,
             DLLName = new FileInfo(assembly.Location).Name,
             MainClass = melonBase,
-            type = PackageType.MelonMod
+            Type = PackageType.MelonMod
         };
         if (melonBase is MelonPlugin)
-            info.type = PackageType.MelonPlugin;
+            info.Type = PackageType.MelonPlugin;
         var desc = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
         if (desc != null)
             info.Description = desc.Description;
@@ -62,21 +63,21 @@ public static class StarlightPackageManager
                 case StarlightModInfoAttributes.Contributors: info.Contributors = meta.Value.Split(", "); break;
                 case StarlightModInfoAttributes.IconB64:
                     try { 
-                        info.icon = ConvertEUtil.Base64ToTexture2D(meta.Value).Texture2DToSprite();
+                        info.Icon = ConvertEUtil.Base64ToTexture2D(meta.Value).Texture2DToSprite();
                     } catch { }
                     break;
             }
         }
 
-        if (!info.icon)
+        if (!info.Icon)
         {
             try { 
-                info.icon = EmbeddedResourceEUtil.LoadSprite("icon.png", assembly).CopyWithoutMipmaps();
+                info.Icon = EmbeddedResourceEUtil.LoadSprite("icon.png", assembly).CopyWithoutMipmaps();
             } catch { }
-            if (!info.icon)
+            if (!info.Icon)
             {
                 try { 
-                    info.icon = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly).CopyWithoutMipmaps(); 
+                    info.Icon = EmbeddedResourceEUtil.LoadSprite("Assets.icon.png", assembly).CopyWithoutMipmaps(); 
                 } catch { }
             }
         }
@@ -105,7 +106,7 @@ public static class StarlightPackageManager
         {
             try
             {
-                list.Add(new StarlightPackageInfo { type = PackageType.Expansion, Name = name, RunningAssembly = assembly, Version = "<unknown>", DLLName = name },
+                list.Add(new StarlightPackageInfo { Type = PackageType.Expansion, Name = name, RunningAssembly = assembly, Version = "<unknown>", DLLName = name },
                     [assembly.Location, message, errorMessage]);
             }
             catch (Exception e) { LogError(e); }
@@ -131,7 +132,7 @@ public static class StarlightPackageManager
                 list.Add(
                     new StarlightPackageInfo()
                     {
-                        type = PackageType.Expansion, Name = new FileInfo(assembly.Location).Name, RunningAssembly = assembly,
+                        Type = PackageType.Expansion, Name = new FileInfo(assembly.Location).Name, RunningAssembly = assembly,
                         Version = "<unknown>", DLLName = new FileInfo(assembly.Location).Name
                     },
                     [assembly.Location, exception, errorMessage]);
@@ -160,7 +161,8 @@ public static class StarlightPackageManager
     public static MelonBase GetMelonFromID(string id) => GetPackageInfoFromID(id)?.MainClass as MelonBase;
     public static StarlightExpansionVXX GetExpansionFromID(string id) => GetPackageInfoFromID(id)?.MainClass as StarlightExpansionVXX;
     public static StarlightExpansionV01 GetExpansionV1FromID(string id) => GetPackageInfoFromID(id)?.MainClass as StarlightExpansionV01;
-
+    
+    
     public static void LoadExpansions(string dllPath)
     {
         if (IsLocked())
@@ -174,7 +176,11 @@ public static class StarlightPackageManager
     internal static void LoadAllExpansions()
     {
         if (!AllowExpansions.HasFlag()) return;
+        Log("Start Loading Expansions");
         DiscoverAndLoadExpansions(Directory.GetFiles(MelonEnvironment.ModsDirectory, "*.dll").ToList());
+        Log("");
+        Log("");
+        Log("Continue loading mods...");
     }
     
     public static void UnloadExpansion(string id)
@@ -186,7 +192,7 @@ public static class StarlightPackageManager
         }
 
         var info = GetPackageInfoFromID(id);
-        if (info is not { type: PackageType.Expansion })
+        if (info is not { Type: PackageType.Expansion })
         {
             LogError($"Expansion with ID '{id}' not found.");
             return;
@@ -217,6 +223,7 @@ public static class StarlightPackageManager
             try { v01.OnUnload(); }
             catch (Exception e) { LogError($"Error during OnUnload for expansion '{id}': {e}"); }
         }
+        expansion._isLoaded = false;
 
         var assembly = infoValue.RunningAssembly;
         if (StarlightEntryPoint.Expansions.TryGetValue(assembly, out var assemblyExpansions))
@@ -261,6 +268,8 @@ public static class StarlightPackageManager
     {
         if (!AllowExpansions.HasFlag()) return;
 
+        Log("Loading Expansions from DLLs...");
+        Log("------------------------------");
         var pendingExpansions = new List<PendingExpansion>();
         var baseType = typeof(StarlightExpansionVXX);
 
@@ -282,8 +291,12 @@ public static class StarlightPackageManager
 
                 var types = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && baseType.IsAssignableFrom(t) && t.GetCustomAttributes(typeof(StarlightLoadExpansionAttribute), false).Any()).ToList();
                 if (types.Count == 0) continue;
+                Log("Assembly: "+dllPath);
+                Log("Total Expansion Count: "+types.Count);
 
                 var hInstance = new HarmonyLib.Harmony(dllPath);
+                if(StarlightEntryPoint.AlreadyInitialized)
+                    StarlightEntryPoint.PatchGame(hInstance,assembly);
                 foreach (var type in types)
                 {
                     var message = "";
@@ -312,8 +325,10 @@ public static class StarlightPackageManager
 
                         info.RunningAssembly = assembly;
                         info.DLLName = new FileInfo(assembly.Location).Name;
-                        info.type = PackageType.Expansion;
+                        info.Type = PackageType.Expansion;
                         info.MainClass = instance;
+                        if (MelonBase.RegisteredMelons.Any(a => a.MelonAssembly.Assembly == assembly))
+                            info.HasOptionFile = true;
 
                         if (string.IsNullOrWhiteSpace(info.ID) || info.ID.StartsWith("melon.") || info.ID.Count(c => c == '.') != 2 || !Regex.IsMatch(info.ID, @"^[a-z0-9\.]+$"))
                             message += "\nThe expansion's ID is invalid. It must be in the format 'author.packagename.expansionname', using only lowercase letters, numbers, and two dots.";
@@ -323,7 +338,7 @@ public static class StarlightPackageManager
                         if (instance is StarlightExpansionV01)
                         {
                             if (!AllowExpansionsV1.HasFlag()) message += "\nExpansionV1s are disabled!";
-                            info.expansionVersion = 1;
+                            info.ExpansionVersion = 1;
                         }
                         else message += "\nInvalid or unsupported expansion version!";
 
@@ -331,6 +346,7 @@ public static class StarlightPackageManager
                         
                         if (success)
                         {
+                            
                             StarlightEntryPoint.Instance.InjectIl2CppComponents(assembly);
                             pendingExpansions.Add(new PendingExpansion
                             {
@@ -349,6 +365,8 @@ public static class StarlightPackageManager
             catch (Exception e) { LogError($"Failed to process DLL: {dllPath}\n{e}"); }
         }
 
+        Log("------------------------------");
+        Log("");
         var allMelonIds = new Lazy<HashSet<string>>(() => [..GetAllMelonInfos().Select(i => i.ID)]);
         int loadedInPass;
         var dependencyGraph = pendingExpansions.ToDictionary(p => p.info.ID, p => new HashSet<string>(p.info.Dependencies ?? Array.Empty<string>()));
@@ -406,10 +424,11 @@ public static class StarlightPackageManager
                         var info = pending.info;
                         try
                         {
-                            info.icon = EmbeddedResourceEUtil.LoadSprite(info.IconPath, pending.assembly).CopyWithoutMipmaps();
+                            info.Icon = EmbeddedResourceEUtil.LoadSprite(info.IconPath, pending.assembly).CopyWithoutMipmaps();
                         } catch { }
                         
                         if (AllowPrism.HasFlag() && info.UsePrism) StarlightEntryPoint.ShouldEnablePrism = true;
+                        instance._isLoaded = true;
                         if (instance is StarlightExpansionV01 v01) StarlightEntryPoint.ExpansionV01S.Add(v01);
                         baseType.GetField("_assembly", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(instance, pending.assembly);
                         baseType.GetField("_harmonyInstance", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(instance, pending.harmony);
@@ -421,8 +440,36 @@ public static class StarlightPackageManager
                         assemblyExpansions.Item1.Add(instance, info);
                         LoadedExpansionIds.Add(info.ID);
                         loadedInPass++;
-                        if (instance is StarlightExpansionV01 vv01) try { vv01.OnEarlyInitialize(); } catch (Exception e) { LogError(e); }
+                        
+                        Log("-------Expansion-Loaded-------");
+                        Log(info.Name+ " v"+ info.Version);
+                        if(!string.IsNullOrEmpty(info.Author)) Log("by " + info.Author);
+                        Log("Prism, VXX: " + info.UsePrism+", "+info.ExpansionVersion);
+                        Log("------------------------------");
+                        
+                        if (instance is StarlightExpansionV01 vv01)
+                        {
+                            try { if (!Directory.Exists(vv01.modDataPath)) Directory.CreateDirectory(vv01.modDataPath); }catch (Exception e) { LogError(e); }
+
+                            vv01._prefs = new PackagePrefs(info.ID,Path.Combine(vv01.modDataPath,"prefs.json"));
+                            try { vv01.OnCreatePrefs(); }catch (Exception e) { LogError(e); }
+                            try { vv01.OnEarlyInitialize(); }catch (Exception e) { LogError(e); }
+                        }
                         if(DebugLogging.HasFlag()) Log($"Loaded expansion: {info.Name} ({info.ID}) version {info.Version}");
+                        if(StarlightEntryPoint.AlreadyInitialized)
+                        {
+                            foreach (var pair in assemblyExpansions.Item1)
+                                try { if (pair.Key is StarlightExpansionV01 v1) v1.OnInitialize(); }
+                                catch (Exception e) { LogError(e); }
+                        }
+
+                        if (StarlightEntryPoint.AlreadyLateInitialized)
+                        {
+                            foreach (var pair in assemblyExpansions.Item1)
+                                try { if (pair.Key is StarlightExpansionV01 v1) v1.OnLateInitialize(); }
+                                catch (Exception e) { LogError(e); }
+                        }
+                        
                     }
                     catch (Exception e)
                     {

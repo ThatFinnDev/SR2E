@@ -103,13 +103,18 @@ public static class PrismLibPedia
         if (IdentifiablePediaEntryPrefab != null) IdentifiablePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset; 
         
         
-        RadiantSlimePediaEntryPrefab = Get<RadiantSlimePediaEntry>("RadiantPink");
-        if (RadiantSlimePediaEntryPrefab == null) RadiantSlimePediaEntryPrefab = GetAny<RadiantSlimePediaEntry>();
-        if (RadiantSlimePediaEntryPrefab != null) RadiantSlimePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset; 
+        if(SupportRadiant.HasFlag()) RadiantStuff();
         
         FixedPediaEntryPrefab = Get<FixedPediaEntry>("PrismaPlorts");
         if (FixedPediaEntryPrefab == null) FixedPediaEntryPrefab = GetAny<FixedPediaEntry>();
         if (FixedPediaEntryPrefab != null) FixedPediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset;
+    }
+
+    private static void RadiantStuff()
+    {
+        RadiantSlimePediaEntryPrefab = Get<RadiantSlimePediaEntry>("RadiantPink");
+        if (RadiantSlimePediaEntryPrefab == null) RadiantSlimePediaEntryPrefab = GetAny<RadiantSlimePediaEntry>();
+        if (RadiantSlimePediaEntryPrefab != null) RadiantSlimePediaEntryPrefab.hideFlags = HideFlags.DontUnloadUnusedAsset; 
     }
     
     public static void PediaSlimeDietAddOverride(this PrismSlime slime, Sprite icon, LocalizedString localized)

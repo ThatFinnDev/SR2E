@@ -3,7 +3,7 @@ using Starlight.Storage;
 
 namespace Starlight.Prism.Patches;
 
-[PrismPatch()]
+[PrismPatch,FeatureFlagDependentPatch(SupportRadiant)]
 [HarmonyPatch(typeof(RadiantSlimeDirector),nameof(RadiantSlimeDirector.Awake))]
 internal static class RadiantSlimeDirectorPatch
 {
