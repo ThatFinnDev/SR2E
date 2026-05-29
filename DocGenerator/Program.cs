@@ -6,7 +6,7 @@ class Program
 {
     //Install tool via:
     //dotnet tool install -g XMLDoc2Markdown
-    private static string docGen = "dotnet tool run xmldoc2md \"bin/Debug/net6.0/Starlight.dll\" --output ../XMLToMD/ --member-accessibility-level public"; 
+    private static string docGen = "dotnet tool run xmldoc2md \"bin/Debug/net6.0-windows/Starlight.dll\" --output ../XMLToMD/ --member-accessibility-level public"; 
     static void Main(string[] args)
     {
         Console.WriteLine("Hello World! The converting has begun!");

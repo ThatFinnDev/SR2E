@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Configurations>Debug</Configurations>
     <OutputType>Library</OutputType>
     <RootNamespace>Starlight</RootNamespace>
@@ -10,9 +10,11 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <DocumentationFile>bin\Debug\net6.0\Starlight.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\net6.0-windows\Starlight.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
     <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Remove="EncodedAssets\OriginalFiles\**" />
