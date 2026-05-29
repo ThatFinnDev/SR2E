@@ -12,7 +12,11 @@ internal static class PlatformEngagementPromptPatch
     internal static void Postfix(PlatformEngagementPrompt __instance)
     {
         __instance.EngagementPromptTextUI.SetActive(false);
-        __instance.OnInteract(new InputAction.CallbackContext());
+        try
+        {
+            __instance.OnInteract(new InputAction.CallbackContext());
+        }
+        catch { }
         __instance.StartupClick = null;
         _hasRegistered = false;
         InputSystem.onAnyButtonPress.CallOnce(
