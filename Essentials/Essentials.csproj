@@ -15,6 +15,7 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="EncodedAssets\OriginalFiles\**" />
     <EmbeddedResource Include="*.csv" />
     <EmbeddedResource Include="Assets\**">
       <LogicalName>$([System.String]::Copy('$(RootNamespace).Assets.%(RecursiveDir)%(FileName)%(Extension)').Replace('\', '.').Replace('/', '.'))</LogicalName>
