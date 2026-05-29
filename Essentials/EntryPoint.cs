@@ -541,7 +541,9 @@ public class StarlightEntryPoint : MelonMod
                 using var ms = new MemoryStream();
                 entryStream.CopyTo(ms);
                 File.WriteAllBytes(tempPath, ms.ToArray());*/
-                File.WriteAllBytes(tempPath, EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.ttf"));
+                //var bytes = EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.ttf")
+                var bytes = Starlight.EncodedAssets.NotoSansFont.RawAssetBytes;
+                File.WriteAllBytes(tempPath, bytes);
                 var tempFont = new Font(tempPath);
                 NotoSansFont = TMP_FontAsset.CreateFontAsset(tempFont);
                 //settings.m_fallbackFontAssets.Add(fallBackFont);, creates issues for some reason :(
