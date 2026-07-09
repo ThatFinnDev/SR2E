@@ -1,3 +1,4 @@
+using System;
 using Starlight.Components.AssetBundle;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -6,8 +7,11 @@ namespace Starlight.UI.Blueprints;
 
 public abstract class UIBlueprint
 {
-    public static float ScaleFactor => Screen.height / 1080f;
-    public string mame = "<MissingName>"; 
+    public static float ScaleFactor => Screen.currentResolution.height / 1080f;
+    internal static float ScaleFactorY => Screen.currentResolution.height / 1080f;
+    internal static float ScaleFactorX => Screen.currentResolution.height / 1080f;//Screen.width / 1080f;
+    [Obsolete("Please use Name instead")]public string mame = null;
+    public string Name = "<MissingName>"; 
     public Vector2 Size = new(100,100);
     public Vector2 Position = Vector2.zero;
     public Vector2 Rotation = new ();
@@ -20,12 +24,12 @@ public abstract class UIBlueprint
     public List<Il2CppSystem.Type> Components;
     public RectTransform Render(UITheme theme, FontTheme fontTheme, Transform parent)
     {
-        var obj = new GameObject(mame);
+        var obj = new GameObject(mame??Name);
         obj.transform.localRotation=Quaternion.Euler(Rotation.x,Rotation.y,0);
         var rectT = obj.AddComponent<RectTransform>();
         obj.transform.SetParent(parent);
         rectT.pivot = Pivot;
-        rectT.sizeDelta = Size*ScaleFactor;
+        rectT.sizeDelta = new Vector2(Size.x*ScaleFactorX, Size.y*ScaleFactorY);
         rectT.anchoredPosition = Position*ScaleFactor;
         rectT.anchorMin = new Vector2(Anchors.x, Anchors.y);
         rectT.anchorMax = new Vector2(Anchors.z, Anchors.w);

@@ -13,6 +13,7 @@ using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using MelonLoader;
 using MelonLoader.Utils;
+using Starlight.Astro;
 using Starlight.Components;
 using Starlight.Components.Debug;
 using Starlight.Enums;
@@ -953,6 +954,8 @@ public class StarlightEntryPoint : MelonMod
 
     public override void OnGUI()
     {
+        try { AstroUI.OnGUI(); }
+        catch (Exception e) { LogError(e); }
         foreach (var expansion in ExpansionV01S)
             try { expansion.OnGUI(); }
             catch (Exception e) { LogError(e); }

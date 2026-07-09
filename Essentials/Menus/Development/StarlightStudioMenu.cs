@@ -17,7 +17,7 @@ internal class StarlightStudioMenu : StarlightMenu
     public new static MenuIdentifier GetMenuIdentifier() => new ("starlightstudiomenu",StarlightMenuFont.Native,StarlightMenuTheme.Starlight, "StarlightStudioMenu",true,true);
 
     private RectTransform _openThing;
-    protected override bool createCommands => true;
+    protected override bool createCommands => false;
     protected override bool inGameOnly => false;
     
     private StarlightSlimeRenderer _slimeRenderer;
@@ -131,7 +131,7 @@ internal class StarlightStudioMenu : StarlightMenu
                     Tabs = [
                         new PanelUIBlueprintV01()
                         {
-                            mame = "Pink",
+                            Name = "Pink",
                             Children = [
                                 new PanelUIBlueprintV01()
                                 {

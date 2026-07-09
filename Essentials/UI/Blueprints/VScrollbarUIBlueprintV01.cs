@@ -20,7 +20,7 @@ public class VScrollbarUIBlueprintV01 : UIBlueprint
         var backgroundArea = new GameObject("Background");
         var backgroundAreaRect = backgroundArea.AddComponent<RectTransform>();
         backgroundArea.transform.SetParent(obj);
-        backgroundAreaRect.sizeDelta = new Vector2(Size.x*ScaleFactor / 5, 0);
+        backgroundAreaRect.sizeDelta = new Vector2(Size.x*ScaleFactorX / 5, 0);
         backgroundAreaRect.anchoredPosition = Vector2.zero;
         backgroundAreaRect.anchorMin = new Vector2(0.5f, 0);
         backgroundAreaRect.anchorMax = new Vector2(0.5f, 1);
@@ -43,7 +43,7 @@ public class VScrollbarUIBlueprintV01 : UIBlueprint
         handleRect.anchorMax = new Vector2(1, 1);
         handleRect.offsetMin = new Vector2(0, 0);
         handleRect.offsetMax = new Vector2(0, 0);
-        handleRect.sizeDelta = new Vector2(-4*ScaleFactor, 0);
+        handleRect.sizeDelta = new Vector2(-4*ScaleFactorX, 0);
         handle.AddComponent<Image>().sprite = HandleSprite ?? EmbeddedResourceEUtil.LoadSprite("Assets.scrollV.png");
         
         scrollbar.handleRect = handleRect;

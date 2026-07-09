@@ -25,8 +25,9 @@ public static class StarlightFeatureFlags
     private static FeatureFlag[] extraDevFlags =>
     [
         DevMode, Experiments, CommandsLoadDevOnly, CommandsLoadExperimental, IgnoreSaveErrors, 
-        ExperimentalKeyCodes, EnableRepoManagement, EnableRepoMenu, UseMockRepo, DevTestMenu,
-        EnableStudioMenu,
+        ExperimentalKeyCodes, DevTestMenu, EnableStudioMenu, 
+        //EnableAstroMenu,
+        //EnableRepoMenu, UseMockRepo, EnableRepoManagement
         //InjectOptionsButtons, AddMockOptionsUIButtons
     ];
     private static FeatureFlag[] extraNightlyFlags => [None];

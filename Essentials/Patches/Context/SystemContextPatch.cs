@@ -2,6 +2,7 @@ using System.Linq;
 using System.Reflection;
 using System;
 using Il2CppInterop.Runtime.Injection;
+using Starlight.Astro;
 using Starlight.Enums;
 using Starlight.Managers;
 using Starlight.Storage;
@@ -86,7 +87,7 @@ internal class SystemContextPatch
                     catch (Exception e) { LogError(e); }
                     StarlightSaveManager.Start();
                     StarlightCommandManager.Start();
-                    StarlightRepoManager.Start();
+                    //StarlightRepoManager.Start();
                     StarlightEntryPoint.StarlightStuff = instance;
                     instance.name = "StarlightStuff";
                     instance.SetActive(false);
@@ -184,6 +185,10 @@ internal class SystemContextPatch
         var lang = __instance.LocalizationDirector.GetCurrentLocaleCode();
                     
         LoadLanguage(lang);
+        
+        try { AstroUI.Initialize(__instance); } 
+        catch (Exception e) { LogError(e); }
+       
         
         foreach (var expansion in StarlightEntryPoint.ExpansionV01S)
             try { expansion.AfterSystemContext(__instance); } 

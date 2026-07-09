@@ -41,7 +41,7 @@ public class SliderUIBlueprintV01 : UIBlueprint
         var background = new GameObject("Background");
         var backgroundRect = background.AddComponent<RectTransform>();
         background.transform.SetParent(obj, false);
-        backgroundRect.sizeDelta = new Vector2(Size.x*ScaleFactor, Size.y*ScaleFactor / 2.5f);
+        backgroundRect.sizeDelta = new Vector2(Size.x*ScaleFactorX, Size.y*ScaleFactorY / 2.5f);
         backgroundRect.anchoredPosition = Vector2.zero;
         var backgroundImage = background.AddComponent<Image>();
         backgroundImage.color = bColor;
@@ -76,14 +76,14 @@ public class SliderUIBlueprintV01 : UIBlueprint
         handleSlideAreaRect.offsetMin = new Vector2(0, 0);
         handleSlideAreaRect.offsetMax = new Vector2(0, 0);
         handleSlideArea.transform.SetParent(obj);
-        handleSlideAreaRect.anchoredPosition = new Vector2(-(HandleWidth / 4f)*ScaleFactor,0);
-        handleSlideAreaRect.sizeDelta = new Vector2((-HandleWidth - (HandleWidth / 2f))*ScaleFactor, 0);
+        handleSlideAreaRect.anchoredPosition = new Vector2(-(HandleWidth / 4f)*ScaleFactorX,0);
+        handleSlideAreaRect.sizeDelta = new Vector2((-HandleWidth - (HandleWidth / 2f))*ScaleFactorX, 0);
         
         var handle = new GameObject("Handle");
         var handleRect = handle.AddComponent<RectTransform>();
         handle.transform.SetParent(handleSlideArea.transform);
-        handleRect.offsetMin = new Vector2(-(HandleWidth/2f), -10)*ScaleFactor;
-        handleRect.offsetMax = new Vector2(HandleWidth, 10)*ScaleFactor;
+        handleRect.offsetMin = new Vector2(-(HandleWidth/2f)*ScaleFactorX, -10*ScaleFactorY);
+        handleRect.offsetMax = new Vector2(HandleWidth*ScaleFactorX, 10*ScaleFactorY);
         var handleGroup = handle.AddComponent<SortingGroup>();
         handleGroup.enabled = false;
         handleGroup.sortingOrder = Mathf.FloorToInt(5 * ScaleFactor);

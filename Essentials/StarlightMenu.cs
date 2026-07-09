@@ -257,7 +257,11 @@ public abstract class StarlightMenu : MonoBehaviour
 
     protected Sprite whitePillBg => MenuEUtil.whitePillBg; 
     protected Texture2D whitePillBgTex => MenuEUtil.whitePillBgTex;
-    
+
+    public virtual void OnThemeChange()
+    {
+        
+    }
     
     /// <summary>
     /// Gets executed once GameContext loads. In Postfix of the Start method

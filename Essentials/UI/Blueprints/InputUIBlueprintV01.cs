@@ -18,6 +18,7 @@ public class InputUIBlueprintV01 : UIBlueprint
     public bool DisablePlaceHolderAutoTranslation = false;
     public string DefaultValue = "";
     public float FontSize = 20f;
+    public Vector4? Margins = null;
     public bool RestoreOriginalTextOnEscape = true;
     public TMP_FontAsset CustomFont;
     public System.Action<string> OnValueChanged = null;
@@ -42,6 +43,13 @@ public class InputUIBlueprintV01 : UIBlueprint
         inputRect.offsetMin = Vector2.zero;
         inputRect.offsetMax = Vector2.zero;
         inputRect.anchoredPosition = Vector2.zero;
+        
+        var textArea = inputObject.transform.Find("Text Area") as RectTransform;
+        if (textArea != null && Margins.HasValue)
+        {
+            textArea.offsetMin = new Vector2(Margins.Value.x, Margins.Value.w);
+            textArea.offsetMax = new Vector2(-Margins.Value.z, -Margins.Value.y);
+        }
         
         var inputField = inputObject.GetComponent<TMP_InputField>();
         inputField.contentType = ContentType;

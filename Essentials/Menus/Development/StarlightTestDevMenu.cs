@@ -35,7 +35,7 @@ internal class StarlightTestDevMenu : StarlightMenu
                 Tabs = [
                     new PanelUIBlueprintV01
                     {
-                        mame = "Tab1",
+                        Name = "Tab1",
                         Children = [
                             new VScrollUIBlueprintV01
                             {
@@ -59,7 +59,7 @@ internal class StarlightTestDevMenu : StarlightMenu
                     },
                     new PanelUIBlueprintV01
                     {
-                        mame = "Tab2",
+                        Name = "Tab2",
                         Children = [
                             new PanelUIBlueprintV01 { Color = UIColor.Accent, CornerRadius = 0, Size = new Vector2(10,520) },
                             new VScrollUIBlueprintV01
@@ -80,7 +80,7 @@ internal class StarlightTestDevMenu : StarlightMenu
                     },
                     new PanelUIBlueprintV01
                     {
-                        mame = "Tab3",
+                        Name = "Tab3",
                         Children = [
                             new SliderUIBlueprintV01()
                             {
@@ -102,7 +102,7 @@ internal class StarlightTestDevMenu : StarlightMenu
                     },
                     new PanelUIBlueprintV01
                     {
-                        mame = "Test",
+                        Name = "Test",
                         Children = [
                             new CheckboxUIBlueprintV01()
                             {

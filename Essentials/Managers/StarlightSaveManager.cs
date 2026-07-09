@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Starlight.Enums;
-using Starlight.Repos;
 using Starlight.Storage;
 
 namespace Starlight.Managers;
@@ -82,7 +81,7 @@ internal static class StarlightSaveManager
         if (data.warps == null) data.warps = new Dictionary<string, Warp>();
         if (data.themes == null) data.themes = new Dictionary<string, StarlightMenuTheme>();
         if (data.fonts == null) data.fonts = new Dictionary<string, StarlightMenuFont>();
-        if (data.repos == null) data.repos = new List<RepoSave>();
+        //if (data.repos == null) data.repos = new List<RepoSave>();
         foreach (var pair in data.fonts)
             if (!Enum.IsDefined(typeof(StarlightMenuFont), pair.Value))
                 data.fonts[pair.Key] = StarlightMenuFont.Default;
@@ -114,6 +113,6 @@ internal static class StarlightSaveManager
         public Dictionary<LKey, string> keyBinds = new ();
         public Dictionary<string, StarlightMenuTheme> themes = new ();
         public Dictionary<string, StarlightMenuFont> fonts = new ();
-        public List<RepoSave> repos = new ();
+        //public List<RepoSave> repos = new ();
     }
 }

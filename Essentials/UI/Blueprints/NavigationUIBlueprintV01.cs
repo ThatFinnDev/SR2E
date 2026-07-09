@@ -40,11 +40,11 @@ public class NavigationUIBlueprintV01 : UIBlueprint
         bcLayout.childControlHeight = true;
         bcLayout.childControlWidth = true;
         bcLayout.spacing = ButtonSpacing;
-        bcLayout.padding = new RectOffset((int)(HorizontalPaddingPercentage/100f * Size.x * ScaleFactor), (int)(HorizontalPaddingPercentage/100f * Size.x * ScaleFactor), (int)(TopPadding * ScaleFactor), 0);
+        bcLayout.padding = new RectOffset((int)(HorizontalPaddingPercentage/100f * Size.x * ScaleFactorX), (int)(HorizontalPaddingPercentage/100f * Size.x * ScaleFactorX), (int)(TopPadding * ScaleFactorY), 0);
         buttonContainer.transform.SetParent(obj);
         bcRect.anchorMin = new Vector2(0, 1);
         bcRect.anchorMax = new Vector2(1, 1);
-        bcRect.sizeDelta = new Vector2(0, (ButtonHeight+TopPadding)*ScaleFactor);
+        bcRect.sizeDelta = new Vector2(0, (ButtonHeight+TopPadding)*ScaleFactorY);
         bcRect.anchoredPosition = new Vector2(0, bcRect.sizeDelta.y / -2);
         
         
@@ -62,7 +62,7 @@ public class NavigationUIBlueprintV01 : UIBlueprint
                         new TextUIBlueprintV01()
                         {
                             Color = ButtonTextColor,
-                            TextContent = Tabs[i].mame,
+                            TextContent = Tabs[i].Name,
                             DisableAutoTranslation = ButtonDisableAutoTranslation,
                             Alignment = TextAlignmentOptions.Center,
                             FontStyle = ButtonFontStyle,

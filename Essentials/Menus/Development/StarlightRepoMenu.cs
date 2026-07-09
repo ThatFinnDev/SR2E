@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using Il2CppTMPro;
 using Starlight.Enums;
 using Starlight.Enums.Features;
@@ -7,7 +7,7 @@ using Starlight.Popups;
 using Starlight.Storage;
 using UnityEngine.UI;
 
-namespace Starlight.Menus;
+namespace Starlight.Menus.Development;
 
 internal class StarlightRepoMenu : StarlightMenu
 {
@@ -208,4 +208,4 @@ internal class StarlightRepoMenu : StarlightMenu
         else Close();
     }
     
-}
+}*/
