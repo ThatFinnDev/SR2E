@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 namespace Starlight.Astro;
 
-
 internal static class AstroUITheme
 {
     internal static readonly Color BarBackground = new(0.118f, 0.118f, 0.118f, 1f);

@@ -91,7 +91,7 @@ public class StarlightConsole : StarlightMenu
             Send(texts[i],colors[i]);
     }
 
-    private UIBlueprint menuBase => new PanelUIBlueprintV01()
+    [HideFromIl2Cpp] private UIBlueprint menuBase => new PanelUIBlueprintV01()
     {
         Name="Console", Size = new(1920, 330),
         Position = new Vector2(0, 375),

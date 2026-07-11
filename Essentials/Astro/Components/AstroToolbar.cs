@@ -1,21 +1,20 @@
-using Il2CppMonomiPark.SlimeRancher.SceneManagement;
-using Starlight.Enums;
+using Starlight.Components;
 using Starlight.Menus;
 using Starlight.Menus.Development;
-using Starlight.Popups;
 using Starlight.Storage;
+using Starlight.Managers;
 using Starlight.UI;
 using Starlight.UI.Blueprints;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-namespace Starlight.Astro;
+namespace Starlight.Astro.Components;
 
-//Highly in WIP
+// Highly in WIP
 // Inspired by Lunakit from AmethystSzs for SMO
 [InjectIntoIL]
-internal class AstroUIToolbar : MonoBehaviour
+internal class AstroToolbar : MonoBehaviour
 {
     void Start()
     {
@@ -60,7 +59,6 @@ internal class AstroUIToolbar : MonoBehaviour
         var results = new Il2CppSystem.Collections.Generic.List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerEventData, results);
 
-        // Log raycast results every click
         if (Mouse.current?.leftButton.wasPressedThisFrame == true)
         {
             Log($"[AstroToolbar] Raycast hit count: {results.Count}, Registry size: {MenubarRegistry.Interactions.Count}");
@@ -78,7 +76,6 @@ internal class AstroUIToolbar : MonoBehaviour
             }
         }
 
-        // Handle Hover enter/exit
         if (hitObject != _currentlyHovered)
         {
             if (_currentlyHovered && MenubarRegistry.Interactions.TryGetValue(_currentlyHovered.GetInstanceID(), out var oldInt))
@@ -121,7 +118,7 @@ internal class AstroUIToolbar : MonoBehaviour
     }
 
 
-    private static bool _dummyAutoSave = true;
+
 
 
     private static MenubarUIBlueprintV01 BaseMenubar() => new()
@@ -131,9 +128,9 @@ internal class AstroUIToolbar : MonoBehaviour
         Pivot = new Vector2(0.5f, 1f),
         Size = Vector2.zero,
 
-        BarHeight = 28f,
-        EntryHeight = 24f,
-        LabelFontSize = 13f,
+        BarHeight = 18f,
+        EntryHeight = 16f,
+        LabelFontSize = 10f,
         DropdownWidth = 220f,
     };
 
@@ -157,6 +154,7 @@ internal class AstroUIToolbar : MonoBehaviour
                     new MenubarEntry { Label = "File 3", OnClick = HandleFileLoad(2) },
                     new MenubarEntry { Label = "File 4", OnClick = HandleFileLoad(3) },
                     new MenubarEntry { Label = "File 5", OnClick = HandleFileLoad(4) },
+                    new MenubarEntry { Label = "File 6", OnClick = HandleFileLoad(5) },
                 ]});
                 fileItem.Entries.Add(new MenubarEntry { Label = "Save", OnClick = HandleFileSave() });
                 fileItem.Entries.Add(new MenubarEntry { Label = "Save As...", SubEntries = [
@@ -165,6 +163,7 @@ internal class AstroUIToolbar : MonoBehaviour
                     new MenubarEntry { Label = "File 3", OnClick = HandleFileSaveAs(2) },
                     new MenubarEntry { Label = "File 4", OnClick = HandleFileSaveAs(3) },
                     new MenubarEntry { Label = "File 5", OnClick = HandleFileSaveAs(4) },
+                    new MenubarEntry { Label = "File 6", OnClick = HandleFileSaveAs(6) },
                 ]});
                 fileItem.Entries.Add(new MenubarEntry { Label = "Delete", SubEntries = [
                     new MenubarEntry { Label = "File 1", OnClick = HandleFileDelete(0) },
@@ -172,15 +171,31 @@ internal class AstroUIToolbar : MonoBehaviour
                     new MenubarEntry { Label = "File 3", OnClick = HandleFileDelete(2) },
                     new MenubarEntry { Label = "File 4", OnClick = HandleFileDelete(3) },
                     new MenubarEntry { Label = "File 5", OnClick = HandleFileDelete(4) },
+                    new MenubarEntry { Label = "File 6", OnClick = HandleFileDelete(5) },
                 ]});
             }
         };
         menubar.Items.Add(fileItem);
 
         var settingsItem = new MenubarItem { Label = "Settings" };
-        settingsItem.Entries = new List<MenubarEntry>
+        settingsItem.OnBeforeOpen = () =>
         {
-            new MenubarEntry { Label = "Auto-save", IsChecked = () => _dummyAutoSave, OnClick = () => _dummyAutoSave = !_dummyAutoSave },
+            bool isLoaded = sceneContext != null && sceneContext.Camera != null;
+            bool isNoclip = isLoaded && sceneContext.Camera.GetComponent<NoClipComponent>() != null;
+            settingsItem.Entries = new List<MenubarEntry>
+            {
+                new MenubarEntry 
+                { 
+                    Label = "NoClip", 
+                    IsDisabled = !isLoaded,
+                    IsChecked = () => isNoclip, 
+                    OnClick = () => {
+                        if (!isLoaded) return;
+                        if (!sceneContext.Camera.RemoveComponent<NoClipComponent>())
+                            sceneContext.Camera.AddComponent<NoClipComponent>();
+                    } 
+                }
+            };
         };
         menubar.Items.Add(settingsItem);
 
@@ -191,6 +206,50 @@ internal class AstroUIToolbar : MonoBehaviour
         };
         menubar.Items.Add(sceneGroupItem);
 
+        var warpsItem = new MenubarItem { Label = "Warps" };
+        warpsItem.OnBeforeOpen = () =>
+        {
+            warpsItem.Entries.Clear();
+            if (StarlightSaveManager.data.warps == null || StarlightSaveManager.data.warps.Count == 0)
+            {
+                warpsItem.Entries.Add(new MenubarEntry { Label = "No warps saved", IsDisabled = true });
+            }
+            else
+            {
+                foreach (var kvp in StarlightSaveManager.data.warps)
+                {
+                    var warpName = kvp.Key;
+                    warpsItem.Entries.Add(new MenubarEntry 
+                    { 
+                        Label = warpName, 
+                        SubEntries = new List<MenubarEntry>
+                        {
+                            new MenubarEntry 
+                            { 
+                                Label = "Teleport", 
+                                IsDisabled = !inGame,
+                                OnClick = () => 
+                                {
+                                    if (!inGame) return;
+                                    var w = StarlightWarpManager.GetWarp(warpName);
+                                    if (w != null) w.WarpPlayerThere();
+                                }
+                            },
+                            new MenubarEntry 
+                            { 
+                                Label = "Delete", 
+                                OnClick = () => 
+                                {
+                                    StarlightWarpManager.RemoveWarp(warpName);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        menubar.Items.Add(warpsItem);
+
         menubar.Items.AddRange(
         [
             new MenubarItem
@@ -198,9 +257,19 @@ internal class AstroUIToolbar : MonoBehaviour
                 Label = "Windows",
                 Entries =
                 [
-                    //new MenubarEntry { Label = "Inspector", OnClick = :/// },
                     new MenubarEntry { Label = "Mod Menu", OnClick = (()=>{MenuEUtil.GetMenu<StarlightModMenu>().Open();}) },
                     new MenubarEntry { Label = "Studio", OnClick = (()=>{MenuEUtil.GetMenu<StarlightStudioMenu>().Open();}) },
+                    new MenubarEntry { IsSeparator = true },
+                    new MenubarEntry { 
+                        Label = "Transform Inspector", 
+                        IsChecked = () => AstroTransformInspector.Instance && AstroTransformInspector.Instance.WindowRoot && AstroTransformInspector.Instance.WindowRoot.activeSelf,
+                        OnClick = () => {
+                            if (AstroTransformInspector.Instance && AstroTransformInspector.Instance.WindowRoot)
+                            {
+                                AstroTransformInspector.Instance.WindowRoot.SetActive(!AstroTransformInspector.Instance.WindowRoot.activeSelf);
+                            }
+                        } 
+                    },
                 ]
             },
             new MenubarItem
@@ -229,15 +298,39 @@ internal class AstroUIToolbar : MonoBehaviour
             }
         ]);
 
+        menubar.Items.Add(new MenubarItem
+        {
+            Label = "Mode",
+            Entries =
+            [
+                new MenubarEntry { Label = "Gameplay", IsChecked = () => AstroMode.Current == AstroMode.Mode.Gameplay, OnClick = () => AstroMode.SetMode(AstroMode.Mode.Gameplay) },
+                new MenubarEntry { Label = "Transform", IsChecked = () => AstroMode.Current == AstroMode.Mode.Transform, OnClick = () => AstroMode.SetMode(AstroMode.Mode.Transform) },
+            ]
+        });
+
         return menubar;
     }
 
     private static List<MenubarEntry> GetAllSceneGroups()
     {
         var list = new List<MenubarEntry>();
-        foreach (var group in systemContext.SceneLoader._sceneGroupList.items)
+        foreach (var group in systemContext.SceneLoader.SceneGroupList.items)
         {
-            list.Add(new MenubarEntry { Label = group.ReferenceId, OnClick = HandleSceneGroup(group.ReferenceId),
+            var type = group.IsGameplay ? "Type: Gameplay" : "Type: ";
+            if (group._isEditor)
+                type += type == "Type: " ? "Editor" : ", Editor";
+            if (type == "Type: ")
+                type += "None";
+            list.Add(new MenubarEntry 
+            { 
+                Label = group.ReferenceId, 
+                SubEntries = new List<MenubarEntry>
+                {
+                    new MenubarEntry { Label = type, IsDisabled = true },
+                    new MenubarEntry { IsSeparator = true },
+                    new MenubarEntry { Label = "Load via SceneLoader", OnClick = () => { systemContext.SceneLoader.LoadSceneGroup(group, null); } },
+                    new MenubarEntry { Label = "Load via LocationBookmarksUtil", OnClick = () => { LocationBookmarksUtil.GoToLocationPlayer(group, new Vector3(0, 50, 0) + new Vector3(0, LocationBookmarksUtil.PLAYER_HEIGHT / 2f, 0), Vector3.zero); } }
+                }
             });
         }
         return list;
@@ -262,31 +355,9 @@ internal class AstroUIToolbar : MonoBehaviour
         Log($"[Astro/File/Delete] {selection}");
     });
     
-    private static SystemAction HandleSceneGroup(string selection) => (() =>
-    {
-        Log($"[Astro/SceneGroup] {selection}");
-        SceneGroup sc = null;
-        foreach (var g in systemContext.SceneLoader.SceneGroupList.items)
-            if (g.ReferenceId == selection)
-            {
-                sc = g;
-                break;
-            }
-        if (!sc) return;
-        if(sc._isGameplay)
-        {
-            if (!inGame)
-            {
-                StarlightTextViewerPopUp.Open("This SceneGroup requires a loaded save!");
-            }
-            else LocationBookmarksUtil.GoToLocationPlayer(sc, new Vector3(0, 50, 0) + new Vector3(0, LocationBookmarksUtil.PLAYER_HEIGHT / 2, 0), Vector3.zero);
-        }
-        else systemContext.SceneLoader.LoadSceneGroup(sc,null);
-    });
 
     private static SystemAction HandleTime(float selection) => (() =>
     {
-        
         Log($"[Astro/Time] {selection}");
         Time.timeScale = selection;
         if (selection == 0.0f)

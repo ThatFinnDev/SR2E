@@ -53,6 +53,7 @@ public class MenubarUIBlueprintV01 : UIBlueprint
     private RectTransform _blocker;
     private RectTransform _activeDropdown;
     private RectTransform _activeFlyout;
+    private MenubarEntry _activeFlyoutEntry;
 
     protected override void OnRender(UITheme theme, FontTheme fontTheme, RectTransform obj)
     {
@@ -203,7 +204,7 @@ public class MenubarUIBlueprintV01 : UIBlueprint
         var currentY = 2f * ScaleFactorY;
         foreach (var entry in item.Entries)
         {
-            BuildEntry(entry, ddRect, xPos, yPos - currentY, theme, fontTheme);
+            BuildEntry(entry, ddRect, xPos, yPos - currentY, theme, fontTheme, false);
             currentY += (entry.IsSeparator ? SeparatorHeight : EntryHeight) * ScaleFactorY;
         }
 
@@ -212,7 +213,7 @@ public class MenubarUIBlueprintV01 : UIBlueprint
         _dropdownLayer.SetAsLastSibling();
     }
 
-    private void BuildEntry(MenubarEntry entry, RectTransform parent, float parentX, float entryY, UITheme theme, FontTheme fontTheme)
+    private void BuildEntry(MenubarEntry entry, RectTransform parent, float parentX, float entryY, UITheme theme, FontTheme fontTheme, bool isFlyoutContent = false)
     {
         if (entry.IsSeparator)
         {
@@ -305,8 +306,9 @@ public class MenubarUIBlueprintV01 : UIBlueprint
             {
                 var action = (SystemAction)(() =>
                 {
+                    if (_activeFlyoutEntry == capturedEntry) return;
                     capturedEntry.OnBeforeOpen?.Invoke();
-                    OpenFlyout(capturedEntry.SubEntries, capturedX, capturedY, theme, fontTheme);
+                    OpenFlyout(capturedEntry, capturedX, capturedY, theme, fontTheme);
                 });
                 interaction.OnClick = action;
                 interaction.OnHoverEnter = action;
@@ -319,7 +321,7 @@ public class MenubarUIBlueprintV01 : UIBlueprint
                     CloseAll();
                 });
                 interaction.OnClick = onClickAction;
-                interaction.OnHoverEnter = CloseFlyout;
+                if (!isFlyoutContent) interaction.OnHoverEnter = CloseFlyout;
             }
 
             MenubarRegistry.Interactions[rowObj.GetInstanceID()] = interaction;
@@ -347,10 +349,11 @@ public class MenubarUIBlueprintV01 : UIBlueprint
     }
 
 
-    private void OpenFlyout(List<MenubarEntry> subEntries, float xPos, float yPos, UITheme theme, FontTheme fontTheme)
+    private void OpenFlyout(MenubarEntry parentEntry, float xPos, float yPos, UITheme theme, FontTheme fontTheme)
     {
         CloseFlyout();
 
+        var subEntries = parentEntry.SubEntries;
         var panelW = CalculatePanelWidth(subEntries);
         var panelH = CalculatePanelHeight(subEntries);
 
@@ -378,17 +381,19 @@ public class MenubarUIBlueprintV01 : UIBlueprint
         float currentY = 2f * ScaleFactorY;
         foreach (var sub in subEntries)
         {
-            BuildEntry(sub, flyRect, xPos, yPos - currentY, theme, fontTheme);
+            BuildEntry(sub, flyRect, xPos, yPos - currentY, theme, fontTheme, true);
             currentY += (sub.IsSeparator ? SeparatorHeight : EntryHeight) * ScaleFactorY;
         }
 
         _activeFlyout = flyRect;
+        _activeFlyoutEntry = parentEntry;
         _activeFlyout.SetAsLastSibling();
     }
 
     private void CloseFlyout()
     {
-        if (_activeFlyout == null) return;
+        _activeFlyoutEntry = null;
+        if (!_activeFlyout) return;
 
         foreach (var img in _activeFlyout.GetComponentsInChildren<Image>())
             MenubarRegistry.Interactions.Remove(img.gameObject.GetInstanceID());
@@ -404,7 +409,6 @@ public class MenubarUIBlueprintV01 : UIBlueprint
         {
             foreach (var img in _activeDropdown.GetComponentsInChildren<Image>())
                 MenubarRegistry.Interactions.Remove(img.gameObject.GetInstanceID());
-
             Object.Destroy(_activeDropdown.gameObject);
             _activeDropdown = null;
         }
@@ -422,16 +426,15 @@ public class MenubarUIBlueprintV01 : UIBlueprint
 
     private float CalculatePanelWidth(List<MenubarEntry> entries)
     {
-        float maxLabelW = 0f;
+        var maxLabelW = 0f;
         foreach (var e in entries)
         {
             if (e.IsSeparator) continue;
-            float labelW = e.Label.Length * LabelFontSize * 0.6f;
+            var labelW = e.Label.Length * LabelFontSize * 0.6f;
             if (e.IsChecked != null) labelW += LabelFontSize * 1.5f;
             if (e.SubEntries is { Count: > 0 }) labelW += 20f;
             if (labelW > maxLabelW) maxLabelW = labelW;
         }
-
         return Mathf.Max(DropdownWidth, maxLabelW + 30f) * ScaleFactorX;
     }
 }

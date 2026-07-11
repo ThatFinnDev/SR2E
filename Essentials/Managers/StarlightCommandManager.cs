@@ -62,8 +62,8 @@ public static class StarlightCommandManager
     /// <param name="key">The key to be checked</param>
     /// <returns>bool</returns>
     public static bool IsKeyBoundToCommand(LKey key) => StarlightSaveManager.data.keyBinds.ContainsKey(key);
-    
-    
+
+    private static bool _executedStartup;
     internal static void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
         switch (sceneName)
@@ -79,6 +79,11 @@ public static class StarlightCommandManager
                 foreach (var pair in Commands) try { pair.Value.OnMainMenuUILoad(); } catch (Exception e) { LogError(e); }
                 if (!string.IsNullOrEmpty(StarlightEntryPoint.onMainMenuLoadCommand)) 
                     ExecuteByString(StarlightEntryPoint.onMainMenuLoadCommand);
+                if (!_executedStartup&&!string.IsNullOrEmpty(StarlightEntryPoint.onStartupCommand))
+                {
+                    _executedStartup = true;
+                    ExecuteByString(StarlightEntryPoint.onStartupCommand);
+                }
                 break;
             case "LoadScene": foreach (var pair in Commands) try { pair.Value.OnLoadSceneLoad(); } catch (Exception e) { LogError(e); } break;
         }
@@ -117,7 +122,7 @@ public static class StarlightCommandManager
                     if(type == typeof(MenuVisibilityCommands.OpenCommand)) continue;
                     if(type == typeof(MenuVisibilityCommands.CloseCommand)) continue;
                     if(type == typeof(MenuVisibilityCommands.ToggleCommand)) continue;
-                    StarlightCommand sr2Command = (StarlightCommand)Activator.CreateInstance(type);
+                    var sr2Command = (StarlightCommand)Activator.CreateInstance(type);
                     if((enabledCommands & sr2Command.type) == sr2Command.type)
                     {
                         if (sr2Command is InfiniteHealthCommand && !EnableInfHealth.HasFlag()) continue;

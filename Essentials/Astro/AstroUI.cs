@@ -1,3 +1,5 @@
+using Starlight.Astro.Components;
+
 namespace Starlight.Astro;
 
 internal static class AstroUI
@@ -26,8 +28,18 @@ internal static class AstroUI
         
         AstroToolbar = new GameObject("AstroToolbar");
         AstroToolbar.transform.SetParent(AstroRoot.transform, false);
-        AstroToolbar.AddComponent<AstroUIToolbar>();
-        
+        AstroToolbar.AddComponent<AstroToolbar>();
+
+        var astroInfo = new GameObject("AstroInfo");
+        astroInfo.transform.SetParent(AstroRoot.transform, false);
+        astroInfo.AddComponent<AstroUIInfo>();
+
+        var mouseIndicator = new GameObject("AstroMouseIndicator");
+        mouseIndicator.transform.SetParent(AstroRoot.transform, false);
+        mouseIndicator.AddComponent<AstroMouseIndicator>();
+
+        AstroRoot.AddComponent<Components.AstroTransformGizmo>();
+        AstroRoot.AddComponent<AstroTransformInspector>();
         
         _initialized = true;
     }
@@ -35,7 +47,5 @@ internal static class AstroUI
     internal static void OnGUI()
     {
         if (!_initialized) return;
-        //if i ever need it lol
     }
-    
 }

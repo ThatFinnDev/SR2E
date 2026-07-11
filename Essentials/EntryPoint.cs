@@ -112,9 +112,9 @@ public class StarlightEntryPoint : MelonMod
     internal static string MelonVersion = "undefined";
     
     internal static StarlightEntryPoint Instance;
-
     internal static string onSaveLoadCommand => _prefs.GetEntry<string>("onSaveLoadCommand").value;
     internal static string onMainMenuLoadCommand => _prefs.GetEntry<string>("onMainMenuLoadCommand").value;
+    internal static string onStartupCommand => _prefs.GetEntry<string>("onStartupCommand").value;
     internal static bool starlightLogToMlLog => _prefs.GetEntry<bool>("StarlightLogToMLLog").value;
     internal static bool mLLogToStarlightLog => _prefs.GetEntry<bool>("mLLogToStarlightLog").value;
     internal static bool autoUpdate => _prefs.GetEntry<bool>("autoUpdate").value;
@@ -125,6 +125,7 @@ public class StarlightEntryPoint : MelonMod
     internal static bool enableDebugDirector => _prefs.GetEntry<bool>("enableDebugDirector").value;
     internal static bool allowAllDevicesAtOnce => _prefs.GetEntry<bool>("allowAllDevicesAtOnce").value;
     internal static bool enableMarketViewer => _prefs.GetEntry<bool>("enableMarketViewer").value;
+    internal static bool skipEngagementPrompt => _prefs.GetEntry<bool>("skipEngagementPrompt").value;
     public override void OnEarlyInitializeMelon()
     {
         Instance = this;
@@ -146,7 +147,7 @@ public class StarlightEntryPoint : MelonMod
         {
             if (!string.IsNullOrWhiteSpace(s2))
                 if (s2.Contains("Support Module Loaded")&&s2.EndsWith("MelonLoader\\Dependencies\\SupportModules\\Il2Cpp.dll")) 
-                    Log("The following message is incorrectly labeled as an error. It does nothing and thus should NOT be reported and can be safely ignored. This is NOT an error:");
+                    Log("The following message by Il2CppInterop is incorrectly labeled as an error. It does nothing and thus should NOT be reported and can be safely ignored. This is NOT an error:");
         };
 
         
@@ -351,6 +352,8 @@ public class StarlightEntryPoint : MelonMod
             _prefs.AddEntry("enableMarketViewer", true, "Show Market Viewer next to Market",null);
         if (!_prefs.HasEntry("allowAllDevicesAtOnce"))
             _prefs.AddEntry("allowAllDevicesAtOnce", false, "[Experimental] Allow all input devices at once",null, false,false);
+        if (!_prefs.HasEntry("skipEngagementPrompt"))
+            _prefs.AddEntry("skipEngagementPrompt", false, "Skip 'Press any button to continue' on startup","WARNING: This breaks controller and keyboard input in the main menu", false,true);
         
         if (!_prefs.HasEntry("mLLogToStarlightLog"))
             _prefs.AddEntry("mLLogToStarlightLog", false, "Send MLLogs to console",null, false, false);
@@ -361,6 +364,13 @@ public class StarlightEntryPoint : MelonMod
             _prefs.AddEntry("onSaveLoadCommand", "", "Command to execute, when save is loaded", null,false, false);
         if (!_prefs.HasEntry("onMainMenuLoadCommand"))
             _prefs.AddEntry("onMainMenuLoadCommand", "", "Command to execute, when main menu is loaded",null,false);
+        if (!_prefs.HasEntry("onStartupCommand"))
+            _prefs.AddEntry("onStartupCommand", "", "Command to execute, when the game starts",null,false);
+
+        if (onSaveLoadCommand == null) _prefs.SetEntry("onSaveLoadCommand", "");
+        if (onMainMenuLoadCommand == null) _prefs.SetEntry("onMainMenuLoadCommand", "");
+        if (onStartupCommand == null) _prefs.SetEntry("onStartupCommand", "");
+        
         
         if (!_prefs.HasEntry("noclipSpeedMultiplier"))
             _prefs.AddEntry("noclipSpeedMultiplier", 2f, "NoClip sprint speed multiplier", null,false, false);
