@@ -107,13 +107,11 @@ public class StarlightConsole : StarlightMenu
     [HideFromIl2Cpp] private float CanvasScale => ParentCanvas != null ? ParentCanvas.scaleFactor : 1f;
     [HideFromIl2Cpp] private float TrueCanvasHeight => Screen.height / CanvasScale;
     [HideFromIl2Cpp] private float TrueCanvasWidth => Screen.width / CanvasScale;
-    
-    [HideFromIl2Cpp] private float ScreenWidthUnscaled => TrueCanvasWidth / UIBlueprint.ScaleFactor;
     [HideFromIl2Cpp] private float ConsoleYPos => (TrueCanvasHeight / (2f * UIBlueprint.ScaleFactor)) - 165f;
     
     [HideFromIl2Cpp] private UIBlueprint menuBase => new PanelUIBlueprintV01()
     {
-        Name="Console", Size = new(ScreenWidthUnscaled, 330),
+        Name="Console", Size = new(TrueCanvasWidth, 330),
         Position = new Vector2(0, ConsoleYPos),
         Color = UIColor.Primary,
         Children=[
@@ -121,14 +119,14 @@ public class StarlightConsole : StarlightMenu
             {
                 Name="ConsoleMenuCommandInputRec",
                 PlaceHolderContent = "Enter command...",
-                Size = new (ScreenWidthUnscaled, 27),
+                Size = new (TrueCanvasWidth, 27),
                 Position = new Vector2(0, -151),
                 FontSize = 15.5f,
                 Margins = new Vector4(5, 0, 5, 0)
             },
             new VScrollUIBlueprintV01()
             {
-                Size = new (ScreenWidthUnscaled - 20, 280),
+                Size = new (TrueCanvasWidth - 20, 280),
                 Position = new Vector2(0, 15),
                 ContentName = "ConsoleMenuConsoleContentRec",
                 ScrollBarVerticalName = "ConsoleMenuConsoleScrollbarRec",
@@ -136,7 +134,7 @@ public class StarlightConsole : StarlightMenu
             new VScrollUIBlueprintV01()
             {
                 Size = new (300, 200),
-                Position = new Vector2(-(ScreenWidthUnscaled / 2f) + 160f, -265),
+                Position = new Vector2(-(TrueCanvasWidth / 2f) + 160f, -265),
                 Name = "ConsoleMenuAutoCompleteScrollRectRec",
                 ContentName = "ConsoleMenuAutoCompleteContentRec",
                 BackgroundColor = UIColor.Primary
