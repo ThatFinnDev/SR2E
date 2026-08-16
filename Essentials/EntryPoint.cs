@@ -13,7 +13,7 @@ using Il2CppMonomiPark.SlimeRancher;
 using Il2CppMonomiPark.SlimeRancher.UI.ButtonBehavior;
 using MelonLoader;
 using MelonLoader.Utils;
-using Starlight.Astro;
+using Starlight.EmberMode;
 using Starlight.Components;
 using Starlight.Components.Debug;
 using Starlight.Enums;
@@ -122,8 +122,8 @@ public class StarlightEntryPoint : MelonMod
     internal static float consoleMaxSpeed => _prefs.GetEntry<float>("consoleMaxSpeed").value;
     internal static float noclipAdjustSpeed => _prefs.GetEntry<float>("noclipAdjustSpeed").value;
     internal static float noclipSpeedMultiplier => _prefs.GetEntry<float>("noclipSpeedMultiplier").value;
-    internal static bool enableDebugDirector => _prefs.GetEntry<bool>("enableDebugDirector").value;
-    internal static bool allowAllDevicesAtOnce => _prefs.GetEntry<bool>("allowAllDevicesAtOnce").value;
+
+    internal static bool enableEmberMode => _prefs.HasEntry("enableEmberMode") ? _prefs.GetEntry<bool>("enableEmberMode").value : false;
     internal static bool enableMarketViewer => _prefs.GetEntry<bool>("enableMarketViewer").value;
     internal static bool skipEngagementPrompt => _prefs.GetEntry<bool>("skipEngagementPrompt").value;
     public override void OnEarlyInitializeMelon()
@@ -337,6 +337,7 @@ public class StarlightEntryPoint : MelonMod
         // ReSharper disable once PossibleInvalidOperationException
         _prefs = new PackagePrefs(StarlightPackageManager.GetPackageInfoFromMelon(this).Value.ID, prefPath);
         
+        
         if (AllowAutoUpdate.HasFlag())
             if (!_prefs.HasEntry("autoUpdate"))
                 _prefs.AddEntry("autoUpdate", false, "Auto Update","Update Starlight automatically");
@@ -346,12 +347,15 @@ public class StarlightEntryPoint : MelonMod
         
         if (!_prefs.HasEntry("disableFixSaves"))
             _prefs.AddEntry("disableFixSaves", false, "Disable Save Fixing","This disables the save fixer", false,false);
-        if (!_prefs.HasEntry("enableDebugDirector"))
-            _prefs.AddEntry("enableDebugDirector", false, "Debug Menu","Enable a debug menu, usable in-game", false,false, ((_, newValue) => StarlightDebugUI.isEnabled = newValue));
+
+        if (EnableEmberMode.HasFlag())
+            if (!_prefs.HasEntry("enableEmberMode"))
+                _prefs.AddEntry("enableEmberMode", false, "[Experimental] Enable EmberMode", "Toggles the EmberMode menu bar", false, false, ((_, newValue) => {
+                    if (newValue) EmberModeUI.Enable();
+                    else EmberModeUI.Disable();
+                }));
         if (!_prefs.HasEntry("enableMarketViewer"))
             _prefs.AddEntry("enableMarketViewer", true, "Show Market Viewer next to Market",null);
-        if (!_prefs.HasEntry("allowAllDevicesAtOnce"))
-            _prefs.AddEntry("allowAllDevicesAtOnce", false, "[Experimental] Allow all input devices at once",null, false,false);
         if (!_prefs.HasEntry("skipEngagementPrompt"))
             _prefs.AddEntry("skipEngagementPrompt", false, "Skip 'Press any button to continue' on startup","WARNING: This breaks controller and keyboard input in the main menu", false,true);
         
@@ -387,9 +391,8 @@ public class StarlightEntryPoint : MelonMod
             ApplyFromMelon<bool>("autoUpdate");
             ApplyFromMelon<bool>("forceUsePrism");
             ApplyFromMelon<bool>("disableFixSaves");
-            ApplyFromMelon<bool>("enableDebugDirector");
+
             ApplyFromMelon<bool>("enableMarketViewer");
-            ApplyFromMelon<bool>("allowAllDevicesAtOnce");
             ApplyFromMelon<bool>("mLLogToStarlightLog");
             ApplyFromMelon<bool>("StarlightLogToMLLog");
             ApplyFromMelon<string>("onSaveLoadCommand");
@@ -936,20 +939,6 @@ public class StarlightEntryPoint : MelonMod
         }
         catch (Exception e) { LogError(e); }
 
-        if(allowAllDevicesAtOnce)
-            try
-            {
-                var allHardware = InputSystem.devices;
-                foreach (var user in InputUser.all)
-                    if (user.pairedDevices.Count != allHardware.Count)
-                    {
-                        user.UnpairDevices();
-                        foreach (var device in allHardware)
-                            InputUser.PerformPairingWithDevice(device, user);
-                    }
-            }
-            catch (Exception e) { LogError(e); }
-
         foreach (var expansion in ExpansionV01S)
             try { expansion.OnUpdate(); }
             catch (Exception e) { LogError(e); }
@@ -964,7 +953,7 @@ public class StarlightEntryPoint : MelonMod
 
     public override void OnGUI()
     {
-        try { AstroUI.OnGUI(); }
+        try { EmberModeUI.OnGUI(); }
         catch (Exception e) { LogError(e); }
         foreach (var expansion in ExpansionV01S)
             try { expansion.OnGUI(); }

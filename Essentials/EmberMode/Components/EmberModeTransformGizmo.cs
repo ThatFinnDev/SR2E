@@ -2,16 +2,16 @@ using Starlight.Enums;
 using Starlight.Storage;
 using UnityEngine.InputSystem;
 
-namespace Starlight.Astro.Components;
+namespace Starlight.EmberMode.Components;
 
 [InjectIntoIL]
-internal class AstroTransformGizmo : MonoBehaviour
+internal class EmberModeTransformGizmo : MonoBehaviour
 {
     public enum TransformTool { Move, Rotate, Scale }
     public static TransformTool CurrentTool = TransformTool.Move;
 
     public static GameObject SelectedObject => _instance ? _instance._selected : null;
-    private static AstroTransformGizmo _instance;
+    private static EmberModeTransformGizmo _instance;
 
     private GameObject _selected;
     private Color _originalColor;
@@ -23,7 +23,7 @@ internal class AstroTransformGizmo : MonoBehaviour
     private GameObject _zHandle;
 
     private bool _isDragging;
-    private int _dragAxis = -1; // 0=X, 1=Y, 2=Z
+    private int _dragAxis = -1; 
     private Vector3 _dragStartWorldPos;
     private Vector3 _dragStartObjPos;
     private Plane _dragPlane;
@@ -33,8 +33,8 @@ internal class AstroTransformGizmo : MonoBehaviour
     private const float ARROW_SCALE_FACTOR = 0.15f;
     private const float TIP_LENGTH = 0.18f;
     
-    // Layer 2 is "Ignore Raycast" in Unity. The main camera renders it, 
-    // but the game's normal physics raycasts won't hit it.
+    
+    
     private const int GIZMO_LAYER = 2; 
 
     private int _hoveredAxis = -1;
@@ -51,7 +51,7 @@ internal class AstroTransformGizmo : MonoBehaviour
 
     void Update()
     {
-        if (AstroMode.Current != AstroMode.Mode.Transform)
+        if (EmberModeMode.Current != EmberModeMode.Mode.Transform)
         {
             if (_selected) Deselect();
             return;
@@ -62,7 +62,7 @@ internal class AstroTransformGizmo : MonoBehaviour
 
         if (Mouse.current == null) return;
 
-        // escape to deselect
+        
         if (LKey.Escape.OnKeyDown())
         {
             if (_selected) Deselect();
@@ -80,7 +80,7 @@ internal class AstroTransformGizmo : MonoBehaviour
         if (_isDragging && Mouse.current.leftButton.wasReleasedThisFrame)
             StopDrag();
 
-        // Update gizmo physical position and rotation for raycasting
+        
         if ((CurrentTool == TransformTool.Move || CurrentTool == TransformTool.Scale) && _selected && _gizmoRoot)
         {
             _gizmoRoot.transform.position = _selected.transform.position;
@@ -92,7 +92,7 @@ internal class AstroTransformGizmo : MonoBehaviour
 
         UpdateToolInfo();
 
-        // Queue rendering for this frame
+        
         if (_selected)
         {
             if (CurrentTool == TransformTool.Move)
@@ -198,7 +198,7 @@ internal class AstroTransformGizmo : MonoBehaviour
         var mousePos = Mouse.current.position.ReadValue();
         var ray = cam.ScreenPointToRay(new Vector3(mousePos.x, mousePos.y, 0));
 
-        // First check gizmo handles
+        
         if (CurrentTool == TransformTool.Move || CurrentTool == TransformTool.Scale)
         {
             if (_gizmoRoot)
@@ -264,7 +264,7 @@ internal class AstroTransformGizmo : MonoBehaviour
             }
         }
 
-        // select scene obj
+        
         if (Physics.Raycast(ray, out var worldHit, Mathf.Infinity, MiscEUtil.defaultMask))
             Select(worldHit.transform.gameObject);
         else Deselect();
@@ -278,7 +278,7 @@ internal class AstroTransformGizmo : MonoBehaviour
 
         _selected = obj;
 
-        // ting renderer
+        
         var renderer = _selected.GetComponent<Renderer>();
         if (renderer && renderer.material)
         {
@@ -303,7 +303,7 @@ internal class AstroTransformGizmo : MonoBehaviour
             _selected = null;
         }
         DestroyGizmo();
-        AstroUIInfo.SetToolInfo("Transform Mode — Click to select");
+        EmberModeUIInfo.SetToolInfo("Transform Mode — Click to select");
     }
 
     private void BuildGizmo()
@@ -311,7 +311,7 @@ internal class AstroTransformGizmo : MonoBehaviour
         DestroyGizmo();
         if (!_selected) return;
 
-        _gizmoRoot = new GameObject("AstroGizmoRoot");
+        _gizmoRoot = new GameObject("EmberModeGizmoRoot");
         DontDestroyOnLoad(_gizmoRoot);
         _gizmoRoot.transform.position = _selected.transform.position;
 
@@ -455,7 +455,7 @@ internal class AstroTransformGizmo : MonoBehaviour
     {
         if (!_selected)
         {
-            AstroUIInfo.SetToolInfo("Transform Mode — Click to select");
+            EmberModeUIInfo.SetToolInfo("Transform Mode — Click to select");
             return;
         }
 
@@ -463,7 +463,7 @@ internal class AstroTransformGizmo : MonoBehaviour
         var info = $"Selected: {_selected.name}\nPosition: {pos.x:F2} {pos.y:F2} {pos.z:F2}";
         if (_isDragging)
             info += $"\nDragging: {GetAxisName(_dragAxis)}";
-        AstroUIInfo.SetToolInfo(info);
+        EmberModeUIInfo.SetToolInfo(info);
     }
 
     private GameObject GetHandle(int axis) => axis switch

@@ -5,12 +5,12 @@ using Starlight.Storage;
 using Starlight.UI;
 using UnityEngine.UI;
 
-namespace Starlight.Astro.Components;
+namespace Starlight.EmberMode.Components;
 
 [InjectIntoIL]
-internal class AstroTransformInspector : MonoBehaviour
+internal class EmberModeTransformInspector : MonoBehaviour
 {
-    public static AstroTransformInspector Instance;
+    public static EmberModeTransformInspector Instance;
 
     private GameObject _windowRoot;
     public GameObject WindowRoot => _windowRoot;
@@ -51,7 +51,7 @@ internal class AstroTransformInspector : MonoBehaviour
     {
         _fontTheme = new FontTheme();
 
-        var theme = AstroUITheme.Create();
+        var theme = EmberModeUITheme.Create();
 
         var windowBlueprint = new WindowUIBlueprintV01()
         {
@@ -70,9 +70,9 @@ internal class AstroTransformInspector : MonoBehaviour
 
         _windowRect = windowBlueprint.Render(theme, _fontTheme, transform);
         _windowRoot = _windowRect.gameObject;
-        _windowRoot.name = "AstroTransformInspectorUI";
+        _windowRoot.name = "EmberModeTransformInspectorUI";
 
-        // The ContentArea was set as CustomChildHolder in the blueprint
+        
         var contentRect = _windowRoot.transform.Find("Content").GetComponent<RectTransform>();
         var contentObj = contentRect.gameObject;
 
@@ -83,18 +83,18 @@ internal class AstroTransformInspector : MonoBehaviour
         vLayout.childForceExpandWidth = true;
         vLayout.childForceExpandHeight = false;
 
-        // Toolbar
+        
         var toolbarRow = CreateRow(contentRect, "ToolsRow", 30);
         _btnMove = CreateButton(toolbarRow, "Move",
-            () => AstroTransformGizmo.CurrentTool = AstroTransformGizmo.TransformTool.Move, out _imgMove);
+            () => EmberModeTransformGizmo.CurrentTool = EmberModeTransformGizmo.TransformTool.Move, out _imgMove);
         _btnRotate = CreateButton(toolbarRow, "Rotate",
-            () => AstroTransformGizmo.CurrentTool = AstroTransformGizmo.TransformTool.Rotate, out _imgRotate);
+            () => EmberModeTransformGizmo.CurrentTool = EmberModeTransformGizmo.TransformTool.Rotate, out _imgRotate);
         _btnScale = CreateButton(toolbarRow, "Scale",
-            () => AstroTransformGizmo.CurrentTool = AstroTransformGizmo.TransformTool.Scale, out _imgScale);
+            () => EmberModeTransformGizmo.CurrentTool = EmberModeTransformGizmo.TransformTool.Scale, out _imgScale);
 
         CreateSpacer(contentRect);
 
-        // Name
+        
         var nameRow = CreateRow(contentRect, "NameRow", 25);
         CreateLabel(nameRow, "Name", 70);
         _nameInput = CreateInputField(nameRow, "NameInput");
@@ -103,7 +103,7 @@ internal class AstroTransformInspector : MonoBehaviour
             if (_lastSelected && _lastSelected.name != val) _lastSelected.name = val;
         }));
 
-        // Transforms
+        
         _posInputs = CreateVectorRow(contentRect, "Position", val =>
         {
             if (_lastSelected) _lastSelected.transform.position = val;
@@ -278,7 +278,7 @@ internal class AstroTransformInspector : MonoBehaviour
     {
         if (_windowRoot && _windowRoot.activeSelf)
         {
-            var obj = AstroTransformGizmo.SelectedObject;
+            var obj = EmberModeTransformGizmo.SelectedObject;
             if (obj != _lastSelected)
             {
                 _lastSelected = obj;
@@ -315,12 +315,12 @@ internal class AstroTransformInspector : MonoBehaviour
 
     private void UpdateToolbarVisuals()
     {
-        var tool = AstroTransformGizmo.CurrentTool;
+        var tool = EmberModeTransformGizmo.CurrentTool;
         var activeColor = new Color(0.2f, 0.6f, 1f, 1f);
         var inactiveColor = new Color(0.3f, 0.3f, 0.3f, 1f);
 
-        _imgMove.color = tool == AstroTransformGizmo.TransformTool.Move ? activeColor : inactiveColor;
-        _imgRotate.color = tool == AstroTransformGizmo.TransformTool.Rotate ? activeColor : inactiveColor;
-        _imgScale.color = tool == AstroTransformGizmo.TransformTool.Scale ? activeColor : inactiveColor;
+        _imgMove.color = tool == EmberModeTransformGizmo.TransformTool.Move ? activeColor : inactiveColor;
+        _imgRotate.color = tool == EmberModeTransformGizmo.TransformTool.Rotate ? activeColor : inactiveColor;
+        _imgScale.color = tool == EmberModeTransformGizmo.TransformTool.Scale ? activeColor : inactiveColor;
     }
 }

@@ -177,9 +177,9 @@ public enum FeatureFlag
     /// </summary>
     EnableStudioMenu=365, //
     /// <summary>
-    /// Enable the Astro menubar
+    /// Enable the EmberMode menubar
     /// </summary>
-    EnableAstroMenu=366, //
+    EnableEmberMode=366, //
     
     //UI
     /// <summary>

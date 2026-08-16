@@ -2,7 +2,7 @@ using System.Linq;
 using System.Reflection;
 using System;
 using Il2CppInterop.Runtime.Injection;
-using Starlight.Astro;
+using Starlight.EmberMode;
 using Starlight.Enums;
 using Starlight.Managers;
 using Starlight.Storage;
@@ -186,8 +186,10 @@ internal class SystemContextPatch
                     
         LoadLanguage(lang);
         
-        try { AstroUI.Initialize(__instance); } 
+        try { EmberModeUI.Initialize(__instance); } 
         catch (Exception e) { LogError(e); }
+        try { if (StarlightEntryPoint.enableEmberMode) EmberModeUI.Enable(); }
+        catch { }
        
         
         foreach (var expansion in StarlightEntryPoint.ExpansionV01S)

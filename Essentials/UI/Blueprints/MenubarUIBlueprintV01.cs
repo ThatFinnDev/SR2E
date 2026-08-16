@@ -1,5 +1,5 @@
 using System;
-using Starlight.Astro;
+using Starlight.EmberMode;
 using UnityEngine.UI;
 
 namespace Starlight.UI.Blueprints;
@@ -283,7 +283,7 @@ public class MenubarUIBlueprintV01 : UIBlueprint
             arrowTxt.text = "►";
             arrowTxt.fontSize = (LabelFontSize - 2f) * ScaleFactor;
             arrowTxt.alignment = Il2CppTMPro.TextAlignmentOptions.MidlineRight;
-            arrowTxt.color = AstroUITheme.TextDimColor;
+            arrowTxt.color = EmberModeUITheme.TextDimColor;
             arrowTxt.font = fontTheme.DefaultFont;
             arrowTxt.raycastTarget = false;
         }
@@ -298,8 +298,8 @@ public class MenubarUIBlueprintV01 : UIBlueprint
             {
                 TargetImage = rowImg,
                 NormalColor = new Color(0, 0, 0, 0),
-                HoverColor = AstroUITheme.HoverBackground,
-                PressedColor = AstroUITheme.PressedBackground
+                HoverColor = EmberModeUITheme.HoverBackground,
+                PressedColor = EmberModeUITheme.PressedBackground
             };
 
             if (hasChildren)
@@ -344,7 +344,7 @@ public class MenubarUIBlueprintV01 : UIBlueprint
         lineRect.anchoredPosition = Vector2.zero;
 
         var lineImg = lineObj.AddComponent<Image>();
-        lineImg.color = AstroUITheme.SeparatorColor;
+        lineImg.color = EmberModeUITheme.SeparatorColor;
         lineImg.raycastTarget = false;
     }
 

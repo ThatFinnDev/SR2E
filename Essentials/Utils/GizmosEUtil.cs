@@ -76,7 +76,7 @@ public static class GizmosEUtil
     {
         EnsureHook();
         _drawCommands.Add((cam) => {
-            if (camera != null && cam != camera) return;
+            if (camera && cam != camera) return;
             if (!BeginGizmoPass(cam)) return;
 
             var right = rot * Vector3.right;

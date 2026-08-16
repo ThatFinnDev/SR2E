@@ -27,6 +27,8 @@ public class StarlightConsole : StarlightMenu
     private readonly List<string> _messageHistory = new ();
     private readonly List<Color> _messageHistoryColor = new ();
     
+    private Vector2 _currentResolution;
+    
     internal Transform ConsoleContent;
     private TMP_InputField _commandInput;
     private Transform _autoCompleteContent;
@@ -69,9 +71,13 @@ public class StarlightConsole : StarlightMenu
 
     public override void OnThemeChange()
     {
+        string currentText = _commandInput != null ? _commandInput.text : "";
         if(_openMenu)
             DestroyImmediate(_openMenu.gameObject);
+        _currentResolution = new Vector2(Screen.width, Screen.height);
         _openMenu = menuBase.Render(currentTheme, currentFontTheme, transform);
+        
+        if (isOpen) transform.SetAsLastSibling();
         
         ConsoleContent = transform.GetObjectRecursively<Transform>("ConsoleMenuConsoleContentRec");
         _commandInput = transform.GetObjectRecursively<Transform>("ConsoleMenuCommandInputRec").GetChild(0).GetComponent<TMP_InputField>();
@@ -85,30 +91,44 @@ public class StarlightConsole : StarlightMenu
             RefreshAutoComplete(text);
         }));
 
+        if (!string.IsNullOrEmpty(currentText))
+            _commandInput.text = currentText;
+        else
+            RefreshAutoComplete("");
+
         var texts = _messageHistory.ToArray();
         var colors = _messageHistoryColor.ToArray();
-        for (int i = 0; i < texts.Length; i++)
+        int count = Math.Min(texts.Length, colors.Length);
+        for (int i = 0; i < count; i++)
             Send(texts[i],colors[i]);
     }
 
+    [HideFromIl2Cpp] private Canvas ParentCanvas => GetComponentInParent<Canvas>();
+    [HideFromIl2Cpp] private float CanvasScale => ParentCanvas != null ? ParentCanvas.scaleFactor : 1f;
+    [HideFromIl2Cpp] private float TrueCanvasHeight => Screen.height / CanvasScale;
+    [HideFromIl2Cpp] private float TrueCanvasWidth => Screen.width / CanvasScale;
+    
+    [HideFromIl2Cpp] private float ScreenWidthUnscaled => TrueCanvasWidth / UIBlueprint.ScaleFactor;
+    [HideFromIl2Cpp] private float ConsoleYPos => (TrueCanvasHeight / (2f * UIBlueprint.ScaleFactor)) - 165f;
+    
     [HideFromIl2Cpp] private UIBlueprint menuBase => new PanelUIBlueprintV01()
     {
-        Name="Console", Size = new(1920, 330),
-        Position = new Vector2(0, 375),
+        Name="Console", Size = new(ScreenWidthUnscaled, 330),
+        Position = new Vector2(0, ConsoleYPos),
         Color = UIColor.Primary,
         Children=[
             new InputUIBlueprintV01()
             {
                 Name="ConsoleMenuCommandInputRec",
                 PlaceHolderContent = "Enter command...",
-                Size = new (1920, 27),
+                Size = new (ScreenWidthUnscaled, 27),
                 Position = new Vector2(0, -151),
                 FontSize = 15.5f,
                 Margins = new Vector4(5, 0, 5, 0)
             },
             new VScrollUIBlueprintV01()
             {
-                Size = new (1900, 280),
+                Size = new (ScreenWidthUnscaled - 20, 280),
                 Position = new Vector2(0, 15),
                 ContentName = "ConsoleMenuConsoleContentRec",
                 ScrollBarVerticalName = "ConsoleMenuConsoleScrollbarRec",
@@ -116,9 +136,10 @@ public class StarlightConsole : StarlightMenu
             new VScrollUIBlueprintV01()
             {
                 Size = new (300, 200),
-                Position = new Vector2(-800, -265),
+                Position = new Vector2(-(ScreenWidthUnscaled / 2f) + 160f, -265),
                 Name = "ConsoleMenuAutoCompleteScrollRectRec",
                 ContentName = "ConsoleMenuAutoCompleteContentRec",
+                BackgroundColor = UIColor.Primary
             },
         ]
     };
@@ -126,7 +147,7 @@ public class StarlightConsole : StarlightMenu
     private Button GetAutoCompletePrefab(string text)
         => new ButtonUIBlueprintV01()
         {
-            Size = new Vector2(300,22),
+            Size = new Vector2(300, 22),
             ButtonColors = UIColorBlock.White,
             Color = UIColor.AutoCompleteBackground,
             Children = [
@@ -146,7 +167,7 @@ public class StarlightConsole : StarlightMenu
     private UIBlueprint GetMessagePrefab(string text, Color textColor)
         => new PanelUIBlueprintV01()
         {
-            Size = new Vector2(100,22),
+            Size = new Vector2(100, 22),
             Color = UIColor.Transparent,
             Children = [
             new TextUIBlueprintV01()
@@ -196,7 +217,15 @@ public class StarlightConsole : StarlightMenu
 
     protected override void OnOpen()
     {
-        RefreshAutoComplete(_commandInput.text);
+        if (Mathf.Abs(_currentResolution.x - Screen.width) > 0.01f || Mathf.Abs(_currentResolution.y - Screen.height) > 0.01f)
+        {
+            OnThemeChange();
+        }
+        else
+        {
+            RefreshAutoComplete(_commandInput.text);
+        }
+        transform.SetAsLastSibling();
     }
 
 
@@ -323,10 +352,18 @@ public class StarlightConsole : StarlightMenu
 
     protected override void OnUpdate()
     {
-        try { while (_messageHistory.Count >= MAX_CONSOLELINES.Get())
-            _messageHistory.RemoveAt(0);
-            _messageHistoryColor.RemoveAt(0);
+        try 
+        { 
+            while (_messageHistory.Count >= MAX_CONSOLELINES.Get())
+            {
+                _messageHistory.RemoveAt(0);
+                if (_messageHistoryColor.Count > 0)
+                    _messageHistoryColor.RemoveAt(0);
+            }
+            while (_messageHistoryColor.Count > _messageHistory.Count)
+                _messageHistoryColor.RemoveAt(0);
         } catch { }
+
         if (!_openMenu) return;
         try { if (ConsoleContent.childCount >= MAX_CONSOLELINES.Get())
             DestroyImmediate(ConsoleContent.GetChild(0).gameObject);
@@ -402,7 +439,7 @@ public class StarlightConsole : StarlightMenu
                 if (_selectedAutoComplete > MAX_AUTOCOMPLETEONSCREEN.Get())
                     _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
                         _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition.x,
-                        22f * (_selectedAutoComplete - MAX_AUTOCOMPLETEONSCREEN.Get()));
+                        (22f * UIBlueprint.ScaleFactor) * (_selectedAutoComplete - MAX_AUTOCOMPLETEONSCREEN.Get()));
 
                 else
                     _autoCompleteContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(

@@ -3,14 +3,15 @@ using Starlight.Enums;
 using Starlight.Storage;
 using Starlight.UI;
 
-namespace Starlight.Astro.Components;
+namespace Starlight.EmberMode.Components;
 
 [InjectIntoIL]
-internal class AstroMouseIndicator : MonoBehaviour
+internal class EmberModeMouseIndicator : MonoBehaviour
 {
     private TextMeshProUGUI _text;
     internal enum OverrideState { Default, ForceUnlocked, ForceLocked }
     private static OverrideState _overrideState = OverrideState.Default;
+    private float _nextUpdate = 0f;
 
     internal static OverrideState CurrentOverrideState => _overrideState;
 
@@ -25,7 +26,7 @@ internal class AstroMouseIndicator : MonoBehaviour
 
         _text = gameObject.AddComponent<TextMeshProUGUI>();
         _text.fontSize = 11f;
-        _text.color = AstroUITheme.TextColor;
+        _text.color = EmberModeUITheme.TextColor;
         _text.alignment = TextAlignmentOptions.TopRight;
         _text.raycastTarget = false;
         _text.richText = true;
@@ -44,7 +45,8 @@ internal class AstroMouseIndicator : MonoBehaviour
         if (LKey.Q.OnKeyDown())
         {
             _overrideState = (OverrideState)(((int)_overrideState + 1) % 3);
-            Log($"[Astro/Mouse] State: {_overrideState}");
+            if(DebugLogging.HasFlag()) Log($"[EmberMode/Mouse] State: {_overrideState}");
+            _nextUpdate = 0f; 
         }
 
         if (_overrideState == OverrideState.ForceUnlocked)
@@ -58,28 +60,31 @@ internal class AstroMouseIndicator : MonoBehaviour
             Cursor.visible = false;
         }
 
+        if (Time.time < _nextUpdate) return;
+        _nextUpdate = Time.time + 0.2f;
+
         string state;
         Color color;
 
         if (_overrideState == OverrideState.ForceUnlocked)
         {
             state = "Force-Unlocked";
-            color = AstroUITheme.AccentAltColor;
+            color = EmberModeUITheme.AccentAltColor;
         }
         else if (_overrideState == OverrideState.ForceLocked)
         {
             state = "Force-Locked";
-            color = AstroUITheme.AccentAltColor;
+            color = EmberModeUITheme.AccentAltColor;
         }
         else if (Cursor.lockState == CursorLockMode.None)
         {
             state = "Unlocked";
-            color = AstroUITheme.TextColor;
+            color = EmberModeUITheme.TextColor;
         }
         else
         {
             state = "Locked";
-            color = AstroUITheme.TextDimColor;
+            color = EmberModeUITheme.TextDimColor;
         }
 
         _text.text = $"Mouse: {state}";

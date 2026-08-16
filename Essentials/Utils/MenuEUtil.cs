@@ -22,7 +22,7 @@ public static class MenuEUtil
         var instance = Object.Instantiate(PopUpBlock, PopUpBlock.transform);
         instance.gameObject.SetActive(true);
         instance.SetSiblingIndex(popUp.transform.GetSiblingIndex()-1);
-        popUp.block = instance;
+        popUp.Block = instance;
     }
     internal static void ReloadFont(this StarlightPopUp popUp)
     {
@@ -203,9 +203,17 @@ public static class MenuEUtil
     }
     public static void CloseOpenMenu()
     {
-        var menu = GetOpenMenu();
-        if(menu)
-            menu.Close();
+        try
+        {
+
+            var menu = GetOpenMenu();
+            if(menu)
+                menu.Close();
+        }
+        catch (Exception e)
+        {
+            LogError(e);
+        }
     }
     public static StarlightMenu GetOpenMenu()
     {

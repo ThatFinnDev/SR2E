@@ -1,9 +1,9 @@
 using Starlight.UI;
 using UnityEngine.UI;
 
-namespace Starlight.Astro;
+namespace Starlight.EmberMode;
 
-internal static class AstroUITheme
+internal static class EmberModeUITheme
 {
     internal static readonly Color BarBackground = new(0.118f, 0.118f, 0.118f, 1f);
     internal static readonly Color PanelBackground = new(0.145f, 0.145f, 0.149f, 1f);
@@ -25,7 +25,7 @@ internal static class AstroUITheme
     {
         return new UITheme
         {
-            ThemeName = "AstroDark",
+            ThemeName = "EmberModeDark",
             PrimaryColor = BarBackground,
             SecondaryColor = PanelBackground,
             AccentColor = AccentColor,
