@@ -424,7 +424,11 @@ internal class EmberModeToolbar : MonoBehaviour
 
     private static List<MenubarEntry> GetAllSceneGroups()
     {
-        var list = new List<MenubarEntry>();
+        var list = new List<MenubarEntry>()
+        {
+            new MenubarEntry { Label = "This may break the game/mods!", IsDisabled = true, },
+            new MenubarEntry { Label = "Do not report issues when using this!", IsDisabled = true, },
+       };
         foreach (var group in systemContext.SceneLoader.SceneGroupList.items)
         {
             var type = group.IsGameplay ? "Type: Gameplay" : "Type: ";

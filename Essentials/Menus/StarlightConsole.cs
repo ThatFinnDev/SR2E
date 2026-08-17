@@ -28,6 +28,7 @@ public class StarlightConsole : StarlightMenu
     private readonly List<Color> _messageHistoryColor = new ();
     
     private Vector2 _currentResolution;
+    private static float _yScreenHeightOnStartup;
     
     internal Transform ConsoleContent;
     private TMP_InputField _commandInput;
@@ -41,6 +42,7 @@ public class StarlightConsole : StarlightMenu
     private bool _scrollCompletelyDown;
     public new static GameObject GetMenuRootObject()
     {
+        _yScreenHeightOnStartup = Screen.currentResolution.height;
         var obj = new GameObject("StarlightConsoleMenu");
         var rect = obj.AddComponent<RectTransform>();
         rect.anchorMin = new Vector2(0, 0);
@@ -76,7 +78,7 @@ public class StarlightConsole : StarlightMenu
             DestroyImmediate(_openMenu.gameObject);
         _currentResolution = new Vector2(Screen.width, Screen.height);
         _openMenu = menuBase.Render(currentTheme, currentFontTheme, transform);
-        
+        _openMenu.anchoredPosition = new Vector2(0, _yScreenHeightOnStartup / 2);
         if (isOpen) transform.SetAsLastSibling();
         
         ConsoleContent = transform.GetObjectRecursively<Transform>("ConsoleMenuConsoleContentRec");
@@ -105,14 +107,13 @@ public class StarlightConsole : StarlightMenu
 
     [HideFromIl2Cpp] private Canvas ParentCanvas => GetComponentInParent<Canvas>();
     [HideFromIl2Cpp] private float CanvasScale => ParentCanvas != null ? ParentCanvas.scaleFactor : 1f;
-    [HideFromIl2Cpp] private float TrueCanvasHeight => Screen.height / CanvasScale;
     [HideFromIl2Cpp] private float TrueCanvasWidth => Screen.width / CanvasScale;
-    [HideFromIl2Cpp] private float ConsoleYPos => (TrueCanvasHeight / (2f * UIBlueprint.ScaleFactor)) - 165f;
     
     [HideFromIl2Cpp] private UIBlueprint menuBase => new PanelUIBlueprintV01()
     {
         Name="Console", Size = new(TrueCanvasWidth, 330),
-        Position = new Vector2(0, ConsoleYPos),
+        Position = new Vector2(0, 0),
+        Pivot = new (0.5f,1f),
         Color = UIColor.Primary,
         Children=[
             new InputUIBlueprintV01()
