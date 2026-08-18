@@ -9,7 +9,7 @@
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
     <DocumentationFile>bin\Debug\net6.0-windows\Starlight.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
     <LangVersion>latest</LangVersion>

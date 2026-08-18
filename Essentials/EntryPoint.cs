@@ -556,7 +556,8 @@ public class StarlightEntryPoint : MelonMod
                 entryStream.CopyTo(ms);
                 File.WriteAllBytes(tempPath, ms.ToArray());*/
                 //var bytes = EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.ttf")
-                var bytes = Starlight.EncodedAssets.NotoSansFont.RawAssetBytes;
+                //var bytes = Starlight.EncodedAssets.NotoSansFont.RawAssetBytes;
+                var bytes = EmbeddedResourceEUtil.LoadResource("Assets.NotoSans.zip");
                 File.WriteAllBytes(tempPath, bytes);
                 var tempFont = new Font(tempPath);
                 NotoSansFont = TMP_FontAsset.CreateFontAsset(tempFont);

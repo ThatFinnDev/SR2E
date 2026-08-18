@@ -379,7 +379,7 @@ internal class StarlightModMenu : StarlightMenu
             button.Children.Add(new PanelUIBlueprintV01()
             {
                 Size=new Vector2(50,50), Position = new Vector2(266,0),
-                Color=UIColor.None,Sprite = ConvertEUtil.BytesToTexture2D(EncodedAssets.MelonIcon.RawAssetBytes).CopyWithoutMipmaps().Texture2DToSprite(),
+                Color=UIColor.None,Sprite = EmbeddedResourceEUtil.LoadSprite("Assets.mlIcon.zip").CopyWithoutMipmaps(), //ConvertEUtil.BytesToTexture2D(EncodedAssets.MelonIcon.RawAssetBytes).CopyWithoutMipmaps().Texture2DToSprite(),
                 CornerRadius = 10
                 //anchors = new Vector4(0,0.5f,0,0.5f),
             });
